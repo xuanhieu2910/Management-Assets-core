@@ -13,8 +13,8 @@ import lombok.Setter;
 public class ShapeOriginalAssetConnectActor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_s_original_asset_actor")
-    private Integer idShapeOriginalAssetActor;
+    @Column(name = "id_s_original_asset_connect_actor")
+    private Integer idShapeOriginalAssetConnectActor;
     @Column(name = "id_original")
     private Integer idOriginal;
     @Column(name = "id_asset")
