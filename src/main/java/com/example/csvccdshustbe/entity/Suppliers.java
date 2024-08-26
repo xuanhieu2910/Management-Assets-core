@@ -31,7 +31,7 @@ public class Suppliers {
     @Column(name = "notes")
     private String notes;
     @Column(name = "status")
-    private int status;
+    private Integer status;
     @Column(name = "time_created")
     private String timeCreated;
     @Column(name = "time_modified")

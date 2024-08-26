@@ -14,11 +14,11 @@ public class TypeUse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_type_use")
-    private int idTypeUse;
+    private Integer idTypeUse;
     @Column(name = "name")
     private String name;
     @Column(name = "status")
-    private int status;
+    private Integer status;
     @Column(name = "time_created")
     private String timeCreated;
     @Column(name = "time_modified")
