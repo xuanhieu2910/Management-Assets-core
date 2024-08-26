@@ -1,6 +1,5 @@
 package com.example.csvccdshustbe.entity;
 
-//Kien 26-8
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,12 +10,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 
-@Table(name = "wards")
-public class Wards {
+@Table(name = "districts")
+public class Districts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_ward")
-    private Integer idWard;
+    @Column(name="id_district")
+    private Integer idDistrict;
     @Column(name="code")
     private String code;
     @Column(name="name")
@@ -29,6 +28,6 @@ public class Wards {
     private String fullNameEn;
     @Column(name="code_name")
     private String codeName;
-    @Column(name="district_code")
-    private String districtCode;
+    @Column(name="province_code")
+    private String provinceCode;
 }

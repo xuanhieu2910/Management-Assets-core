@@ -14,8 +14,8 @@ import lombok.Setter;
 public class ShapeOriginalAssetBuy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_s_original_asset_wo_actor")
-    private Integer idShapeOriginalAssetWoActor;
+    @Column(name = "id_s_original_asset_buy")
+    private Integer idShapeOriginalAssetBuy;
     @Column(name = "id_original")
     private Integer idOriginal;
     @Column(name = "id_asset")
