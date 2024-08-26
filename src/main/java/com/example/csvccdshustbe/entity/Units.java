@@ -14,7 +14,7 @@ public class Units {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_unit")
-    private int idUnit;
+    private Integer idUnit;
     @Column(name = "name")
     private String name;
     @Column(name = "time_created")
@@ -22,7 +22,7 @@ public class Units {
     @Column(name = "time_modified")
     private String timeModified;
     @Column(name = "id_asset_category")
-    private int idAssetCategory;
+    private Integer idAssetCategory;
     @Column(name = "status")
-    private int status;
+    private Integer status;
 }

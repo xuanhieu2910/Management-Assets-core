@@ -9,12 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "s_original_asset_transfer")
-public class ShapeOriginalAssetTransfer {
+@Table(name = "s_original_asset_gift")
+public class ShapeOriginalAssetGift {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_s_original_asset_transfer")
-    private Integer idShapeOriginalAssetTransfer;
+    @Column(name = "id_s_original_asset_gift")
+    private Integer idShapeOriginalAssetGift;
     @Column(name = "id_original")
     private Integer idOriginal;
     @Column(name = "id_asset")

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.entity;
 
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,22 +10,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "s_original_asset_transfer")
-public class ShapeOriginalAssetTransfer {
+@Table(name = "s_original_asset_connect_wo_actor")
+public class ShapeOriginalAssetConnectWoActor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_s_original_asset_transfer")
-    private Integer idShapeOriginalAssetTransfer;
+    @Column(name = "id_s_original_asset_wo_actor")
+    private Integer idShapeOriginalAssetWoActor;
     @Column(name = "id_original")
     private Integer idOriginal;
     @Column(name = "id_asset")
     private Integer idAsset;
     @Column(name = "value_buy")
     private Double valueBuy;
-    @Column(name = "value_work")
-    private Double valueWork;
-    @Column(name = "value_recall_work")
-    private Double valueRecallWork;
     @Column(name = "value_tax")
     private Double valueTax;
     @Column(name = "value_other")
