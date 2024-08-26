@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.config;
 
+import com.example.csvccdshustbe.response.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -11,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
-import teamit.hust.ktxcdshustbe.response.ErrorResponse;
 
 import java.io.IOException;
 import java.time.Instant;
