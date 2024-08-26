@@ -1,0 +1,127 @@
+package com.example.csvccdshustbe.config;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.StringUtils;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+import teamit.hust.ktxcdshustbe.entity.CustomUserDetails;
+import teamit.hust.ktxcdshustbe.service.user.impl.CustomUserDetailsServiceImpl;
+import teamit.hust.ktxcdshustbe.utility.Constants;
+
+import java.util.*;
+
+
+@Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
+@EnableMethodSecurity
+public class WebSecurityConfig{
+
+    @Autowired
+    UnauthorizedEntryPoint unauthorizedEntryPoint;
+    @Autowired
+    CustomAccessDeniedHandler accessDeniedHandler;
+    @Autowired
+    JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    AuthenticationProvider authenticationProvider;
+    @Autowired
+    OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    @Autowired
+    CustomUserDetailsServiceImpl customUserDetailsService;
+    @Autowired
+    OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private static final int CORS_FILTER_ORDER = -102;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.csrf(AbstractHttpConfigurer::disable).cors(c->c.configurationSource(corsConfigurationSource())).
+                exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(unauthorizedEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                ).authorizeHttpRequests(request ->
+                        request.requestMatchers("/swagger-resources",
+                                        "/swagger-resources/**",
+                                        "/swagger-ui/**",
+                                        "/webjars/**",
+                                        "/swagger-ui.html",
+                                        "/v3/api-docs/**",
+                                        "/api/v1/user/auth/**").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(oAuth2LoginSuccessHandler)
+                        .failureHandler(oAuth2AuthenticationFailureHandler)
+                        .userInfoEndpoint(x->x.oidcUserService(this.oidcUserService())))
+                .authenticationProvider(authenticationProvider).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return httpSecurity.build();
+    }
+
+
+    private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
+        final OidcUserService delegate = new OidcUserService();
+        return (userRequest) -> {
+            OidcUser oidcUser = delegate.loadUser(userRequest);
+            String userName = oidcUser.getIdToken().getClaimAsString("preferred_username").trim().toLowerCase();
+            Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
+            CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(userName);
+            Map<String, Object> claims = new HashMap<>();
+            claims.put(Constants.CLAIMS_INFORMATION_USER,customUserDetails);
+            OidcUserInfo oidcUserInfo = new OidcUserInfo(claims);
+            mappedAuthorities.addAll(customUserDetails.getAuthorities());
+            ClientRegistration.ProviderDetails providerDetails = userRequest.getClientRegistration().getProviderDetails();
+            String userNameAttributeName = providerDetails.getUserInfoEndpoint().getUserNameAttributeName();
+            if (StringUtils.hasText(userNameAttributeName)) {
+                oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUserInfo, userNameAttributeName);
+            } else {
+                oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUserInfo);
+            }
+            return oidcUser;
+        };
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://ktx-development.hust.edu.vn"));
+        configuration.setAllowedOrigins(List.of("https://ktx.hust.edu.vn"));
+        configuration.setAllowedMethods(Arrays.asList(
+                HttpMethod.GET.name(),
+                HttpMethod.POST.name(),
+                HttpMethod.PUT.name(),
+                HttpMethod.DELETE.name(),
+                HttpMethod.OPTIONS.name(),
+                HttpMethod.PATCH.name(),
+                HttpMethod.HEAD.name()));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+        bean.setOrder(CORS_FILTER_ORDER);
+        return source;
+    }
+
+}
