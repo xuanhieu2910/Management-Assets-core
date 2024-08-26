@@ -5,82 +5,11 @@ public class Constants {
     public final static String SORT_ASC = "ASC";
     public final static String SORT_DESC = "DESC";
 
-
-    //Execute update
-    public final static int ROW_NOT_UPDATED = 0;
-
-    public final static String CLAIMS_INFORMATION_USER = "informationUser";
-
-    public static int VN = 1;
-    public final static String PREFIX_API_ADMIN = "/admin";
-    public final static String PREFIX_API_STUDENT = "/student";
-    public final static Integer ACCOUNT_IS_ACTIVED = 1;
-    public  final static Integer ACCOUNT_IS_UN_ACTIVED = 0; // Not yet validate email
-    public final static Integer ACCOUNT_IS_ACTIVED_LOCK = -1;
-
-    public final static Integer FEMALE = 1;
-    public final static Integer MALE = 2;
-
-    public final static String[] TITLE_SEX = {"Nữ","Nam"};
-
-    public final static Integer FATHER = 1;
-    public final static Integer MOTHER = 2;
-    public final static String[] LABEL_PARENTS = {"Bố","Mẹ"};
-    public final static Integer STATUS_REMAIN_EMPTY = 1;
-    public final static Integer STATUS_REMAIN_UN_EMPTY = 0;
-
-    public final static Integer STATUS_ROOM_IS_ACTIVED = 1;
-    public final static Integer STATUS_ROOM_UN_ACTIVED = -1;
-
-    /******************************************************************/
-    // Department
-    public final static Integer STATUS_DEPARTMENT_IS_ACTIVE = 1;
-    public final static Integer STATUS_DEPARTMENT_UN_ACTIVED = -1;
-    /******************************************************************/
-
-    public final static Integer[] YEAR_GRADE = {64,65,66,67,68,69,70,71,72,72,73};
-
-    public final static String TITLE_YEAR_GRADE = "Khóa";
-
-    public final static Integer DEFAULT_QUANTITY_HIRED = 0;
-    public final static Integer DEFAULT_QUANTITY_REGISTER = 0;
-
-    public final static Integer DEFAULT_REMAIN_AMOUNT = 0;
-
-
-    // Register room
-    public final static Integer STUDENT_REGISTER_ROOM_STATUS_ACCEPT = 1;
-    public final static Integer STATUS_HOLD_STUDENT_ROOM_REGISTER = 2;
-    public final static Integer STATUS_SUCCESS_PAYMENT_STUDENT_ROOM_REGISTER = 3;
-
-    /****************************************************************/
-
-    public final static Integer STUDENT_REGISTER_ROOM_STATUS_NOT_ACCEPT = -1;
-    public final static Integer QUANTITY_UPDATE_ROOM_AND_REGISTER = 1;
-    public final static Integer QUANTITY_UPDATE_HIRED_ROOM = 1;
-
-    public final static Integer STUDENT_REGISTER_ROOM_STATUS_NOT_FULL_FILL = -1;
-    public final static Integer STUDENT_REGISTER_ROOM_STATUS_FULL_FILL = 1;
-
-    public final static Integer STATUS_STUDENT_HIRING_ROOM = 1;
-    public final static Integer STATUS_STUDENT_REFUND_ROOM = -1;
-
-    public final static Integer STATUS_USER_NOT_REGISTER_ROOM = -1;
-    public final static Integer STATUS_USER_REGISTER_ROOM = 1;
-
-    public static final int MAX_FILE_SIZE = 50000000;
-
     public static String[] FILE_EXCEL = {"xls", "xlsx", "xlsm"};
 
     public static String[] FILE_IMAGES = {"JPEG","PNG","JPG","GIF","PSD","PDF"};
 
-    public static String MESSAGE_ERROR_SIZE_FILE = "Size to large 50Mb!";
+    public static String[] MESSAGE_ERROR_FILE_EXCEL = {"Size to large 50Mb!","File không đúng định dạng!","File không có dữ liệu!","File error"};
 
-    public static String MESSAGE_UP_LOAD_FILE_SUCCESS = "Up load file success!";
-
-    public static String MESSAGE_UP_LOAD_FILE_WRONG_TEMPLATE = "File không đúng định dạng!";
-
-    public static String MESSAGE_FILE_EMPTY = "File không có dữ liệu!";
-
-    public static String MESSAGE_ERROR_REPORT_FILE = "File error";
+    public static String[] MESSAGE_SUCCESS_FILE_EXCEL = {"Up load file success!"};
 }
