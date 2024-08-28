@@ -8,7 +8,6 @@ import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import teamit.hust.ktxcdshustbe.dto.registerRoom.AcceptStudentRegisterRoomDto;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -56,22 +55,6 @@ public class EmailUtil implements Runnable {
         return mailDtoQueue.add(new MailDto(emailTo, subject, content));
     }
 
-    public boolean sendApprovedRoom(AcceptStudentRegisterRoomDto registerRoomDto){
-        String subject = null;
-        String content = null;
-        if (registerRoomDto.getStatusAccept().equals(Constants.STUDENT_REGISTER_ROOM_STATUS_ACCEPT)) {
-            subject = OptUtils.SUBJECT_REGISTER_ROOM;
-            content = OptUtils.CONTENT_REGISTER_SUCCESS_ROOM;
-            content = content.replace("{{USER_NAME}}", registerRoomDto.getUserName())
-                             .replace("{{TITLE_DEPARTMENT}}", registerRoomDto.getTitleDepartment())
-                             .replace("{{TITLE_ROOM}}", registerRoomDto.getTitleRoom())
-                             .replace("{{PRICE}}", registerRoomDto.getPrice())
-                             .replace("{{TIME_HIRED}}", registerRoomDto.getTimeHired());
-        } else {
-            subject = OptUtils.SUBJECT_REGISTER_ROOM;
-        }
-        return mailDtoQueue.add(new MailDto(registerRoomDto.getUserName(), subject, content));
-    }
     private static boolean send(MailDto mailDto) {
         try {
             Properties emailProps = new Properties();

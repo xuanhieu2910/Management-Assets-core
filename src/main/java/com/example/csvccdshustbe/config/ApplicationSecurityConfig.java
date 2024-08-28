@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.config;
 
+import com.example.csvccdshustbe.service.user.CsvcUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,13 +17,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationSecurityConfig {
+
+
     @Autowired
-    CustomUserDetailsService userDetailService;
+    CsvcUserService csvcUserService;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailService);
+        authProvider.setUserDetailsService(csvcUserService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

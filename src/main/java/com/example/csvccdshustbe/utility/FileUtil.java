@@ -1,12 +1,13 @@
 package com.example.csvccdshustbe.utility;
 
+import com.example.csvccdshustbe.exception.FileExcelException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import teamit.hust.ktxcdshustbe.exception.FileExcelException;
+
 
 import java.io.*;
 import java.util.*;
@@ -230,28 +231,6 @@ public class FileUtil {
         return isCheck;
     }
 
-    public static String createPathFileError() {
-        String fileId = FileUtil.generateFileId();
-        String folder = FileUtil.buildFolderUpload(FileUtil.FOLDER_NAME_FILE);
-        File inFiles = new File(folder);
-        if (!inFiles.exists() && !inFiles.mkdirs()) {
-            log.error("Can't create folder");
-        }
-        pathReturn = pathReturn + fileId + "." + Constants.FILE_EXCEL[1];
-        return folder + fileId + "." + Constants.FILE_EXCEL[1];
-    }
-
-    public static String createPathFileErrorV2() {
-        String fileId = FileUtil.generateFileId();
-        String folder = FileUtil.buildFolderUpload(FileUtil.FOLDER_NAME_FILE);
-        File inFiles = new File(folder);
-        if (!inFiles.exists() && !inFiles.mkdirs()) {
-            log.error("Can't create folder");
-        }
-        pathReturn = pathReturn + fileId + "." + Constants.FILE_EXCEL[1];
-        return folder + fileId + "." + Constants.FILE_EXCEL[1];
-    }
-
 
 
     public static boolean checkSizeFile(MultipartFile file) {
@@ -270,7 +249,7 @@ public class FileUtil {
         if (file.isEmpty()){
             throw new FileExcelException("File is empty!");
         }
-        if( Arrays.stream(Constants.FILE_IMAGES).noneMatch(x->x.equals(FilenameUtils.getExtension(file.getOriginalFilename()).toUpperCase()))){
+        if( Arrays.stream(ExcelUtil.FILE_IMAGES).noneMatch(x->x.equals(FilenameUtils.getExtension(file.getOriginalFilename()).toUpperCase()))){
             throw new FileExcelException("Validate extension file!");
         }
         if (!FileUtil.checkSizeFileImage(file)){

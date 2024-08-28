@@ -24,7 +24,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         log.error("Access denied error: {}", accessDeniedException.getMessage());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-
         ErrorResponse body = ErrorResponse.builder()
                 .status(HttpServletResponse.SC_FORBIDDEN)
                 .error("Forbidden")

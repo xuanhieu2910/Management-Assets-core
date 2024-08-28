@@ -1,5 +1,7 @@
 package com.example.csvccdshustbe.utility;
 
+import com.example.csvccdshustbe.exception.ValidateFiledException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.Clob;
@@ -11,6 +13,9 @@ import java.util.Date;
 import java.util.Locale;
 
 public class ValueUtil {
+
+    public final static String MESSAGE_STRONG_PASSWORD = "Must be 8 characters long and combination of uppercase letters, lowercase letters, numbers, special characters.";
+    public final static String PATTERN_STRONG_PASSWORD = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*()]).{8,}$";
 
     private ValueUtil() {
         throw new IllegalStateException("Utility class");
@@ -107,6 +112,15 @@ public class ValueUtil {
 
     public static Boolean getBooleanByObject(Object obj) {
         return (obj != null && "1,true".contains(obj.toString()));
+    }
+
+
+    public static boolean validateStrongPassword(String password) throws ValidateFiledException {
+        if (password != null) {
+            return password.matches(PATTERN_STRONG_PASSWORD);
+        } else {
+            throw new ValidateFiledException(MESSAGE_STRONG_PASSWORD);
+        }
     }
 
 }

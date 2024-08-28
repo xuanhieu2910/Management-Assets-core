@@ -1,17 +1,18 @@
 package com.example.csvccdshustbe.config;
 
+import com.example.csvccdshustbe.service.user.CsvcUserService;
+import com.example.csvccdshustbe.utility.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -25,10 +26,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-import teamit.hust.ktxcdshustbe.entity.CustomUserDetails;
-import teamit.hust.ktxcdshustbe.service.user.impl.CustomUserDetailsServiceImpl;
-import teamit.hust.ktxcdshustbe.utility.Constants;
 
 import java.util.*;
 
@@ -50,10 +47,9 @@ public class WebSecurityConfig{
     @Autowired
     OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     @Autowired
-    CustomUserDetailsServiceImpl customUserDetailsService;
+    CsvcUserService csvcUserService;
     @Autowired
     OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-    private static final int CORS_FILTER_ORDER = -102;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -86,7 +82,7 @@ public class WebSecurityConfig{
             OidcUser oidcUser = delegate.loadUser(userRequest);
             String userName = oidcUser.getIdToken().getClaimAsString("preferred_username").trim().toLowerCase();
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-            CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(userName);
+            UserDetails customUserDetails = csvcUserService.loadUserByUsername(userName);
             Map<String, Object> claims = new HashMap<>();
             claims.put(Constants.CLAIMS_INFORMATION_USER,customUserDetails);
             OidcUserInfo oidcUserInfo = new OidcUserInfo(claims);
@@ -103,24 +99,14 @@ public class WebSecurityConfig{
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
-        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://ktx-development.hust.edu.vn"));
-        configuration.setAllowedOrigins(List.of("https://ktx.hust.edu.vn"));
-        configuration.setAllowedMethods(Arrays.asList(
-                HttpMethod.GET.name(),
-                HttpMethod.POST.name(),
-                HttpMethod.PUT.name(),
-                HttpMethod.DELETE.name(),
-                HttpMethod.OPTIONS.name(),
-                HttpMethod.PATCH.name(),
-                HttpMethod.HEAD.name()));
-        configuration.setAllowedHeaders(List.of("*"));
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("https://csvc-development.hust.edu.vn"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-        bean.setOrder(CORS_FILTER_ORDER);
         return source;
     }
 
