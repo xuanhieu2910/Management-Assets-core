@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,5 +24,5 @@ public class RefreshToken {
     @Column(name = "expire_date")
     private String expireDate;
     @Column(name = "revoked")
-    private String revoked;
+    private boolean revoked;
 }

@@ -9,6 +9,11 @@ import org.springframework.core.env.Environment;
 @Configuration
 public class DbConstant {
 
+    /**
+     * Constant Database type sort filed
+     * */
+    public final static String SORT_ASC = "ASC";
+    public final static String SORT_DESC = "DESC";
 
     @Autowired
     private Environment env;

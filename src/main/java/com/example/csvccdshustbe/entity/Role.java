@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,4 +31,9 @@ public class Role {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+    @ManyToMany
+    @JoinTable(name = "role_privilege",
+            joinColumns = @JoinColumn(name = "id_role"),
+            inverseJoinColumns = @JoinColumn(name="id_privilege"))
+    private Set<Privilege> privileges;
 }

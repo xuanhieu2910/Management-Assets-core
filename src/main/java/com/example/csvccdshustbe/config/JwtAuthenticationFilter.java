@@ -1,5 +1,7 @@
 package com.example.csvccdshustbe.config;
 
+import com.example.csvccdshustbe.service.jwt.JwtTokenService;
+import com.example.csvccdshustbe.service.user.CsvcUserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,8 +21,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import teamit.hust.ktxcdshustbe.service.jwt.JwtTokenService;
-import teamit.hust.ktxcdshustbe.service.user.impl.CustomUserDetailsServiceImpl;
 
 import java.io.IOException;
 
@@ -34,10 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Value("${jwt.header.string}")
     public String HEADER_STRING;
 
-    public static String TOKEN_PREFIX = "Bearer ";
+    public static final String TOKEN_PREFIX = "Bearer ";
 
     @Autowired
-    private CustomUserDetailsServiceImpl customUserDetailsService;
+    private CsvcUserService csvcUserService;
 
     @Autowired
     private JwtTokenService jwtTokenUtil;
@@ -77,7 +77,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String userName = jwtTokenUtil.getUserNameFromToken(jwt);
         if (StringUtils.isNotEmpty(userName)
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(userName);
+            UserDetails userDetails = this.csvcUserService.loadUserByUsername(userName);
             if (jwtTokenUtil.validateToken(jwt, userDetails)) {
                 //update the spring security context by adding a new UsernamePasswordAuthenticationToken
                 SecurityContext context = SecurityContextHolder.createEmptyContext();

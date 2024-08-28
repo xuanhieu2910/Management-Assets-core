@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.dto;
 
+import com.example.csvccdshustbe.response.ResponseData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.annotation.PostConstruct;
@@ -8,7 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ResponseBody;
-import teamit.hust.ktxcdshustbe.response.ResponseData;
+
 
 import java.util.Map;
 

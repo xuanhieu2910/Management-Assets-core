@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,5 +31,7 @@ public class Privilege {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+    @ManyToMany(mappedBy = "privileges")
+    private Set<Role> roleSet;
 
 }
