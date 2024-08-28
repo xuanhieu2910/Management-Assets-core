@@ -63,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public UserAuthenticationDto register(UserRegisterAccountRequest request) throws Exception {
         if (csvcUserService.exitsByUserName(request.getUsername())) {
-            throw new ValidateFiledException("Don't exit user, please use another user name");
+            throw new ValidateFiledException("Exits user, please use another user name");
         }
         Role role = userRoleService.findRoleByUserName(RolePattern.USER.name());
         ValueUtil.validateStrongPassword(request.getPassword());
