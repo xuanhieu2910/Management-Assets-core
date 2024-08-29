@@ -20,13 +20,13 @@ public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
     public List<Units> findAllUnits() {
         StringBuilder sb = new StringBuilder();
         sb.append(" select units.id_unit, units.name, units.time_created, " +
-                "       units.time_modified, units.id_asset_category, units.status " +
+                "units.time_modified, units.id_asset_category, units.status " +
                 "from units ");
         Query query = entityManager.createNativeQuery(sb.toString());
         List<Object[]> result = query.getResultList();
         List<Units> units = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj: result){
+            for (Object[] obj : result){
                 Units unit = new Units();
                 unit.setIdUnit(ValueUtil.getIntegerByObject(obj[0]));
                 unit.setName(ValueUtil.getStringByObject(obj[1]));
