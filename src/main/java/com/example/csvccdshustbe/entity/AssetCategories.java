@@ -18,8 +18,6 @@ public class AssetCategories {
     private Integer idAssetCategory;
     @Column(name = "name")
     private String name;
-    @Column(name = "id_number")
-    private Integer idNumber;
     @Column(name = "short_name")
     private String shortName;
     @Column(name = "code_name")
@@ -38,12 +36,9 @@ public class AssetCategories {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
-    @Column(name = "depth")
-    private Integer depth;
-    @Column(name = "path")
-    private String path;
     @Column(name = "path_image")
     private String pathImage;
-
+    @Column(name = "is_pick")
+    private Integer isPick;
 
 }

@@ -20,4 +20,11 @@ public class Constants {
     /*-----------------------------------------------------*/
 
 
+    /**
+     * Constant Asset categories
+     * */
+    public static final Integer IS_PICKED = 1;
+    public static final Integer NOT_IS_PICKED = -1;
+    public static final Integer IS_VISIBLE = 1;
+    public static final Integer NOT_IS_VISIBLE = -1;
 }
