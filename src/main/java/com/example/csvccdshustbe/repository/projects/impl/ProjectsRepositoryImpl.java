@@ -2,7 +2,6 @@ package com.example.csvccdshustbe.repository.projects.impl;
 
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
 import com.example.csvccdshustbe.repository.projects.ProjectsRepositoryCustom;
-import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
 import com.example.csvccdshustbe.request.projects.FindAllProjectsRequest;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -56,8 +55,8 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
         List<FindAllProjectsDto> findAllProjectsDtos = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj: result){
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
                 FindAllProjectsDto dto = new FindAllProjectsDto();
                 dto.setIdProject(ValueUtil.getIntegerByObject(obj[0]));
                 dto.setName(ValueUtil.getStringByObject(obj[1]));
@@ -76,18 +75,18 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
 
     private void setParameterFindAllProjectVisible(FindAllProjectsRequest request, Query query) {
         query.setParameter("visible", Constants.PROJECTS_IS_VISIBLE);
-        if (StringUtils.isNotBlank(request.getKeyword())){
+        if (StringUtils.isNotBlank(request.getKeyword())) {
             query.setParameter("keyword", request.getKeyword());
         }
     }
 
     private void setConditionFindAllProjectVisible(FindAllProjectsRequest request, StringBuilder sb) {
-        if (StringUtils.isNotBlank(request.getKeyword())){
+        if (StringUtils.isNotBlank(request.getKeyword())) {
             sb.append(" and (cte.name REGEXP '[' + :keyword + ']') ");
         }
     }
 
-    private long countFindAllProjectVisible(FindAllProjectsRequest request){
+    private long countFindAllProjectVisible(FindAllProjectsRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" WITH RECURSIVE cte_projects as (      " +
                 "       select projects.id_project, projects.name, projects.short_name,      " +
@@ -112,6 +111,6 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
         setConditionFindAllProjectVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllProjectVisible(request, query);
-        return  ValueUtil.getLongByObject(query.getSingleResult());
+        return ValueUtil.getLongByObject(query.getSingleResult());
     }
 }

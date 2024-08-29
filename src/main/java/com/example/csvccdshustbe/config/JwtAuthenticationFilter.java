@@ -65,8 +65,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void handleOAuthFilter(HttpServletRequest request,HttpServletResponse response,FilterChain filterChain) throws ServletException, IOException {
         String jwt = jwtTokenUtil.getJwtFromCookies(request);
         final String authHeader = request.getHeader(HEADER_STRING);
-
-        // If the JWT is not in the cookies but in the "Authorization" header
         if (jwt == null && authHeader.startsWith(TOKEN_PREFIX)) {
             jwt = authHeader.replace(TOKEN_PREFIX, "");
         }

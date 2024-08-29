@@ -21,6 +21,7 @@ public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" select units.id_unit, units.name, units.time_created, " +
                 "       units.time_modified, units.id_asset_category, units.status " +
+                "units.time_modified, units.id_asset_category, units.status " +
                 "from units ");
         Query query = entityManager.createNativeQuery(sb.toString());
         List<Object[]> result = query.getResultList();
