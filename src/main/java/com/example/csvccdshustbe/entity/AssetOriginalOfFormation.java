@@ -25,4 +25,6 @@ public class AssetOriginalOfFormation {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+    @Column(name = "value")
+    private String value;
 }

@@ -43,4 +43,11 @@ public class Constants {
      * Constant Projects
      * */
     public static final Integer PROJECTS_IS_VISIBLE = 1;
+
+    /*----------------------------------------------------*/
+
+    /**
+     * Constant Original Of Formation
+     * */
+    public static final Integer ORIGINAL_OF_FORMATION_VISIBLE = 1;
 }

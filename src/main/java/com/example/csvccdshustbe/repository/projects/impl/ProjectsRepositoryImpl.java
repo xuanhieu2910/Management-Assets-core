@@ -108,7 +108,7 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
                 "       )      " +
                 "   select count(cte.id_project) count   " +
                 "   from cte_projects cte      " +
-                "   where 1 = 1 ");
+                "   where 1 = 1 and cte.visible = :visible  ");
         setConditionFindAllProjectVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllProjectVisible(request, query);

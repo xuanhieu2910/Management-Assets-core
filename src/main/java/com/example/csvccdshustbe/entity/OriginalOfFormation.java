@@ -33,9 +33,5 @@ public class OriginalOfFormation {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
-    @Column(name = "depth")
-    private Integer depth;
-    @Column(name = "path")
-    private String path;
 
 }
