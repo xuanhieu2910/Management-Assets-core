@@ -27,4 +27,13 @@ public class Constants {
     public static final Integer NOT_IS_PICKED = -1;
     public static final Integer IS_VISIBLE = 1;
     public static final Integer NOT_IS_VISIBLE = -1;
+
+    /*----------------------------------------------------*/
+
+    /**
+     * Constant Units
+     * */
+    public static final Integer UNITS_IS_ACTIVE = 1;
+    public static final Integer UNITES_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
 }

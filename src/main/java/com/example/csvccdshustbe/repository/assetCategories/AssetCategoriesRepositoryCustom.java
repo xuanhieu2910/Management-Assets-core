@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AssetCategoriesRepositoryCustom {
 
@@ -14,4 +15,6 @@ public interface AssetCategoriesRepositoryCustom {
 
     Page<FindAllAssetCategoriesByCodeAndVisibleDto>
     findAllAssetCategoriesByCodeAndVisible(Pageable pageable, FindAllAssetCategoriesRequest request);
+
+    Optional<AssetCategories> findAssetCategoriesVisibleByCodeName(String codeName);
 }

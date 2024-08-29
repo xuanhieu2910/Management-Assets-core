@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +40,15 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         Page<FindAllAssetCategoriesByCodeAndVisibleDto> categories =
                 assetCategoriesRepository.findAllAssetCategoriesByCodeAndVisible(pageable, request);
         return new PageImpl<>(convertToFindAllAssetCategoriesByCodeAndVisible(categories.get().collect(Collectors.toList())), pageable, categories.getTotalElements());
+    }
+
+    @Override
+    public AssetCategories findAssetCategoriesVisibleByCodeName(String codeName) throws Exception {
+        Optional<AssetCategories> categories = assetCategoriesRepository.findAssetCategoriesVisibleByCodeName(codeName);
+        if (!categories.isPresent()) {
+            throw new Exception("Not found asset category by code name!");
+        }
+        return categories.get();
     }
 
     private List<FindAllAssetCategoriesResponse> convertToFindAllAssetCategoriesByCodeAndVisible

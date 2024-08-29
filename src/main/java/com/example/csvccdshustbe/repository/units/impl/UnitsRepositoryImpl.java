@@ -39,4 +39,34 @@ public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
         }
         return units;
     }
+
+    @Override
+    public List<Units> findAllUnitsByCodeAssetCategoryAndStatus(String codeAssetCategory, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select units.id_unit, units.name, units.time_created, " +
+                "       units.time_modified, units.id_asset_category, " +
+                "       units.status " +
+                "from units units " +
+                "    inner join asset_categories assetCategory on units.id_asset_category = assetCategory.id_asset_category " +
+                "where assetCategory.code_name = :codeName " +
+                "and units.status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeName", codeAssetCategory);
+        query.setParameter("status", status);
+        List<Object[]> result = query.getResultList();
+        List<Units> units = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Units unit = new Units();
+                unit.setIdUnit(ValueUtil.getIntegerByObject(obj[0]));
+                unit.setName(ValueUtil.getStringByObject(obj[1]));
+                unit.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
+                unit.setTimeModified(ValueUtil.getStringByObject(obj[3]));
+                unit.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[4]));
+                unit.setStatus(ValueUtil.getIntegerByObject(obj[5]));
+                units.add(unit);
+            }
+        }
+        return units;
+    }
 }

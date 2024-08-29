@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryCustom {
 
@@ -42,7 +43,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("isPicked", Constants.IS_PICKED);
         query.setParameter("isVisible", Constants.IS_VISIBLE);
-        List<Object[]> result = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
         List<AssetCategories> assetCategories = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
             for (Object[] obj: result){
@@ -128,6 +129,45 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
             }
         }
         return new PageImpl<>(dtos, pageable, countFindAllAssetCategoriesByCodeAndVisible(request));
+    }
+
+    @Override
+    public Optional<AssetCategories> findAssetCategoriesVisibleByCodeName(String codeName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select assetCategory.id_asset_category, assetCategory.name, " +
+                "       assetCategory.short_name, assetCategory.code_name, " +
+                "       assetCategory.description, assetCategory.parent, " +
+                "       assetCategory.sort_order, assetCategory.asset_count, " +
+                "       assetCategory.visible, assetCategory.time_created, " +
+                "       assetCategory.time_modified, assetCategory.path_image, " +
+                "       assetCategory.is_pick " +
+                "from asset_categories assetCategory " +
+                "where assetCategory.code_name = :codeName " +
+                "and assetCategory.visible = :visible ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeName", codeName);
+        query.setParameter("visible", Constants.IS_VISIBLE);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for(Object[] obj: result){
+                AssetCategories categories = new AssetCategories();
+                categories.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[0]));
+                categories.setName(ValueUtil.getStringByObject(obj[1]));
+                categories.setShortName(ValueUtil.getStringByObject(obj[2]));
+                categories.setCodeName(ValueUtil.getStringByObject(obj[3]));
+                categories.setDescription(ValueUtil.getStringByObject(obj[4]));
+                categories.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                categories.setSortOrder(ValueUtil.getStringByObject(obj[6]));
+                categories.setAssetCount(ValueUtil.getIntegerByObject(obj[7]));
+                categories.setVisible(ValueUtil.getIntegerByObject(obj[8]));
+                categories.setTimeCreated(ValueUtil.getStringByObject(obj[9]));
+                categories.setTimeModified(ValueUtil.getStringByObject(obj[10]));
+                categories.setPathImage(ValueUtil.getStringByObject(obj[11]));
+                categories.setIsPick(ValueUtil.getIntegerByObject(obj[12]));
+                return Optional.of(categories);
+            }
+        }
+        return Optional.empty();
     }
 
     private void setParameterFindAllAssetCategoriesByCodeAndVisible(FindAllAssetCategoriesRequest request, Query query) {
