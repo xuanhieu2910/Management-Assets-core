@@ -36,4 +36,11 @@ public class Constants {
     public static final Integer UNITS_IS_ACTIVE = 1;
     public static final Integer UNITES_UN_ACTIVE = -1;
     /*----------------------------------------------------*/
+
+
+
+    /**
+     * Constant Projects
+     * */
+    public static final Integer PROJECTS_IS_VISIBLE = 1;
 }

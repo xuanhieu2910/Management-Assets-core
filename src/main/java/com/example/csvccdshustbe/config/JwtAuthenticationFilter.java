@@ -66,13 +66,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt = jwtTokenUtil.getJwtFromCookies(request);
         final String authHeader = request.getHeader(HEADER_STRING);
 
-        if ((jwt == null && (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX))) || request.getRequestURI().contains("/api/v1/user/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         // If the JWT is not in the cookies but in the "Authorization" header
         if (jwt == null && authHeader.startsWith(TOKEN_PREFIX)) {
             jwt = authHeader.replace(TOKEN_PREFIX, "");
+        }
+        if ((jwt == null || (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX))) || request.getRequestURI().contains("/api/v1/user/auth")) {
+            filterChain.doFilter(request, response);
+            return;
         }
         final String userName = jwtTokenUtil.getUserNameFromToken(jwt);
         if (StringUtils.isNotEmpty(userName)
