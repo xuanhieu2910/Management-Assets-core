@@ -1,6 +1,8 @@
 package com.example.csvccdshustbe.service.assetCategories;
 
 import com.example.csvccdshustbe.entity.AssetCategories;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
@@ -16,4 +18,5 @@ public interface AssetCategoriesService {
 
     AssetCategories findAssetCategoriesVisibleByCodeName(String codeName) throws Exception;
 
+    void createAssetCategory(CreateAssetCategoryRequest request) throws ValidateFiledException;
 }

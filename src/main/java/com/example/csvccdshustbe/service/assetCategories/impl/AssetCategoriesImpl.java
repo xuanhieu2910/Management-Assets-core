@@ -2,12 +2,15 @@ package com.example.csvccdshustbe.service.assetCategories.impl;
 
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepository;
+import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.utility.PageUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -49,6 +52,18 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             throw new Exception("Not found asset category by code name!");
         }
         return categories.get();
+    }
+
+    @Override
+    public void createAssetCategory(CreateAssetCategoryRequest request) throws ValidateFiledException {
+        validateCreateAssetCategory(request);
+    }
+
+    private void validateCreateAssetCategory(CreateAssetCategoryRequest request) throws ValidateFiledException {
+        if (StringUtils.isBlank(request.getName())){
+            throw new ValidateFiledException("Validate data request!");
+        }
+
     }
 
     private List<FindAllAssetCategoriesResponse> convertToFindAllAssetCategoriesByCodeAndVisible
