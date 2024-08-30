@@ -100,4 +100,13 @@ public class Constants {
      * */
     public static final Integer DEPARTMENT_ACTIVE_STATUS = 1;
     /*----------------------------------------------------*/
+    /**
+     * Constant Asset Category
+     * */
+    public static final Integer ASSET_CATEGORY_INIT_ASSET_COUNT = 0;
+    public static final Integer ASSET_CATEGORY_IS_VISIBLE = 1;
+    public static final Integer ASSET_CATEGORY_UN_VISIBLE = -1;
+    public static final Integer ASSET_CATEGORY_IS_PICK = 1;
+    public static final Integer ASSET_CATEGORY_UN_PICK = -1;
+    /*----------------------------------------------------*/
 }

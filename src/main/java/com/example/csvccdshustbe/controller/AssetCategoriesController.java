@@ -4,6 +4,7 @@ package com.example.csvccdshustbe.controller;
 import com.azure.core.annotation.Post;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
@@ -17,10 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
 
 @Tag(name = "Asset Categories Controller", description = "The Asset Categories APIs. Contains operations like find all, find details, edit, delete etc.")
@@ -58,14 +56,16 @@ public class AssetCategoriesController {
         }
     }
 
-//    @PostMapping("/create")
-//    public ResponseEntity<?> createAssetCategories(){
-//        try {
-//
-//        } catch (ValidateFiledException e){
-//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
-//        } catch (Exception e){
-//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
-//        }
-//    }
+    @PostMapping("/create")
+    public ResponseEntity<?> createAssetCategories(@RequestBody CreateAssetCategoryRequest request){
+        try {
+            assetCategoriesService.createAssetCategory(request);
+            return ApiResponseDto.createdWithMessage("Create asset category success!", HttpStatus.OK);
+        } catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 }

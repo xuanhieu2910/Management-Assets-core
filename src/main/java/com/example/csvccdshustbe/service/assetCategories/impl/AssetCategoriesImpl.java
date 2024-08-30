@@ -9,17 +9,18 @@ import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesR
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,13 +58,42 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     @Override
     public void createAssetCategory(CreateAssetCategoryRequest request) throws ValidateFiledException {
         validateCreateAssetCategory(request);
+        assetCategoriesRepository.save(createAssetCategoryRequest(request));
+    }
+
+    private AssetCategories createAssetCategoryRequest(CreateAssetCategoryRequest request) {
+        AssetCategories categories = new AssetCategories();
+        categories.setName(request.getName());
+        categories.setShortName(request.getShortName());
+        categories.setDescription(request.getDescription());
+        categories.setParent(request.getParentId());
+        categories.setVisible(request.getVisible());
+        categories.setPathImage(request.getPathImage());
+        categories.setIsPick(request.getIsPick());
+        categories.setAssetCount(Constants.ASSET_CATEGORY_INIT_ASSET_COUNT);
+        categories.setSortOrder(null);
+        String timeCurrent = String.valueOf(new Date().getTime());
+        categories.setTimeCreated(timeCurrent);
+        categories.setTimeModified(timeCurrent);
+        return categories;
     }
 
     private void validateCreateAssetCategory(CreateAssetCategoryRequest request) throws ValidateFiledException {
         if (StringUtils.isBlank(request.getName())){
             throw new ValidateFiledException("Validate data request!");
         }
-
+        if (Objects.nonNull(request.getParentId())){
+            Optional<AssetCategories> categories = assetCategoriesRepository.findAssetCategoryParentByParentId(request.getParentId());
+            if (!categories.isPresent()) {
+                throw new NotFoundException("Don't exits asset category by id " + request.getParentId());
+            }
+            if (assetCategoriesRepository.checkAssetCategoriesByParentIdAndName(request.getParentId(), request.getName())){
+                throw new ValidateFiledException("Exits name asset category in list categories, please use another name!");
+            }
+        }
+        if (StringUtils.isNotBlank(request.getShortName())){
+            ValueUtil.validateNumberOrCharacter(request.getShortName());
+        }
     }
 
     private List<FindAllAssetCategoriesResponse> convertToFindAllAssetCategoriesByCodeAndVisible
