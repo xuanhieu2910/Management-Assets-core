@@ -8,6 +8,8 @@ import com.example.csvccdshustbe.request.department.FindAllDepartmentSRequest;
 import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentResponse;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentSResponse;
+import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
+import com.example.csvccdshustbe.response.department.FindAllDepartmentVisibleResponse;
 import org.springframework.data.domain.Page;
 
 public interface DepartmentService {
@@ -20,4 +22,5 @@ public interface DepartmentService {
     void updateDepartment(UpdateDepartmentRequest request) throws ValidateFiledException;
 
     void deleteDepartmentByIdDepartment(Integer idDepartment);
+    Page<FindAllDepartmentVisibleResponse> findAllDepartmentVisibleByCodeAndVisible(FindAllDepartmentVisibleRequest request);
 }

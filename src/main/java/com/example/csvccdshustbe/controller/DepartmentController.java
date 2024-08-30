@@ -8,6 +8,8 @@ import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentSRequest;
 import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentResponse;
+import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
+import com.example.csvccdshustbe.response.department.FindAllDepartmentVisibleResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.google.protobuf.Api;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,9 +39,9 @@ public class DepartmentController {
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
-    }) FindAllDepartmentRequest findAllDepartmentRequest){
+    }) FindAllDepartmentVisibleRequest findAllDepartmentRequest){
         try {
-            Page<FindAllDepartmentResponse> responses = departmentService.findAllDepartmentByCodeAndVisible(findAllDepartmentRequest);
+            Page<FindAllDepartmentVisibleResponse> responses = departmentService.findAllDepartmentVisibleByCodeAndVisible(findAllDepartmentRequest);
             return ApiResponseDto.createdWithState(responses, "Find all asset categories by code success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);

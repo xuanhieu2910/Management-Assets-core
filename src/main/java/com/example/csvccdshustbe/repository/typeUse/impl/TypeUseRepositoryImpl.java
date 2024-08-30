@@ -19,11 +19,13 @@ public class TypeUseRepositoryImpl implements TypeUseRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public List<TypeUse> findAllTypeUse(){
+    public List<TypeUse> findAllTypeUseResponseByStatus(Integer status){
         StringBuilder sb = new StringBuilder();
         sb.append(" Select type_use.id_type_use, type_use.name, type_use.status, " +
-                "type_use.time_created, type_use.time_modified from type_use");
+                "type_use.time_created, type_use.time_modified from type_use " +
+                "where 1=1 and type_use.status = :status ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", status);
         List<Object[]> result = query.getResultList();
         List<TypeUse> typeUses=new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {

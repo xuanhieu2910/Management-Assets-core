@@ -2,7 +2,6 @@ package com.example.csvccdshustbe.controller;
 
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import io.swagger.v3.oas.annotations.tags.Tag;

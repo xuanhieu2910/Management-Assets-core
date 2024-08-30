@@ -15,14 +15,16 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
     @PersistenceContext
     EntityManager entityManager;
     @Override
-    public List<DocumentAttack>findAllDocumentAttack(){
+    public List<DocumentAttack>findAllDocumentAttackResponseByStatus(Integer status){
         StringBuilder sb = new StringBuilder();
         sb.append("select document_attack.id_document_attack, " +
                 "document_attack.name, document_attack.code, document_attack.id_department," +
                 " document_attack.date_determination_document, document_attack.status," +
                 " document_attack.time_created, document_attack.time_modified " +
-                "from document_attack ");
+                "from document_attack " +
+                "where 1=1 and document_attack.status = :status ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", status);
         List<Object[]> result = query.getResultList();
         List<DocumentAttack> documentAttacks = new ArrayList<>();
         if(!CollectionUtils.isEmpty(result)) {

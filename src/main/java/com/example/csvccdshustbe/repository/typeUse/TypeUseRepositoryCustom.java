@@ -5,5 +5,5 @@ import com.example.csvccdshustbe.entity.TypeUse;
 import java.util.List;
 
 public interface TypeUseRepositoryCustom {
-    List<TypeUse> findAllTypeUse();
+    List<TypeUse> findAllTypeUseResponseByStatus(Integer status);
 }

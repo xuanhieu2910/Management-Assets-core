@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.service.typeUse.TypeUseService;
+import com.example.csvccdshustbe.utility.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,11 @@ public class TypeUseController {
     @Autowired
     TypeUseService typeUseService;
     @GetMapping("/find-all")
-    public ResponseEntity<?> findAll(){
+    public ResponseEntity<?> findAllypeUseByStatus(){
         try {
-            return ApiResponseDto.createdWithState(typeUseService.findAllTypeUse(), "Find all Type Use success!", HttpStatus.OK);
+            return ApiResponseDto.createdWithState(
+                    typeUseService.findAllTypeUseResponseByStatus(Constants.TYPE_USE_ACTIVE_STATUS),
+                    "Find all Type Use success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }

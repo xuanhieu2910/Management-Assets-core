@@ -5,9 +5,11 @@ import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.department.DepartmentRepository;
+import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
 import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
 
+import com.example.csvccdshustbe.response.department.FindAllDepartmentVisibleResponse;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentSRequest;
 import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentResponse;
@@ -39,12 +41,12 @@ public class DepartmentServiceImpl implements DepartmentService {
     DepartmentRepository departmentRepository;
 
     @Override
-    public Page<FindAllDepartmentResponse> findAllDepartmentByCodeAndVisible(
-            FindAllDepartmentRequest request) {
+    public Page<FindAllDepartmentVisibleResponse> findAllDepartmentVisibleByCodeAndVisible(
+            FindAllDepartmentVisibleRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllDepartmentByCodeAndVisibleDto> department =
                 departmentRepository.findAllDepartmentByCodeAndVisible(pageable, request);
-        return new PageImpl<>(convertToFindAllDepartmentByCodeAndVisible(department.get().collect(Collectors.toList())),
+        return new PageImpl<>(convertToFindAllDepartmentVisibleByCodeAndVisible(department.get().collect(Collectors.toList())),
                 pageable, department.getTotalElements());
     }
 
@@ -201,11 +203,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
 
-    private List<FindAllDepartmentResponse>convertToFindAllDepartmentByCodeAndVisible
+    private List<FindAllDepartmentVisibleResponse>convertToFindAllDepartmentVisibleByCodeAndVisible
             (List<FindAllDepartmentByCodeAndVisibleDto> collect){
-        List<FindAllDepartmentResponse> responses = new ArrayList<>();
+        List<FindAllDepartmentVisibleResponse> responses = new ArrayList<>();
         for (FindAllDepartmentByCodeAndVisibleDto department : collect){
-            FindAllDepartmentResponse response= new FindAllDepartmentResponse();
+            FindAllDepartmentVisibleResponse response= new FindAllDepartmentVisibleResponse();
             response.setIdDepartment(department.getIdDepartment());
             response.setName(department.getName());
             response.setCode(department.getCode());

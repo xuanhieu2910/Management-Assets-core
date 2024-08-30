@@ -16,13 +16,15 @@ public class LevelTypeAssetRepositoryImpl implements LevelTypeAssetRepositoryCus
     EntityManager entityManager;
 
     @Override
-    public List<LevelTypeAsset> findAllLevelTypeAsset(){
+    public List<LevelTypeAsset> findAllLevelTypeAssetByStatus(Integer status){
         StringBuilder sb = new StringBuilder();
         sb.append("select level_type_asset.id_level_type_asset,level_type_asset.name, " +
                 "level_type_asset.level, level_type_asset.description," +
                 "level_type_asset.status, level_type_asset.time_created, level_type_asset.time_modified " +
-                "from level_type_asset");
+                "from level_type_asset " +
+                "where 1=1 and level_type_asset.status = :status ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", status);
         List<Object[]> result = query.getResultList();
         List<LevelTypeAsset>levelTypeAssets= new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
