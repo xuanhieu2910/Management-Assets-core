@@ -16,7 +16,14 @@ public class ValueUtil {
 
     public final static String MESSAGE_STRONG_PASSWORD = "Must be 8 characters long and combination of uppercase letters, lowercase letters, numbers, special characters.";
     public final static String PATTERN_STRONG_PASSWORD = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*()]).{8,}$";
+    public final static String PATTERN_NUMBER_CHARACTER = "[^a-zA-Z0-9]";
 
+
+    public static void validateNumberOrCharacter(String input) throws ValidateFiledException {
+        if (!input.matches(PATTERN_NUMBER_CHARACTER)){
+            throw new ValidateFiledException("Validate number or character!");
+        }
+    }
     private ValueUtil() {
         throw new IllegalStateException("Utility class");
     }

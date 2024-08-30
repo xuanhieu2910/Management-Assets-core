@@ -2,6 +2,8 @@ package com.example.csvccdshustbe.controller;
 
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.request.countryProducer.CreateCountryProducerRequest;
 import com.example.csvccdshustbe.service.countryProducer.CountryProducerService;
 import com.example.csvccdshustbe.utility.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,12 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Contry producer Controller", description = "The Units APIs. Contains operations like find all, find details, edit, delete etc.")
+@Tag(name = "Country producer Controller", description = "The Units APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/country-producer")
 @PreAuthorize("hasAnyRole('USER','ADMIN')")
@@ -33,8 +32,15 @@ public class CountryProducerController {
     }
 
 
-//    @PostMapping("/create")
-//    public ResponseEntity<?> createCountryProducer(){
-//
-//    }
+    @PostMapping("/create")
+    public ResponseEntity<?> createCountryProducer(@RequestBody CreateCountryProducerRequest request){
+        try {
+            countryProducerService.createCountryProducer(request);
+            return ApiResponseDto.createdWithMessage("Create country producer success!", HttpStatus.OK);
+        }catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

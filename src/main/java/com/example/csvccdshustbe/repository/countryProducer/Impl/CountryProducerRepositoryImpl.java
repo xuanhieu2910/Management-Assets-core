@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CountryProducerRepositoryImpl implements CountryProducerRepositoryCustom {
     @PersistenceContext
@@ -38,5 +39,32 @@ public class CountryProducerRepositoryImpl implements CountryProducerRepositoryC
             }
         }
         return countryProducers;
+    }
+
+    @Override
+    public Optional<CountryProducer> findCountryProducerByNameAndStatus(String name, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select countryProducer.id_country_producer, " +
+                "       countryProducer.name, countryProducer.status, " +
+                "       countryProducer.time_created, countryProducer.time_modified " +
+                "from country_producer countryProducer " +
+                "where countryProducer.status = :status " +
+                "and countryProducer.name = :name ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", status);
+        query.setParameter("name", name);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj: result){
+                CountryProducer countryProducer = new CountryProducer();
+                countryProducer.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[0]));
+                countryProducer.setName(ValueUtil.getStringByObject(obj[1]));
+                countryProducer.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                countryProducer.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                countryProducer.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                return Optional.of(countryProducer);
+            }
+        }
+        return Optional.empty();
     }
 }
