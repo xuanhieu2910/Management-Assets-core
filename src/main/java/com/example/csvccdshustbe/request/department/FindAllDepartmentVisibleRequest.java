@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class FindAllDepartmentVisibleRequest extends RequestPageBase {
-    private String name;
+
 }

@@ -5,18 +5,14 @@ import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.department.DepartmentRepository;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
 import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
-
-import com.example.csvccdshustbe.response.department.FindAllDepartmentVisibleResponse;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentSRequest;
+import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
 import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
-import com.example.csvccdshustbe.response.department.FindAllDepartmentResponse;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentSResponse;
+import com.example.csvccdshustbe.response.department.FindAllDepartmentVisibleResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.utility.DateUtil;
-import com.example.csvccdshustbe.utility.FileUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.ObjectUtils;
@@ -51,7 +47,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Page<FindAllDepartmentSResponse> findAllDepartment(FindAllDepartmentSRequest request) {
+    public Page<FindAllDepartmentSResponse> findAllDepartment(FindAllDepartmentRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllDepartmentSDto> dtos = departmentRepository.findAllDepartment(pageable, request);
         return new PageImpl<>(convertToFindAllDepartment(dtos.stream().collect(Collectors.toList())),

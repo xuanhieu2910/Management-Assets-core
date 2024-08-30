@@ -5,7 +5,6 @@ import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequ
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentSRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,9 +13,8 @@ import java.util.Optional;
 public interface DepartmentRepositoryCustom {
     Page<FindAllDepartmentByCodeAndVisibleDto>
     findAllDepartmentByCodeAndVisible(Pageable pageable, FindAllDepartmentVisibleRequest request);
-    findAllDepartmentByCodeAndVisible(Pageable pageable, FindAllDepartmentRequest request);
 
-    Page<FindAllDepartmentSDto> findAllDepartment(Pageable pageable, FindAllDepartmentSRequest request);
+    Page<FindAllDepartmentSDto> findAllDepartment(Pageable pageable, FindAllDepartmentRequest request);
 
     Optional<Department> findDepartmentByName(String name);
 

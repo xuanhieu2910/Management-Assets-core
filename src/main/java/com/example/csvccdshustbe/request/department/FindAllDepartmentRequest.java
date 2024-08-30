@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllDepartmentSRequest extends RequestPageBase {
+public class FindAllDepartmentRequest extends RequestPageBase {
 
     private Integer status;
     private String code;

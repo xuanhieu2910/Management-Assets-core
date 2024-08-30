@@ -5,13 +5,10 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentSRequest;
-import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
-import com.example.csvccdshustbe.response.department.FindAllDepartmentResponse;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
+import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentVisibleResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
-import com.google.protobuf.Api;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
@@ -56,7 +53,7 @@ public class DepartmentController {
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
-    }) FindAllDepartmentSRequest request){
+    }) FindAllDepartmentRequest request){
         try {
             return ApiResponseDto.createdWithState(departmentService.findAllDepartment(request),
                     "Find all department success!", HttpStatus.OK);
