@@ -6,5 +6,5 @@ import com.example.csvccdshustbe.entity.CountryProducer;
 import java.util.List;
 
 public interface CountryProducerRepositoryCustom {
-    List<CountryProducer> findAllCountryProducer();
+    List<CountryProducer> findAllCountryProducerByStatus(Integer status);
 }

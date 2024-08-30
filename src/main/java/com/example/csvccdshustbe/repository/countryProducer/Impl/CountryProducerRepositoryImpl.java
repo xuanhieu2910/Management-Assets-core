@@ -15,13 +15,15 @@ public class CountryProducerRepositoryImpl implements CountryProducerRepositoryC
     @PersistenceContext
     EntityManager entityManager;
     @Override
-    public List<CountryProducer>findAllCountryProducer(){
+    public List<CountryProducer>findAllCountryProducerByStatus(Integer status){
         StringBuilder sb = new StringBuilder();
         sb.append("select country_producer.id_country_producer, " +
-                "country_producer.name, country_producer.status, " +
-                " country_producer.time_created, country_producer.time_modified " +
-                "from country_producer ");
+                "       country_producer.name, country_producer.status, " +
+                "       country_producer.time_created, country_producer.time_modified " +
+                "from country_producer " +
+                "where 1=1 and country_producer.status = :status ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", status);
         List<Object[]> result = query.getResultList();
         List<CountryProducer>countryProducers= new ArrayList<>();
         if(!CollectionUtils.isEmpty(result)) {

@@ -63,4 +63,11 @@ public class Constants {
      * */
     public static final Integer MEDICINE_GROUP_ACTIVE_STATUS = 1;
 
+    /*----------------------------------------------------*/
+
+    /**
+     * Constant Country producer
+     * */
+    public static final Integer COUNTRY_PRODUCER_ACTIVE_STATUS = 1;
+
 }
