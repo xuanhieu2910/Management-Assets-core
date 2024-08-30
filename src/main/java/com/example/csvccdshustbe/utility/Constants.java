@@ -50,4 +50,10 @@ public class Constants {
      * Constant Original Of Formation
      * */
     public static final Integer ORIGINAL_OF_FORMATION_VISIBLE = 1;
+
+    /**
+     * Constant Medicine Type
+     * */
+    public static final Integer MEDICINE_TYPE_IS_VISIBLE = 1;
+
 }

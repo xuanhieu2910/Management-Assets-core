@@ -65,12 +65,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void handleOAuthFilter(HttpServletRequest request,HttpServletResponse response,FilterChain filterChain) throws ServletException, IOException {
         String jwt = jwtTokenUtil.getJwtFromCookies(request);
         final String authHeader = request.getHeader(HEADER_STRING);
-        if (jwt == null && authHeader.startsWith(TOKEN_PREFIX)) {
-            jwt = authHeader.replace(TOKEN_PREFIX, "");
-        }
-        if ((jwt == null || (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX))) || request.getRequestURI().contains("/api/v1/user/auth")) {
+        if ((jwt == null && (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX))) || request.getRequestURI().contains("/api/v1/user/auth")) {
             filterChain.doFilter(request, response);
             return;
+        }
+        if (jwt == null && authHeader.startsWith(TOKEN_PREFIX)) {
+            jwt = authHeader.replace(TOKEN_PREFIX, "");
         }
         final String userName = jwtTokenUtil.getUserNameFromToken(jwt);
         if (StringUtils.isNotEmpty(userName)
