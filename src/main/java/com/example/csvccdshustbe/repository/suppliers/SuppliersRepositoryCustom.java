@@ -5,5 +5,5 @@ import com.example.csvccdshustbe.entity.Suppliers;
 import java.util.List;
 
 public interface SuppliersRepositoryCustom {
-    List<Suppliers> findAllSuppliers();
+    List<Suppliers> findAllSuppliersByStatus(Integer status);
 }

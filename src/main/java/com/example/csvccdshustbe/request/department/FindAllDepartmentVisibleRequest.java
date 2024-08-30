@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllDepartmentRequest extends RequestPageBase {
-    private String Name;
+public class FindAllDepartmentVisibleRequest extends RequestPageBase {
+    private String name;
 }

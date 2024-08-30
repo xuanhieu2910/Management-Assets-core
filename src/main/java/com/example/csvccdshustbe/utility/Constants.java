@@ -70,4 +70,27 @@ public class Constants {
      * */
     public static final Integer COUNTRY_PRODUCER_ACTIVE_STATUS = 1;
 
+
+    /*----------------------------------------------------*/
+
+    /**
+     * Constant Type User
+     * */
+    public static final Integer TYPE_USE_ACTIVE_STATUS = 1;
+    /*----------------------------------------------------*/
+
+    /**
+     * Constant Suppliers User
+     * */
+    public static final Integer SUPPLIERS_ACTIVE_STATUS = 1;
+    /*----------------------------------------------------*/
+    /**
+     * Constant Level Type Asset User
+     * */
+    public static final Integer LEVEL_TYPE_ASSET_ACTIVE_STATUS = 1;
+    /*----------------------------------------------------*/
+    /**
+     * Constant Level Type Asset User
+     * */
+    public static final Integer DOCUMENT_ATTACK_ACTIVE_STATUS = 1;
 }

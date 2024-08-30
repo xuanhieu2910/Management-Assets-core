@@ -15,13 +15,15 @@ public class SuppliersRepositoryImpl implements SuppliersRepositoryCustom {
     @PersistenceContext
     EntityManager entityManager;
     @Override
-    public List<Suppliers> findAllSuppliers(){
+    public List<Suppliers> findAllSuppliersByStatus(Integer status){
         StringBuilder sb = new StringBuilder();
         sb.append("select suppliers.id_supplier, suppliers.name, suppliers.phone_number, " +
                 "suppliers.email, suppliers.fax, suppliers.address, suppliers.url, " +
                 "suppliers.notes, suppliers.status, suppliers.time_created, suppliers.time_modified " +
-                "from suppliers");
+                "from suppliers  " +
+                "where 1=1 and suppliers.status = :status ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", status);
         List<Object[]> result = query.getResultList();
         List<Suppliers>suppliers=new ArrayList<>();
         if(!CollectionUtils.isEmpty(result)){

@@ -2,7 +2,7 @@ package com.example.csvccdshustbe.repository.department.impl;
 
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.repository.department.DepartmentRepositoryCustom;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
+import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -22,9 +22,9 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
     EntityManager entityManager;
     @Override
     public Page<FindAllDepartmentByCodeAndVisibleDto>
-    findAllDepartmentByCodeAndVisible(Pageable pageable, FindAllDepartmentRequest request) {
+    findAllDepartmentByCodeAndVisible(Pageable pageable, FindAllDepartmentVisibleRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append("WITH RECURSIVE cte_asset_categories as ( " +
+        sb.append("WITH RECURSIVE cte_department as ( " +
                 "    select department.id_department,department.name, " +
                 "           department.code, department.short_name, " +
                 "           department.description, department.parent, " +
@@ -42,14 +42,14 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
                 "           cte.depth + 1 as depth, " +
                 "concat_ws('/',cte.path,CAST(department.id_department as NCHAR)) as path " +
                 "from department" +
-                "             INNER JOIN cte_asset_categories cte ON department.parent = cte.id_department " +
+                "             INNER JOIN cte_department cte ON department.parent = cte.id_department " +
                 ") " +
                 "select cte.id_department, cte.name,  " +
                 "       cte.code, cte.short_name, cte.description,  " +
                 "       cte.parent,  " +
                 "        cte.time_created, cte.time_modified,  " +
                 "       cte.depth, cte.status, cte.path  " +
-                "from cte_asset_categories cte  " +
+                "from cte_department cte  " +
                 "where 1 = 1 ");
         setConditionFindAllDepartmentByCodeAndVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -85,14 +85,14 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
 //            query.setParameter("keyword", request.getKeyword());
 //        }
 //    }
-    private void setConditionFindAllDepartmentByCodeAndVisible(FindAllDepartmentRequest request, StringBuilder sb) {
+    private void setConditionFindAllDepartmentByCodeAndVisible(FindAllDepartmentVisibleRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())){
             sb.append(" and (cte.name REGEXP '[' + :keyword + ']') ");
         }
     }
-    private long countFindAllDepartmentByCodeAndVisible(FindAllDepartmentRequest request){
+    private long countFindAllDepartmentByCodeAndVisible(FindAllDepartmentVisibleRequest request){
         StringBuilder sb = new StringBuilder();
-        sb.append("WITH RECURSIVE cte_asset_categories as ( " +
+        sb.append("WITH RECURSIVE cte_department as ( " +
                 "                 select department.id_department,department.name, " +
                 "                        department.code, department.short_name, " +
                 "                        department.description, department.parent, " +
@@ -111,10 +111,10 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
                 "                           cte.depth + 1 as depth, " +
                 "                          concat_ws('/',cte.path,CAST(department.id_department as NCHAR)) as path " +
                 "                   from department " +
-                "                            INNER JOIN cte_asset_categories cte ON department.parent = cte.id_department " +
+                "                            INNER JOIN cte_department cte ON department.parent = cte.id_department " +
                 "                   ) " +
                 "                select count(cte.id_department) count " +
-                "                from cte_asset_categories cte " +
+                "                from cte_department cte " +
                 "                where 1 = 1");
         setConditionFindAllDepartmentByCodeAndVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());

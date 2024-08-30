@@ -2,10 +2,8 @@ package com.example.csvccdshustbe.controller;
 
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
-import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
-import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
-import com.example.csvccdshustbe.response.department.FindAllDepartmentResponse;
+import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
+import com.example.csvccdshustbe.response.department.FindAllDepartmentVisibleResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -31,14 +29,14 @@ public class DepartmentController {
     @Autowired
     DepartmentService departmentService;
 
-    @GetMapping("/find-all")
+    @GetMapping("/find-all-visible")
     public ResponseEntity<?> findAllDepartmentIsVisibleByCodeAndVisible(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
-    }) FindAllDepartmentRequest findAllDepartmentRequest){
+    }) FindAllDepartmentVisibleRequest findAllDepartmentRequest){
         try {
-            Page<FindAllDepartmentResponse> responses = departmentService.findAllDepartmentByCodeAndVisible(findAllDepartmentRequest);
+            Page<FindAllDepartmentVisibleResponse> responses = departmentService.findAllDepartmentVisibleByCodeAndVisible(findAllDepartmentRequest);
             return ApiResponseDto.createdWithState(responses, "Find all asset categories by code success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
