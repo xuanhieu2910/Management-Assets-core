@@ -1,4 +1,4 @@
-package com.example.csvccdshustbe.repository.medicine;
+package com.example.csvccdshustbe.repository.medicineType;
 
 import com.example.csvccdshustbe.dto.medicine.FindAllMedicineTypeDto;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;

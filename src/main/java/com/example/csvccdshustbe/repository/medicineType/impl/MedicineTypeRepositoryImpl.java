@@ -1,7 +1,7 @@
-package com.example.csvccdshustbe.repository.medicine.impl;
+package com.example.csvccdshustbe.repository.medicineType.impl;
 
 import com.example.csvccdshustbe.dto.medicine.FindAllMedicineTypeDto;
-import com.example.csvccdshustbe.repository.medicine.MedicineTypeRepositoryCustom;
+import com.example.csvccdshustbe.repository.medicineType.MedicineTypeRepositoryCustom;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;

@@ -1,7 +1,7 @@
 package com.example.csvccdshustbe.service.medicineType.impl;
 
 import com.example.csvccdshustbe.dto.medicine.FindAllMedicineTypeDto;
-import com.example.csvccdshustbe.repository.medicine.MedicineTypeRepository;
+import com.example.csvccdshustbe.repository.medicineType.MedicineTypeRepository;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
 import com.example.csvccdshustbe.response.medicineType.FindAllMedicineTypeResponse;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;

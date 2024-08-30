@@ -1,4 +1,4 @@
-package com.example.csvccdshustbe.repository.medicine;
+package com.example.csvccdshustbe.repository.medicineType;
 
 import com.example.csvccdshustbe.entity.MedicineType;
 import org.springframework.data.jpa.repository.JpaRepository;

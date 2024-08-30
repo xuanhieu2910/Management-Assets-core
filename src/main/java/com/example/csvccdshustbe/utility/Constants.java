@@ -56,4 +56,11 @@ public class Constants {
      * */
     public static final Integer MEDICINE_TYPE_IS_VISIBLE = 1;
 
+    /*----------------------------------------------------*/
+
+    /**
+     * Constant Medicine Group
+     * */
+    public static final Integer MEDICINE_GROUP_ACTIVE_STATUS = 1;
+
 }

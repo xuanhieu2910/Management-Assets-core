@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface MedicineGroupService {
 
-    List<FindAllMedicineGroupResponse> findAllMedicineGroupVisible();
+    List<FindAllMedicineGroupResponse> findAllMedicineGroupByStatus(Integer status);
 }
