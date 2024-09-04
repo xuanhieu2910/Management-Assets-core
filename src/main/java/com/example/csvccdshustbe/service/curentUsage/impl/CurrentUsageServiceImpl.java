@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.repository.currentUsage.CurrentUsageRepository;
 import com.example.csvccdshustbe.request.currentUsage.CreateCurrentUsageRequest;
 import com.example.csvccdshustbe.request.currentUsage.UpdateCurrentUsageRequest;
 import com.example.csvccdshustbe.service.curentUsage.CurrentUsageService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,7 @@ public class CurrentUsageServiceImpl implements CurrentUsageService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-//        ValueUtil.validateNumberOrCharacter(request.getName());
+        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<CurrentUsage> currentUsage = currentUsageRepository.findCurrentUsageByName(request.getName());
         if (currentUsage.isPresent()){
             throw new ValidateFiledException("Exits Current Usage by name!");
@@ -86,18 +87,18 @@ public class CurrentUsageServiceImpl implements CurrentUsageService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-//        if (!currentUsageOptional.get().getName().equals(request.getName()) ||
-//                !currentUsageOptional.get().getCode().equals(request.getCode())) {
-//
-//            if (StringUtils.isNotBlank(request.getName())){
-//                ValueUtil.validateNumberOrCharacter(request.getName());
-//            }
-//
-//            if (StringUtils.isNotBlank(request.getCode())){
-//                ValueUtil.validateNumberOrCharacter(request.getCode());
-//            }
-//
-//        }
+        if (!currentUsageOptional.get().getName().equals(request.getName()) ||
+                !currentUsageOptional.get().getCode().equals(request.getCode())) {
+
+            if (StringUtils.isNotBlank(request.getName())){
+                ValueUtil.validateNumberOrCharacter(request.getName());
+            }
+
+            if (StringUtils.isNotBlank(request.getCode())){
+                ValueUtil.validateNumberOrCharacter(request.getCode());
+            }
+
+        }
 
         return currentUsageOptional.get();
     }

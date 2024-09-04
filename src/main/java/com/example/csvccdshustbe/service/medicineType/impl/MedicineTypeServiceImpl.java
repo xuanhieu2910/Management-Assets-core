@@ -83,7 +83,7 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-//        ValueUtil.validateNumberOrCharacter(request.getName());
+        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<MedicineType> medicineType = medicineTypeRepository.findMedicineTypeByName(request.getName());
         if (medicineType.isPresent()) {
             throw new ValidateFiledException("Exits medicine type by name medicine type!");
@@ -98,15 +98,15 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
                 throw new ValidateFiledException("Exits medicine type by code name");
             }
         }
-//        if (ObjectUtils.isNotEmpty(request.getParentId())) {
-//            Optional<MedicineType> medicineTypeOptional = medicineTypeRepository.findMedicineTypeByIdParent(request.getParentId());
-//            if (!medicineTypeOptional.isPresent()) {
-//                throw new ValidateFiledException("Don't exits medicine type by id parent!");
-//            }
-//        }
-//        if (StringUtils.isNotBlank(request.getNotes())){
-//            ValueUtil.validateNumberOrCharacter(request.getNotes());
-//        }
+        if (ObjectUtils.isNotEmpty(request.getParentId())) {
+            Optional<MedicineType> medicineTypeOptional = medicineTypeRepository.findMedicineTypeByIdParent(request.getParentId());
+            if (!medicineTypeOptional.isPresent()) {
+                throw new ValidateFiledException("Don't exits medicine type by id parent!");
+            }
+        }
+        if (StringUtils.isNotBlank(request.getNotes())){
+            ValueUtil.validateNumberOrCharacter(request.getNotes());
+        }
     }
 
     private MedicineType contructMedicineType(CreateMedicineTypeRequest request) {
@@ -146,15 +146,15 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
                 !medicineTypeOptional.get().getCode().equals(request.getCode()) ||
                 !medicineTypeOptional.get().getShortName().equals(request.getShortName())) {
 
-//            if (StringUtils.isNotBlank(request.getName())){
-//                ValueUtil.validateNumberOrCharacter(request.getName());
-//            }
-//            if (StringUtils.isNotBlank(request.getCode())){
-//                ValueUtil.validateNumberOrCharacter(request.getCode());
-//            }
-//            if (StringUtils.isNotBlank(request.getShortName())){
-//                ValueUtil.validateNumberOrCharacter(request.getShortName());
-//            }
+            if (StringUtils.isNotBlank(request.getName())){
+                ValueUtil.validateNumberOrCharacter(request.getName());
+            }
+            if (StringUtils.isNotBlank(request.getCode())){
+                ValueUtil.validateNumberOrCharacter(request.getCode());
+            }
+            if (StringUtils.isNotBlank(request.getShortName())){
+                ValueUtil.validateNumberOrCharacter(request.getShortName());
+            }
             if (medicineTypeRepository.checkExitsMedicineTypeByNameOrCodeOrShortName(request.getName(),
                     request.getCode(), request.getShortName())) {
                 throw new ValidateFiledException("Exits medicine type by name or code or short name!");

@@ -9,6 +9,7 @@ import com.example.csvccdshustbe.request.units.UpdateUnitsRequest;
 import com.example.csvccdshustbe.response.units.FindAllUnitsByCodeAssetCategoryResponse;
 import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +79,7 @@ public class UnitsServiceImpl implements UnitsService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-//        ValueUtil.validateNumberOrCharacter(request.getName());
+        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<Units> units = unitsRepository.findUnitByName(request.getName());
         if (units.isPresent()){
             throw new ValidateFiledException("Exits Unit by name of Unit!");
@@ -105,12 +106,12 @@ public class UnitsServiceImpl implements UnitsService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-//        if (!typeUseOptional.get().getName().equals(request.getName())) {
-//
-//            if (StringUtils.isNotBlank(request.getName())){
-//                ValueUtil.validateNumberOrCharacter(request.getName());
-//            }
-//        }
+        if (!unitsOptional.get().getName().equals(request.getName())) {
+
+            if (StringUtils.isNotBlank(request.getName())){
+                ValueUtil.validateNumberOrCharacter(request.getName());
+            }
+        }
         return unitsOptional.get();
     }
     private Units editUnit(Units units, UpdateUnitsRequest request) {
