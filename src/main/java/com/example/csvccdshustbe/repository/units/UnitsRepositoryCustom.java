@@ -1,6 +1,5 @@
 package com.example.csvccdshustbe.repository.units;
 
-import com.example.csvccdshustbe.entity.Suppliers;
 import com.example.csvccdshustbe.entity.Units;
 
 import java.util.List;

@@ -1,16 +1,11 @@
 package com.example.csvccdshustbe.service.medicineGroup.impl;
 
-import com.example.csvccdshustbe.entity.Department;
+
 import com.example.csvccdshustbe.entity.MedicineGroup;
-import com.example.csvccdshustbe.entity.Suppliers;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.medicineGroup.MedicineGroupRepository;
-import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
-import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.request.medicineGroup.CreateMedicineGroupRequest;
 import com.example.csvccdshustbe.request.medicineGroup.UpdateMedicineGroupRequest;
-import com.example.csvccdshustbe.request.suppliers.CreateSuppliersRequest;
-import com.example.csvccdshustbe.request.suppliers.UpdateSuppliersRequest;
 import com.example.csvccdshustbe.response.medicineGroup.FindAllMedicineGroupResponse;
 import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
 import com.example.csvccdshustbe.utility.Constants;
@@ -82,7 +77,7 @@ public class MedicineGroupServiceImpl implements MedicineGroupService {
 //        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<MedicineGroup> medicineGroup = medicineGroupRepository.findMedicineGroupByName(request.getName());
         if (medicineGroup.isPresent()){
-            throw new ValidateFiledException("Exits medicine group by name department!");
+            throw new ValidateFiledException("Exits medicine group by name!");
         }
         if (StringUtils.isNotBlank(request.getShortName())) {
             if (request.getShortName().equals(medicineGroup.get().getShortName())){
@@ -115,7 +110,7 @@ public class MedicineGroupServiceImpl implements MedicineGroupService {
     private MedicineGroup validateDataUpdateMedicineGroup(UpdateMedicineGroupRequest request) throws ValidateFiledException{
         Optional<MedicineGroup> medicineGroupOptional = medicineGroupRepository.findMedicineGroupById(request.getIdMedicineGroup());
         if (!medicineGroupOptional.isPresent()) {
-            throw new NotFoundException("Don't exits department by id!");
+            throw new NotFoundException("Don't exits medicine group by id!");
         }
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");

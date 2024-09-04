@@ -2,7 +2,6 @@ package com.example.csvccdshustbe.service.typeUse;
 
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 
-import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.request.typeUse.CreateTypeUseRequest;
 import com.example.csvccdshustbe.request.typeUse.UpdateTypeUseRequest;
 import com.example.csvccdshustbe.response.typeUse.FindAllTypeUseResponse;

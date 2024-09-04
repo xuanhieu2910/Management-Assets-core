@@ -2,8 +2,6 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
-import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.request.projects.CreateProjectsRequest;
 import com.example.csvccdshustbe.request.projects.FindAllProjectsRequest;
 import com.example.csvccdshustbe.request.projects.UpdateProjectsRequest;

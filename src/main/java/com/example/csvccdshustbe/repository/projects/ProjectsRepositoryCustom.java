@@ -1,7 +1,6 @@
 package com.example.csvccdshustbe.repository.projects;
 
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
-import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Projects;
 import com.example.csvccdshustbe.request.projects.FindAllProjectsRequest;
 import org.springframework.data.domain.Page;

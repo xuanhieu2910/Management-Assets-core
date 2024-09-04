@@ -2,8 +2,6 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
-import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.request.typeUse.CreateTypeUseRequest;
 import com.example.csvccdshustbe.request.typeUse.UpdateTypeUseRequest;
 import com.example.csvccdshustbe.service.typeUse.TypeUseService;
@@ -16,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
 
-@Tag(name = "Documents Attack Controller", description = "The Units APIs. Contains operations like find all, find details, edit, delete etc.")
+@Tag(name = "Documents Attack Controller", description = "The Type Use APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/type-use")
 @PreAuthorize("hasAnyRole('USER','ADMIN')")

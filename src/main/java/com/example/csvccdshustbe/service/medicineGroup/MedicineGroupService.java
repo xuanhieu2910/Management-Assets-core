@@ -3,8 +3,6 @@ package com.example.csvccdshustbe.service.medicineGroup;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.medicineGroup.CreateMedicineGroupRequest;
 import com.example.csvccdshustbe.request.medicineGroup.UpdateMedicineGroupRequest;
-import com.example.csvccdshustbe.request.suppliers.CreateSuppliersRequest;
-import com.example.csvccdshustbe.request.suppliers.UpdateSuppliersRequest;
 import com.example.csvccdshustbe.response.medicineGroup.FindAllMedicineGroupResponse;
 
 import java.util.List;

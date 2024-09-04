@@ -78,7 +78,7 @@ public class SuppliersServiceImpl implements SuppliersService {
 //        ValueUtil.validateNumberOrCharacter(request.getName());
             Optional<Suppliers> suppliers = suppliersRepository.findSuppliersByName(request.getName());
             if (suppliers.isPresent()){
-                throw new ValidateFiledException("Exits type use by name of Type use!");
+                throw new ValidateFiledException("Exits suppliers by name!");
         }
 
     }
@@ -101,7 +101,7 @@ public class SuppliersServiceImpl implements SuppliersService {
     private Suppliers validateDataUpdateSuppliers(UpdateSuppliersRequest request) throws ValidateFiledException{
         Optional<Suppliers> suppliersOptional = suppliersRepository.findSuppliersById(request.getIdSuppliers());
         if (!suppliersOptional.isPresent()) {
-            throw new NotFoundException("Don't exits Type use by id!");
+            throw new NotFoundException("Don't exits suppliers by id!");
         }
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");

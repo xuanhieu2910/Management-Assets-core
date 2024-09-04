@@ -4,8 +4,6 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.suppliers.CreateSuppliersRequest;
 import com.example.csvccdshustbe.request.suppliers.UpdateSuppliersRequest;
-import com.example.csvccdshustbe.request.typeUse.CreateTypeUseRequest;
-import com.example.csvccdshustbe.request.typeUse.UpdateTypeUseRequest;
 import com.example.csvccdshustbe.service.suppliers.SuppliersService;
 import com.example.csvccdshustbe.utility.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
 
-@Tag(name = "Documents Suppliers Controller", description = "The Units APIs. Contains operations like find all, find details, edit, delete etc.")
+@Tag(name = "Documents Suppliers Controller", description = "The Suppliers APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/suppliers")
 @PreAuthorize("hasAnyRole('USER','ADMIN')")

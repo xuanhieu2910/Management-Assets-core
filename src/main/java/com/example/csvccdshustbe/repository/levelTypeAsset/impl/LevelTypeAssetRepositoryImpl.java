@@ -1,7 +1,6 @@
 package com.example.csvccdshustbe.repository.levelTypeAsset.impl;
 
 import com.example.csvccdshustbe.entity.LevelTypeAsset;
-import com.example.csvccdshustbe.entity.Suppliers;
 import com.example.csvccdshustbe.repository.levelTypeAsset.LevelTypeAssetRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;

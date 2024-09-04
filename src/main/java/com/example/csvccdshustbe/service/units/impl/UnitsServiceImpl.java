@@ -1,11 +1,9 @@
 package com.example.csvccdshustbe.service.units.impl;
 
-import com.example.csvccdshustbe.entity.TypeUse;
+
 import com.example.csvccdshustbe.entity.Units;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.units.UnitsRepository;
-import com.example.csvccdshustbe.request.typeUse.CreateTypeUseRequest;
-import com.example.csvccdshustbe.request.typeUse.UpdateTypeUseRequest;
 import com.example.csvccdshustbe.request.units.CreateUnitsRequest;
 import com.example.csvccdshustbe.request.units.UpdateUnitsRequest;
 import com.example.csvccdshustbe.response.units.FindAllUnitsByCodeAssetCategoryResponse;

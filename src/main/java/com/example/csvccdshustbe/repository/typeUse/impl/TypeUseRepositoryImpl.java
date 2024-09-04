@@ -1,7 +1,6 @@
 package com.example.csvccdshustbe.repository.typeUse.impl;
 
 
-import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.TypeUse;
 import com.example.csvccdshustbe.repository.typeUse.TypeUseRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;

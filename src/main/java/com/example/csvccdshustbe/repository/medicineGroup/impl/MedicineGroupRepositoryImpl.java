@@ -1,7 +1,6 @@
 package com.example.csvccdshustbe.repository.medicineGroup.impl;
 
 import com.example.csvccdshustbe.entity.MedicineGroup;
-import com.example.csvccdshustbe.entity.Suppliers;
 import com.example.csvccdshustbe.repository.medicineGroup.MedicineGroupRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;

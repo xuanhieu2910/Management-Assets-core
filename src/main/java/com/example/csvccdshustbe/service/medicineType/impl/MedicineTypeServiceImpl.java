@@ -1,18 +1,13 @@
 package com.example.csvccdshustbe.service.medicineType.impl;
 
 import com.example.csvccdshustbe.dto.medicine.FindAllMedicineTypeDto;
-import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.MedicineType;
-import com.example.csvccdshustbe.entity.Projects;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.medicineType.MedicineTypeRepository;
-import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
-import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
+
 import com.example.csvccdshustbe.request.medicineType.CreateMedicineTypeRequest;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
 import com.example.csvccdshustbe.request.medicineType.UpdateMedicineTypeRequest;
-import com.example.csvccdshustbe.request.projects.CreateProjectsRequest;
-import com.example.csvccdshustbe.request.projects.UpdateProjectsRequest;
 import com.example.csvccdshustbe.response.medicineType.FindAllMedicineTypeResponse;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import com.example.csvccdshustbe.utility.PageUtils;

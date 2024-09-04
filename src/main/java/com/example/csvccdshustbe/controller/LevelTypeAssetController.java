@@ -5,8 +5,6 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.levelTypeAsset.CreateLevelTypeAssetRequest;
 import com.example.csvccdshustbe.request.levelTypeAsset.UpdateLevelTypeAssetRequest;
-import com.example.csvccdshustbe.request.suppliers.CreateSuppliersRequest;
-import com.example.csvccdshustbe.request.suppliers.UpdateSuppliersRequest;
 import com.example.csvccdshustbe.service.levelTypeAsset.LevelTypeAssetService;
 import com.example.csvccdshustbe.utility.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
 
-@Tag(name = "Level type Asset Controller", description = "The Units APIs. Contains operations like find all, find details, edit, delete etc.")
+@Tag(name = "Level type Asset Controller", description = "The Level type asset APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/level-type-asset")
 @PreAuthorize("hasAnyRole('USER','ADMIN')")

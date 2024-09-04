@@ -4,8 +4,6 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.medicineGroup.CreateMedicineGroupRequest;
 import com.example.csvccdshustbe.request.medicineGroup.UpdateMedicineGroupRequest;
-import com.example.csvccdshustbe.request.medicineType.CreateMedicineTypeRequest;
-import com.example.csvccdshustbe.request.medicineType.UpdateMedicineTypeRequest;
 import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
 import com.example.csvccdshustbe.utility.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;

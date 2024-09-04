@@ -1,18 +1,13 @@
 package com.example.csvccdshustbe.service.projects.impl;
 
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
-import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Projects;
-import com.example.csvccdshustbe.entity.Suppliers;
+
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.projects.ProjectsRepository;
-import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
-import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.request.projects.CreateProjectsRequest;
 import com.example.csvccdshustbe.request.projects.FindAllProjectsRequest;
 import com.example.csvccdshustbe.request.projects.UpdateProjectsRequest;
-import com.example.csvccdshustbe.request.suppliers.CreateSuppliersRequest;
-import com.example.csvccdshustbe.request.suppliers.UpdateSuppliersRequest;
 import com.example.csvccdshustbe.response.projects.FindAllProjectsResponse;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -81,7 +76,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     public void deleteProjectByIdProject(Integer idProject) {
         Optional<Projects> projectsOptional = projectsRepository.findProjectById(idProject);
         if (!projectsOptional.isPresent()){
-            throw new NotFoundException("Don't exits Type use by id type use!");
+            throw new NotFoundException("Don't exits Project by id!");
         }
         projectsRepository.delete(projectsOptional.get());
     }

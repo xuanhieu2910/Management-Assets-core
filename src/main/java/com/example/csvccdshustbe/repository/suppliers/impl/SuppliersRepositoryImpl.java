@@ -1,7 +1,7 @@
 package com.example.csvccdshustbe.repository.suppliers.impl;
 
 import com.example.csvccdshustbe.entity.Suppliers;
-import com.example.csvccdshustbe.entity.TypeUse;
+
 import com.example.csvccdshustbe.repository.suppliers.SuppliersRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;

@@ -3,8 +3,6 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.typeUse.CreateTypeUseRequest;
-import com.example.csvccdshustbe.request.typeUse.UpdateTypeUseRequest;
 import com.example.csvccdshustbe.request.units.CreateUnitsRequest;
 import com.example.csvccdshustbe.request.units.UpdateUnitsRequest;
 import com.example.csvccdshustbe.service.units.UnitsService;

@@ -2,14 +2,11 @@ package com.example.csvccdshustbe.service.levelTypeAsset.impl;
 
 
 import com.example.csvccdshustbe.entity.LevelTypeAsset;
-import com.example.csvccdshustbe.entity.Suppliers;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.levelTypeAsset.LevelTypeAssetRepository;
 
 import com.example.csvccdshustbe.request.levelTypeAsset.CreateLevelTypeAssetRequest;
 import com.example.csvccdshustbe.request.levelTypeAsset.UpdateLevelTypeAssetRequest;
-import com.example.csvccdshustbe.request.suppliers.CreateSuppliersRequest;
-import com.example.csvccdshustbe.request.suppliers.UpdateSuppliersRequest;
 import com.example.csvccdshustbe.response.levelTypeAsset.FindAllLevelTypeAssetResponse;
 import com.example.csvccdshustbe.service.levelTypeAsset.LevelTypeAssetService;
 import org.apache.commons.lang3.StringUtils;
@@ -65,7 +62,7 @@ public class LevelTypeAssetServiceImpl implements LevelTypeAssetService {
     public void deleteLevelTypeAssetsByIdLTA(Integer idLevelTypeAsset) {
         Optional<LevelTypeAsset> levelTypeAssetOptional = levelTypeAssetRepository.findLevelTypeAssetById(idLevelTypeAsset);
         if (!levelTypeAssetOptional.isPresent()){
-            throw new NotFoundException("Don't exits Type use by id type use!");
+            throw new NotFoundException("Don't exits  Level type asset by id !");
         }
         levelTypeAssetRepository.delete(levelTypeAssetOptional.get());
     }
