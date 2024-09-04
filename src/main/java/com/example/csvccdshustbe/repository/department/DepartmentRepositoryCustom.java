@@ -23,4 +23,5 @@ public interface DepartmentRepositoryCustom {
     Optional<Department> findDepartmentById(Integer idDepartment);
 
     boolean checkExitsDepartmentByNameOrCodeOrShortName(String name, String code, String shortName);
+
 }

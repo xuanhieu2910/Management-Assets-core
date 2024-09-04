@@ -147,20 +147,20 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
     }
 
     @Override
-    public Optional<Department> findDepartmentByName(String name) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(" select de.id_department, de.name, de.code, " +
-                "       de.short_name, de.description, de.parent, " +
-                "       de.time_created, de.time_modified, de.status " +
-                "from department de " +
-                "where de.name = :name ");
-        Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("name", name);
-        List<Object[]> result = query.getResultList();
-        if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj: result){
-                Department department = new Department();
-                department.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
+                public Optional<Department> findDepartmentByName(String name) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(" select de.id_department, de.name, de.code, " +
+                            "       de.short_name, de.description, de.parent, " +
+                            "       de.time_created, de.time_modified, de.status " +
+                            "from department de " +
+                            "where de.name = :name ");
+                    Query query = entityManager.createNativeQuery(sb.toString());
+                    query.setParameter("name", name);
+                    List<Object[]> result = query.getResultList();
+                    if (!CollectionUtils.isEmpty(result)){
+                        for (Object[] obj: result){
+                            Department department = new Department();
+                            department.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
                 department.setName(ValueUtil.getStringByObject(obj[1]));
                 department.setCode(ValueUtil.getStringByObject(obj[2]));
                 department.setShortName(ValueUtil.getStringByObject(obj[3]));
