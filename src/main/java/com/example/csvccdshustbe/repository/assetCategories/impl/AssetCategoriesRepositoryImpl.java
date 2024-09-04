@@ -175,8 +175,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         sb.append(" select * " +
                 "from asset_categories assetCategories " +
                 "where assetCategories.parent = :parentId " +
-                "and assetCategories.name = :name " +
-                "and assetCategories.id_asset_category = :parentId ");
+                "and assetCategories.name = :name " );
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("parentId", parentId);
         query.setParameter("name", name);
@@ -231,7 +230,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
 
     private void setConditionFindAllAssetCategoriesByCodeAndVisible(FindAllAssetCategoriesRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())){
-            sb.append(" and (cte.name REGEXP '[' + :keyword + ']') ");
+            sb.append(" and (cte.name REGEXP :keyword ) ");
         }
     }
 
