@@ -18,6 +18,7 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.util.JSONObjectUtils;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
@@ -44,6 +45,8 @@ public class AssetServiceImpl implements AssetService {
     @Autowired
     ModulesServiceFactory modulesServiceFactory;
 
+
+    @Transactional
     @Override
     public void createAsset(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException {
         initCreateAsset(createAssetRequest);

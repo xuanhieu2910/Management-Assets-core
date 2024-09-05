@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.EnumOriginalFactory;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.factory.original.impl.shape.*;
+import com.example.csvccdshustbe.service.original.assetOriginal.AssetOriginalService;
 import com.example.csvccdshustbe.service.original.shape.assetBuy.OriginalAssetBuyService;
 import com.example.csvccdshustbe.service.original.shape.assetConnectActor.OriginalAssetConnectActorService;
 import com.example.csvccdshustbe.service.original.shape.assetConnectWoActor.OriginalAssetConnectWoActorService;
@@ -16,6 +17,7 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Map;
 
 @Service
@@ -35,36 +37,51 @@ public class OriginalServiceFactory {
     OriginalAssetInvestService originalAssetInvestService;
     @Autowired
     OriginalAssetTransferService originalAssetTransferService;
+    @Autowired
+    AssetOriginalService assetOriginalService;
 
-    public IOriginal save(IOriginal original, Map<String,Object> originalDataAsset) throws ValidateFiledException {
+    public void save(IOriginal original, Map<String,Object> originalDataAsset) throws ValidateFiledException {
         String typeOriginal = ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET));
         EnumOriginalFactory enumDeclareFactory = Enum.valueOf(EnumOriginalFactory.class, typeOriginal);
+        Integer idInstance;
         switch (enumDeclareFactory){
             case ShapeOriginalAssetBuy -> {
-                return originalAssetBuyService.save((ShapeOriginalAssetBuy) original);
+                idInstance =  originalAssetBuyService.save((ShapeOriginalAssetBuy) original).getIdShapeOriginalAssetBuy();
             }
             case ShapeOriginalAssetConnectActor -> {
-                return originalAssetConnectActorService.save((ShapeOriginalAssetConnectActor) original);
+                idInstance = originalAssetConnectActorService.save((ShapeOriginalAssetConnectActor) original).getIdShapeOriginalAssetConnectActor();
             }
             case ShapeOriginalAssetConnectWoActor -> {
-                return originalAssetConnectWoActorService.save((ShapeOriginalAssetConnectWoActor) original);
+                idInstance =  originalAssetConnectWoActorService.save((ShapeOriginalAssetConnectWoActor) original).getIdShapeOriginalAssetConnectWoActor();
             }
             case ShapeOriginalAssetEvaluate -> {
-                return originalAssetEvaluateService.save((ShapeOriginalAssetEvaluate) original);
+                idInstance = originalAssetEvaluateService.save((ShapeOriginalAssetEvaluate) original).getIdShapeOriginalAssetEvaluate();
             }
             case ShapeOriginalAssetGift -> {
-                return originalAssetGiftService.save((ShapeOriginalAssetGift) original);
+                idInstance = originalAssetGiftService.save((ShapeOriginalAssetGift) original).getIdShapeOriginalAssetGift();
             }
             case ShapeOriginalAssetInvest -> {
-                return originalAssetInvestService.save((ShapeOriginalAssetInvest) original);
+                idInstance = originalAssetInvestService.save((ShapeOriginalAssetInvest) original).getIdShapeOriginalAssetInvest();
             }
             case ShapeOriginalAssetTransfer -> {
-                return originalAssetTransferService.save((ShapeOriginalAssetTransfer) original);
+                idInstance = originalAssetTransferService.save((ShapeOriginalAssetTransfer) original).getIdShapeOriginalAssetTransfer();
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type original!");
             }
         }
+        assetOriginalService.save(createAssetOriginal(originalDataAsset, idInstance));
+    }
+
+    private AssetOriginal createAssetOriginal(Map<String, Object> originalDataAsset, Integer idInstance) {
+        AssetOriginal original = new AssetOriginal();
+        original.setIdAsset(ValueUtil.getIntegerByObject(originalDataAsset.get("idAsset")));
+        original.setIdOriginal(ValueUtil.getIntegerByObject(originalDataAsset.get("idOriginal")));
+        original.setIdInstance(idInstance);
+        String timeCurrent = String.valueOf(new Date().getTime());
+        original.setTimeCreated(timeCurrent);
+        original.setTimeModified(timeCurrent);
+        return original;
     }
 
 }
