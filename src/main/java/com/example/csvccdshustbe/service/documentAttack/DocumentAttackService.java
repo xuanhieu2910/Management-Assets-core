@@ -1,6 +1,9 @@
 package com.example.csvccdshustbe.service.documentAttack;
 
 import com.example.csvccdshustbe.entity.DocumentAttack;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.request.documentAttack.CreateDocumentAttackRequest;
+import com.example.csvccdshustbe.request.documentAttack.UpdateDocumentAttackRequest;
 import com.example.csvccdshustbe.response.documentAttack.FindAllDocumentAttackResponse;
 
 import java.util.List;
@@ -9,10 +12,10 @@ public interface DocumentAttackService {
 
     List<FindAllDocumentAttackResponse> findAllDocumentAttackResponseByStatus(Integer status);
 
-    public String createDocumentAttack(DocumentAttack documentAttack);
-    public String updateDocumentAttack(DocumentAttack documentAttack);
+    void createDocumentAttack(CreateDocumentAttackRequest request) throws ValidateFiledException;
+    void updateDocumentAttack(UpdateDocumentAttackRequest request) throws ValidateFiledException;
 
-    public String deleteDocumentAttack(Integer documentAttackId);
-    public DocumentAttack getDocumentAttack(Integer documentAttackId);
+    void deleteDocumentAttackByIdDA(Integer idDocumentAttack);
+
 
 }

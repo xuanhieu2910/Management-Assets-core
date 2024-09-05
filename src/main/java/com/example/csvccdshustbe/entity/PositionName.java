@@ -9,20 +9,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "document_attack")
-public class DocumentAttack {
+@Table(name = "position_name")
+public class PositionName {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_document_attack")
-    private Integer idDocumentAttack;
+    @Column(name = "id_position_name")
+    private Integer idPositionName;
     @Column(name = "name")
     private String name;
-    @Column(name = "code")
-    private String code;
-    @Column(name = "id_department")
-    private Integer idDepartment;
-    @Column(name = "date_determination_document")
-    private String dateDeterminationDocument;
     @Column(name = "status")
     private Integer status;
     @Column(name = "time_created")

@@ -109,4 +109,16 @@ public class Constants {
     public static final Integer ASSET_CATEGORY_IS_PICK = 1;
     public static final Integer ASSET_CATEGORY_UN_PICK = -1;
     /*----------------------------------------------------*/
+
+    /*----------------------------------------------------*/
+    /**
+     * Constant Position
+     * */
+    public static final Integer POSITION_NAME_ACTIVE_STATUS = 1;
+
+    /*----------------------------------------------------*/
+    /**
+     * Constant Loaction
+     * */
+    public static final Integer LOCATION_ACTIVE_STATUS = 1;
 }

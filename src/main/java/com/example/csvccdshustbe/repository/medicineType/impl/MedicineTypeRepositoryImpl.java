@@ -92,7 +92,7 @@ public class MedicineTypeRepositoryImpl implements MedicineTypeRepositoryCustom 
 
     private void setConditionFindAllMedicineTypeVisible(FindAllMedicineTypeRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())) {
-            sb.append(" and (cte.name REGEXP '[' + :keyword + ']')  ");
+            sb.append(" and (cte.name REGEXP  :keyword )  ");
         }
     }
 

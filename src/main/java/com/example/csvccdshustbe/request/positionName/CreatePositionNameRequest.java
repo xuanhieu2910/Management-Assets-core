@@ -1,7 +1,5 @@
-package com.example.csvccdshustbe.request.countryProducer;
+package com.example.csvccdshustbe.request.positionName;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -10,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreateCountryProducerRequest {
+public class CreatePositionNameRequest {
 
     @NonNull
     private String name;

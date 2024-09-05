@@ -85,7 +85,7 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
 
     private void setConditionFindAllProjectVisible(FindAllProjectsRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())) {
-            sb.append(" and (cte.name REGEXP '[' + :keyword + ']') ");
+            sb.append(" and (cte.name REGEXP :keyword ) ");
         }
     }
 
