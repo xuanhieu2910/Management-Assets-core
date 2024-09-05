@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.shapeOriginalAssetEvaluate.impl;
+
+import com.example.csvccdshustbe.repository.shapeOriginalAssetEvaluate.ShapeOriginalAssetEvaluateRepositoryCustom;
+
+public class ShapeOriginalAssetEvaluateRepositoryImpl implements ShapeOriginalAssetEvaluateRepositoryCustom {
+}

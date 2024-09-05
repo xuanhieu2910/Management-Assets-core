@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "other_asset_module")
-public class OtherAssetModule {
+public class OtherAssetModule implements IModules{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_other_asset_module")

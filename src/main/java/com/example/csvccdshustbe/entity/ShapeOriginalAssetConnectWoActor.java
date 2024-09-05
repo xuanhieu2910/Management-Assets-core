@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "s_original_asset_connect_wo_actor")
-public class ShapeOriginalAssetConnectWoActor {
+public class ShapeOriginalAssetConnectWoActor implements IOriginal{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_s_original_asset_connect_wo_actor")

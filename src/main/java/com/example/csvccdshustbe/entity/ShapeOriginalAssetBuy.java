@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "s_original_asset_buy")
-public class ShapeOriginalAssetBuy {
+public class ShapeOriginalAssetBuy implements IOriginal{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_s_original_asset_buy")

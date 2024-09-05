@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "s_original_asset_gift")
-public class ShapeOriginalAssetGift {
+public class ShapeOriginalAssetGift implements IOriginal{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_s_original_asset_gift")

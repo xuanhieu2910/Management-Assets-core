@@ -1,0 +1,19 @@
+package com.example.csvccdshustbe.service.modules.architectureModule.impl;
+
+import com.example.csvccdshustbe.entity.ArchitectureModule;
+import com.example.csvccdshustbe.repository.architectureModule.ArchitectureModuleRepository;
+import com.example.csvccdshustbe.service.modules.architectureModule.ArchitectureModuleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ArchitectureModuleServiceImpl implements ArchitectureModuleService {
+
+    @Autowired
+    ArchitectureModuleRepository architectureModuleRepository;
+
+    @Override
+    public ArchitectureModule save(ArchitectureModule architectureModule) {
+        return architectureModuleRepository.save(architectureModule);
+    }
+}

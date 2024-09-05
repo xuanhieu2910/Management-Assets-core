@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.utility;
 
 import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.google.common.base.Joiner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 public class ValueUtil {
 
@@ -18,6 +20,10 @@ public class ValueUtil {
     public final static String PATTERN_STRONG_PASSWORD = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*()]).{8,}$";
     public final static String PATTERN_NUMBER_CHARACTER = "[^a-zA-Z0-9]";
 
+
+    public static String convertMapKeyStringWithGuava(Map<String, ?> map) {
+        return Joiner.on(",").withKeyValueSeparator(":").join(map);
+    }
 
     public static void validateNumberOrCharacter(String input) throws ValidateFiledException {
         if (!input.matches(PATTERN_NUMBER_CHARACTER)){

@@ -8,10 +8,11 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-
+@Repository
 public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
 
     private final static String Extension_privilege = ",";

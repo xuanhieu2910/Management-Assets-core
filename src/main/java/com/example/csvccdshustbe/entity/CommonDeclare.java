@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "other_declare")
-public class OtherDeclare {
+@Table(name = "common_declare")
+public class CommonDeclare implements IDeclare{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_other_declare")

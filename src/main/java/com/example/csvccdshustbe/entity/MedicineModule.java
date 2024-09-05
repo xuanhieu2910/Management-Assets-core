@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "medicine_module")
-public class MedicineModule {
+public class MedicineModule implements IModules{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_medicine_module")
@@ -27,7 +27,6 @@ public class MedicineModule {
     private String circulationNumber;
     @Column(name = "number_batch_of_goods")
     private String numberBatchOfGoods;
-
     @Column(name = "own_name_circulation_number")
     private String ownNameCirculationNumber;
     @Column(name = "own_address_circulation_number")

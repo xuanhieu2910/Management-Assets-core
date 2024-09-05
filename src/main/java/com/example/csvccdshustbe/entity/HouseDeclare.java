@@ -10,14 +10,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "architecture_declare")
-public class ArchitectureDeclare {
+@Table(name = "house_declare")
+public class HouseDeclare implements IDeclare{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_architecture_declare")
     private Integer idArchitectureDeclare;
-    @Column(name = "ad_asset")
+    @Column(name = "id_asset")
     private Integer idAsset;
     @Column(name = "work_place")
     private Double workplace;
@@ -43,4 +43,5 @@ public class ArchitectureDeclare {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+
 }

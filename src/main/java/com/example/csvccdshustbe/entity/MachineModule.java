@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "machine_module")
-public class MachineModule {
+public class MachineModule implements IModules{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_machine_module")
@@ -26,7 +26,7 @@ public class MachineModule {
     @Column(name = "publish_date")
     private String publishDate;
     @Column(name = "country")
-    private String Country;
+    private String country;
     @Column(name = "id_user")
     private Integer idUser;
     @Column(name = "id_type_use")

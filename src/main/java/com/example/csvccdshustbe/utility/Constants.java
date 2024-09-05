@@ -109,4 +109,19 @@ public class Constants {
     public static final Integer ASSET_CATEGORY_IS_PICK = 1;
     public static final Integer ASSET_CATEGORY_UN_PICK = -1;
     /*----------------------------------------------------*/
+
+    /**
+     * Constant Asset blue print
+     * */
+    public static final String KEY_COMMON = "common";
+    public static final String KEY_MODULE = "modules";
+    public static final String KEY_ORIGINAL_ASSET = "original";
+    public static final String KEY_DECLARE_ASSET = "declare";
+    public static final String KEY_TYPE_MODULE = "typeModules";
+    public static final String KEY_TYPE_ORIGINAL_ASSET = "typeOriginal";
+    public static final String KEY_TYPE_DECLARE = "typeDeclare";
+
+
+
+    /*----------------------------------------------------*/
 }

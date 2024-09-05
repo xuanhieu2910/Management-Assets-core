@@ -1,0 +1,4 @@
+package com.example.csvccdshustbe.repository.shapeOriginalAssetConnectWoActor;
+
+public interface ShapeOriginalAssetConnectWoActorRepositoryCustom {
+}

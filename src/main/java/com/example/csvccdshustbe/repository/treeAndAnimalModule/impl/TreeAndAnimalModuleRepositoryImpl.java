@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.treeAndAnimalModule.impl;
+
+import com.example.csvccdshustbe.repository.treeAndAnimalModule.TreeAndAnimalModuleRepositoryCustom;
+
+public class TreeAndAnimalModuleRepositoryImpl implements TreeAndAnimalModuleRepositoryCustom {
+}

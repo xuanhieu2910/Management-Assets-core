@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "car_module")
-public class CarModule {
+public class CarModule implements IModules{
 
 
     @Id

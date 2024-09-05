@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.shapeOriginalAssetTransfer.impl;
+
+import com.example.csvccdshustbe.repository.shapeOriginalAssetTransfer.ShapeOriginalAssetTransferRepositoryCustom;
+
+public class ShapeOriginalAssetTransferRepositoryImpl implements ShapeOriginalAssetTransferRepositoryCustom {
+}

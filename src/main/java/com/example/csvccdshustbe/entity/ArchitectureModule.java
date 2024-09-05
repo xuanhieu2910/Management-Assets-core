@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "architecture_module")
-public class ArchitectureModule {
+public class ArchitectureModule implements IModules{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

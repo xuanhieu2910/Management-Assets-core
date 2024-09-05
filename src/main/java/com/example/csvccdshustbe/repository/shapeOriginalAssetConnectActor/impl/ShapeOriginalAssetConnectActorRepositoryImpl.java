@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.shapeOriginalAssetConnectActor.impl;
+
+import com.example.csvccdshustbe.repository.shapeOriginalAssetConnectActor.ShapeOriginalAssetConnectActorRepositoryCustom;
+
+public class ShapeOriginalAssetConnectActorRepositoryImpl implements ShapeOriginalAssetConnectActorRepositoryCustom {
+}

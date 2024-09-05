@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "animal_tree_module")
-public class AnimalTreeModule {
+public class AnimalTreeModule implements IModules{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
