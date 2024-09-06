@@ -37,9 +37,9 @@ public class AssetController {
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> updateAsset(){
-
-    }
+//    @PutMapping("/update")
+//    public ResponseEntity<?> updateAsset(){
+//
+//    }
 
 }
