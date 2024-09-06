@@ -2,10 +2,12 @@ package com.example.csvccdshustbe.service.assetCategories.impl;
 
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
+
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepository;
 import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
+import com.example.csvccdshustbe.request.assetCategories.UpdateAssetCategoryRequest;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
@@ -61,6 +63,59 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         assetCategoriesRepository.save(createAssetCategoryRequest(request));
     }
 
+    @Override
+    public void updateAssetCategory(UpdateAssetCategoryRequest request) throws ValidateFiledException {
+        AssetCategories assetCategories = validateUpdateAssetCategory(request);
+        assetCategoriesRepository.save(editAssetCategory(assetCategories, request));
+    }
+
+    private AssetCategories validateUpdateAssetCategory(UpdateAssetCategoryRequest request)  throws ValidateFiledException{
+        Optional<AssetCategories> assetCategoriesOptional = assetCategoriesRepository.findAssetCategoryById(request.getIdAssetCategory());
+        if (!assetCategoriesOptional.isPresent()) {
+            throw new NotFoundException("Don't exits Medicine Type by id!");
+        }
+        if (StringUtils.isBlank(request.getName())) {
+            throw new ValidateFiledException("Validate data request!");
+        }
+        if (!assetCategoriesOptional.get().getName().equals(request.getName()) ||
+                !assetCategoriesOptional.get().getShortName().equals(request.getShortName())) {
+
+            if (StringUtils.isNotBlank(request.getName())){
+                ValueUtil.validateNumberOrCharacter(request.getName());
+            }
+            if (StringUtils.isNotBlank(request.getShortName())){
+                ValueUtil.validateNumberOrCharacter(request.getShortName());
+            }
+            if (!assetCategoriesRepository.checkExitsAssetCategoriesByNameOrShortName(request.getName(),
+                     request.getShortName())) {
+                throw new ValidateFiledException("Exits  asset category in list categories by name or short name!");
+            }
+        }
+        return assetCategoriesOptional.get();
+    }
+
+    private AssetCategories editAssetCategory(AssetCategories assetCategories, UpdateAssetCategoryRequest request) {
+        assetCategories.setName(request.getName());
+        assetCategories.setShortName(request.getShortName());
+        assetCategories.setDescription(request.getDescription());
+        assetCategories.setParent(request.getParentId());
+        assetCategories.setVisible(request.getVisible());
+        assetCategories.setPathImage(request.getPathImage());
+        assetCategories.setIsPick(request.getIsPick());
+//        assetCategories.setAssetCount(Constants.ASSET_CATEGORY_INIT_ASSET_COUNT);
+//        assetCategories.setSortOrder(null);
+        String timeModified = String.valueOf(new Date().getTime());
+        assetCategories.setTimeModified(timeModified);
+        return assetCategories;
+    }
+    @Override
+    public void deleteAssetCategoryByIdAssetCategory(Integer idAssetCategory) {
+        Optional<AssetCategories> assetCategoriesOptional = assetCategoriesRepository.findAssetCategoryById(idAssetCategory);
+        if (!assetCategoriesOptional.isPresent()) {
+            throw new NotFoundException("Don't exits Asset category by id by id!");
+        }
+        assetCategoriesRepository.delete(assetCategoriesOptional.get());
+    }
     private AssetCategories createAssetCategoryRequest(CreateAssetCategoryRequest request) {
         AssetCategories categories = new AssetCategories();
         categories.setName(request.getName());
@@ -82,12 +137,17 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         if (StringUtils.isBlank(request.getName())){
             throw new ValidateFiledException("Validate data request!");
         }
+        if (StringUtils.isNotBlank(request.getName())){
+            ValueUtil.validateNumberOrCharacter(request.getName());
+        }
+
+
         if (Objects.nonNull(request.getParentId())){
             Optional<AssetCategories> categories = assetCategoriesRepository.findAssetCategoryParentByParentId(request.getParentId());
             if (!categories.isPresent()) {
                 throw new NotFoundException("Don't exits asset category by id " + request.getParentId());
             }
-            if (assetCategoriesRepository.checkAssetCategoriesByParentIdAndName(request.getParentId(), request.getName())){
+            if (!assetCategoriesRepository.checkAssetCategoriesByParentIdAndName(request.getParentId(), request.getName())){
                 throw new ValidateFiledException("Exits name asset category in list categories, please use another name!");
             }
         }

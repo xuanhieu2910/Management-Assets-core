@@ -18,7 +18,7 @@ public class DocumentAttack {
     @Column(name = "name")
     private String name;
     @Column(name = "code")
-    private Integer code;
+    private String code;
     @Column(name = "id_department")
     private Integer idDepartment;
     @Column(name = "date_determination_document")

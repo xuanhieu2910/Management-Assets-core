@@ -1,15 +1,25 @@
 package com.example.csvccdshustbe.service.medicineGroup.impl;
 
+
 import com.example.csvccdshustbe.entity.MedicineGroup;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.medicineGroup.MedicineGroupRepository;
+import com.example.csvccdshustbe.request.medicineGroup.CreateMedicineGroupRequest;
+import com.example.csvccdshustbe.request.medicineGroup.UpdateMedicineGroupRequest;
 import com.example.csvccdshustbe.response.medicineGroup.FindAllMedicineGroupResponse;
 import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.ValueUtil;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MedicineGroupServiceImpl implements MedicineGroupService {
@@ -33,5 +43,103 @@ public class MedicineGroupServiceImpl implements MedicineGroupService {
             responses.add(response);
         }
         return responses;
+    }
+    @Override
+    public void createMedicineGroup(CreateMedicineGroupRequest request) throws ValidateFiledException {
+        validateDataCreateMedicineGroup(request);
+        medicineGroupRepository.save(contructMedicineGroup(request));
+    }
+
+
+
+
+    @Override
+    public void updateMedicineGroup(UpdateMedicineGroupRequest request) throws ValidateFiledException {
+        MedicineGroup medicineGroup = validateDataUpdateMedicineGroup(request);
+        medicineGroupRepository.save(editMedicineGroup(medicineGroup, request));
+    }
+
+
+
+
+    @Override
+    public void deleteMedicineGroupByIdMedicineGroup(Integer idMedicineGroup) {
+        Optional<MedicineGroup> medicineGroupOptional = medicineGroupRepository.findMedicineGroupById(idMedicineGroup);
+        if (!medicineGroupOptional.isPresent()){
+            throw new NotFoundException("Don't exits medicine group by id!");
+        }
+        medicineGroupRepository.delete(medicineGroupOptional.get());
+    }
+    private void validateDataCreateMedicineGroup(CreateMedicineGroupRequest request) throws ValidateFiledException {
+        if (StringUtils.isBlank(request.getName())) {
+            throw new ValidateFiledException("Validate data request!");
+        }
+        ValueUtil.validateNumberOrCharacter(request.getName());
+        Optional<MedicineGroup> medicineGroup = medicineGroupRepository.findMedicineGroupByName(request.getName());
+        if (medicineGroup.isPresent()){
+            throw new ValidateFiledException("Exits medicine group by name!");
+        }
+        if (StringUtils.isNotBlank(request.getShortName())) {
+            if (request.getShortName().equals(medicineGroup.get().getShortName())){
+                throw new ValidateFiledException("Exits medicine group by short name");
+            }
+        }
+        if (StringUtils.isNotBlank(request.getDescription())){
+            ValueUtil.validateNumberOrCharacter(request.getDescription());
+        }
+    }
+
+    private MedicineGroup contructMedicineGroup(CreateMedicineGroupRequest request) {
+        MedicineGroup medicineGroup = new MedicineGroup();
+        medicineGroup.setName(request.getName().trim());
+
+        if (StringUtils.isNotBlank(request.getShortName())){
+            medicineGroup.setShortName(request.getShortName());
+        }
+        if (StringUtils.isNotBlank(request.getDescription())){
+            medicineGroup.setDescription(request.getDescription());
+        }
+
+        medicineGroup.setStatus(request.getStatus());
+        String timeCurrent = String.valueOf(new Date().getTime());
+        medicineGroup.setTimeCreated(timeCurrent);
+        medicineGroup.setTimeModified(timeCurrent);
+        return medicineGroup;
+    }
+
+    private MedicineGroup validateDataUpdateMedicineGroup(UpdateMedicineGroupRequest request) throws ValidateFiledException{
+        Optional<MedicineGroup> medicineGroupOptional = medicineGroupRepository.findMedicineGroupById(request.getIdMedicineGroup());
+        if (!medicineGroupOptional.isPresent()) {
+            throw new NotFoundException("Don't exits medicine group by id!");
+        }
+        if (StringUtils.isBlank(request.getName())) {
+            throw new ValidateFiledException("Validate data request!");
+        }
+        if (!medicineGroupOptional.get().getName().equals(request.getName()) ||
+                !medicineGroupOptional.get().getShortName().equals(request.getShortName())) {
+
+            if (StringUtils.isNotBlank(request.getName())){
+                ValueUtil.validateNumberOrCharacter(request.getName());
+            }
+
+            if (StringUtils.isNotBlank(request.getShortName())){
+                ValueUtil.validateNumberOrCharacter(request.getShortName());
+            }
+
+        }
+        if (StringUtils.isNotBlank(request.getDescription())){
+            ValueUtil.validateNumberOrCharacter(request.getDescription());
+        }
+        return medicineGroupOptional.get();
+
+    }
+    private MedicineGroup editMedicineGroup(MedicineGroup medicineGroup, UpdateMedicineGroupRequest request) {
+        medicineGroup.setName(request.getName());
+        medicineGroup.setShortName(request.getShortName());
+        medicineGroup.setDescription(request.getDescription());
+        medicineGroup.setStatus(request.getStatus());
+        String timeModified = String.valueOf(new Date().getTime());
+        medicineGroup.setTimeModified(timeModified);
+        return medicineGroup;
     }
 }

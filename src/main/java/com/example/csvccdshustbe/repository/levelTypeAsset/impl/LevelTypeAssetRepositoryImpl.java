@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class LevelTypeAssetRepositoryImpl implements LevelTypeAssetRepositoryCustom {
     @PersistenceContext
@@ -42,5 +43,60 @@ public class LevelTypeAssetRepositoryImpl implements LevelTypeAssetRepositoryCus
 
         }
         return levelTypeAssets;
+    }
+
+
+    @Override
+    public Optional<LevelTypeAsset> findLevelTypeAssetByName(String name) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select lta.id_level_type_asset, lta.name, " +
+                "lta.level, lta.description, " +
+                "lta.time_created, lta.time_modified, lta.status " +
+                "from level_type_asset lta " +
+                "where lta.name = :name ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("name", name);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                LevelTypeAsset levelTypeAsset = new LevelTypeAsset();
+                levelTypeAsset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(obj[0]));
+                levelTypeAsset.setName(ValueUtil.getStringByObject(obj[1]));
+                levelTypeAsset.setLevel(ValueUtil.getIntegerByObject(obj[2]));
+                levelTypeAsset.setDescription(ValueUtil.getStringByObject(obj[3]));
+                levelTypeAsset.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                levelTypeAsset.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                levelTypeAsset.setStatus(ValueUtil.getIntegerByObject(obj[6]));
+                return Optional.of(levelTypeAsset);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<LevelTypeAsset> findLevelTypeAssetById(Integer idLevelTypeAsset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select lta.id_level_type_asset, lta.name, " +
+                "lta.level, lta.description, " +
+                "lta.time_created, lta.time_modified, lta.status " +
+                "from level_type_asset lta " +
+                "where lta.id_level_type_asset = :idLevelTypeAsset ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idLevelTypeAsset", idLevelTypeAsset);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                LevelTypeAsset levelTypeAsset = new LevelTypeAsset();
+                levelTypeAsset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(obj[0]));
+                levelTypeAsset.setName(ValueUtil.getStringByObject(obj[1]));
+                levelTypeAsset.setLevel(ValueUtil.getIntegerByObject(obj[2]));
+                levelTypeAsset.setDescription(ValueUtil.getStringByObject(obj[3]));
+                levelTypeAsset.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                levelTypeAsset.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                levelTypeAsset.setStatus(ValueUtil.getIntegerByObject(obj[6]));
+                return Optional.of(levelTypeAsset);
+            }
+        }
+        return Optional.empty();
     }
 }

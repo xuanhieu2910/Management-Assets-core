@@ -3,13 +3,17 @@ package com.example.csvccdshustbe.request.countryProducer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 @Getter
 @Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@NoArgsConstructor
 public class CreateCountryProducerRequest {
 
-    @JsonProperty("name")
+    @NonNull
     private String name;
+    @NonNull
+    private Integer status;
 }

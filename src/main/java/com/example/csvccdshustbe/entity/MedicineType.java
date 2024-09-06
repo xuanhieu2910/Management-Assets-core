@@ -23,8 +23,6 @@ public class MedicineType {
     private String code;
     @Column(name = "parent")
     private Integer parent;
-    @Column(name = "depth")
-    private Integer depth;
     @Column(name = "visible")
     private Integer visible;
     @Column(name = "notes")

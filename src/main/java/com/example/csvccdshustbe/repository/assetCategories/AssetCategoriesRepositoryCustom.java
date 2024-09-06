@@ -20,4 +20,6 @@ public interface AssetCategoriesRepositoryCustom {
     boolean checkAssetCategoriesByParentIdAndName(Integer parentId, String name);
 
     Optional<AssetCategories> findAssetCategoryParentByParentId(Integer parentId);
+    Optional<AssetCategories> findAssetCategoryById(Integer idAssetCategory);
+    boolean checkExitsAssetCategoriesByNameOrShortName(String name, String shortName);
 }

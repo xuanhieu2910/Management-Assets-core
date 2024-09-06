@@ -27,8 +27,7 @@ public class Location {
     private String timeModified;
     @Column(name = "visible")
     private Integer visible;
-    @Column(name = "depth")
-    private Integer depth;
-    @Column(name = "path")
-    private String path;
+    @Column(name = "id_department")
+    private Integer idDepartment;
+
 }

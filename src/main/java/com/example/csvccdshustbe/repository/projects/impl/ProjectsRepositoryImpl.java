@@ -1,6 +1,8 @@
 package com.example.csvccdshustbe.repository.projects.impl;
 
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
+import com.example.csvccdshustbe.entity.Department;
+import com.example.csvccdshustbe.entity.Projects;
 import com.example.csvccdshustbe.repository.projects.ProjectsRepositoryCustom;
 import com.example.csvccdshustbe.request.projects.FindAllProjectsRequest;
 import com.example.csvccdshustbe.utility.Constants;
@@ -17,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
 
@@ -82,7 +85,7 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
 
     private void setConditionFindAllProjectVisible(FindAllProjectsRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())) {
-            sb.append(" and (cte.name REGEXP '[' + :keyword + ']') ");
+            sb.append(" and (cte.name REGEXP :keyword ) ");
         }
     }
 
@@ -113,4 +116,109 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
         setParameterFindAllProjectVisible(request, query);
         return ValueUtil.getLongByObject(query.getSingleResult());
     }
+
+
+    @Override
+    public Optional<Projects> findProjectByName(String name) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select pj.id_project, pj.name, " +
+                "  pj.short_name, pj.parent, " +
+                "  pj.time_created, pj.time_modified, pj.visible " +
+                " from projects pj " +
+                "where pj.name = :name ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("name", name);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                Projects projects = new Projects();
+                projects.setIdProject(ValueUtil.getIntegerByObject(obj[0]));
+                projects.setName(ValueUtil.getStringByObject(obj[1]));
+                projects.setShortName(ValueUtil.getStringByObject(obj[2]));
+                projects.setShortName(ValueUtil.getStringByObject(obj[3]));
+                projects.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                projects.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                projects.setVisible(ValueUtil.getIntegerByObject(obj[6]));
+                return Optional.of(projects);
+            }
+        }
+        return Optional.empty();
+    }
+    @Override
+    public Optional<Projects> findProjectByIdParent(Integer idParent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select pj.id_project, pj.name, " +
+                "  pj.short_name, pj.parent, " +
+                "  pj.time_created, pj.time_modified, pj.visible " +
+                " from projects pj " +
+                "where pj.id_project = :idParent ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idParent", idParent);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                Projects projects = new Projects();
+                projects.setIdProject(ValueUtil.getIntegerByObject(obj[0]));
+                projects.setName(ValueUtil.getStringByObject(obj[1]));
+                projects.setShortName(ValueUtil.getStringByObject(obj[2]));
+                projects.setParent(ValueUtil.getIntegerByObject(obj[3]));
+                projects.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                projects.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                projects.setVisible(ValueUtil.getIntegerByObject(obj[6]));
+                return Optional.of(projects);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Projects> findProjectById(Integer idProject) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select pj.id_project, pj.name, " +
+                "  pj.short_name, pj.parent, " +
+                "  pj.time_created, pj.time_modified, pj.visible " +
+                " from projects pj " +
+                "where pj.id_project = :idProject ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProject", idProject);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                Projects projects = new Projects();
+                projects.setIdProject(ValueUtil.getIntegerByObject(obj[0]));
+                projects.setName(ValueUtil.getStringByObject(obj[1]));
+                projects.setShortName(ValueUtil.getStringByObject(obj[2]));
+                projects.setParent(ValueUtil.getIntegerByObject(obj[3]));
+                projects.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                projects.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                projects.setVisible(ValueUtil.getIntegerByObject(obj[6]));
+                return Optional.of(projects);
+            }
+        }
+        return Optional.empty();
+    }
+    @Override
+    public boolean checkExitsProjectByNameOrCodeOrShortName(String name, String shortName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select * " +
+                "from projects pj " +
+                "where 1 = 1 ");
+        if (StringUtils.isNotBlank(name)){
+            sb.append(" or pj.name = :name ");
+        }
+
+        if (StringUtils.isNotBlank(shortName)){
+            sb.append(" or pj.short_name = :shortName ");
+        }
+        Query query = entityManager.createNativeQuery(sb.toString());
+        if (StringUtils.isNotBlank(name)){
+            query.setParameter("name", name);
+        }
+        if (StringUtils.isNotBlank(shortName)){
+            query.setParameter("shortName", shortName);
+        }
+        List<Object[]> result = query.getResultList();
+        return CollectionUtils.isEmpty(result);
+    }
+
 }

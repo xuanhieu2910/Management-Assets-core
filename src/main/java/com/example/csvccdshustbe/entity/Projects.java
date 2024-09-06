@@ -28,9 +28,5 @@ public class Projects {
     private String timeModified;
     @Column(name = "visible")
     private Integer visible;
-    @Column(name = "depth")
-    private Integer depth;
-    @Column(name = "path")
-    private String path;
 
 }

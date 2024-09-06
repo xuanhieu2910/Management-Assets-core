@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
+import com.example.csvccdshustbe.request.assetCategories.UpdateAssetCategoryRequest;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,6 +61,30 @@ public class AssetCategoriesController {
             assetCategoriesService.createAssetCategory(request);
             return ApiResponseDto.createdWithMessage("Create asset category success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+    @PutMapping("/update")
+    public ResponseEntity<?> updateAssetCategory(@RequestBody UpdateAssetCategoryRequest request){
+        try {
+            assetCategoriesService.updateAssetCategory(request);
+            return ApiResponseDto.createdWithMessage("Update asset category success!", HttpStatus.OK);
+        } catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteAssetCategoryByIdAssetCategory(@RequestParam("id-assetcategory") Integer idCurrentUsage){
+        try {
+            assetCategoriesService.deleteAssetCategoryByIdAssetCategory(idCurrentUsage);
+            return ApiResponseDto.createdWithMessage("Delete asset category success!", HttpStatus.OK);
+        } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);

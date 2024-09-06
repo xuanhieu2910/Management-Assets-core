@@ -24,10 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -103,7 +100,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                 throw new ValidateFiledException("Exits department by name or code or short name!");
             }
         }
-        if (!departmentOptional.get().getName().equals(request.getParentId())) {
+        if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<Department> departmentByIdParent = departmentRepository.findDepartmentByIdParent(request.getParentId());
             if (!departmentByIdParent.isPresent()){
                 throw new ValidateFiledException("Don't exits department by id parent!");

@@ -175,11 +175,24 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         sb.append(" select * " +
                 "from asset_categories assetCategories " +
                 "where assetCategories.parent = :parentId " +
-                "and assetCategories.name = :name " +
-                "and assetCategories.id_asset_category = :parentId ");
+                "and assetCategories.name = :name " );
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("parentId", parentId);
         query.setParameter("name", name);
+        List<Object[]> result = query.getResultList();
+        return CollectionUtils.isEmpty(result);
+    }
+
+    @Override
+    public boolean  checkExitsAssetCategoriesByNameOrShortName(String name, String shortName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select * " +
+                "from asset_categories assetCategories " +
+                "where assetCategories.name = :name " +
+                "and assetCategories.short_name = :shortName " );
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("name", name);
+        query.setParameter("shortName", shortName);
         List<Object[]> result = query.getResultList();
         return CollectionUtils.isEmpty(result);
     }
@@ -221,6 +234,44 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         return Optional.empty();
     }
 
+    @Override
+    public Optional<AssetCategories> findAssetCategoryById(Integer idAssetCategory) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select assetCategories.id_asset_category, assetCategories.name, " +
+                "       assetCategories.short_name, assetCategories.code_name, " +
+                "       assetCategories.description, assetCategories.parent, " +
+                "       assetCategories.sort_order, assetCategories.asset_count, " +
+                "       assetCategories.visible, assetCategories.time_created, " +
+                "       assetCategories.time_modified, assetCategories.path_image, " +
+                "       assetCategories.is_pick " +
+                "from asset_categories assetCategories " +
+                "where assetCategories.id_asset_category = :idAssetCategory ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idAssetCategory", idAssetCategory);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                AssetCategories categories = new AssetCategories();
+                categories.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[0]));
+                categories.setName(ValueUtil.getStringByObject(obj[1]));
+                categories.setShortName(ValueUtil.getStringByObject(obj[2]));
+                categories.setCodeName(ValueUtil.getStringByObject(obj[3]));
+                categories.setDescription(ValueUtil.getStringByObject(obj[4]));
+                categories.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                categories.setSortOrder(ValueUtil.getStringByObject(obj[6]));
+                categories.setAssetCount(ValueUtil.getIntegerByObject(obj[7]));
+                categories.setVisible(ValueUtil.getIntegerByObject(obj[8]));
+                categories.setTimeCreated(ValueUtil.getStringByObject(obj[9]));
+                categories.setTimeModified(ValueUtil.getStringByObject(obj[10]));
+                categories.setPathImage(ValueUtil.getStringByObject(obj[11]));
+                categories.setIsPick(ValueUtil.getIntegerByObject(obj[12]));
+                return Optional.of(categories);
+            }
+        }
+        return Optional.empty();
+    }
+
+
     private void setParameterFindAllAssetCategoriesByCodeAndVisible(FindAllAssetCategoriesRequest request, Query query) {
         query.setParameter("codeName", request.getCodeName().trim());
         query.setParameter("visible", Constants.IS_VISIBLE);
@@ -231,7 +282,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
 
     private void setConditionFindAllAssetCategoriesByCodeAndVisible(FindAllAssetCategoriesRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())){
-            sb.append(" and (cte.name REGEXP '[' + :keyword + ']') ");
+            sb.append(" and (cte.name REGEXP :keyword ) ");
         }
     }
 
