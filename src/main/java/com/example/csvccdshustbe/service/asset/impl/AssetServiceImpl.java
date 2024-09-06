@@ -103,7 +103,9 @@ public class AssetServiceImpl implements AssetService {
         Integer idLocation = ValueUtil.getIntegerByObject(createAssetRequest.get("idLocation"));
         locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
         //validate asset category
-//        Integer idAssetCategory =
+//        String codeAssetCategory = ValueUtil.getStringByObject(createAssetRequest.get("codeAssetCategory"));
+//        assetCategoriesService.findAssetCategoriesVisibleByCodeName(codeAssetCategory);
+//        createAssetRequest.
         //validate units
         //validate documents
         //validate project
