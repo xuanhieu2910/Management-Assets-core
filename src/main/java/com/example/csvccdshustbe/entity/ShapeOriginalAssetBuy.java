@@ -32,5 +32,9 @@ public class ShapeOriginalAssetBuy implements IOriginal{
     private Double valueTax;
     @Column(name = "value_other")
     private Double valueOther;
+    @Column(name = "id_method_buy_asset")
+    private Integer idMethodBuyAsset;
+    @Column(name = "id_type_buy_asset")
+    private Integer idTypeBuyAsset;
 
 }

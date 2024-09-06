@@ -18,5 +18,5 @@ public class UpdateAssetCategoryRequest {
     private Integer parentId;
     private Integer visible;
     private String pathImage;
-    private Integer isPick;
+
 }

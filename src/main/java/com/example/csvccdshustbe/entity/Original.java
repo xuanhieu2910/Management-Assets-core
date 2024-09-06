@@ -17,8 +17,6 @@ public class Original {
     private Integer idOriginal;
     @Column(name = "name")
     private String name;
-    @Column(name = "id_number")
-    private Integer idNumber;
     @Column(name = "short_name")
     private String shortName;
     @Column(name = "description")
@@ -33,12 +31,14 @@ public class Original {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
-    @Column(name = "status")
-    private Integer status;
     @Column(name = "id_user_created")
     private Integer idUserCreated;
     @Column(name = "id_user_modified")
     private Integer idUserModified;
     @Column(name = "id_asset_category")
     private Integer idAssetCategory;
+    @Column(name = "hard_code_dev")
+    private String hardCodeDev;
+    @Column(name = "is_default")
+    private Integer isDefault;
 }

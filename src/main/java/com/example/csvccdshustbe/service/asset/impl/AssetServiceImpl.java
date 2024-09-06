@@ -10,6 +10,7 @@ import com.example.csvccdshustbe.factory.original.OriginalFactory;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
+import com.example.csvccdshustbe.service.assetOriginalOfFormation.AssetOriginalOfFormationService;
 import com.example.csvccdshustbe.service.declare.DeclareServiceFactory;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
@@ -32,10 +33,9 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Log4j2
 @Service
@@ -63,7 +63,8 @@ public class AssetServiceImpl implements AssetService {
     DocumentAttackService documentAttackService;
     @Autowired
     ProjectsService projectsService;
-
+    @Autowired
+    AssetOriginalOfFormationService assetOriginalOfFormationService;
 
 
 
@@ -154,8 +155,27 @@ public class AssetServiceImpl implements AssetService {
         Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_COMMON);
         Asset asset = contructionDataAsset(commonDataAsset);
         assetRepository.save(asset);
+        saveAssetOriginalOfFormations(asset, commonDataAsset);
         log.info("Store success common data asset by id = " + asset.getIdAsset());
         return asset;
+    }
+
+    private void saveAssetOriginalOfFormations(Asset asset, Map<String, Object> commonDataAsset) {
+        List<Object[]> assetOriginalOfFormationData = (List<Object[]>) commonDataAsset.get(Constants.KEY_ASSET_ORIGINAL_OF_FORMATION);
+        if (!CollectionUtils.isEmpty(assetOriginalOfFormationData)){
+            List<AssetOriginalOfFormation>originalOfFormations = new ArrayList<>();
+            String currentTime = String.valueOf(new Date().getTime());
+            for (Object[] obj : assetOriginalOfFormationData){
+                AssetOriginalOfFormation originalOfFormation = new AssetOriginalOfFormation();
+                originalOfFormation.setIdOriginalOfFormation(ValueUtil.getIntegerByObject(obj[0]));
+                originalOfFormation.setIdAsset(asset.getIdAsset());
+                originalOfFormation.setTimeCreated(currentTime);
+                originalOfFormation.setTimeModified(currentTime);
+                originalOfFormation.setValue(ValueUtil.getStringByObject(obj[1]));
+                originalOfFormations.add(originalOfFormation);
+            }
+            assetOriginalOfFormationService.saveAll(originalOfFormations);
+        }
     }
 
     private Asset contructionDataAsset(Map<String, Object> dataAsset) {
@@ -172,7 +192,6 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdLocation(ValueUtil.getIntegerByObject(dataAsset.get("idLocation")));
         asset.setIdUnit(ValueUtil.getIntegerByObject(dataAsset.get("idUnit")));
         asset.setIdOriginal(ValueUtil.getIntegerByObject(dataAsset.get("idOriginal")));
-        asset.setIdOriginOfFormation(ValueUtil.getIntegerByObject(dataAsset.get("idOriginOfFormation")));
         asset.setIdProjects(ValueUtil.getIntegerByObject(dataAsset.get("idProjects")));
         asset.setPurpose(ValueUtil.getStringByObject(dataAsset.get("purpose")));
         asset.setNotes(ValueUtil.getStringByObject(dataAsset.get("notes")));

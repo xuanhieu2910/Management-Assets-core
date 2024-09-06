@@ -104,7 +104,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         assetCategories.setParent(request.getParentId());
         assetCategories.setVisible(request.getVisible());
         assetCategories.setPathImage(request.getPathImage());
-        assetCategories.setIsPick(request.getIsPick());
+//        assetCategories.setIsPick(request.getIsPick());
 //        assetCategories.setAssetCount(Constants.ASSET_CATEGORY_INIT_ASSET_COUNT);
 //        assetCategories.setSortOrder(null);
         String timeModified = String.valueOf(new Date().getTime());
@@ -127,9 +127,10 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         categories.setParent(request.getParentId());
         categories.setVisible(request.getVisible());
         categories.setPathImage(request.getPathImage());
-        categories.setIsPick(request.getIsPick());
+        categories.setIsPick(null);
         categories.setAssetCount(Constants.ASSET_CATEGORY_INIT_ASSET_COUNT);
         categories.setSortOrder(null);
+        categories.setHardCodeDev(null);
         String timeCurrent = String.valueOf(new Date().getTime());
         categories.setTimeCreated(timeCurrent);
         categories.setTimeModified(timeCurrent);
@@ -169,11 +170,13 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
 
     private List<FindAllAssetCategoriesPickedResponse> convertToFindAllAssetCategoriesPicked(List<AssetCategories> categories) {
         List<FindAllAssetCategoriesPickedResponse> responses = new ArrayList<>();
-        for (AssetCategories ass: categories){
+        for (AssetCategories asset: categories){
             FindAllAssetCategoriesPickedResponse res = new FindAllAssetCategoriesPickedResponse();
-            res.setName(ass.getName());
-            res.setCodeName(ass.getCodeName());
-            res.setPathImage(ass.getPathImage());
+            res.setName(asset.getName());
+            res.setCodeName(asset.getCodeName());
+            res.setPathImage(asset.getPathImage());
+            res.setIdAssetCategory(asset.getIdAssetCategory());
+            res.setHardCodeDev(asset.getHardCodeDev());
             responses.add(res);
         }
         return responses;

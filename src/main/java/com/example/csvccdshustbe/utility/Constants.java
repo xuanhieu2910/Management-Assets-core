@@ -132,8 +132,15 @@ public class Constants {
     public static final String KEY_TYPE_MODULE = "typeModules";
     public static final String KEY_TYPE_ORIGINAL_ASSET = "typeOriginal";
     public static final String KEY_TYPE_DECLARE = "typeDeclare";
+    public static final String KEY_ASSET_ORIGINAL_OF_FORMATION = "originOfFormation";
+    /*----------------------------------------------------*/
 
-
+    /**
+     * Constant Original
+     * */
+    public static final Integer ORIGINAL_VISIBLE = 1;
+    public static final Integer ORIGINAL_UN_VISIBLE = -1;
+    public static final Integer ORIGINAL_IS_DEFAULT = 1;
 
     /*----------------------------------------------------*/
 }

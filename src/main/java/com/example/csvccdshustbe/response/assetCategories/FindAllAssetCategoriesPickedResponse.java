@@ -17,4 +17,8 @@ public class FindAllAssetCategoriesPickedResponse {
     private String codeName;
     @JsonProperty("path_image")
     private String pathImage;
+    @JsonProperty("id_asset_category")
+    private Integer idAssetCategory;
+    @JsonProperty("hard_code_dev")
+    private String hardCodeDev;
 }

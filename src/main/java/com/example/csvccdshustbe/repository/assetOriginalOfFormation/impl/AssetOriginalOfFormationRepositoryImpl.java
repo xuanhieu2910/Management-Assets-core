@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.assetOriginalOfFormation.impl;
+
+import com.example.csvccdshustbe.repository.assetOriginalOfFormation.AssetOriginalOfFormationRepositoryCustom;
+
+public class AssetOriginalOfFormationRepositoryImpl implements AssetOriginalOfFormationRepositoryCustom {
+}

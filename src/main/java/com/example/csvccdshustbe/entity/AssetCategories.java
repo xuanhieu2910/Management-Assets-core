@@ -40,5 +40,7 @@ public class AssetCategories {
     private String pathImage;
     @Column(name = "is_pick")
     private Integer isPick;
+    @Column(name = "hard_code_dev")
+    private String hardCodeDev;
 
 }

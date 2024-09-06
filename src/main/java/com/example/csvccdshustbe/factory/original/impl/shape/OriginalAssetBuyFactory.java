@@ -20,6 +20,8 @@ public class OriginalAssetBuyFactory implements OriginalFactory {
         shapeOriginalAssetBuy.setValueRecallWork(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueRecallWork")));
         shapeOriginalAssetBuy.setValueTax(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueTax")));
         shapeOriginalAssetBuy.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
+        shapeOriginalAssetBuy.setIdMethodBuyAsset(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idMethodBuyAsset")));
+        shapeOriginalAssetBuy.setIdTypeBuyAsset(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idTypeBuyAsset")));
         return shapeOriginalAssetBuy;
     }
 }
