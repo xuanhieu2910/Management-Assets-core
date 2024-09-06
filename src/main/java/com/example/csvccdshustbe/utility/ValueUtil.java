@@ -25,11 +25,6 @@ public class ValueUtil {
         return Joiner.on(",").withKeyValueSeparator(":").join(map);
     }
 
-    public static void validateNumberOrCharacter(String input) throws ValidateFiledException {
-        if (!input.matches(PATTERN_NUMBER_CHARACTER)){
-            throw new ValidateFiledException("Validate number or character!");
-        }
-    }
     private ValueUtil() {
         throw new IllegalStateException("Utility class");
     }

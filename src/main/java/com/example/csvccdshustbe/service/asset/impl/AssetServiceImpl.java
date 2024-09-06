@@ -10,6 +10,7 @@ import com.example.csvccdshustbe.factory.original.OriginalFactory;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.declare.DeclareServiceFactory;
+import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.modules.ModulesServiceFactory;
 import com.example.csvccdshustbe.service.original.OriginalServiceFactory;
 import com.example.csvccdshustbe.utility.Constants;
@@ -44,6 +45,9 @@ public class AssetServiceImpl implements AssetService {
     OriginalServiceFactory originalServiceFactory;
     @Autowired
     ModulesServiceFactory modulesServiceFactory;
+    @Autowired
+    DepartmentService departmentService;
+
 
 
     @Transactional
@@ -60,6 +64,28 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private void validateDataCreateAsset(Map<String, Object> createAssetRequest) {
+        validateDataCommonCreateAsset(createAssetRequest);
+        validateDataModuleCreateAsset(createAssetRequest);
+        validateDataOriginalCreateAsset(createAssetRequest);
+        validateDataDeclareCreateAsset(createAssetRequest);
+    }
+
+    private void validateDataDeclareCreateAsset(Map<String, Object> createAssetRequest) {
+        //validate department
+        //validate location
+        //validate asset category
+        //validate units
+        //validate documents
+        //validate project
+    }
+
+    private void validateDataOriginalCreateAsset(Map<String, Object> createAssetRequest) {
+    }
+
+    private void validateDataModuleCreateAsset(Map<String, Object> createAssetRequest) {
+    }
+
+    private void validateDataCommonCreateAsset(Map<String, Object> createAssetRequest) {
     }
 
     private void storeNewAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {

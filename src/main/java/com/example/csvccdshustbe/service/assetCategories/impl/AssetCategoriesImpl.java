@@ -91,9 +91,6 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
                 throw new ValidateFiledException("Exits name asset category in list categories, please use another name!");
             }
         }
-        if (StringUtils.isNotBlank(request.getShortName())){
-            ValueUtil.validateNumberOrCharacter(request.getShortName());
-        }
     }
 
     private List<FindAllAssetCategoriesResponse> convertToFindAllAssetCategoriesByCodeAndVisible
