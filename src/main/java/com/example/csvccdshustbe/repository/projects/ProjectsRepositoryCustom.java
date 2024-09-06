@@ -18,6 +18,8 @@ public interface ProjectsRepositoryCustom {
 
     Optional<Projects> findProjectById(Integer idProject);
 
+    Optional<Projects> findProjectsByIdAndStatus(Integer idProject, Integer status);
+
     boolean checkExitsProjectByNameOrCodeOrShortName(String name, String shortName);
 
 }

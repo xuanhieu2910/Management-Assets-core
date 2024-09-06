@@ -19,4 +19,6 @@ public interface UnitsService {
     void updateUnits(UpdateUnitsRequest request) throws ValidateFiledException;
 
     void deleteUnitsByIdUnits(Integer idUnit);
+
+    Units findUnitsByIdUnitAndIdAssetCategoryAndStatus(Integer idUnit, Integer idAssetCategory, Integer status);
 }

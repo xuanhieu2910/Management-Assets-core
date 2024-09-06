@@ -17,5 +17,5 @@ public interface DocumentAttackService {
 
     void deleteDocumentAttackByIdDA(Integer idDocumentAttack);
 
-
+    DocumentAttack findDocumentAttackByIdDocumentAndStatus(Integer idDocumentAttack, Integer status);
 }

@@ -75,6 +75,15 @@ public class UnitsServiceImpl implements UnitsService {
         unitsRepository.delete(unitsOptional.get());
     }
 
+    @Override
+    public Units findUnitsByIdUnitAndIdAssetCategoryAndStatus(Integer idUnit, Integer idAssetCategory, Integer status) {
+        Optional<Units> units = unitsRepository.findUnitByIdUnitAndIdAssetCategoryAndStatus(idUnit, idAssetCategory, status);
+        if (!units.isPresent()){
+            throw new NotFoundException("Don't exits units!");
+        }
+        return units.get();
+    }
+
     private void validateDataCreateUnit(CreateUnitsRequest request) throws ValidateFiledException{
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");

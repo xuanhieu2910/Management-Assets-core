@@ -16,6 +16,7 @@ public interface AssetCategoriesRepositoryCustom {
     Page<FindAllAssetCategoriesByCodeAndVisibleDto>
     findAllAssetCategoriesByCodeAndVisible(Pageable pageable, FindAllAssetCategoriesRequest request);
     Optional<AssetCategories> findAssetCategoriesVisibleByCodeName(String codeName);
+    Optional<AssetCategories> findAssetCategoriesByVisibleAndIdAssetCategory(Integer idAssetCategory, Integer visible);
 
     boolean checkAssetCategoriesByParentIdAndName(Integer parentId, String name);
 

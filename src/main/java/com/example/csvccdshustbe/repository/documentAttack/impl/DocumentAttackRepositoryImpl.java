@@ -103,4 +103,39 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
         }
         return Optional.empty();
     }
+
+    @Override
+    public Optional<DocumentAttack> findDocumentAttackByIdDocumentAndStatus(Integer idDocumentAttack, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select document_attack.id_document_attack,   " +
+                "       document_attack.name,   " +
+                "       document_attack.code,   " +
+                "       document_attack.id_department,   " +
+                "       document_attack.date_determination_document,   " +
+                "       document_attack.status,   " +
+                "       document_attack.time_created,   " +
+                "       document_attack.time_modified   " +
+                "from document_attack   " +
+                "where document_attack.id_document_attack = :idDocumentAttack   " +
+                "and document_attack.status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idDocumentAttack", idDocumentAttack);
+        query.setParameter("status", status);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                DocumentAttack documentAttack=new DocumentAttack();
+                documentAttack.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[0]));
+                documentAttack.setName(ValueUtil.getStringByObject(obj[1]));
+                documentAttack.setCode(ValueUtil.getStringByObject(obj[2]));
+                documentAttack.setIdDepartment(ValueUtil.getIntegerByObject(obj[3]));
+                documentAttack.setDateDeterminationDocument(ValueUtil.getStringByObject(obj[4]));
+                documentAttack.setStatus(ValueUtil.getIntegerByObject(obj[5]));
+                documentAttack.setTimeCreated((ValueUtil.getStringByObject(obj[6])));
+                documentAttack.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                return Optional.of(documentAttack);
+            }
+        }
+        return Optional.empty();
+    }
 }

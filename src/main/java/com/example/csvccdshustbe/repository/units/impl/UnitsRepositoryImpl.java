@@ -1,6 +1,5 @@
 package com.example.csvccdshustbe.repository.units.impl;
 
-import com.example.csvccdshustbe.entity.Suppliers;
 import com.example.csvccdshustbe.entity.Units;
 import com.example.csvccdshustbe.repository.units.UnitsRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -116,6 +115,38 @@ public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
                 units.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
                 units.setTimeModified(ValueUtil.getStringByObject(obj[3]));
                 units.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                units.setStatus(ValueUtil.getIntegerByObject(obj[5]));
+                return Optional.of(units);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Units> findUnitByIdUnitAndIdAssetCategoryAndStatus(Integer idUnit, Integer idAssetCategory, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select un.id_unit, un.name, un.time_created,  " +
+                "       un.time_modified, un.id_asset_category,  " +
+                "       un.status  " +
+                "from units un  " +
+                "    inner join asset_categories assetCategory   " +
+                "        on un.id_asset_category = assetCategory.id_asset_category  " +
+                "where un.id_unit = :idUnit  " +
+                "and assetCategory.id_asset_category = :idAssetCategory  " +
+                "and un.status = :status   ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idUnit", idUnit);
+        query.setParameter("idAssetCategory", idAssetCategory);
+        query.setParameter("status", status);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Units units = new Units();
+                units.setIdUnit(ValueUtil.getIntegerByObject(obj[0]));
+                units.setName(ValueUtil.getStringByObject(obj[1]));
+                units.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
+                units.setTimeModified(ValueUtil.getStringByObject(obj[3]));
+                units.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[4]));
                 units.setStatus(ValueUtil.getIntegerByObject(obj[5]));
                 return Optional.of(units);
             }

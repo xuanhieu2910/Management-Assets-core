@@ -19,6 +19,8 @@ public interface AssetCategoriesService {
 
     AssetCategories findAssetCategoriesVisibleByCodeName(String codeName) throws Exception;
 
+    AssetCategories findAssetCategoriesByVisibleAndIdAssetCategory(Integer idAssetCategory, Integer visible);
+
     void createAssetCategory(CreateAssetCategoryRequest request) throws ValidateFiledException;
     void updateAssetCategory(UpdateAssetCategoryRequest request) throws ValidateFiledException;
 

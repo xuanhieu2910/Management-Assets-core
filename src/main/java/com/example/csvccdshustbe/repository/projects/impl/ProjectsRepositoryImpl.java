@@ -197,6 +197,35 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
         }
         return Optional.empty();
     }
+
+    @Override
+    public Optional<Projects> findProjectsByIdAndStatus(Integer idProject, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select pj.id_project, pj.name, " +
+                "  pj.short_name, pj.parent, " +
+                "  pj.time_created, pj.time_modified, pj.visible " +
+                " from projects pj " +
+                "where pj.id_project = :idProject and pj.visible = :visible ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProject", idProject);
+        query.setParameter("visible", status);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                Projects projects = new Projects();
+                projects.setIdProject(ValueUtil.getIntegerByObject(obj[0]));
+                projects.setName(ValueUtil.getStringByObject(obj[1]));
+                projects.setShortName(ValueUtil.getStringByObject(obj[2]));
+                projects.setParent(ValueUtil.getIntegerByObject(obj[3]));
+                projects.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                projects.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                projects.setVisible(ValueUtil.getIntegerByObject(obj[6]));
+                return Optional.of(projects);
+            }
+        }
+        return Optional.empty();
+    }
+
     @Override
     public boolean checkExitsProjectByNameOrCodeOrShortName(String name, String shortName) {
         StringBuilder sb = new StringBuilder();

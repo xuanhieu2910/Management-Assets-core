@@ -97,18 +97,22 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private void validateDataCommonCreateAsset(Map<String, Object> createAssetRequest) {
-        Integer idDepartment = ValueUtil.getIntegerByObject(createAssetRequest.get("idDepartment"));
+        Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_COMMON);
+        Integer idDepartment = ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment"));
         departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
-        //validate location
-        Integer idLocation = ValueUtil.getIntegerByObject(createAssetRequest.get("idLocation"));
+        Integer idLocation = ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation"));
         locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
-        //validate asset category
-//        String codeAssetCategory = ValueUtil.getStringByObject(createAssetRequest.get("codeAssetCategory"));
-//        assetCategoriesService.findAssetCategoriesVisibleByCodeName(codeAssetCategory);
-//        createAssetRequest.
+        Integer idAssetCategory = ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory"));
+        assetCategoriesService.findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, Constants.ASSET_CATEGORY_IS_VISIBLE);
         //validate units
+        Integer idUnit = ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit"));
+        unitsService.findUnitsByIdUnitAndIdAssetCategoryAndStatus(idUnit, idAssetCategory, Constants.UNITS_IS_ACTIVE);
         //validate documents
+        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
+        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
         //validate project
+        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
+        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
     }
 
     private void storeNewAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {

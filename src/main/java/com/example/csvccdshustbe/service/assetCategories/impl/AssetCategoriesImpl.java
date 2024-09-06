@@ -58,6 +58,16 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     }
 
     @Override
+    public AssetCategories findAssetCategoriesByVisibleAndIdAssetCategory(Integer idAssetCategory, Integer visible) {
+        Optional<AssetCategories> categories = assetCategoriesRepository.
+                findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, visible);
+        if (!categories.isPresent()) {
+            throw new NotFoundException("Don't exits asset category!");
+        }
+        return categories.get();
+    }
+
+    @Override
     public void createAssetCategory(CreateAssetCategoryRequest request) throws ValidateFiledException {
         validateCreateAssetCategory(request);
         assetCategoriesRepository.save(createAssetCategoryRequest(request));

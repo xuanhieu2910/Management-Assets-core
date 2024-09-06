@@ -9,4 +9,6 @@ public interface DocumentAttackRepositoryCustom {
     List<DocumentAttack> findAllDocumentAttackResponseByStatus(Integer status);
     Optional<DocumentAttack> findDocumentAttackByName(String name);
     Optional<DocumentAttack> findDocumentAttackById(Integer idDocumentAttack);
+
+    Optional<DocumentAttack> findDocumentAttackByIdDocumentAndStatus(Integer idDocumentAttack, Integer status);
 }

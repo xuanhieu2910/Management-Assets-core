@@ -121,4 +121,14 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
         }
         documentAttackRepository.delete(documentAttackOptional.get());
     }
+
+    @Override
+    public DocumentAttack findDocumentAttackByIdDocumentAndStatus(Integer idDocumentAttack, Integer status) {
+        Optional<DocumentAttack>documentAttackOptional = documentAttackRepository.
+                findDocumentAttackByIdDocumentAndStatus(idDocumentAttack, status);
+        if (!documentAttackOptional.isPresent()) {
+            throw new NotFoundException("Don't exits document attack!");
+        }
+        return documentAttackOptional.get();
+    }
 }

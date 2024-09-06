@@ -81,6 +81,15 @@ public class ProjectsServiceImpl implements ProjectsService {
         projectsRepository.delete(projectsOptional.get());
     }
 
+    @Override
+    public Projects findProjectsByIdProjectAndStatus(Integer idProject, Integer status) {
+        Optional<Projects> projects = projectsRepository.findProjectsByIdAndStatus(idProject, status);
+        if (!projects.isPresent()) {
+            throw new NotFoundException("Don't exits projects by id!");
+        }
+        return projects.get();
+    }
+
     private void validateDataCreateProjects(CreateProjectsRequest request) throws ValidateFiledException{
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
