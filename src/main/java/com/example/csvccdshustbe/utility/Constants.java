@@ -143,4 +143,18 @@ public class Constants {
     public static final Integer ORIGINAL_IS_DEFAULT = 1;
 
     /*----------------------------------------------------*/
+
+    /**
+     * Constant Method buy asset
+     * */
+    public static final Integer METHOD_BUY_ASSET_ACTIVE = 1;
+    public static final Integer METHOD_BUY_ASSET_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
+
+    /**
+     * Constant type buy asset
+     * */
+    public static final Integer TYPE_BUY_ASSET_ACTIVE = 1;
+    public static final Integer TYPE_BUY_ASSET_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
 }

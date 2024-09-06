@@ -310,22 +310,22 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
 
     private void setConditionFindAllDepartment(FindAllDepartmentRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())){
-            sb.append(" and (cte.name REGEXP '[' + :keyword + ']') ");
+            sb.append(" and (cte.name REGEXP :keyword ) ");
         }
         if (ObjectUtils.isNotEmpty(request.getStatus())){
             sb.append(" and cte.status = :status ");
         }
         if (StringUtils.isNotBlank(request.getShortName())){
-            sb.append(" and (cte.code REGEXP '[' + :codeName + ']') ");
+            sb.append(" and (cte.code REGEXP :codeName ) ");
         }
         if (StringUtils.isNotBlank(request.getShortName())){
-            sb.append(" and (cte.short_name REGEXP '[' + :shortName + ']') ");
+            sb.append(" and (cte.short_name REGEXP :shortName ) ");
         }
     }
 
     private void setConditionFindAllDepartmentByCodeAndVisible(FindAllDepartmentVisibleRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())){
-            sb.append(" and (cte.name REGEXP '[' + :keyword + ']') ");
+            sb.append(" and (cte.name REGEXP :keyword ) ");
         }
     }
 

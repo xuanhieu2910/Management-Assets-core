@@ -22,7 +22,7 @@ public class FindAllOriginalVisibleResponse {
     private Integer parent;
     @JsonProperty("visible")
     private Integer visible;
-    @JsonProperty("hard_code_dev")
+    @JsonProperty("hard_code")
     private String hardCodeDev;
     @JsonProperty("id_asset_category")
     private Integer idAssetCategory;
