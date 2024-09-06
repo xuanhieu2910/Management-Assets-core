@@ -25,8 +25,8 @@ public class MachineModule implements IModules{
     private String serial;
     @Column(name = "publish_date")
     private String publishDate;
-    @Column(name = "country")
-    private String country;
+    @Column(name = "id_country")
+    private Integer idCountry;
     @Column(name = "id_user")
     private Integer idUser;
     @Column(name = "id_type_use")

@@ -55,5 +55,9 @@ public class Asset {
     private Integer idUserCreated;
     @Column(name = "id_user_modified")
     private Integer idUserModified;
+    @Column(name = "describe")
+    private String describe;
+    @Column(name = "quantity")
+    private Integer quantity;
 
 }

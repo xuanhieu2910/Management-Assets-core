@@ -17,7 +17,7 @@ public class MachineModuleFactory implements ModuleFactory {
         machineModule.setModel(ValueUtil.getStringByObject(mapModuleCreate.get("model")));
         machineModule.setSerial(ValueUtil.getStringByObject(mapModuleCreate.get("serial")));
         machineModule.setPublishDate(ValueUtil.getStringByObject(mapModuleCreate.get("publishDate")));
-        machineModule.setCountry(ValueUtil.getStringByObject(mapModuleCreate.get("country")));
+        machineModule.setIdCountry(ValueUtil.getIntegerByObject(mapModuleCreate.get("idCountry")));
         machineModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleCreate.get("idUser")));
         machineModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleCreate.get("idTypeUse")));
         return machineModule;

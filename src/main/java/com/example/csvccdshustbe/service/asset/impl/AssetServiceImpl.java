@@ -176,6 +176,8 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdProjects(ValueUtil.getIntegerByObject(dataAsset.get("idProjects")));
         asset.setPurpose(ValueUtil.getStringByObject(dataAsset.get("purpose")));
         asset.setNotes(ValueUtil.getStringByObject(dataAsset.get("notes")));
+        asset.setDescribe(ValueUtil.getStringByObject(dataAsset.get("describe")));
+        asset.setQuantity(ValueUtil.getIntegerByObject(dataAsset.get("quantity")));
         asset.setFileAttack(ValueUtil.getStringByObject(dataAsset.get("fileAttack")));
         String timeCurrent = String.valueOf(new Date().getTime());
         asset.setTimeCreated(timeCurrent);
