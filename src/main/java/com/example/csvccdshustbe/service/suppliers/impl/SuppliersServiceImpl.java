@@ -75,7 +75,6 @@ public class SuppliersServiceImpl implements SuppliersService {
        if (StringUtils.isBlank(request.getName())) {
                 throw new ValidateFiledException("Validate data request!");
             }
-        ValueUtil.validateNumberOrCharacter(request.getName());
             Optional<Suppliers> suppliers = suppliersRepository.findSuppliersByName(request.getName());
             if (suppliers.isPresent()){
                 throw new ValidateFiledException("Exits suppliers by name!");
@@ -105,18 +104,6 @@ public class SuppliersServiceImpl implements SuppliersService {
         }
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
-        }
-        if (!suppliersOptional.get().getName().equals(request.getName())) {
-
-            if (StringUtils.isNotBlank(request.getName())){
-                ValueUtil.validateNumberOrCharacter(request.getName());
-            }
-        }
-        if (StringUtils.isNotBlank(request.getNotes())){
-            ValueUtil.validateNumberOrCharacter(request.getNotes());
-        }
-        if (StringUtils.isNotBlank(request.getPhoneNumber())){
-            ValueUtil.validateNumberOrCharacter(request.getPhoneNumber());
         }
         return suppliersOptional.get();
 

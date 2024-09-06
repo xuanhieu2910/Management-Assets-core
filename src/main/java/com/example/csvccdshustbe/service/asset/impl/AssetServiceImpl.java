@@ -9,10 +9,15 @@ import com.example.csvccdshustbe.factory.module.ModuleFactory;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.service.asset.AssetService;
+import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.declare.DeclareServiceFactory;
 import com.example.csvccdshustbe.service.department.DepartmentService;
+import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
+import com.example.csvccdshustbe.service.location.LocationService;
 import com.example.csvccdshustbe.service.modules.ModulesServiceFactory;
 import com.example.csvccdshustbe.service.original.OriginalServiceFactory;
+import com.example.csvccdshustbe.service.projects.ProjectsService;
+import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.ProxyInitDataAssetUtil;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -21,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.context.SecurityContext;
@@ -47,6 +53,17 @@ public class AssetServiceImpl implements AssetService {
     ModulesServiceFactory modulesServiceFactory;
     @Autowired
     DepartmentService departmentService;
+    @Autowired
+    LocationService locationService;
+    @Autowired
+    AssetCategoriesService assetCategoriesService;
+    @Autowired
+    UnitsService unitsService;
+    @Autowired
+    DocumentAttackService documentAttackService;
+    @Autowired
+    ProjectsService projectsService;
+
 
 
 
@@ -71,12 +88,6 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private void validateDataDeclareCreateAsset(Map<String, Object> createAssetRequest) {
-        //validate department
-        //validate location
-        //validate asset category
-        //validate units
-        //validate documents
-        //validate project
     }
 
     private void validateDataOriginalCreateAsset(Map<String, Object> createAssetRequest) {
@@ -86,6 +97,16 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private void validateDataCommonCreateAsset(Map<String, Object> createAssetRequest) {
+        Integer idDepartment = ValueUtil.getIntegerByObject(createAssetRequest.get("idDepartment"));
+        departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
+        //validate location
+        Integer idLocation = ValueUtil.getIntegerByObject(createAssetRequest.get("idLocation"));
+        locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
+        //validate asset category
+//        Integer idAssetCategory =
+        //validate units
+        //validate documents
+        //validate project
     }
 
     private void storeNewAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
@@ -143,7 +164,11 @@ public class AssetServiceImpl implements AssetService {
         Asset asset = new Asset();
         asset.setName(ValueUtil.getStringByObject(dataAsset.get("name")));
         asset.setIdAssetCategory(ValueUtil.getIntegerByObject(dataAsset.get("idAssetCategory")));
-        asset.setCodeAsset(ValueUtil.getStringByObject(dataAsset.get("codeDepartment")) + "-" + String.valueOf(UUID.randomUUID()));
+        if (StringUtils.isNotBlank(ValueUtil.getStringByObject(dataAsset.get("codeDepartment")))) {
+            asset.setCodeAsset(ValueUtil.getStringByObject(dataAsset.get("codeDepartment")) + "-" + String.valueOf(UUID.randomUUID()));
+        } else {
+            asset.setCodeAsset(String.valueOf(UUID.randomUUID()));
+        }
         asset.setIdDocumentAttack(ValueUtil.getIntegerByObject(dataAsset.get("idDocumentAttack")));
         asset.setIdDepartment(ValueUtil.getIntegerByObject(dataAsset.get("idDepartment")));
         asset.setIdLocation(ValueUtil.getIntegerByObject(dataAsset.get("idLocation")));

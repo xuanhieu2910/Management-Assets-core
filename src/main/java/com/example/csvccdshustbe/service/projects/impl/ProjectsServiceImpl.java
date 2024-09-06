@@ -85,7 +85,6 @@ public class ProjectsServiceImpl implements ProjectsService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<Projects> projectsOptional = projectsRepository.findProjectByName(request.getName());
         if (projectsOptional.isPresent()){
             throw new ValidateFiledException("Exits Project by name of Project!");
@@ -132,13 +131,6 @@ public class ProjectsServiceImpl implements ProjectsService {
         }
         if (!projectsOptional.get().getName().equals(request.getName()) ||
                 !projectsOptional.get().getShortName().equals(request.getShortName())) {
-
-            if (StringUtils.isNotBlank(request.getName())){
-                ValueUtil.validateNumberOrCharacter(request.getName());
-            }
-            if (StringUtils.isNotBlank(request.getShortName())){
-                ValueUtil.validateNumberOrCharacter(request.getShortName());
-            }
             if (projectsRepository.checkExitsProjectByNameOrCodeOrShortName(request.getName(),
                     request.getShortName())) {
                 throw new ValidateFiledException("Exits project by name or short name!");

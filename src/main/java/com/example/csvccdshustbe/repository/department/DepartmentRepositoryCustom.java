@@ -22,6 +22,9 @@ public interface DepartmentRepositoryCustom {
 
     Optional<Department> findDepartmentById(Integer idDepartment);
 
+    Optional<Department> findDepartmentByIdDepartmentAndStatus(Integer idDepartment, Integer status);
+
     boolean checkExitsDepartmentByNameOrCodeOrShortName(String name, String code, String shortName);
+
 
 }

@@ -237,4 +237,39 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
         List<Object[]> result = query.getResultList();
         return CollectionUtils.isEmpty(result);
     }
+
+    @Override
+    public Optional<Location> findLocationByIdLocationAndIdDepartmentAndVisible(Integer idLocation,
+                                                                                Integer idDepartment,
+                                                                                Integer visible) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select lo.id_location, lo.name, lo.short_name, " +
+                "       lo.parent, lo.time_created, lo.time_modified, " +
+                "       lo.visible, lo.id_department " +
+                "from location lo " +
+                "    inner join department de on lo.id_department = de.id_department " +
+                "and lo.id_location = :idLocation " +
+                "and de.id_department = :idDepartment " +
+                "and lo.visible = :visible ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idLocation", idLocation);
+        query.setParameter("idDepartment", idDepartment);
+        query.setParameter("visible", visible);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result) {
+                Location location = new Location();
+                location.setIdLocation(ValueUtil.getIntegerByObject(obj[0]));
+                location.setName(ValueUtil.getStringByObject(obj[1]));
+                location.setShortName(ValueUtil.getStringByObject(obj[2]));
+                location.setParent(ValueUtil.getIntegerByObject(obj[3]));
+                location.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                location.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                location.setVisible(ValueUtil.getIntegerByObject(obj[6]));
+                location.setIdDepartment(ValueUtil.getIntegerByObject(obj[7]));
+                return Optional.of(location);
+            }
+        }
+        return Optional.empty();
+    }
 }

@@ -55,7 +55,6 @@ public class CurrentUsageServiceImpl implements CurrentUsageService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<CurrentUsage> currentUsage = currentUsageRepository.findCurrentUsageByName(request.getName());
         if (currentUsage.isPresent()){
             throw new ValidateFiledException("Exits Current Usage by name!");
@@ -87,19 +86,6 @@ public class CurrentUsageServiceImpl implements CurrentUsageService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        if (!currentUsageOptional.get().getName().equals(request.getName()) ||
-                !currentUsageOptional.get().getCode().equals(request.getCode())) {
-
-            if (StringUtils.isNotBlank(request.getName())){
-                ValueUtil.validateNumberOrCharacter(request.getName());
-            }
-
-            if (StringUtils.isNotBlank(request.getCode())){
-                ValueUtil.validateNumberOrCharacter(request.getCode());
-            }
-
-        }
-
         return currentUsageOptional.get();
     }
 

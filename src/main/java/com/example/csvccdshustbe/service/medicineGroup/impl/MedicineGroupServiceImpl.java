@@ -74,7 +74,6 @@ public class MedicineGroupServiceImpl implements MedicineGroupService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<MedicineGroup> medicineGroup = medicineGroupRepository.findMedicineGroupByName(request.getName());
         if (medicineGroup.isPresent()){
             throw new ValidateFiledException("Exits medicine group by name!");
@@ -83,9 +82,6 @@ public class MedicineGroupServiceImpl implements MedicineGroupService {
             if (request.getShortName().equals(medicineGroup.get().getShortName())){
                 throw new ValidateFiledException("Exits medicine group by short name");
             }
-        }
-        if (StringUtils.isNotBlank(request.getDescription())){
-            ValueUtil.validateNumberOrCharacter(request.getDescription());
         }
     }
 
@@ -114,21 +110,6 @@ public class MedicineGroupServiceImpl implements MedicineGroupService {
         }
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
-        }
-        if (!medicineGroupOptional.get().getName().equals(request.getName()) ||
-                !medicineGroupOptional.get().getShortName().equals(request.getShortName())) {
-
-            if (StringUtils.isNotBlank(request.getName())){
-                ValueUtil.validateNumberOrCharacter(request.getName());
-            }
-
-            if (StringUtils.isNotBlank(request.getShortName())){
-                ValueUtil.validateNumberOrCharacter(request.getShortName());
-            }
-
-        }
-        if (StringUtils.isNotBlank(request.getDescription())){
-            ValueUtil.validateNumberOrCharacter(request.getDescription());
         }
         return medicineGroupOptional.get();
 

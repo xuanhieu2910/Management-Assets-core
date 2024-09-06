@@ -57,7 +57,6 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<DocumentAttack> documentAttackOptional = documentAttackRepository.findDocumentAttackByName(request.getName());
         if (documentAttackOptional.isPresent()) {
             throw new ValidateFiledException("Exits Document Attack by name Document Attack!");
@@ -101,15 +100,6 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
         }
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
-        }
-        if (!documentAttackOptional.get().getName().equals(request.getName())) {
-
-            if (StringUtils.isNotBlank(request.getName())){
-                ValueUtil.validateNumberOrCharacter(request.getName());
-            }
-        }
-        if (StringUtils.isNotBlank(request.getCode())){
-            ValueUtil.validateNumberOrCharacter(request.getCode());
         }
         return documentAttackOptional.get();
     }

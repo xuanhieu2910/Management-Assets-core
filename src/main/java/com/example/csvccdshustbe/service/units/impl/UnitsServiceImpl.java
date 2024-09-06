@@ -79,7 +79,6 @@ public class UnitsServiceImpl implements UnitsService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<Units> units = unitsRepository.findUnitByName(request.getName());
         if (units.isPresent()){
             throw new ValidateFiledException("Exits Unit by name of Unit!");
@@ -105,12 +104,6 @@ public class UnitsServiceImpl implements UnitsService {
         }
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
-        }
-        if (!unitsOptional.get().getName().equals(request.getName())) {
-
-            if (StringUtils.isNotBlank(request.getName())){
-                ValueUtil.validateNumberOrCharacter(request.getName());
-            }
         }
         return unitsOptional.get();
     }

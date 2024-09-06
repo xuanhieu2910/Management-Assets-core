@@ -65,7 +65,6 @@ public class TypeUseServiceImpl implements TypeUseService{
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<TypeUse> typeUse = typeUseRepository.findTypeUseByName(request.getName());
         if (typeUse.isPresent()){
             throw new ValidateFiledException("Exits type use by name of Type use!");
@@ -88,12 +87,6 @@ public class TypeUseServiceImpl implements TypeUseService{
         }
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
-        }
-        if (!typeUseOptional.get().getName().equals(request.getName())) {
-
-            if (StringUtils.isNotBlank(request.getName())){
-                ValueUtil.validateNumberOrCharacter(request.getName());
-            }
         }
         return typeUseOptional.get();
     }

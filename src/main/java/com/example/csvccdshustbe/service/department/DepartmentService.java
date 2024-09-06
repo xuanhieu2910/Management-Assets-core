@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.department;
 
 
+import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
@@ -20,4 +21,6 @@ public interface DepartmentService {
 
     void deleteDepartmentByIdDepartment(Integer idDepartment);
     Page<FindAllDepartmentVisibleResponse> findAllDepartmentVisibleByCodeAndVisible(FindAllDepartmentVisibleRequest request);
+
+    Department findDepartmentByIdDepartmentAndStatus(Integer idDepartment, Integer status);
 }

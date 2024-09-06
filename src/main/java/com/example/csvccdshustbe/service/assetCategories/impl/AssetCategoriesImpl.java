@@ -79,13 +79,6 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         }
         if (!assetCategoriesOptional.get().getName().equals(request.getName()) ||
                 !assetCategoriesOptional.get().getShortName().equals(request.getShortName())) {
-
-            if (StringUtils.isNotBlank(request.getName())){
-                ValueUtil.validateNumberOrCharacter(request.getName());
-            }
-            if (StringUtils.isNotBlank(request.getShortName())){
-                ValueUtil.validateNumberOrCharacter(request.getShortName());
-            }
             if (!assetCategoriesRepository.checkExitsAssetCategoriesByNameOrShortName(request.getName(),
                      request.getShortName())) {
                 throw new ValidateFiledException("Exits  asset category in list categories by name or short name!");
@@ -137,11 +130,6 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         if (StringUtils.isBlank(request.getName())){
             throw new ValidateFiledException("Validate data request!");
         }
-        if (StringUtils.isNotBlank(request.getName())){
-            ValueUtil.validateNumberOrCharacter(request.getName());
-        }
-
-
         if (Objects.nonNull(request.getParentId())){
             Optional<AssetCategories> categories = assetCategoriesRepository.findAssetCategoryParentByParentId(request.getParentId());
             if (!categories.isPresent()) {

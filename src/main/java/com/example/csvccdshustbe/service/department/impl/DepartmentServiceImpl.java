@@ -44,6 +44,15 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public Department findDepartmentByIdDepartmentAndStatus(Integer idDepartment, Integer status) {
+        Optional<Department> departmentOptional = departmentRepository.findDepartmentByIdDepartmentAndStatus(idDepartment, status);
+        if (!departmentOptional.isPresent()){
+            throw new NotFoundException("Don't exits department by id and status");
+        }
+        return departmentOptional.get();
+    }
+
+    @Override
     public Page<FindAllDepartmentSResponse> findAllDepartment(FindAllDepartmentRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllDepartmentSDto> dtos = departmentRepository.findAllDepartment(pageable, request);

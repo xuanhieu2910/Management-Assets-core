@@ -124,13 +124,6 @@ public class LocationServiceImpl implements LocationService {
         }
         if (!locationOptional.get().getName().equals(request.getName()) ||
                 !locationOptional.get().getShortName().equals(request.getShortName())) {
-
-            if (StringUtils.isNotBlank(request.getName())){
-                ValueUtil.validateNumberOrCharacter(request.getName());
-            }
-            if (StringUtils.isNotBlank(request.getShortName())){
-                ValueUtil.validateNumberOrCharacter(request.getShortName());
-            }
             if (locationRepository.checkExitsLocationByNameOrShortName(request.getName(),
                     request.getShortName())) {
                 throw new ValidateFiledException("Exits location by name or short name!");
@@ -169,5 +162,16 @@ public class LocationServiceImpl implements LocationService {
             throw new NotFoundException("Don't exits location by id!");
         }
         locationRepository.delete(locationOptional.get());
+    }
+
+    @Override
+    public Location findLocationByIdLocationAndIdDepartmentAndVisible(Integer idLocation, Integer idDepartment,
+                                                                      Integer visible) {
+        Optional<Location> location = locationRepository.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation,
+                idDepartment, visible);
+        if (!location.isPresent()) {
+            throw new NotFoundException("Don't exits location!");
+        }
+        return location.get();
     }
 }

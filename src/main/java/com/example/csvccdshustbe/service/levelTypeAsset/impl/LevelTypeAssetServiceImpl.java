@@ -74,7 +74,6 @@ public class LevelTypeAssetServiceImpl implements LevelTypeAssetService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<LevelTypeAsset> levelTypeAsset = levelTypeAssetRepository.findLevelTypeAssetByName(request.getName());
         if (levelTypeAsset.isPresent()){
             throw new ValidateFiledException("Exits Level type asset by name of Level type asset!");
@@ -100,15 +99,6 @@ public class LevelTypeAssetServiceImpl implements LevelTypeAssetService {
         }
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
-        }
-        if (!levelTypeAssetOptional.get().getName().equals(request.getName())) {
-
-            if (StringUtils.isNotBlank(request.getName())){
-                ValueUtil.validateNumberOrCharacter(request.getName());
-            }
-        }
-        if (StringUtils.isNotBlank(request.getDescription())){
-            ValueUtil.validateNumberOrCharacter(request.getDescription());
         }
         return levelTypeAssetOptional.get();
     }

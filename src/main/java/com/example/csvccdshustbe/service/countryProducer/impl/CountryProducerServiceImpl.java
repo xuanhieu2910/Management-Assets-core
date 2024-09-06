@@ -77,12 +77,6 @@ public class CountryProducerServiceImpl implements CountryProducerService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        if (!countryProducerOptional.get().getName().equals(request.getName())) {
-
-            if (StringUtils.isNotBlank(request.getName())){
-                ValueUtil.validateNumberOrCharacter(request.getName());
-            }
-        }
         return countryProducerOptional.get();
     }
     private CountryProducer editLevelCountryProducer(CountryProducer countryProducer, UpdateCountryProducerRequest request) {

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.location;
 
+import com.example.csvccdshustbe.entity.Location;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.Location.CreateLocationRequest;
 import com.example.csvccdshustbe.request.Location.FindAllLocationRequest;
@@ -14,5 +15,9 @@ public interface LocationService {
 
     void updateLocation(UpdateLocationRequest request) throws ValidateFiledException;
 
-    void deleteLocationByIdLocation(Integer idProject);
+    void deleteLocationByIdLocation(Integer idLocation);
+
+    Location findLocationByIdLocationAndIdDepartmentAndVisible(Integer idLocation,
+                                                               Integer idDepartment,
+                                                               Integer visible);
 }

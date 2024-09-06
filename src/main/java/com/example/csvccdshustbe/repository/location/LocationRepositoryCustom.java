@@ -22,4 +22,8 @@ public interface LocationRepositoryCustom {
 
     boolean checkExitsLocationByNameOrShortName(String name,String shortName);
 
+    Optional<Location> findLocationByIdLocationAndIdDepartmentAndVisible(Integer idLocation,
+                                                                         Integer idDepartment,
+                                                                         Integer visible);
+
 }
