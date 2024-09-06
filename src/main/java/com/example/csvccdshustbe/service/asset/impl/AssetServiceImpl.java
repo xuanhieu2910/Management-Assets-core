@@ -70,16 +70,11 @@ public class AssetServiceImpl implements AssetService {
     @Transactional
     @Override
     public void createAsset(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException {
-        initCreateAsset(createAssetRequest);
-    }
-
-    private void initCreateAsset(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException {
         Map<String, Object> dataCreateAssetRequest =
                 objectMapper.readValue(JSONObjectUtils.toJSONString(createAssetRequest), Map.class);
         validateDataCreateAsset(dataCreateAssetRequest);
         storeNewAsset(dataCreateAssetRequest);
     }
-
     private void validateDataCreateAsset(Map<String, Object> createAssetRequest) {
         validateDataCommonCreateAsset(createAssetRequest);
         validateDataModuleCreateAsset(createAssetRequest);
@@ -104,13 +99,10 @@ public class AssetServiceImpl implements AssetService {
         locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
         Integer idAssetCategory = ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory"));
         assetCategoriesService.findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, Constants.ASSET_CATEGORY_IS_VISIBLE);
-        //validate units
         Integer idUnit = ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit"));
         unitsService.findUnitsByIdUnitAndIdAssetCategoryAndStatus(idUnit, idAssetCategory, Constants.UNITS_IS_ACTIVE);
-        //validate documents
         Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
         documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
-        //validate project
         Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
         projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
     }
