@@ -141,13 +141,20 @@ public class AssetServiceImpl implements AssetService {
 
     private void storeModulesDataAsset(Map<String, Object> createAssetRequest, Asset asset) throws ValidateFiledException {
         log.info("Storing modules data asset");
-        Map<String,Object> moduleDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_MODULE);
-        moduleDataAsset.put("idAsset", asset.getIdAsset());
-        ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
-                proxyInitModuleDataAsset(ValueUtil.getStringByObject(moduleDataAsset.get(Constants.KEY_TYPE_MODULE)));
-        IModules iModules = moduleFactory.createModule(moduleDataAsset);
-        modulesServiceFactory.save(iModules,moduleDataAsset);
-        log.info("Finish store module factory " + moduleFactory.getClass());
+        List<Object[]> modulesDataAsset = (List<Object[]>) createAssetRequest.get(Constants.KEY_MODULE);
+        if (!CollectionUtils.isEmpty(modulesDataAsset)){
+            int index = 0;
+            for (Object[] obj: modulesDataAsset){
+                Map<String,Object> moduleDataAsset = (Map<String, Object>) obj[index];
+                moduleDataAsset.put("idAsset", asset.getIdAsset());
+                ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
+                        proxyInitModuleDataAsset(ValueUtil.getStringByObject(moduleDataAsset.get(Constants.KEY_TYPE_MODULE)));
+                IModules iModules = moduleFactory.createModule(moduleDataAsset);
+                modulesServiceFactory.save(iModules,moduleDataAsset);
+                log.info("Finish store module factory " + moduleFactory.getClass());
+                ++ index;
+            }
+        }
     }
 
     private Asset storeCommonData(Map<String, Object> createAssetRequest) {

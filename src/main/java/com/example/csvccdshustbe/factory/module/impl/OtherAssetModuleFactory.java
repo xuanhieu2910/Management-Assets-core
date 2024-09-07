@@ -15,7 +15,7 @@ public class OtherAssetModuleFactory implements ModuleFactory {
         OtherAssetModule otherAssetModule = new OtherAssetModule();
         otherAssetModule.setIdAsset(ValueUtil.getIntegerByObject(mapModuleCreate.get("idAsset")));
         otherAssetModule.setLicensePlate(ValueUtil.getStringByObject(mapModuleCreate.get("licensePlate")));
-        otherAssetModule.setLable(ValueUtil.getStringByObject(mapModuleCreate.get("lable")));
+        otherAssetModule.setLable(ValueUtil.getStringByObject(mapModuleCreate.get("label")));
         otherAssetModule.setModel(ValueUtil.getStringByObject(mapModuleCreate.get("model")));
         otherAssetModule.setSerial(ValueUtil.getStringByObject(mapModuleCreate.get("serial")));
         otherAssetModule.setPublishDate(ValueUtil.getStringByObject(mapModuleCreate.get("publishDate")));

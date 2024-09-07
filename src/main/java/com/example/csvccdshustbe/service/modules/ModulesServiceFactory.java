@@ -69,6 +69,9 @@ public class ModulesServiceFactory {
             case ArchitectureModule -> {
                 idInstance = architectureModuleService.save((ArchitectureModule) modules).getIdArchitectureModule();
             }
+            case OtherAssetModule -> {
+                idInstance = otherAssetModuleService.save((OtherAssetModule) modules).getIdOtherAssetModule();
+            }
             default -> {
                 throw new ValidateFiledException("Don't exits type architecture!");
             }

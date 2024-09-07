@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.utility;
 
 import com.example.csvccdshustbe.entity.GroundDeclare;
+import com.example.csvccdshustbe.entity.OtherAssetModule;
 import com.example.csvccdshustbe.enums.EnumDeclareFactory;
 import com.example.csvccdshustbe.enums.EnumModuleFactory;
 import com.example.csvccdshustbe.enums.EnumOriginalFactory;
@@ -37,6 +38,9 @@ public class ProxyInitDataAssetUtil {
             }
             case ArchitectureModule -> {
                 return new ArchitectureModuleFactory();
+            }
+            case OtherAssetModule -> {
+                return new OtherAssetModuleFactory();
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type modules!");
