@@ -18,7 +18,7 @@ import org.webjars.NotFoundException;
 
 @Tag(name = "Original Controller", description = "The Original APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
-@RequestMapping("/api/v1/asset")
+@RequestMapping("/api/v1/original")
 @PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class OriginalController {
 
