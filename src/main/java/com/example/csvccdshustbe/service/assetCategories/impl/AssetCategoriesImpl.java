@@ -130,7 +130,6 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         categories.setIsPick(null);
         categories.setAssetCount(Constants.ASSET_CATEGORY_INIT_ASSET_COUNT);
         categories.setSortOrder(null);
-        categories.setHardCodeDev(null);
         String timeCurrent = String.valueOf(new Date().getTime());
         categories.setTimeCreated(timeCurrent);
         categories.setTimeModified(timeCurrent);
@@ -176,7 +175,6 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             res.setCodeName(asset.getCodeName());
             res.setPathImage(asset.getPathImage());
             res.setIdAssetCategory(asset.getIdAssetCategory());
-            res.setHardCodeDev(asset.getHardCodeDev());
             responses.add(res);
         }
         return responses;

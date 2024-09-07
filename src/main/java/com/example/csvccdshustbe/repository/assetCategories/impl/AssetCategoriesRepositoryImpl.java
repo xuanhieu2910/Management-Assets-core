@@ -41,8 +41,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "       assetCategories.time_created,   " +
                 "       assetCategories.time_modified,   " +
                 "       assetCategories.path_image,   " +
-                "       assetCategories.is_pick,   " +
-                "       assetCategories.hard_code_dev   " +
+                "       assetCategories.is_pick " +
                 "from asset_categories assetCategories   " +
                 "where assetCategories.is_pick = :isPicked   " +
                 "  and assetCategories.visible = :isVisible  ");
@@ -67,7 +66,6 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 categories.setTimeModified(ValueUtil.getStringByObject(obj[10]));
                 categories.setPathImage(ValueUtil.getStringByObject(obj[11]));
                 categories.setIsPick(ValueUtil.getIntegerByObject(obj[12]));
-                categories.setHardCodeDev(ValueUtil.getStringByObject(obj[13]));
                 assetCategories.add(categories);
             }
         }
@@ -147,7 +145,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "       assetCategory.sort_order, assetCategory.asset_count, " +
                 "       assetCategory.visible, assetCategory.time_created, " +
                 "       assetCategory.time_modified, assetCategory.path_image, " +
-                "       assetCategory.is_pick, assetCategory.hard_code_dev " +
+                "       assetCategory.is_pick " +
                 "from asset_categories assetCategory " +
                 "where assetCategory.code_name = :codeName " +
                 "and assetCategory.visible = :visible ");
@@ -171,7 +169,6 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 categories.setTimeModified(ValueUtil.getStringByObject(obj[10]));
                 categories.setPathImage(ValueUtil.getStringByObject(obj[11]));
                 categories.setIsPick(ValueUtil.getIntegerByObject(obj[12]));
-                categories.setHardCodeDev(ValueUtil.getStringByObject(obj[13]));
                 return Optional.of(categories);
             }
         }
@@ -194,8 +191,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "       assetCategory.time_created, " +
                 "       assetCategory.time_modified, " +
                 "       assetCategory.path_image, " +
-                "       assetCategory.is_pick, " +
-                "       assetCategory.hard_code_dev " +
+                "       assetCategory.is_pick " +
                 "from asset_categories assetCategory " +
                 "where assetCategory.id_asset_category = :idAssetCategory " +
                 "  and assetCategory.visible = :visible ");
@@ -219,7 +215,6 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 categories.setTimeModified(ValueUtil.getStringByObject(obj[10]));
                 categories.setPathImage(ValueUtil.getStringByObject(obj[11]));
                 categories.setIsPick(ValueUtil.getIntegerByObject(obj[12]));
-                categories.setHardCodeDev(ValueUtil.getStringByObject(obj[13]));
                 return Optional.of(categories);
             }
         }
@@ -263,7 +258,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "       assetCategories.sort_order, assetCategories.asset_count, " +
                 "       assetCategories.visible, assetCategories.time_created, " +
                 "       assetCategories.time_modified, assetCategories.path_image, " +
-                "       assetCategories.is_pick, assetCategories.hard_code_dev " +
+                "       assetCategories.is_pick " +
                 "from asset_categories assetCategories " +
                 "where assetCategories.id_asset_category = :parentId ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -285,7 +280,6 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 categories.setTimeModified(ValueUtil.getStringByObject(obj[10]));
                 categories.setPathImage(ValueUtil.getStringByObject(obj[11]));
                 categories.setIsPick(ValueUtil.getIntegerByObject(obj[12]));
-                categories.setHardCodeDev(ValueUtil.getStringByObject(obj[13]));
                 return Optional.of(categories);
             }
         }
@@ -301,7 +295,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "       assetCategories.sort_order, assetCategories.asset_count, " +
                 "       assetCategories.visible, assetCategories.time_created, " +
                 "       assetCategories.time_modified, assetCategories.path_image, " +
-                "       assetCategories.is_pick,  assetCategories.hard_code_dev " +
+                "       assetCategories.is_pick " +
                 "from asset_categories assetCategories " +
                 "where assetCategories.id_asset_category = :idAssetCategory ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -323,7 +317,6 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 categories.setTimeModified(ValueUtil.getStringByObject(obj[10]));
                 categories.setPathImage(ValueUtil.getStringByObject(obj[11]));
                 categories.setIsPick(ValueUtil.getIntegerByObject(obj[12]));
-                categories.setHardCodeDev(ValueUtil.getStringByObject(obj[13]));
                 return Optional.of(categories);
             }
         }
