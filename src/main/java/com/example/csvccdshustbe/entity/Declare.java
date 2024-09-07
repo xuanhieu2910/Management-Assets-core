@@ -28,5 +28,7 @@ public class Declare {
     private String timeModified;
     @Column(name = "id_category")
     private Integer idCategory;
+    @Column(name = "hard_code")
+    private String hardCode;
 
 }

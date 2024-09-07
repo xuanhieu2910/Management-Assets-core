@@ -157,4 +157,11 @@ public class Constants {
     public static final Integer TYPE_BUY_ASSET_ACTIVE = 1;
     public static final Integer TYPE_BUY_ASSET_UN_ACTIVE = -1;
     /*----------------------------------------------------*/
+
+    /**
+     * Constant Declare
+     * */
+    public static final Integer DECLARE_VISIBLE = 1;
+    public static final Integer DECLARE_UN_VISIBLE = -1;
+    /*----------------------------------------------------*/
 }
