@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 
 public interface LocationService {
 
-    Page<FindAllLocationResponse> findAllLocationResponseByName(FindAllLocationRequest request,Integer idDepartment);
+    Page<FindAllLocationResponse> findAllLocationResponseByName(FindAllLocationRequest request);
     void createLocation(CreateLocationRequest request) throws ValidateFiledException;
 
     void updateLocation(UpdateLocationRequest request) throws ValidateFiledException;

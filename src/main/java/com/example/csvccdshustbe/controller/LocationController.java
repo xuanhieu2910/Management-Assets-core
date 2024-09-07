@@ -29,9 +29,9 @@ public class LocationController {
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
-    }) FindAllLocationRequest request,@RequestParam("id-department") Integer idDepartment){
+    }) FindAllLocationRequest request){
         try{
-            return ApiResponseDto.createdWithState(locationService.findAllLocationResponseByName(request,idDepartment),
+            return ApiResponseDto.createdWithState(locationService.findAllLocationResponseByName(request),
                     "Find all location success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -60,7 +60,7 @@ public class CountryProducerController {
 
 
     @DeleteMapping
-    public ResponseEntity<?> deleteCountryProducerByIdCP(@RequestParam("id-countryproducer") Integer idCurrentUsage){
+    public ResponseEntity<?> deleteCountryProducerByIdCP(@RequestParam("id-country-producer") Integer idCurrentUsage){
         try {
             countryProducerService.deleteCountryProducerByIdCP(idCurrentUsage);
             return ApiResponseDto.createdWithMessage("Delete Country producer success!", HttpStatus.OK);

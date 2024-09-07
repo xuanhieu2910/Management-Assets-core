@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface LocationRepositoryCustom {
 
-    Page<FindAllLocationDto> findAllLocationVisible( Pageable pageable,FindAllLocationRequest request,Integer idDepartment);
+    Page<FindAllLocationDto> findAllLocationVisible( Pageable pageable,FindAllLocationRequest request);
 
     Optional<Location> findLocationByName(String name);
 

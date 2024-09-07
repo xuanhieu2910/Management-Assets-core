@@ -30,39 +30,39 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
 
 
     @Override
-    public Page<FindAllLocationDto> findAllLocationVisible( Pageable pageable,FindAllLocationRequest request,Integer idDepartment) {
+    public Page<FindAllLocationDto> findAllLocationVisible( Pageable pageable,FindAllLocationRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_location as (    " +
-                "       select location.id_location, location.name, " +
-                "              location.short_name, location.id_department, " +
-                "              location.parent, location.visible, " +
-                "              location.time_created, location.time_modified, " +
-                "              1 as depth,    " +
-                "              CAST(location.id_location as NCHAR ) as path " +
-                "       from location " +
-                "       where location.parent is null " +
-                "       union all    " +
-                "       select location.id_location, location.name, " +
-                "              location.short_name, location.id_department, " +
-                "              location.parent, location.visible, " +
-                "              location.time_created, location.time_modified, " +
-                "              cte.depth + 1 as depth,    " +
-                "              concat_ws('/',cte.path,CAST(location.id_location as NCHAR)) as path " +
-                "       from location " +
-                "                INNER JOIN cte_location cte ON location.parent = cte.id_location " +
-                "       )    " +
-                "   select cte.id_location, cte.name, " +
-                "          cte.short_name, cte.id_department, cte.parent, " +
-                "          cte.visible,  " +
-                "          cte.time_created, cte.time_modified, " +
-                "          cte.depth, cte.path " +
-                "   from cte_location cte    " +
-                "   where 1 = 1 " +
-                "  and  cte.id_department = :idDepartment " +
-                "and cte.visible = :visible ");
+        sb.append("WITH RECURSIVE cte_location as (     " +
+                "      select location.id_location, location.name,  " +
+                "             location.short_name, location.id_department,  " +
+                "             location.parent, location.visible,  " +
+                "             location.time_created, location.time_modified,  " +
+                "             1 as depth,     " +
+                "             CAST(location.id_location as NCHAR ) as path  " +
+                "      from location  " +
+                "      where location.parent is null  " +
+                "      union all     " +
+                "      select location.id_location, location.name,  " +
+                "             location.short_name, location.id_department,  " +
+                "             location.parent, location.visible,  " +
+                "             location.time_created, location.time_modified,  " +
+                "             cte.depth + 1 as depth,     " +
+                "             concat_ws('/',cte.path,CAST(location.id_location as NCHAR)) as path  " +
+                "      from location  " +
+                "               INNER JOIN cte_location cte ON location.parent = cte.id_location  " +
+                "      )     " +
+                "  select cte.id_location, cte.name,  " +
+                "         cte.short_name, cte.id_department, cte.parent,  " +
+                "         cte.visible,   " +
+                "         cte.time_created, cte.time_modified,  " +
+                "         cte.depth, cte.path  " +
+                "  from cte_location cte " +
+                "    inner join department de on cte.id_department = de.id_department " +
+                "  where 1 = 1  " +
+                "  and de.id_department = :idDepartment " +
+                "  and cte.visible = :visible ");
         setConditionFindAllLocationVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("idDepartment", idDepartment);
         setParameterFindAllLocationVisible(request, query);
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
@@ -88,6 +88,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
 
 
     private void setParameterFindAllLocationVisible(FindAllLocationRequest request, Query query) {
+        query.setParameter("idDepartment", request.getIdDepartment());
         query.setParameter("visible", Constants.LOCATION_ACTIVE_STATUS);
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
@@ -102,29 +103,31 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
 
     private long countFindAllLocationVisible(FindAllLocationRequest request){
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_location as (  " +
-                "       select location.id_location, location.name,  " +
-                "              location.short_name, location.id_department,  " +
-                "              location.parent, location.visible,   " +
-                "              location.time_created, location.time_modified,  " +
-                "              1 as depth,     " +
-                "              CAST(location.id_location as NCHAR ) as path  " +
-                "       from location  " +
-                "       where location.parent is null  " +
-                "       union all     " +
-                "       select Location.id_location, Location.name,  " +
-                "              Location.short_name, Location.id_department,  " +
-                "              Location.parent, Location.visible,   " +
-                "              Location.time_created, Location.time_modified,  " +
-                "              cte.depth + 1 as depth,     " +
-                "              concat_ws('/',cte.path,CAST(Location.id_location as NCHAR)) as path  " +
-                "       from location Location  " +
-                "                INNER JOIN cte_location cte ON Location.parent = cte.id_location  " +
-                "       )     " +
-                "   select count(cte.id_location) count  " +
-                "   from cte_location cte  " +
-                "   where 1 = 1  " +
-                "   and cte.visible = :visible ");
+        sb.append("WITH RECURSIVE cte_location as (      " +
+                "      select location.id_location, location.name,   " +
+                "             location.short_name, location.id_department,   " +
+                "             location.parent, location.visible,   " +
+                "             location.time_created, location.time_modified,   " +
+                "             1 as depth,      " +
+                "             CAST(location.id_location as NCHAR ) as path   " +
+                "      from location   " +
+                "      where location.parent is null   " +
+                "      union all      " +
+                "      select location.id_location, location.name,   " +
+                "             location.short_name, location.id_department,   " +
+                "             location.parent, location.visible,   " +
+                "             location.time_created, location.time_modified,   " +
+                "             cte.depth + 1 as depth,      " +
+                "             concat_ws('/',cte.path,CAST(location.id_location as NCHAR)) as path   " +
+                "      from location   " +
+                "               INNER JOIN cte_location cte ON location.parent = cte.id_location   " +
+                "      )      " +
+                "  select count(0)  " +
+                "  from cte_location cte  " +
+                "    inner join department de on cte.id_department = de.id_department  " +
+                "  where 1 = 1   " +
+                "  and de.id_department = :idDepartment  " +
+                "  and cte.visible = :visible ");
         setConditionFindAllLocationVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllLocationVisible(request, query);

@@ -37,9 +37,9 @@ public class LocationServiceImpl implements LocationService {
     DepartmentRepository departmentRepository;
 
     @Override
-    public Page<FindAllLocationResponse> findAllLocationResponseByName(FindAllLocationRequest request,Integer idDepartment) {
+    public Page<FindAllLocationResponse> findAllLocationResponseByName(FindAllLocationRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-        Page<FindAllLocationDto> dtos = locationRepository.findAllLocationVisible(pageable, request,idDepartment);
+        Page<FindAllLocationDto> dtos = locationRepository.findAllLocationVisible(pageable, request);
         return new PageImpl<>(convertToFindAllLocationsResponse(dtos.get().collect(Collectors.toList())),
                 pageable, dtos.getTotalElements());
     }
@@ -53,6 +53,7 @@ public class LocationServiceImpl implements LocationService {
             res.setParent(allLocationDto.getParent());
             res.setDepth(allLocationDto.getDepth());
             res.setPath(allLocationDto.getPath());
+            res.setIdDepartment(allLocationDto.getIdDepartment());
             responses.add(res);
         }
         return responses;
