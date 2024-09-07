@@ -14,6 +14,7 @@ public class MedicineModuleFactory implements ModuleFactory {
         MedicineModule medicineModule = new MedicineModule();
         medicineModule.setIdAsset(ValueUtil.getIntegerByObject(mapModuleCreate.get("idAsset")));
         medicineModule.setIdMedicineType(ValueUtil.getIntegerByObject(mapModuleCreate.get("idMedicineType")));
+        medicineModule.setIdMedicineGroup(ValueUtil.getIntegerByObject(mapModuleCreate.get("idMedicineGroup")));
         medicineModule.setPublishDate(ValueUtil.getStringByObject(mapModuleCreate.get("publishDate")));
         medicineModule.setExpiryDate(ValueUtil.getStringByObject(mapModuleCreate.get("expiryDate")));
         medicineModule.setCirculationNumber(ValueUtil.getStringByObject(mapModuleCreate.get("circulationNumber")));

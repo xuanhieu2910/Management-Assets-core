@@ -19,6 +19,8 @@ public class MedicineModule implements IModules{
     private Integer idAsset;
     @Column(name = "id_medicine_type")
     private Integer idMedicineType;
+    @Column(name = "id_medicine_group")
+    private Integer idMedicineGroup;
     @Column(name = "publish_date")
     private String publishDate;
     @Column(name = "expiry_date")
