@@ -105,30 +105,30 @@ public class OriginalRepositoryImpl implements OriginalRepositoryCustom {
 
     private long countFindAllVisibleOriginalByIdAssetCategory(FindAllOriginalVisibleRequest request){
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_original as (   " +
-                "      select original.id_original, original.name, original.short_name,   " +
-                "             original.description, original.parent, original.sort_order,   " +
-                "             original.visible, original.time_created, original.time_modified,   " +
-                "             original.id_user_created, original.id_user_modified, original.id_asset_category,   " +
-                "             original.hard_code_dev, original.is_default,   " +
-                "             1 as depth,   CAST(original.id_original as NCHAR ) as path   " +
-                "      from original   " +
-                "      where original.parent is null   " +
-                "      union all   " +
-                "      select original.id_original, original.name, original.short_name,   " +
-                "             original.description, original.parent, original.sort_order,   " +
-                "             original.visible, original.time_created, original.time_modified,   " +
-                "             original.id_user_created, original.id_user_modified,   " +
-                "             original.id_asset_category, original.hard_code_dev,   " +
-                "             original.is_default,   " +
-                "             cte.depth + 1 as depth,   " +
-                "             concat_ws('/',cte.path,CAST(original.id_original as NCHAR)) as path   " +
-                "      from original   " +
-                "      INNER JOIN cte_original cte ON original.parent = cte.id_original )   " +
-                "select count(0)   " +
-                "from cte_original cte   " +
-                "    inner join asset_categories assetCategory on cte.id_asset_category = assetCategory.id_asset_category   " +
-                "where 1 = 1 and cte.visible = :visible and assetCategory.id_asset_category = :idAssetCategory ");
+        sb.append("WITH RECURSIVE cte_original as ( " +
+                "  select original.id_original, original.name, original.short_name, " +
+                "         original.description, original.parent, original.sort_order, " +
+                "         original.visible, original.time_created, original.time_modified, " +
+                "         original.id_user_created, original.id_user_modified, original.id_asset_category, " +
+                "         original.hard_code_dev, original.is_default,  " +
+                "         1 as depth,   CAST(original.id_original as NCHAR ) as path   " +
+                "  from original   " +
+                "  where original.parent is null  " +
+                "  union all  " +
+                "  select original.id_original, original.name, original.short_name,  " +
+                "         original.description, original.parent, original.sort_order,  " +
+                "         original.visible, original.time_created, original.time_modified, " +
+                "         original.id_user_created, original.id_user_modified,  " +
+                "         original.id_asset_category, original.hard_code_dev, " +
+                "         original.is_default, " +
+                "         cte.depth + 1 as depth,  " +
+                "         concat_ws('/',cte.path,CAST(original.id_original as NCHAR)) as path " +
+                "  from original  " +
+                "  INNER JOIN cte_original cte ON original.parent = cte.id_original )  " +
+                "                 select count(0)   " +
+                "                 from cte_original cte  " +
+                "                     inner join asset_categories assetCategory on cte.id_asset_category = assetCategory.id_asset_category  " +
+                "                 where 1 = 1 and cte.visible = :visible and assetCategory.id_asset_category = :idParentAssetCategory  ");
         setConditionFindAllVisibleOriginalByIdAssetCategory(request,sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllVisibleOriginalByIdAsssetCategory(request,query);
