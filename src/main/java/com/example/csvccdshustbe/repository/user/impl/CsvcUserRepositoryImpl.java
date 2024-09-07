@@ -1,13 +1,21 @@
 package com.example.csvccdshustbe.repository.user.impl;
 
+import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Privilege;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepositoryCustom;
+import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
+import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -108,6 +116,59 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
         query.setParameter("userName", userName);
         List<Object[]> result = query.getResultList();
         return !CollectionUtils.isEmpty(result) ? true : false;
+    }
+
+    @Override
+    public Page<FindAllUserUsedDto> findAllUserUsedDto(FindAllUserUsedRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select csvcUser.user_name, " +
+                "       csvcUser.code_user, " +
+                "       csvcUser.full_name " +
+                "from csvc_user csvcUser " +
+                "where 1 = 1 " +
+                "and csvcUser.is_actived = :isActive ");
+        setConditionFindAllUserUsedDto(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllUserUsedDto(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<FindAllUserUsedDto>allUserUsedDtos = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj: result){
+                FindAllUserUsedDto dto = new FindAllUserUsedDto();
+                dto.setUserName(ValueUtil.getStringByObject(obj[0]));
+                dto.setCodeUser(ValueUtil.getStringByObject(obj[1]));
+                dto.setFullName(ValueUtil.getStringByObject(obj[2]));
+                allUserUsedDtos.add(dto);
+            }
+        }
+        return new PageImpl<>(allUserUsedDtos, pageable, countFindAllUserUsedDto(request));
+    }
+
+
+    private long countFindAllUserUsedDto(FindAllUserUsedRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) " +
+                "from csvc_user csvcUser " +
+                "where 1 = 1 " +
+                "and csvcUser.is_actived = :isActive ");
+        setConditionFindAllUserUsedDto(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllUserUsedDto(request, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindAllUserUsedDto(FindAllUserUsedRequest request, Query query) {
+        query.setParameter("isActive", Constants.ACCOUNT_IS_UN_LOCK);
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            query.setParameter("keyword", request.getKeyword());
+        }
+    }
+
+    private void setConditionFindAllUserUsedDto(FindAllUserUsedRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            sb.append("  and (csvcUser.user_name REGEXP :keyword ) ");
+        }
     }
 
     private CsvcUser setCsvcUserLoadByUserName(Object[] obj) {
