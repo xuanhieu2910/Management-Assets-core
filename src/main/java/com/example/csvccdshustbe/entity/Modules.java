@@ -31,4 +31,6 @@ public class Modules {
     private Integer idUserModified;
     @Column(name = "id_asset_category")
     private Integer idAssetCategory;
+    @Column(name = "hard_code")
+    private String hardCode;
 }

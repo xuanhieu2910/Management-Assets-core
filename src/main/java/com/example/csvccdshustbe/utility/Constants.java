@@ -164,4 +164,11 @@ public class Constants {
     public static final Integer DECLARE_VISIBLE = 1;
     public static final Integer DECLARE_UN_VISIBLE = -1;
     /*----------------------------------------------------*/
+
+    /**
+     * Constant Modules
+     * */
+    public static final Integer MODULES_VISIBLE = 1;
+    public static final Integer MODULES_UN_VISIBLE = -1;
+    /*----------------------------------------------------*/
 }
