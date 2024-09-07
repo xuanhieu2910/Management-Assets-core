@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.currentUsage.CurrentUsageRepository;
 import com.example.csvccdshustbe.request.currentUsage.CreateCurrentUsageRequest;
 import com.example.csvccdshustbe.request.currentUsage.UpdateCurrentUsageRequest;
+import com.example.csvccdshustbe.response.curentUsage.FindAllCurrentUsageResponse;
 import com.example.csvccdshustbe.service.curentUsage.CurrentUsageService;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +23,20 @@ public class CurrentUsageServiceImpl implements CurrentUsageService {
     @Autowired
     CurrentUsageRepository currentUsageRepository;
     @Override
-    public List<CurrentUsage> findAllCurrentUsage(){
-        return currentUsageRepository.findAllCurrentUsage();
+    public List<FindAllCurrentUsageResponse> findAllCurrentUsage(){
+        return convertToFindAllCurrentUsage(currentUsageRepository.findAllCurrentUsage());
+    }
+
+    private List<FindAllCurrentUsageResponse> convertToFindAllCurrentUsage(List<CurrentUsage> allCurrentUsage) {
+        List<FindAllCurrentUsageResponse> responses = new ArrayList<>();
+        for (CurrentUsage usage: allCurrentUsage) {
+            FindAllCurrentUsageResponse response = new FindAllCurrentUsageResponse();
+            response.setIdCurrentUsage(usage.getIdCurrentUsage());
+            response.setName(usage.getName());
+            response.setCode(usage.getCode());
+            responses.add(response);
+        }
+        return responses;
     }
 
 

@@ -5,12 +5,13 @@ import com.example.csvccdshustbe.entity.CurrentUsage;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.currentUsage.CreateCurrentUsageRequest;
 import com.example.csvccdshustbe.request.currentUsage.UpdateCurrentUsageRequest;
+import com.example.csvccdshustbe.response.curentUsage.FindAllCurrentUsageResponse;
 
 
 import java.util.List;
 
 public interface CurrentUsageService  {
-    List<CurrentUsage> findAllCurrentUsage();
+    List<FindAllCurrentUsageResponse> findAllCurrentUsage();
 
     void createCurrentUsage(CreateCurrentUsageRequest request) throws ValidateFiledException;
 

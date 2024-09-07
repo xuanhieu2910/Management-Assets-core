@@ -23,7 +23,8 @@ public class CurrentUsageController {
     @GetMapping("/find-all")
     public ResponseEntity<?> findAll(){
         try {
-            return ApiResponseDto.createdWithState(currentUsageService.findAllCurrentUsage(), "Find all current usesage success!", HttpStatus.OK);
+            return ApiResponseDto.createdWithState(currentUsageService.findAllCurrentUsage(),
+                    "Find all current usage success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
