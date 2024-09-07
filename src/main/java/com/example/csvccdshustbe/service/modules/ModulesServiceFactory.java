@@ -11,6 +11,7 @@ import com.example.csvccdshustbe.service.modules.houseModule.HouseModuleService;
 import com.example.csvccdshustbe.service.modules.machineModule.MachineModuleService;
 import com.example.csvccdshustbe.service.modules.medicineModule.MedicineModuleService;
 import com.example.csvccdshustbe.service.modules.otherAssetModule.OtherAssetModuleService;
+import com.example.csvccdshustbe.service.modules.otherVehicleTransportModule.OtherVehicleTransportModuleService;
 import com.example.csvccdshustbe.service.modules.treeAndAnimalModule.TreeAndAnimalModuleService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -41,6 +42,8 @@ public class ModulesServiceFactory {
     GroundModuleService groundModuleService;
     @Autowired
     AssetModulesService assetModulesService;
+    @Autowired
+    OtherVehicleTransportModuleService otherVehicleTransportModuleService;
 
 
     public void save(IModules modules, Map<String,Object> moduleDataAsset) throws ValidateFiledException {
@@ -71,6 +74,9 @@ public class ModulesServiceFactory {
             }
             case OtherAssetModule -> {
                 idInstance = otherAssetModuleService.save((OtherAssetModule) modules).getIdOtherAssetModule();
+            }
+            case OtherVehicleTransportModule -> {
+                idInstance = otherVehicleTransportModuleService.save((OtherVehicleTransportModule) modules).getIdOtherVehicleTransportModule();
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type architecture!");

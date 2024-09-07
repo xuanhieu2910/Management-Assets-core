@@ -8,5 +8,6 @@ public enum EnumModuleFactory {
     CarModule,
     TreeAndAnimalModule,
     ArchitectureModule,
-    OtherAssetModule
+    OtherAssetModule,
+    OtherVehicleTransportModule
 }

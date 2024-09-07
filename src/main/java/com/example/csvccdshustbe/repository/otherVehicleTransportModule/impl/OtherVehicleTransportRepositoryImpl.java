@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.otherVehicleTransportModule.impl;
+
+import com.example.csvccdshustbe.repository.otherVehicleTransportModule.OtherVehicleTransportRepositoryCustom;
+
+public class OtherVehicleTransportRepositoryImpl implements OtherVehicleTransportRepositoryCustom {
+}
