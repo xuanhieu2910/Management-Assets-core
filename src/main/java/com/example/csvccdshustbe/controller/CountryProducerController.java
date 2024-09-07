@@ -4,11 +4,16 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.countryProducer.CreateCountryProducerRequest;
+import com.example.csvccdshustbe.request.countryProducer.FindAllCountryProducerActiveRequest;
 import com.example.csvccdshustbe.request.countryProducer.UpdateCountryProducerRequest;
 import com.example.csvccdshustbe.request.currentUsage.UpdateCurrentUsageRequest;
+import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
 import com.example.csvccdshustbe.service.countryProducer.CountryProducerService;
 import com.example.csvccdshustbe.utility.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import net.kaczmarzyk.spring.data.jpa.domain.Like;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +29,14 @@ public class CountryProducerController {
     @Autowired
     CountryProducerService countryProducerService;
     @GetMapping("/find-all")
-    public ResponseEntity<?> findAllCountryProducerByStatus(){
+    public ResponseEntity<?> findAllCountryProducerByStatus(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllCountryProducerActiveRequest findAllCountryProducerActiveRequest){
         try {
             return ApiResponseDto.createdWithState(
-                    countryProducerService.findAllCountryProducerResponseByStatus(Constants.COUNTRY_PRODUCER_ACTIVE_STATUS),
+                    countryProducerService.findAllCountryProducerActiveResponse(findAllCountryProducerActiveRequest),
                     "Find all country producer success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);

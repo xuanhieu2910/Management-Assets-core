@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllCountryProducerResponse {
+public class FindAllCountryProducerPickedResponse {
 
 
     @JsonProperty("id_country_producer")
