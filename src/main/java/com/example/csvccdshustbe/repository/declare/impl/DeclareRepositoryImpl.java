@@ -23,7 +23,7 @@ public class DeclareRepositoryImpl implements DeclareRepositoryCustom {
                 "       de.visible, de.time_created, " +
                 "       de.time_modified, de.id_category, " +
                 "       de.hard_code " +
-                "from declare de " +
+                "from `declare` de " +
                 "    inner join asset_categories assetCategory on de.id_category = assetCategory.id_asset_category " +
                 "where de.visible = :visible " +
                 "and assetCategory.id_asset_category = :idAssetCategory ");
