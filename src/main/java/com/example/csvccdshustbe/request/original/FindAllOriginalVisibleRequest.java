@@ -12,5 +12,5 @@ import lombok.Setter;
 public class FindAllOriginalVisibleRequest extends RequestPageBase {
 
     @NotNull
-    private Integer idAssetCategory;
+    private Integer idParentAssetCategory;
 }

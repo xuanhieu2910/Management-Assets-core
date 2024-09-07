@@ -29,35 +29,35 @@ public class OriginalRepositoryImpl implements OriginalRepositoryCustom {
     public Page<FindAllOriginalDto> findAllOriginalDtoByIdAssetCategory(FindAllOriginalVisibleRequest request,
                                                                         Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_original as (   " +
-                "      select original.id_original, original.name, original.short_name,   " +
-                "             original.description, original.parent, original.sort_order,   " +
-                "             original.visible, original.time_created, original.time_modified,   " +
-                "             original.id_user_created, original.id_user_modified, original.id_asset_category,   " +
-                "             original.hard_code_dev, original.is_default,   " +
-                "             1 as depth,   CAST(original.id_original as NCHAR ) as path   " +
-                "      from original   " +
-                "      where original.parent is null   " +
-                "      union all   " +
-                "      select original.id_original, original.name, original.short_name,   " +
-                "             original.description, original.parent, original.sort_order,   " +
-                "             original.visible, original.time_created, original.time_modified,   " +
-                "             original.id_user_created, original.id_user_modified,   " +
-                "             original.id_asset_category, original.hard_code_dev,   " +
-                "             original.is_default,   " +
-                "             cte.depth + 1 as depth,   " +
-                "             concat_ws('/',cte.path,CAST(original.id_original as NCHAR)) as path   " +
-                "      from original   " +
-                "      INNER JOIN cte_original cte ON original.parent = cte.id_original )   " +
-                "select cte.id_original, cte.name, cte.short_name,   " +
-                "       cte.description, cte.parent, cte.sort_order,   " +
-                "       cte.visible, cte.time_created, cte.time_modified,   " +
-                "       cte.id_user_created, cte.id_user_modified,   " +
-                "       cte.id_asset_category, cte.hard_code_dev,   " +
-                "       cte.is_default, cte.depth, cte.path   " +
-                "from cte_original cte   " +
-                "    inner join asset_categories assetCategory on cte.id_asset_category = assetCategory.id_asset_category   " +
-                "where 1 = 1 and cte.visible = :visible and assetCategory.id_asset_category = :idAssetCategory ");
+        sb.append(" WITH RECURSIVE cte_original as (        " +
+                "     select original.id_original, original.name, original.short_name,        " +
+                "            original.description, original.parent, original.sort_order,        " +
+                "            original.visible, original.time_created, original.time_modified,        " +
+                "            original.id_user_created, original.id_user_modified, original.id_asset_category,        " +
+                "            original.hard_code_dev, original.is_default,        " +
+                "            1 as depth,   CAST(original.id_original as NCHAR ) as path        " +
+                "     from original        " +
+                "     where original.parent is null        " +
+                "     union all        " +
+                "     select original.id_original, original.name, original.short_name,        " +
+                "            original.description, original.parent, original.sort_order,        " +
+                "            original.visible, original.time_created, original.time_modified,        " +
+                "            original.id_user_created, original.id_user_modified,        " +
+                "            original.id_asset_category, original.hard_code_dev,        " +
+                "            original.is_default,        " +
+                "            cte.depth + 1 as depth,        " +
+                "            concat_ws('/',cte.path,CAST(original.id_original as NCHAR)) as path        " +
+                "     from original        " +
+                "     INNER JOIN cte_original cte ON original.parent = cte.id_original )        " +
+                "                    select cte.id_original, cte.name, cte.short_name,        " +
+                "      cte.description, cte.parent, cte.sort_order,        " +
+                "      cte.visible, cte.time_created, cte.time_modified,        " +
+                "      cte.id_user_created, cte.id_user_modified,        " +
+                "      cte.id_asset_category, cte.hard_code_dev,        " +
+                "      cte.is_default, cte.depth, cte.path        " +
+                "                    from cte_original cte        " +
+                "                        inner join asset_categories assetCategory on cte.id_asset_category = assetCategory.id_asset_category        " +
+                "                    where 1 = 1 and cte.visible = :visible and assetCategory.id_asset_category = :idParentAssetCategory ");
         setConditionFindAllVisibleOriginalByIdAssetCategory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllVisibleOriginalByIdAsssetCategory(request,query);
@@ -91,7 +91,7 @@ public class OriginalRepositoryImpl implements OriginalRepositoryCustom {
 
     private void setParameterFindAllVisibleOriginalByIdAsssetCategory(FindAllOriginalVisibleRequest request, Query query) {
         query.setParameter("visible", Constants.ORIGINAL_VISIBLE);
-        query.setParameter("idAssetCategory", request.getIdAssetCategory());
+        query.setParameter("idParentAssetCategory", request.getIdParentAssetCategory());
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
         }

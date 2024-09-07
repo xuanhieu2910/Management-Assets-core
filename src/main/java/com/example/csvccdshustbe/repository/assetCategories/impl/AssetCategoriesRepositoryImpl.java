@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.assetCategories.impl;
 
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
+import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepositoryCustom;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
@@ -27,46 +28,48 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     EntityManager entityManager;
 
     @Override
-    public List<AssetCategories> findAllAssetCategoriesIsPickedAndVisible() {
+    public List<FindAllAssetCategoriesPickedDto> findAllAssetCategoriesIsPickedAndVisible() {
         StringBuilder sb = new StringBuilder();
-        sb.append("select assetCategories.id_asset_category,   " +
-                "       assetCategories.name,   " +
-                "       assetCategories.short_name,   " +
-                "       assetCategories.code_name,   " +
-                "       assetCategories.description,   " +
-                "       assetCategories.parent,   " +
-                "       assetCategories.sort_order,   " +
-                "       assetCategories.asset_count,   " +
-                "       assetCategories.visible,   " +
-                "       assetCategories.time_created,   " +
-                "       assetCategories.time_modified,   " +
-                "       assetCategories.path_image,   " +
-                "       assetCategories.is_pick " +
-                "from asset_categories assetCategories   " +
-                "where assetCategories.is_pick = :isPicked   " +
-                "  and assetCategories.visible = :isVisible  ");
+        sb.append(" WITH RECURSIVE cte_asset_category as (    " +
+                "      select assetCategories.id_asset_category, assetCategories.name, assetCategories.short_name,    " +
+                "             assetCategories.code_name, assetCategories.description, assetCategories.parent,    " +
+                "             assetCategories.sort_order, assetCategories.asset_count,    " +
+                "             assetCategories.visible, assetCategories.time_created, assetCategories.time_modified,    " +
+                "             assetCategories.path_image,assetCategories.is_pick ,    " +
+                "             assetCategories.id_asset_category as idParent    " +
+                "      from asset_categories   assetCategories    " +
+                "      where assetCategories.parent is null    " +
+                "      union all        " +
+                "      select assetCategories.id_asset_category, assetCategories.name,    " +
+                "             assetCategories.short_name, assetCategories.code_name,    " +
+                "             assetCategories.description, assetCategories.parent,    " +
+                "             assetCategories.sort_order, assetCategories.asset_count,    " +
+                "             assetCategories.visible, assetCategories.time_created,    " +
+                "             assetCategories.time_modified, assetCategories.path_image,    " +
+                "             assetCategories.is_pick,    " +
+                "             cte.id_asset_category as idParent    " +
+                "                   from asset_categories assetCategories    " +
+                "               INNER JOIN cte_asset_category cte ON assetCategories.parent = cte.id_asset_category    " +
+                "      where  assetCategories.is_pick = :isPicked and assetCategories.visible = :isVisible    " +
+                "                   )        " +
+                "select cte.id_asset_category, cte.name, cte.short_name,    " +
+                "       cte.code_name, cte.path_image,  cte.idParent    " +
+                "from cte_asset_category cte ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("isPicked", Constants.IS_PICKED);
         query.setParameter("isVisible", Constants.IS_VISIBLE);
         List<Object[]> result = query.getResultList();
-        List<AssetCategories> assetCategories = new ArrayList<>();
+        List<FindAllAssetCategoriesPickedDto> assetCategories = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
             for (Object[] obj: result){
-                AssetCategories categories = new AssetCategories();
-                categories.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[0]));
-                categories.setName(ValueUtil.getStringByObject(obj[1]));
-                categories.setShortName(ValueUtil.getStringByObject(obj[2]));
-                categories.setCodeName(ValueUtil.getStringByObject(obj[3]));
-                categories.setDescription(ValueUtil.getStringByObject(obj[4]));
-                categories.setParent(ValueUtil.getIntegerByObject(obj[5]));
-                categories.setSortOrder(ValueUtil.getStringByObject(obj[6]));
-                categories.setAssetCount(ValueUtil.getIntegerByObject(obj[7]));
-                categories.setVisible(ValueUtil.getIntegerByObject(obj[8]));
-                categories.setTimeCreated(ValueUtil.getStringByObject(obj[9]));
-                categories.setTimeModified(ValueUtil.getStringByObject(obj[10]));
-                categories.setPathImage(ValueUtil.getStringByObject(obj[11]));
-                categories.setIsPick(ValueUtil.getIntegerByObject(obj[12]));
-                assetCategories.add(categories);
+                FindAllAssetCategoriesPickedDto pickedDto = new FindAllAssetCategoriesPickedDto();
+                pickedDto.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[0]));
+                pickedDto.setName(ValueUtil.getStringByObject(obj[1]));
+                pickedDto.setShortName(ValueUtil.getStringByObject(obj[2]));
+                pickedDto.setCodeName(ValueUtil.getStringByObject(obj[3]));
+                pickedDto.setPathImage(ValueUtil.getStringByObject(obj[4]));
+                pickedDto.setIdParent(ValueUtil.getIntegerByObject(obj[5]));
+                assetCategories.add(pickedDto);
             }
         }
         return assetCategories;

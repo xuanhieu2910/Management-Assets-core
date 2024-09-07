@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.assetCategories.impl;
 
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
+import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -35,7 +36,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
 
     @Override
     public List<FindAllAssetCategoriesPickedResponse> findAllAssetCategoriesIsPicked() {
-        List<AssetCategories> categories = assetCategoriesRepository.findAllAssetCategoriesIsPickedAndVisible();
+        List<FindAllAssetCategoriesPickedDto> categories = assetCategoriesRepository.findAllAssetCategoriesIsPickedAndVisible();
         return convertToFindAllAssetCategoriesPicked(categories);
     }
 
@@ -167,14 +168,15 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         return responses;
     }
 
-    private List<FindAllAssetCategoriesPickedResponse> convertToFindAllAssetCategoriesPicked(List<AssetCategories> categories) {
+    private List<FindAllAssetCategoriesPickedResponse> convertToFindAllAssetCategoriesPicked(List<FindAllAssetCategoriesPickedDto> categories) {
         List<FindAllAssetCategoriesPickedResponse> responses = new ArrayList<>();
-        for (AssetCategories asset: categories){
+        for (FindAllAssetCategoriesPickedDto pickedDto: categories){
             FindAllAssetCategoriesPickedResponse res = new FindAllAssetCategoriesPickedResponse();
-            res.setName(asset.getName());
-            res.setCodeName(asset.getCodeName());
-            res.setPathImage(asset.getPathImage());
-            res.setIdAssetCategory(asset.getIdAssetCategory());
+            res.setName(pickedDto.getName());
+            res.setCodeName(pickedDto.getCodeName());
+            res.setPathImage(pickedDto.getPathImage());
+            res.setIdAssetCategory(pickedDto.getIdAssetCategory());
+            res.setIdParent(pickedDto.getIdParent());
             responses.add(res);
         }
         return responses;
