@@ -5,14 +5,19 @@ import com.example.csvccdshustbe.entity.Units;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.units.UnitsRepository;
 import com.example.csvccdshustbe.request.units.CreateUnitsRequest;
+import com.example.csvccdshustbe.request.units.FindAllUnitsByAssetCategoryRequest;
 import com.example.csvccdshustbe.request.units.UpdateUnitsRequest;
 import com.example.csvccdshustbe.response.units.FindAllUnitsByCodeAssetCategoryResponse;
 import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -20,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UnitsServiceImpl implements UnitsService {
@@ -34,9 +40,11 @@ public class UnitsServiceImpl implements UnitsService {
     }
 
     @Override
-    public List<FindAllUnitsByCodeAssetCategoryResponse> findAllUnitsByCodeAssetCategoryResponse(String codeName) {
-        List<Units> units = unitsRepository.findAllUnitsByCodeAssetCategoryAndStatus(codeName, Constants.UNITS_IS_ACTIVE);
-        return convertToFindAllUnitsByCodeAssetCategoryResponse(units);
+    public Page<FindAllUnitsByCodeAssetCategoryResponse> findAllUnitsByCodeAssetCategoryResponse(FindAllUnitsByAssetCategoryRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<Units> units = unitsRepository.findAllUnitsActiveByCodeAssetCategory(request, pageable);
+        return new PageImpl<>(convertToFindAllUnitsByCodeAssetCategoryResponse(units.stream().collect(Collectors.toList())),
+                pageable, units.getTotalElements());
     }
 
     private List<FindAllUnitsByCodeAssetCategoryResponse>

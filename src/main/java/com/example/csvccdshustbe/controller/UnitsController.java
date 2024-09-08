@@ -4,9 +4,13 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.units.CreateUnitsRequest;
+import com.example.csvccdshustbe.request.units.FindAllUnitsByAssetCategoryRequest;
 import com.example.csvccdshustbe.request.units.UpdateUnitsRequest;
 import com.example.csvccdshustbe.service.units.UnitsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import net.kaczmarzyk.spring.data.jpa.domain.Like;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +40,13 @@ public class UnitsController {
     }
 
     @GetMapping("/find-by-asset-category")
-    public ResponseEntity<?> findAllUnitByCodeNameAssetCategory(@RequestParam("code-name") String codeName){
+    public ResponseEntity<?> findAllUnitByCodeNameAssetCategory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllUnitsByAssetCategoryRequest findAllUnitsByAssetCategoryRequest){
         try {
-            return ApiResponseDto.createdWithState(unitsService.findAllUnitsByCodeAssetCategoryResponse(codeName),
+            return ApiResponseDto.createdWithState(unitsService.findAllUnitsByCodeAssetCategoryResponse(findAllUnitsByAssetCategoryRequest),
                     "Find all units by code name!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
