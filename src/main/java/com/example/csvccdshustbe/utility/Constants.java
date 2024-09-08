@@ -171,4 +171,11 @@ public class Constants {
     public static final Integer MODULES_VISIBLE = 1;
     public static final Integer MODULES_UN_VISIBLE = -1;
     /*----------------------------------------------------*/
+
+    /**
+     * Constant Type Declare Asset
+     * */
+    public static final Integer TYPE_DECLARE_ASSET_ACTIVE = 1;
+    public static final Integer TYPE_DECLARE_ASSET_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
 }
