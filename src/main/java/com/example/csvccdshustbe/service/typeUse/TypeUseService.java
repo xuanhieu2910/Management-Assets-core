@@ -3,13 +3,15 @@ package com.example.csvccdshustbe.service.typeUse;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 
 import com.example.csvccdshustbe.request.typeUse.CreateTypeUseRequest;
+import com.example.csvccdshustbe.request.typeUse.FindAllTypeUseRequest;
 import com.example.csvccdshustbe.request.typeUse.UpdateTypeUseRequest;
 import com.example.csvccdshustbe.response.typeUse.FindAllTypeUseResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface TypeUseService {
-        List<FindAllTypeUseResponse> findAllTypeUseResponseByStatus(Integer Status);
+        Page<FindAllTypeUseResponse> findAllTypeUseActiveResponse(FindAllTypeUseRequest request);
 
         void createTypeUse(CreateTypeUseRequest request) throws ValidateFiledException;
 

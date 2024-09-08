@@ -4,12 +4,17 @@ import com.example.csvccdshustbe.entity.TypeUse;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.typeUse.TypeUseRepository;
 import com.example.csvccdshustbe.request.typeUse.CreateTypeUseRequest;
+import com.example.csvccdshustbe.request.typeUse.FindAllTypeUseRequest;
 import com.example.csvccdshustbe.request.typeUse.UpdateTypeUseRequest;
 import com.example.csvccdshustbe.response.typeUse.FindAllTypeUseResponse;
 import com.example.csvccdshustbe.service.typeUse.TypeUseService;
+import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -17,15 +22,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TypeUseServiceImpl implements TypeUseService{
     @Autowired
     TypeUseRepository typeUseRepository;
     @Override
-    public List<FindAllTypeUseResponse>findAllTypeUseResponseByStatus(Integer status){
-
-        return convertToFindAllTypeUse(typeUseRepository.findAllTypeUseResponseByStatus(status));
+    public Page<FindAllTypeUseResponse> findAllTypeUseActiveResponse(FindAllTypeUseRequest request){
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<TypeUse> typeUses = typeUseRepository.findAllTypeUseActiveResponse(request, pageable);
+        return new PageImpl<>(convertToFindAllTypeUse(typeUses.get().collect(Collectors.toList())),
+                pageable, typeUses.getTotalElements());
     }
 
     private List<FindAllTypeUseResponse>convertToFindAllTypeUse(List<TypeUse>allTypeUseByStatus){

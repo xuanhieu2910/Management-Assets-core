@@ -3,10 +3,14 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.typeUse.CreateTypeUseRequest;
+import com.example.csvccdshustbe.request.typeUse.FindAllTypeUseRequest;
 import com.example.csvccdshustbe.request.typeUse.UpdateTypeUseRequest;
 import com.example.csvccdshustbe.service.typeUse.TypeUseService;
 import com.example.csvccdshustbe.utility.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import net.kaczmarzyk.spring.data.jpa.domain.Like;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +26,14 @@ public class TypeUseController {
     @Autowired
     TypeUseService typeUseService;
     @GetMapping("/find-all")
-    public ResponseEntity<?> findAllypeUseByStatus(){
+    public ResponseEntity<?> findAllTypeUseActive(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllTypeUseRequest findAllTypeUseRequest){
         try {
             return ApiResponseDto.createdWithState(
-                    typeUseService.findAllTypeUseResponseByStatus(Constants.TYPE_USE_ACTIVE_STATUS),
+                    typeUseService.findAllTypeUseActiveResponse(findAllTypeUseRequest),
                     "Find all Type Use success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);

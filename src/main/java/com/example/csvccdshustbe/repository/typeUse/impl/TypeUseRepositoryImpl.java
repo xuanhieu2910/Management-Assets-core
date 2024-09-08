@@ -3,11 +3,18 @@ package com.example.csvccdshustbe.repository.typeUse.impl;
 
 import com.example.csvccdshustbe.entity.TypeUse;
 import com.example.csvccdshustbe.repository.typeUse.TypeUseRepositoryCustom;
+import com.example.csvccdshustbe.request.typeUse.FindAllTypeUseRequest;
+import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -20,15 +27,17 @@ public class TypeUseRepositoryImpl implements TypeUseRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public List<TypeUse> findAllTypeUseResponseByStatus(Integer status){
+    public Page<TypeUse> findAllTypeUseActiveResponse(FindAllTypeUseRequest request, Pageable pageable){
         StringBuilder sb = new StringBuilder();
         sb.append(" Select type_use.id_type_use, type_use.name, type_use.status, " +
                 "type_use.time_created, type_use.time_modified from type_use " +
                 "where 1=1 and type_use.status = :status ");
+        setConditionFindAllTypeUseActive(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("status", status);
+        setParameterFindAllTypeUseActive(request, query);
+        PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
-        List<TypeUse> typeUses=new ArrayList<>();
+        List<TypeUse> typeUses = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
             for (Object[] obj : result) {
                 TypeUse typeUse= new TypeUse();
@@ -40,7 +49,32 @@ public class TypeUseRepositoryImpl implements TypeUseRepositoryCustom {
                 typeUses.add(typeUse);
             }
         }
-        return typeUses;
+        return new PageImpl<>(typeUses, pageable, countFindAllTypeUseActive(request));
+    }
+
+    private long countFindAllTypeUseActive(FindAllTypeUseRequest request){
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) " +
+                "from type_use  " +
+                "where 1 = 1 " +
+                "and type_use.status = :status ");
+        setConditionFindAllTypeUseActive(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllTypeUseActive(request, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindAllTypeUseActive(FindAllTypeUseRequest request, Query query) {
+        query.setParameter("status", Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            query.setParameter("keyword", request.getKeyword());
+        }
+    }
+
+    private void setConditionFindAllTypeUseActive(FindAllTypeUseRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            sb.append(" and (type_use.name REGEXP :keyword ) ");
+        }
     }
 
     @Override
