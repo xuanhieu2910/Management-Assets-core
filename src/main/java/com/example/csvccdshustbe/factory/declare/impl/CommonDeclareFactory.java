@@ -17,6 +17,7 @@ public class CommonDeclareFactory implements DeclareFactory {
         CommonDeclare declare = new CommonDeclare();
         declare.setIdAsset(ValueUtil.getIntegerByObject(mapDeclareRequest.get("idAsset")));
         declare.setSpecification(ValueUtil.getStringByObject(mapDeclareRequest.get("specification")));
+        declare.setIdTypeDeclareAsset(ValueUtil.getIntegerByObject(mapDeclareRequest.get("idTypeDeclareAsset")));
         String timeCurrent = String.valueOf(new Date().getTime());
         declare.setTimeCreated(timeCurrent);
         declare.setTimeModified(timeCurrent);

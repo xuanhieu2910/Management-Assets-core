@@ -19,6 +19,8 @@ public class CommonDeclare implements IDeclare{
     private Integer idAsset;
     @Column(name = "specification")
     private String specification;
+    @Column(name = "id_type_declare_asset")
+    private Integer idTypeDeclareAsset;
     @Column(name = "time_created")
     private String timeCreated;
     @Column(name = "time_modified")
