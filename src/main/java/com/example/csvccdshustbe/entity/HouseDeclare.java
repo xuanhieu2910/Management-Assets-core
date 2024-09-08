@@ -43,5 +43,7 @@ public class HouseDeclare implements IDeclare{
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+    @Column(name = "id_type_declare_asset")
+    private Integer idTypeDeclareAsset;
 
 }

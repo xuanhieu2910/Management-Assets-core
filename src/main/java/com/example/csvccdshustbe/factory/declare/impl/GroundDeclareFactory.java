@@ -33,6 +33,7 @@ public class GroundDeclareFactory implements DeclareFactory {
         declare.setNumberRentGround(ValueUtil.getStringByObject(mapDeclareRequest.get("numberRentGround")));
         declare.setDateNumberRentGround(ValueUtil.getStringByObject(mapDeclareRequest.get("dateNumberRentGround")));
         declare.setAnotherContract(ValueUtil.getStringByObject(mapDeclareRequest.get("anotherContract")));
+        declare.setIdTypeDeclareAsset(ValueUtil.getIntegerByObject(mapDeclareRequest.get("idTypeDeclareAsset")));
         String timeCurrent = String.valueOf(new Date().getTime());
         declare.setTimeCreated(timeCurrent);
         declare.setTimeModified(timeCurrent);

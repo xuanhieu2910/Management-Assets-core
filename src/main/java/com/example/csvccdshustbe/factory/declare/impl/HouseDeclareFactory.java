@@ -25,6 +25,7 @@ public class HouseDeclareFactory implements DeclareFactory {
         declare.setSyntheticUse(ValueUtil.getDoubleByObject(mapDeclareRequest.get("syntheticUse")));
         declare.setOtherUse(ValueUtil.getDoubleByObject(mapDeclareRequest.get("otherUse")));
         declare.setAcreage(ValueUtil.getDoubleByObject(mapDeclareRequest.get("acreage")));
+        declare.setIdTypeDeclareAsset(ValueUtil.getIntegerByObject(mapDeclareRequest.get("idTypeDeclareAsset")));
         String timeCurrent = String.valueOf(new Date().getTime());
         declare.setTimeCreated(timeCurrent);
         declare.setTimeModified(timeCurrent);
