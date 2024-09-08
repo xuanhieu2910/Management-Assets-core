@@ -31,7 +31,7 @@ public class ConcreteAssetFactory implements AssetsFactory {
         asset.setFileAttack(ValueUtil.getStringByObject(createAsset.get("fileAttack")));
         asset.setIdDepartmentDefault(ValueUtil.getIntegerByObject(createAsset.get("idDepartmentDefault")));
         asset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(createAsset.get("idLevelTypeAsset")));
-        asset.setDescribe(ValueUtil.getStringByObject(createAsset.get("describe")));
+        asset.setDescription(ValueUtil.getStringByObject(createAsset.get("description")));
         asset.setQuantity(ValueUtil.getIntegerByObject(createAsset.get("quantity")));
         String timeCurrent = String.valueOf(new Date().getTime());
         asset.setTimeCreated(timeCurrent);
