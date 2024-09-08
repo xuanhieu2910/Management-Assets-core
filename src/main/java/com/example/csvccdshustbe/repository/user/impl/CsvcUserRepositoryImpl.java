@@ -107,6 +107,45 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
     }
 
     @Override
+    public Optional<CsvcUser> findByCodeCsvcUser(String codeUser) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select csvcUser.id_user, csvcUser.user_name, " +
+                "       csvcUser.password, csvcUser.auth, csvcUser.code_user, " +
+                "       csvcUser.full_name, csvcUser.phone_number, csvcUser.path_avatar, " +
+                "       csvcUser.time_created, csvcUser.time_modified, csvcUser.delete_at, " +
+                "       csvcUser.first_access, csvcUser.last_access, csvcUser.last_login, " +
+                "       csvcUser.current_login, csvcUser.sex, csvcUser.is_actived, " +
+                "       role.id_role, role.title, role.status, role.content, " +
+                "       role.short_name, role.description, role.time_created, role.time_modified, " +
+                "       group_concat(privilege.title, '') privilege_title " +
+                "from csvc_user csvcUser " +
+                "    inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
+                "    inner join role role on role.id_role = userRole.id_role " +
+                "    inner join role_privilege rolePrivilege on role.id_role = rolePrivilege.id_role " +
+                "    inner join privilege privilege on rolePrivilege.id_privilege = privilege.id_privilege " +
+                "and privilege.status = 1 " +
+                "and role.status = 1 " +
+                "and csvcUser.code_user = :codeUser " +
+                "group by csvcUser.id_user, csvcUser.user_name, " +
+                "         csvcUser.password, csvcUser.auth, csvcUser.code_user, " +
+                "         csvcUser.full_name, csvcUser.phone_number, csvcUser.path_avatar, " +
+                "         csvcUser.time_created, csvcUser.time_modified, csvcUser.delete_at, " +
+                "         csvcUser.first_access, csvcUser.last_access, csvcUser.last_login, " +
+                "         csvcUser.current_login, csvcUser.sex, csvcUser.is_actived, " +
+                "         role.id_role, role.title, role.status, role.content, " +
+                "         role.short_name, role.description, role.time_created, role.time_modified ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeUser", codeUser);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            CsvcUser csvcUser = setCsvcUserLoadByUserName(result.get(0));
+            csvcUser.setRole(getRolesLoadByUserName(result));
+            return Optional.of(csvcUser);
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public Boolean exitsByUserName(String userName) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select csvc_user.id_user, csvc_user.user_name " +

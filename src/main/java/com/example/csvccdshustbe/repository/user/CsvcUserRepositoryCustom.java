@@ -14,6 +14,7 @@ public interface CsvcUserRepositoryCustom {
     Optional<CsvcUser> loadUserByUsername(String username);
 
     Optional<CsvcUser> findByIdCsvcUser(Integer idUser);
+    Optional<CsvcUser> findByCodeCsvcUser(String codeUser);
 
     Boolean exitsByUserName(String userName);
 

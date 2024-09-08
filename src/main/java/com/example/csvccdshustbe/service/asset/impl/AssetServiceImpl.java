@@ -19,6 +19,7 @@ import com.example.csvccdshustbe.service.modules.ModulesServiceFactory;
 import com.example.csvccdshustbe.service.original.OriginalServiceFactory;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
 import com.example.csvccdshustbe.service.units.UnitsService;
+import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.ProxyInitDataAssetUtil;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -65,6 +66,8 @@ public class AssetServiceImpl implements AssetService {
     ProjectsService projectsService;
     @Autowired
     AssetOriginalOfFormationService assetOriginalOfFormationService;
+    @Autowired
+    CsvcUserService csvcUserService;
 
 
 
@@ -141,18 +144,19 @@ public class AssetServiceImpl implements AssetService {
 
     private void storeModulesDataAsset(Map<String, Object> createAssetRequest, Asset asset) throws ValidateFiledException {
         log.info("Storing modules data asset");
-        List<Object[]> modulesDataAsset = (List<Object[]>) createAssetRequest.get(Constants.KEY_MODULE);
+        List<HashMap<String,Object>> modulesDataAsset = (List<HashMap<String,Object>>) createAssetRequest.get(Constants.KEY_MODULE);
         if (!CollectionUtils.isEmpty(modulesDataAsset)){
-            int index = 0;
-            for (Object[] obj: modulesDataAsset){
-                Map<String,Object> moduleDataAsset = (Map<String, Object>) obj[index];
+            for (HashMap<String, Object> moduleDataAsset : modulesDataAsset) {
+                if (StringUtils.isNotBlank(ValueUtil.getStringByObject(moduleDataAsset.get("codeUser")))){
+                    CsvcUser user = csvcUserService.findByCodeUser(ValueUtil.getStringByObject(moduleDataAsset.get("codeUser")));
+                    moduleDataAsset.put("idUser", user.getIdUser());
+                }
                 moduleDataAsset.put("idAsset", asset.getIdAsset());
                 ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
                         proxyInitModuleDataAsset(ValueUtil.getStringByObject(moduleDataAsset.get(Constants.KEY_TYPE_MODULE)));
                 IModules iModules = moduleFactory.createModule(moduleDataAsset);
-                modulesServiceFactory.save(iModules,moduleDataAsset);
+                modulesServiceFactory.save(iModules, moduleDataAsset);
                 log.info("Finish store module factory " + moduleFactory.getClass());
-                ++ index;
             }
         }
     }
@@ -168,19 +172,19 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private void saveAssetOriginalOfFormations(Asset asset, Map<String, Object> commonDataAsset) {
-        List<Object[]> assetOriginalOfFormationData = (List<Object[]>) commonDataAsset.get(Constants.KEY_ASSET_ORIGINAL_OF_FORMATION);
+        List<HashMap<String,Object>> assetOriginalOfFormationData = (List<HashMap<String,Object>>) commonDataAsset.get(Constants.KEY_ASSET_ORIGINAL_OF_FORMATION);
         if (!CollectionUtils.isEmpty(assetOriginalOfFormationData)){
             List<AssetOriginalOfFormation>originalOfFormations = new ArrayList<>();
             String currentTime = String.valueOf(new Date().getTime());
-            for (Object[] obj : assetOriginalOfFormationData){
+            assetOriginalOfFormationData.forEach(obj -> {
                 AssetOriginalOfFormation originalOfFormation = new AssetOriginalOfFormation();
-                originalOfFormation.setIdOriginalOfFormation(ValueUtil.getIntegerByObject(obj[0]));
+                originalOfFormation.setIdOriginalOfFormation(ValueUtil.getIntegerByObject(obj.get("idOriginOfFormation")));
                 originalOfFormation.setIdAsset(asset.getIdAsset());
                 originalOfFormation.setTimeCreated(currentTime);
                 originalOfFormation.setTimeModified(currentTime);
-                originalOfFormation.setValue(ValueUtil.getStringByObject(obj[1]));
+                originalOfFormation.setValue(ValueUtil.getStringByObject(obj.get("value")));
                 originalOfFormations.add(originalOfFormation);
-            }
+            });
             assetOriginalOfFormationService.saveAll(originalOfFormations);
         }
     }
