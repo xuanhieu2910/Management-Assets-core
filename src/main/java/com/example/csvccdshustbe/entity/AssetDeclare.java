@@ -21,7 +21,7 @@ public class AssetDeclare {
     private Integer idAsset;
     @Column(name = "id_declare")
     private Integer idDeclare;
-    @Column(name = "id_instace")
+    @Column(name = "id_instance")
     private Integer idInstance;
     @Column(name = "time_created")
     private String timeCreated;
