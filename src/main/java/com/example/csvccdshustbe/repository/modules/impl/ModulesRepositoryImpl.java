@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.repository.modules.impl;
 
 import com.example.csvccdshustbe.entity.Modules;
 import com.example.csvccdshustbe.repository.modules.ModulesRepositoryCustom;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -10,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ModulesRepositoryImpl implements ModulesRepositoryCustom {
 
@@ -50,5 +52,36 @@ public class ModulesRepositoryImpl implements ModulesRepositoryCustom {
             }
         }
         return modules;
+    }
+
+    @Override
+    public Optional<Modules> findModulesByTypeModulesAndStatus(String typeModules, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select mo.id_module, mo.name, mo.code, " +
+                "       mo.time_created, mo.time_modified, " +
+                "       mo.status, mo.id_user_created, " +
+                "       mo.id_user_modified, mo.id_asset_category, " +
+                "       mo.hard_code " +
+                "from modules mo " +
+                "where mo.hard_code = :typeModules " +
+                "and mo.status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("typeModules", typeModules);
+        query.setParameter("status", Constants.MODULES_VISIBLE);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj: result){
+                Modules modules = new Modules();
+                modules.setIdModule(ValueUtil.getIntegerByObject(obj[0]));
+                modules.setName(ValueUtil.getStringByObject(obj[1]));
+                modules.setCode(ValueUtil.getStringByObject(obj[2]));
+                modules.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                modules.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                modules.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[5]));
+                modules.setHardCode(ValueUtil.getStringByObject(obj[6]));
+                return Optional.of(modules);
+            }
+        }
+        return Optional.empty();
     }
 }

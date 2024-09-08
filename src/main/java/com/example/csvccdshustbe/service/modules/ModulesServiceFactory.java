@@ -17,8 +17,10 @@ import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -44,6 +46,9 @@ public class ModulesServiceFactory {
     AssetModulesService assetModulesService;
     @Autowired
     OtherVehicleTransportModuleService otherVehicleTransportModuleService;
+    @Autowired
+    ModulesService modulesService;
+
 
 
     public void save(IModules modules, Map<String,Object> moduleDataAsset) throws ValidateFiledException {
@@ -94,6 +99,58 @@ public class ModulesServiceFactory {
         assetModules.setTimeCreated(timeCurrent);
         assetModules.setTimeModified(timeCurrent);
         return assetModules;
+    }
+
+    public void validateDataModules(List<Map<String, Object>> dataModules) throws ValidateFiledException {
+        if (CollectionUtils.isEmpty(dataModules)) {
+            throw new ValidateFiledException("Validate data modules!");
+        }
+        for (Map<String, Object> data : dataModules) {
+            validateModules(data);
+            proxyValidateDataModules(data);
+        }
+    }
+
+    private void validateModules(Map<String, Object> data) {
+        Modules modules = modulesService.findModulesByTypeModules(ValueUtil.getStringByObject(data.get(Constants.KEY_TYPE_MODULE)));
+        data.put("idModule", modules.getIdModule());
+    }
+
+    public void proxyValidateDataModules(Map<String,Object> dataModule) throws ValidateFiledException {
+        String typeModule = ValueUtil.getStringByObject(dataModule.get(Constants.KEY_TYPE_MODULE));
+        EnumModuleFactory enumModuleFactory = Enum.valueOf(EnumModuleFactory.class, typeModule);
+        switch (enumModuleFactory) {
+            case MedicineModule -> {
+                medicineModuleService.validateDataCreate(dataModule);
+            }
+            case MachineModule -> {
+               machineModuleService.validateDataCreate(dataModule);
+            }
+            case HouseModule -> {
+                houseModuleService.validateDataCreate(dataModule);
+            }
+            case GroundModule -> {
+                groundModuleService.validateDataCreate(dataModule);
+            }
+            case CarModule -> {
+                carModuleService.validateDataCreate(dataModule);
+            }
+            case TreeAndAnimalModule -> {
+                treeAndAnimalModuleService.validateDataCreate(dataModule);
+            }
+            case ArchitectureModule -> {
+                architectureModuleService.validateDataCreate(dataModule);
+            }
+            case OtherAssetModule -> {
+                otherAssetModuleService.validateDataCreate(dataModule);
+            }
+            case OtherVehicleTransportModule -> {
+                otherVehicleTransportModuleService.validateDataCreate(dataModule);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type architecture to validate!");
+            }
+        }
     }
 
 }

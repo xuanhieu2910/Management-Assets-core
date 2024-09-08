@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.service.modules.architectureModule.Architecture
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class ArchitectureModuleServiceImpl implements ArchitectureModuleService {
 
@@ -15,5 +17,10 @@ public class ArchitectureModuleServiceImpl implements ArchitectureModuleService 
     @Override
     public ArchitectureModule save(ArchitectureModule architectureModule) {
         return architectureModuleRepository.save(architectureModule);
+    }
+
+    @Override
+    public void validateDataCreate(Map<String, Object> dataModule) {
+
     }
 }

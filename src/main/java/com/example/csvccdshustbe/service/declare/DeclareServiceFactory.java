@@ -82,4 +82,7 @@ public class DeclareServiceFactory {
         declare.setTimeModified(timeCurrent);
         return assetDeclareService.save(declare);
     }
+
+    public void validateDataDeclare(Map<String,Object> dataDeclare) {
+    }
 }

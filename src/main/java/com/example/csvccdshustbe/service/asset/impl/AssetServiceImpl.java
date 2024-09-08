@@ -79,7 +79,7 @@ public class AssetServiceImpl implements AssetService {
         validateDataCreateAsset(dataCreateAssetRequest);
         storeNewAsset(dataCreateAssetRequest);
     }
-    private void validateDataCreateAsset(Map<String, Object> createAssetRequest) {
+    private void validateDataCreateAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
         validateDataCommonCreateAsset(createAssetRequest);
         validateDataModuleCreateAsset(createAssetRequest);
         validateDataOriginalCreateAsset(createAssetRequest);
@@ -87,12 +87,15 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private void validateDataDeclareCreateAsset(Map<String, Object> createAssetRequest) {
+        declareServiceFactory.validateDataDeclare((Map<String, Object>) createAssetRequest.get(Constants.KEY_DECLARE_ASSET));
     }
 
     private void validateDataOriginalCreateAsset(Map<String, Object> createAssetRequest) {
+       originalServiceFactory.validateDataOriginal((Map<String, Object>) createAssetRequest.get(Constants.KEY_ORIGINAL_ASSET));
     }
 
-    private void validateDataModuleCreateAsset(Map<String, Object> createAssetRequest) {
+    private void validateDataModuleCreateAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
+        modulesServiceFactory.validateDataModules((List<Map<String,Object>>) createAssetRequest.get(Constants.KEY_MODULE));
     }
 
     private void validateDataCommonCreateAsset(Map<String, Object> createAssetRequest) {

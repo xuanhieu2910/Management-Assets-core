@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.service.modules.otherVehicleTransportModule.Oth
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class OtherVehicleTransportModuleServiceImpl implements OtherVehicleTransportModuleService {
 
@@ -16,5 +18,10 @@ public class OtherVehicleTransportModuleServiceImpl implements OtherVehicleTrans
     @Override
     public OtherVehicleTransportModule save(OtherVehicleTransportModule module) {
         return otherVehicleTransportRepository.save(module);
+    }
+
+    @Override
+    public void validateDataCreate(Map<String, Object> dataModule) {
+
     }
 }

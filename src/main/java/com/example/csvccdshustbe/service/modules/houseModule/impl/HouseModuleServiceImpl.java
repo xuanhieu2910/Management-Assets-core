@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.service.modules.houseModule.HouseModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class HouseModuleServiceImpl implements HouseModuleService {
 
@@ -15,5 +17,10 @@ public class HouseModuleServiceImpl implements HouseModuleService {
     @Override
     public HouseModule save(HouseModule houseModule) {
         return houseModuleRepository.save(houseModule);
+    }
+
+    @Override
+    public void validateDataCreate(Map<String, Object> dataModule) {
+
     }
 }

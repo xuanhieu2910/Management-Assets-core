@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.service.modules.treeAndAnimalModule.TreeAndAnim
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class TreeAndAnimalModuleServiceImpl implements TreeAndAnimalModuleService {
 
@@ -15,5 +17,10 @@ public class TreeAndAnimalModuleServiceImpl implements TreeAndAnimalModuleServic
     @Override
     public AnimalTreeModule save(AnimalTreeModule animalTreeModule) {
         return treeAndAnimalModuleRepository.save(animalTreeModule);
+    }
+
+    @Override
+    public void validateDataCreate(Map<String, Object> dataModule) {
+
     }
 }

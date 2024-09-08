@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.service.modules.groundModule.GroundModuleServic
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class GroundModuleServiceImpl implements GroundModuleService {
 
@@ -15,5 +17,10 @@ public class GroundModuleServiceImpl implements GroundModuleService {
     @Override
     public GroundModule saveGroundModule(GroundModule module) {
         return groundModuleRepository.save(module);
+    }
+
+    @Override
+    public void validateDataCreate(Map<String, Object> dataModule) {
+
     }
 }

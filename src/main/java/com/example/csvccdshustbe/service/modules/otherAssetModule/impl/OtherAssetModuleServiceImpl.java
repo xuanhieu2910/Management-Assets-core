@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.service.modules.otherAssetModule.OtherAssetModu
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class OtherAssetModuleServiceImpl implements OtherAssetModuleService {
 
@@ -15,5 +17,10 @@ public class OtherAssetModuleServiceImpl implements OtherAssetModuleService {
     @Override
     public OtherAssetModule save(OtherAssetModule otherAssetModule) {
         return otherAssetModuleRepository.save(otherAssetModule);
+    }
+
+    @Override
+    public void validateDataCreate(Map<String, Object> dataModule) {
+
     }
 }
