@@ -101,6 +101,7 @@ public class OriginalRepositoryImpl implements OriginalRepositoryCustom {
         if (StringUtils.isNotBlank(request.getKeyword())){
             sb.append(" and (cte.name REGEXP :keyword )  ");
         }
+        sb.append(" ORDER BY path ");
     }
 
     private long countFindAllVisibleOriginalByIdAssetCategory(FindAllOriginalVisibleRequest request){

@@ -87,6 +87,7 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
         if (StringUtils.isNotBlank(request.getKeyword())) {
             sb.append(" and (cte.name REGEXP :keyword ) ");
         }
+        sb.append(" ORDER BY path ");
     }
 
     private long countFindAllProjectVisible(FindAllProjectsRequest request) {

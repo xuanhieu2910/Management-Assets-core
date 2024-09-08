@@ -2,13 +2,16 @@ package com.example.csvccdshustbe.repository.medicineGroup;
 
 import com.example.csvccdshustbe.entity.MedicineGroup;
 import com.example.csvccdshustbe.entity.Suppliers;
+import com.example.csvccdshustbe.request.medicineGroup.FindAllMedicineGroupRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MedicineGroupRepositoryCustom {
 
-    List<MedicineGroup> findAllMedicineGroupByStatus(Integer status);
+    Page<MedicineGroup> findAllMedicineGroupActive(FindAllMedicineGroupRequest request, Pageable pageable);
     Optional<MedicineGroup> findMedicineGroupByName(String name);
     Optional<MedicineGroup> findMedicineGroupById(Integer idMedicineType);
 }

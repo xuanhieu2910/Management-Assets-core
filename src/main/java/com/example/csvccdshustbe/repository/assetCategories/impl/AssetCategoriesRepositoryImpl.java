@@ -339,6 +339,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         if (StringUtils.isNotBlank(request.getKeyword())){
             sb.append(" and (cte.name REGEXP :keyword ) ");
         }
+        sb.append(" ORDER BY path ");
     }
 
     private long countFindAllAssetCategoriesByCodeAndVisible(FindAllAssetCategoriesRequest request){

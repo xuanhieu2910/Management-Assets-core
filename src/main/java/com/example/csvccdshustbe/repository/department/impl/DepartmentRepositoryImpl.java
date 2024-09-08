@@ -327,6 +327,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
         if (StringUtils.isNotBlank(request.getKeyword())){
             sb.append(" and (cte.name REGEXP :keyword ) ");
         }
+        sb.append(" ORDER BY path ");
     }
 
 

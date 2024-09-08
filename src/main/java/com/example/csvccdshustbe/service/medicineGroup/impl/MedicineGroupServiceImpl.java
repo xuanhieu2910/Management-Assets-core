@@ -5,14 +5,19 @@ import com.example.csvccdshustbe.entity.MedicineGroup;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.medicineGroup.MedicineGroupRepository;
 import com.example.csvccdshustbe.request.medicineGroup.CreateMedicineGroupRequest;
+import com.example.csvccdshustbe.request.medicineGroup.FindAllMedicineGroupRequest;
 import com.example.csvccdshustbe.request.medicineGroup.UpdateMedicineGroupRequest;
 import com.example.csvccdshustbe.response.medicineGroup.FindAllMedicineGroupResponse;
 import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -28,9 +33,11 @@ public class MedicineGroupServiceImpl implements MedicineGroupService {
     MedicineGroupRepository medicineGroupRepository;
 
     @Override
-    public List<FindAllMedicineGroupResponse> findAllMedicineGroupByStatus(Integer status) {
-        List<MedicineGroup> medicineGroups = medicineGroupRepository.findAllMedicineGroupByStatus(status);
-        return convertToFindAllMedicineGroupResponse(medicineGroups);
+    public Page<FindAllMedicineGroupResponse> findAllMedicineGroup(FindAllMedicineGroupRequest findAllMedicineGroupRequest) {
+        Pageable pageable = PageUtils.buildPage(findAllMedicineGroupRequest.getPage(), findAllMedicineGroupRequest.getSize());
+        Page<MedicineGroup> medicineGroups = medicineGroupRepository.findAllMedicineGroupActive(findAllMedicineGroupRequest, pageable);
+        return new PageImpl<>(convertToFindAllMedicineGroupResponse(medicineGroups.stream().toList()),
+                                pageable, medicineGroups.getTotalElements());
     }
 
     private List<FindAllMedicineGroupResponse> convertToFindAllMedicineGroupResponse(List<MedicineGroup> medicineGroups) {

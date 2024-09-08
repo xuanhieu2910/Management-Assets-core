@@ -3,10 +3,13 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.medicineGroup.CreateMedicineGroupRequest;
+import com.example.csvccdshustbe.request.medicineGroup.FindAllMedicineGroupRequest;
 import com.example.csvccdshustbe.request.medicineGroup.UpdateMedicineGroupRequest;
 import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
-import com.example.csvccdshustbe.utility.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import net.kaczmarzyk.spring.data.jpa.domain.Like;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +27,13 @@ public class MedicineGroupController {
     @Autowired
     MedicineGroupService medicineGroupService;
     @GetMapping("/find-all")
-    public ResponseEntity<?> findAllMedicineGroup(){
+    public ResponseEntity<?> findAllMedicineGroup(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllMedicineGroupRequest findAllMedicineGroupRequest){
         try {
-            return ApiResponseDto.createdWithState(medicineGroupService.findAllMedicineGroupByStatus(Constants.MEDICINE_GROUP_ACTIVE_STATUS),
+            return ApiResponseDto.createdWithState(medicineGroupService.findAllMedicineGroup(findAllMedicineGroupRequest),
                     "find all medicine group success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);

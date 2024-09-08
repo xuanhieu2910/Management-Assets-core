@@ -2,10 +2,18 @@ package com.example.csvccdshustbe.repository.medicineGroup.impl;
 
 import com.example.csvccdshustbe.entity.MedicineGroup;
 import com.example.csvccdshustbe.repository.medicineGroup.MedicineGroupRepositoryCustom;
+import com.example.csvccdshustbe.request.medicineGroup.FindAllMedicineGroupRequest;
+import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -19,7 +27,7 @@ public class MedicineGroupRepositoryImpl implements MedicineGroupRepositoryCusto
 
 
     @Override
-    public List<MedicineGroup> findAllMedicineGroupByStatus(Integer status) {
+    public Page<MedicineGroup> findAllMedicineGroupActive(FindAllMedicineGroupRequest request, Pageable  pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select medicineGroup.id_medicine_group, medicineGroup.name, " +
                 "       medicineGroup.short_name, medicineGroup.description, " +
@@ -27,8 +35,10 @@ public class MedicineGroupRepositoryImpl implements MedicineGroupRepositoryCusto
                 "       medicineGroup.time_modified " +
                 "from medicine_group medicineGroup " +
                 "where medicineGroup.status = :status ");
+        setConditionFindAllMedicineGroupActive(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("status", status);
+        setParameterFindAllMedicineGroupActive(request,query);
+        PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
         List<MedicineGroup> medicineGroups = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
@@ -44,7 +54,32 @@ public class MedicineGroupRepositoryImpl implements MedicineGroupRepositoryCusto
                 medicineGroups.add(group);
             }
         }
-        return medicineGroups;
+        return new PageImpl<>(medicineGroups, pageable, countFindAllMedicineGroupActive(request));
+    }
+
+
+    private long countFindAllMedicineGroupActive(FindAllMedicineGroupRequest request){
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) " +
+                "from medicine_group medicineGroup " +
+                "where medicineGroup.status = :status ");
+        setConditionFindAllMedicineGroupActive(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllMedicineGroupActive(request, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindAllMedicineGroupActive(FindAllMedicineGroupRequest request, Query query) {
+        query.setParameter("status", Constants.MEDICINE_GROUP_ACTIVE_STATUS);
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            query.setParameter("keyword", request.getKeyword());
+        }
+    }
+
+    private void setConditionFindAllMedicineGroupActive(FindAllMedicineGroupRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            sb.append(" and (medicineGroup.name REGEXP :keyword ) ");
+        }
     }
 
     @Override
