@@ -101,7 +101,7 @@ public class AssetServiceImpl implements AssetService {
         Integer idAssetCategory = ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory"));
         assetCategoriesService.findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, Constants.ASSET_CATEGORY_IS_VISIBLE);
         Integer idUnit = ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit"));
-        unitsService.findUnitsByIdUnitAndIdAssetCategoryAndStatus(idUnit, idAssetCategory, Constants.UNITS_IS_ACTIVE);
+        unitsService.findUnitsByIdUnitAndStatus(idUnit, Constants.UNITS_IS_ACTIVE);
         Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
         documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
         Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));

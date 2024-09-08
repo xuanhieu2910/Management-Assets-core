@@ -16,5 +16,5 @@ public interface UnitsRepositoryCustom {
     Optional<Units> findUnitByName(String name);
     Optional<Units> findUnitById(Integer idUnit);
 
-    Optional<Units> findUnitByIdUnitAndIdAssetCategoryAndStatus(Integer idUnit,Integer idAssetCategory, Integer status);
+    Optional<Units> findUnitByIdUnitAndStatus(Integer idUnit, Integer status);
 }

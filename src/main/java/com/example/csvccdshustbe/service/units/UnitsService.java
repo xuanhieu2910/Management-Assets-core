@@ -23,5 +23,5 @@ public interface UnitsService {
 
     void deleteUnitsByIdUnits(Integer idUnit);
 
-    Units findUnitsByIdUnitAndIdAssetCategoryAndStatus(Integer idUnit, Integer idAssetCategory, Integer status);
+    Units findUnitsByIdUnitAndStatus(Integer idUnit, Integer status);
 }

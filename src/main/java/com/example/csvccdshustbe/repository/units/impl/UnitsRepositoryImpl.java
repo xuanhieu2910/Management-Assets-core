@@ -161,7 +161,7 @@ public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
     }
 
     @Override
-    public Optional<Units> findUnitByIdUnitAndIdAssetCategoryAndStatus(Integer idUnit, Integer idAssetCategory, Integer status) {
+    public Optional<Units> findUnitByIdUnitAndStatus(Integer idUnit, Integer status) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select un.id_unit, un.name, un.time_created,  " +
                 "       un.time_modified, un.id_asset_category,  " +
@@ -170,11 +170,9 @@ public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
                 "    inner join asset_categories assetCategory   " +
                 "        on un.id_asset_category = assetCategory.id_asset_category  " +
                 "where un.id_unit = :idUnit  " +
-                "and assetCategory.id_asset_category = :idAssetCategory  " +
                 "and un.status = :status   ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idUnit", idUnit);
-        query.setParameter("idAssetCategory", idAssetCategory);
         query.setParameter("status", status);
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)){

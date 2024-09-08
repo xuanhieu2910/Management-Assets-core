@@ -84,8 +84,8 @@ public class UnitsServiceImpl implements UnitsService {
     }
 
     @Override
-    public Units findUnitsByIdUnitAndIdAssetCategoryAndStatus(Integer idUnit, Integer idAssetCategory, Integer status) {
-        Optional<Units> units = unitsRepository.findUnitByIdUnitAndIdAssetCategoryAndStatus(idUnit, idAssetCategory, status);
+    public Units findUnitsByIdUnitAndStatus(Integer idUnit, Integer status) {
+        Optional<Units> units = unitsRepository.findUnitByIdUnitAndStatus(idUnit,  status);
         if (!units.isPresent()){
             throw new NotFoundException("Don't exits units!");
         }

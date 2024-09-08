@@ -26,7 +26,8 @@ public class LevelTypeAssetController {
     public ResponseEntity<?> findAll(){
         try {
             return ApiResponseDto.createdWithState(
-                    levelTypeAssetService.findAllLevelTypeAssetResponseByStatus(Constants.LEVEL_TYPE_ASSET_ACTIVE_STATUS), "Find all Level type asset success!", HttpStatus.OK);
+                    levelTypeAssetService.findAllLevelTypeAssetResponseByStatus(Constants.LEVEL_TYPE_ASSET_ACTIVE_STATUS),
+                    "Find all Level type asset success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
