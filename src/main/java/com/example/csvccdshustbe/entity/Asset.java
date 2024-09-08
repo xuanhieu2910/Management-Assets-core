@@ -33,8 +33,6 @@ public class Asset {
     private Integer idUnit;
     @Column(name = "id_original")
     private Integer idOriginal;
-    @Column(name = "id_origin_of_formation")
-    private Integer idOriginOfFormation;
     @Column(name = "id_projects")
     private Integer idProjects;
     @Column(name = "purpose")
