@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DeclareServiceFactory {
@@ -60,14 +57,14 @@ public class DeclareServiceFactory {
 
     private void saveCurrentUsage(Map<String, Object> declareDataAsset) {
         Integer idAsset = ValueUtil.getIntegerByObject(declareDataAsset.get("idAsset"));
-        List<Object[]> idsCurrentUsage = (List<Object[]>) declareDataAsset.get("currentUsage");
+        List<HashMap<String,Object>> idsCurrentUsage = (List<HashMap<String,Object>>) declareDataAsset.get("currentUsage");
         if (!CollectionUtils.isEmpty(idsCurrentUsage)) {
             List<AssetCurrentUsage> assetCurrentUsageList = new ArrayList<>();
             String timeCurrent = String.valueOf(new Date().getTime());
-            for (Object[] obj : idsCurrentUsage) {
+            for (HashMap<String,Object> obj : idsCurrentUsage) {
                 AssetCurrentUsage assetCurrentUsage = new AssetCurrentUsage();
                 assetCurrentUsage.setIdAsset(idAsset);
-                assetCurrentUsage.setIdCurrentUsage(ValueUtil.getIntegerByObject(obj[0]));
+                assetCurrentUsage.setIdCurrentUsage(ValueUtil.getIntegerByObject(obj.get("idCurrentUsage")));
                 assetCurrentUsage.setTimeCreated(timeCurrent);
                 assetCurrentUsageList.add(assetCurrentUsage);
             }
