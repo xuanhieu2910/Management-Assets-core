@@ -188,24 +188,28 @@ public class AssetServiceImpl implements AssetService {
     private Asset contructionDataAsset(Map<String, Object> dataAsset) {
         Asset asset = new Asset();
         asset.setName(ValueUtil.getStringByObject(dataAsset.get("name")));
-        asset.setCodeAsset(ValueUtil.getStringByObject(dataAsset.get("codeAsset")));
         asset.setIdAssetCategory(ValueUtil.getIntegerByObject(dataAsset.get("idAssetCategory")));
-        asset.setIdDepartment(ValueUtil.getIntegerByObject(dataAsset.get("idDepartment")));
+        if (StringUtils.isNotBlank(ValueUtil.getStringByObject(dataAsset.get("codeDepartment")))) {
+            asset.setCodeAsset(ValueUtil.getStringByObject(dataAsset.get("codeDepartment")) + "-" + String.valueOf(UUID.randomUUID()));
+        } else {
+            asset.setCodeAsset(String.valueOf(UUID.randomUUID()));
+        }
         asset.setIdDocumentAttack(ValueUtil.getIntegerByObject(dataAsset.get("idDocumentAttack")));
+        asset.setIdDepartment(ValueUtil.getIntegerByObject(dataAsset.get("idDepartment")));
         asset.setIdLocation(ValueUtil.getIntegerByObject(dataAsset.get("idLocation")));
         asset.setIdUnit(ValueUtil.getIntegerByObject(dataAsset.get("idUnit")));
         asset.setIdOriginal(ValueUtil.getIntegerByObject(dataAsset.get("idOriginal")));
         asset.setIdProjects(ValueUtil.getIntegerByObject(dataAsset.get("idProjects")));
         asset.setPurpose(ValueUtil.getStringByObject(dataAsset.get("purpose")));
         asset.setNotes(ValueUtil.getStringByObject(dataAsset.get("notes")));
-        asset.setFileAttack(ValueUtil.getStringByObject(dataAsset.get("fileAttack")));
-        asset.setIdDepartmentDefault(ValueUtil.getIntegerByObject(dataAsset.get("idDepartmentDefault")));
-        asset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(dataAsset.get("idLevelTypeAsset")));
         asset.setDescribe(ValueUtil.getStringByObject(dataAsset.get("describe")));
         asset.setQuantity(ValueUtil.getIntegerByObject(dataAsset.get("quantity")));
+        asset.setFileAttack(ValueUtil.getStringByObject(dataAsset.get("fileAttack")));
         String timeCurrent = String.valueOf(new Date().getTime());
         asset.setTimeCreated(timeCurrent);
         asset.setTimeModified(timeCurrent);
+        asset.setIdDepartmentDefault(ValueUtil.getIntegerByObject(dataAsset.get("idDepartmentDefault")));
+        asset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(dataAsset.get("idLevelTypeAsset")));
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());
