@@ -5,13 +5,18 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.department.DepartmentRepository;
 import com.example.csvccdshustbe.repository.documentAttack.DocumentAttackRepository;
 import com.example.csvccdshustbe.request.documentAttack.CreateDocumentAttackRequest;
+import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackRequest;
 import com.example.csvccdshustbe.request.documentAttack.UpdateDocumentAttackRequest;
 import com.example.csvccdshustbe.response.documentAttack.FindAllDocumentAttackResponse;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
+import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -19,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DocumentAttackServiceImpl implements DocumentAttackService {
@@ -26,14 +32,15 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
 
     @Autowired
     DocumentAttackRepository documentAttackRepository;
+    @Autowired
     DepartmentRepository departmentRepository;
-    public DocumentAttackServiceImpl(DocumentAttackRepository documentAttackRepository) {
 
-        this.documentAttackRepository = documentAttackRepository;
-    }
     @Override
-    public List<FindAllDocumentAttackResponse> findAllDocumentAttackResponseByStatus(Integer status){
-        return convertToFindAllDocumentAttack(documentAttackRepository.findAllDocumentAttackResponseByStatus(status));
+    public Page<FindAllDocumentAttackResponse> findAllDocumentAttackActiveResponse(FindAllDocumentAttackRequest request){
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<DocumentAttack> documentAttacks = documentAttackRepository.findAllDocumentAttackActiveResponse(request, pageable);
+        return new PageImpl<>(convertToFindAllDocumentAttack(documentAttacks.get().collect(Collectors.toList())),
+                    pageable, documentAttacks.getTotalElements());
     }
 
     private List<FindAllDocumentAttackResponse> convertToFindAllDocumentAttack(List<DocumentAttack> allDocumentAttackByStatus) {

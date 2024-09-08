@@ -3,10 +3,17 @@ package com.example.csvccdshustbe.repository.documentAttack.impl;
 import com.example.csvccdshustbe.entity.DocumentAttack;
 import com.example.csvccdshustbe.entity.LevelTypeAsset;
 import com.example.csvccdshustbe.repository.documentAttack.DocumentAttackRepositoryCustom;
+import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackRequest;
+import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -17,7 +24,7 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
     @PersistenceContext
     EntityManager entityManager;
     @Override
-    public List<DocumentAttack>findAllDocumentAttackResponseByStatus(Integer status){
+    public Page<DocumentAttack> findAllDocumentAttackActiveResponse(FindAllDocumentAttackRequest request, Pageable pageable){
         StringBuilder sb = new StringBuilder();
         sb.append("select document_attack.id_document_attack, " +
                 "document_attack.name, document_attack.code, document_attack.id_department, " +
@@ -25,8 +32,10 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
                 " document_attack.time_created, document_attack.time_modified " +
                 "from document_attack " +
                 "where 1=1 and document_attack.status = :status ");
+        setConditionFindAllDocumentAttackActive(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("status", status);
+        setParameterFindAllDocumentAttackActive(request, query);
+        PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
         List<DocumentAttack> documentAttacks = new ArrayList<>();
         if(!CollectionUtils.isEmpty(result)) {
@@ -43,7 +52,32 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
              documentAttacks.add(documentAttack);
             }
         }
-        return documentAttacks;
+        return new PageImpl<>(documentAttacks, pageable, countFindAllDocumentAttackActive(request));
+    }
+
+    private long countFindAllDocumentAttackActive(FindAllDocumentAttackRequest request){
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) " +
+                "from document_attack " +
+                "where 1 = 1 " +
+                "  and document_attack.status = :status ");
+        setConditionFindAllDocumentAttackActive(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllDocumentAttackActive(request, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindAllDocumentAttackActive(FindAllDocumentAttackRequest request, Query query) {
+        query.setParameter("status", Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            query.setParameter("keyword", request.getKeyword());
+        }
+    }
+
+    private void setConditionFindAllDocumentAttackActive(FindAllDocumentAttackRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            sb.append(" and (document_attack.name REGEXP :keyword ) ");
+        }
     }
 
     @Override

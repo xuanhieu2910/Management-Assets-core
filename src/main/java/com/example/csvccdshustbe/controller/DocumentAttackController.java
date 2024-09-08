@@ -5,12 +5,17 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.entity.DocumentAttack;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
+import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
 import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.request.documentAttack.CreateDocumentAttackRequest;
+import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackRequest;
 import com.example.csvccdshustbe.request.documentAttack.UpdateDocumentAttackRequest;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
 import com.example.csvccdshustbe.utility.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import net.kaczmarzyk.spring.data.jpa.domain.Like;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +32,18 @@ public class DocumentAttackController {
 
     @Autowired
     DocumentAttackService documentAttackService;
-    public DocumentAttackController(DocumentAttackService documentAttackService) {
-        this.documentAttackService = documentAttackService;
-    }
+
+
     @GetMapping("/find-all")
-    public ResponseEntity<?> findAll(){
+    public ResponseEntity<?> findAll(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllDocumentAttackRequest findAllDocumentAttackRequest){
         try {
             return ApiResponseDto.createdWithState(
-                    documentAttackService.findAllDocumentAttackResponseByStatus(Constants.DOCUMENT_ATTACK_ACTIVE_STATUS), "Find all Document Attack success!", HttpStatus.OK);
+                    documentAttackService.findAllDocumentAttackActiveResponse(findAllDocumentAttackRequest),
+                    "Find all Document Attack success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
