@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.asset.impl;
 
+import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.EnumModuleFactory;
 import com.example.csvccdshustbe.enums.OAuth2Factory;
@@ -8,6 +9,8 @@ import com.example.csvccdshustbe.factory.declare.DeclareFactory;
 import com.example.csvccdshustbe.factory.module.ModuleFactory;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
+import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
+import com.example.csvccdshustbe.response.asset.FindAllAssetResponse;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.assetOriginalOfFormation.AssetOriginalOfFormationService;
@@ -20,9 +23,7 @@ import com.example.csvccdshustbe.service.original.OriginalServiceFactory;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
 import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
-import com.example.csvccdshustbe.utility.Constants;
-import com.example.csvccdshustbe.utility.ProxyInitDataAssetUtil;
-import com.example.csvccdshustbe.utility.ValueUtil;
+import com.example.csvccdshustbe.utility.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.util.JSONObjectUtils;
@@ -31,12 +32,16 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -79,6 +84,36 @@ public class AssetServiceImpl implements AssetService {
         validateDataCreateAsset(dataCreateAssetRequest);
         storeNewAsset(dataCreateAssetRequest);
     }
+
+    @Override
+    public Page<FindAllAssetResponse> findAllAsset(FindAllAssetRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDto(request, pageable);
+        return new PageImpl<>(convertToFindAllAssetResponse(findAllAssetDtos.get().collect(Collectors.toList())),
+                    pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    private List<FindAllAssetResponse> convertToFindAllAssetResponse(List<FindAllAssetDto> collect) {
+        List<FindAllAssetResponse> responses = new ArrayList<>();
+        for (FindAllAssetDto dto : collect) {
+            FindAllAssetResponse response = new FindAllAssetResponse();
+            response.setCodeAsset(dto.getCodeAsset());
+            response.setNameAsset(dto.getNameAsset());
+            response.setNameAssetCategory(dto.getNameAssetCategory());
+            response.setCodeAssetCategory(dto.getCodeAssetCategory());
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(
+                    DateUtil.formatDatePattern(dto.getTimeCreated(),
+                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
+            response.setTimeModified(DateUtil.formatToPattern(
+                    DateUtil.formatDatePattern(dto.getTimeModified(),
+                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
+            responses.add(response);
+        }
+        return responses;
+    }
+
     private void validateDataCreateAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
         validateDataCommonCreateAsset(createAssetRequest);
         validateDataModuleCreateAsset(createAssetRequest);

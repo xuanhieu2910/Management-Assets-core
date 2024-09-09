@@ -12,9 +12,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,8 +35,11 @@ public class OriginalServiceImpl implements OriginalService {
 
     @Override
     public Original findOriginalByHardCodeAndStatus(String hardCode, Integer status) {
-
-        return null;
+        Optional<Original> original = originalRepository.findOriginalByHardCodeAndStatus(hardCode, status);
+        if (!original.isPresent()) {
+            throw new NotFoundException("Don't exits original!");
+        }
+        return original.get();
     }
 
     private List<FindAllOriginalVisibleResponse> convertToFindAllOriginalVisibleResponse(List<FindAllOriginalDto> collect) {
