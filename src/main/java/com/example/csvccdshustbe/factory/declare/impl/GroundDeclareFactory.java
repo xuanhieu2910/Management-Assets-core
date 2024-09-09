@@ -30,13 +30,17 @@ public class GroundDeclareFactory implements DeclareFactory {
         declare.setDateLicenseCertificateUseGround(ValueUtil.getStringByObject(mapDeclareRequest.get("dateLicenseCertificateUseGround")));
         declare.setNumberDecisionDeliverGround(ValueUtil.getStringByObject(mapDeclareRequest.get("numberDecisionDeliverGround")));
         declare.setDateNumberDecisionDeliverGround(ValueUtil.getStringByObject(mapDeclareRequest.get("dateNumberDecisionDeliverGround")));
-        declare.setNumberRentGround(ValueUtil.getStringByObject(mapDeclareRequest.get("numberRentGround")));
-        declare.setDateNumberRentGround(ValueUtil.getStringByObject(mapDeclareRequest.get("dateNumberRentGround")));
+        declare.setContractNumberRentGround(ValueUtil.getStringByObject(mapDeclareRequest.get("contractNumberRentGround")));
+        declare.setDateContractNumberRentGround(ValueUtil.getStringByObject(mapDeclareRequest.get("dateContractNumberRentGround")));
         declare.setAnotherContract(ValueUtil.getStringByObject(mapDeclareRequest.get("anotherContract")));
         declare.setIdTypeDeclareAsset(ValueUtil.getIntegerByObject(mapDeclareRequest.get("idTypeDeclareAsset")));
         String timeCurrent = String.valueOf(new Date().getTime());
         declare.setTimeCreated(timeCurrent);
         declare.setTimeModified(timeCurrent);
+        declare.setContractNumberTransferGround(ValueUtil.getStringByObject(mapDeclareRequest.get("contractNumberTransferGround")));
+        declare.setDateContractNumberTransferGround(ValueUtil.getStringByObject(mapDeclareRequest.get("dateContractNumberTransferGround")));
+        declare.setNumberDecisionRentGround(ValueUtil.getStringByObject(mapDeclareRequest.get("numberDecisionRentGround")));
+        declare.setDateNumberDecisionRentGround(ValueUtil.getStringByObject(mapDeclareRequest.get("dateNumberDecisionRentGround")));
         return declare;
     }
 }

@@ -20,6 +20,7 @@ public class HouseDeclareFactory implements DeclareFactory {
         declare.setHdsnBussiness(ValueUtil.getDoubleByObject(mapDeclareRequest.get("hdsnBussiness")));
         declare.setHdsnRent(ValueUtil.getDoubleByObject(mapDeclareRequest.get("hdsnRent")));
         declare.setHdsnBonds(ValueUtil.getDoubleByObject(mapDeclareRequest.get("hdsnBonds")));
+        declare.setLivePlace(ValueUtil.getDoubleByObject(mapDeclareRequest.get("LivePlace")));
         declare.setBlankPlace(ValueUtil.getDoubleByObject(mapDeclareRequest.get("blankPlace")));
         declare.setEncroachedPlace(ValueUtil.getDoubleByObject(mapDeclareRequest.get("encroachedPlace")));
         declare.setSyntheticUse(ValueUtil.getDoubleByObject(mapDeclareRequest.get("syntheticUse")));

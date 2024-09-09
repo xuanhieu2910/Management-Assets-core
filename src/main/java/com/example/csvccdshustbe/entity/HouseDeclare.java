@@ -29,6 +29,8 @@ public class HouseDeclare implements IDeclare{
     private Double hdsnRent;
     @Column(name = "hdsn_bonds")
     private Double hdsnBonds;
+    @Column(name = "live_place")
+    private Double livePlace;
     @Column(name = "blank_place")
     private Double blankPlace;
     @Column(name = "encroached_place")

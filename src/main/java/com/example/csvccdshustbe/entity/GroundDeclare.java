@@ -49,10 +49,10 @@ public class GroundDeclare implements IDeclare{
     private String numberDecisionDeliverGround;
     @Column(name = "date_number_decision_deliver_ground")
     private String dateNumberDecisionDeliverGround;
-    @Column(name = "number_rent_ground")
-    private String numberRentGround;
-    @Column(name = "date_number_rent_ground")
-    private String dateNumberRentGround;
+    @Column(name = "contract_number_rent_ground")
+    private String contractNumberRentGround;
+    @Column(name = "date_contract_number_rent_ground")
+    private String dateContractNumberRentGround;
     @Column(name = "another_contract")
     private String anotherContract;
     @Column(name = "time_created")
@@ -61,4 +61,13 @@ public class GroundDeclare implements IDeclare{
     private String timeModified;
     @Column(name = "id_type_declare_asset")
     private Integer idTypeDeclareAsset;
+    @Column(name = "contract_number_transfer_ground")
+    private String contractNumberTransferGround;
+    @Column(name = "date_contract_number_transfer_ground")
+    private String dateContractNumberTransferGround;
+    @Column(name = "number_decision_rent_ground")
+    private String numberDecisionRentGround;
+    @Column(name = "date_number_decision_rent_ground")
+    private String dateNumberDecisionRentGround;
+
 }
