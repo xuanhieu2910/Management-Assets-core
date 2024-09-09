@@ -1,0 +1,24 @@
+package com.example.csvccdshustbe.factory.original.impl.noShape;
+
+import com.example.csvccdshustbe.entity.IOriginal;
+import com.example.csvccdshustbe.entity.NoShapeOriginalAssetEvaluate;
+import com.example.csvccdshustbe.factory.original.OriginalFactory;
+import com.example.csvccdshustbe.utility.ValueUtil;
+
+import java.util.Date;
+import java.util.Map;
+
+public class NoOriginalAssetEvaluateFactory implements OriginalFactory {
+    @Override
+    public IOriginal createOriginal(Map<String, Object> mapOriginalCreate) {
+        NoShapeOriginalAssetEvaluate evaluate = new NoShapeOriginalAssetEvaluate();
+        evaluate.setIdAsset(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idAsset")));
+        evaluate.setValueBuy(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueBuy")));
+        evaluate.setValueTax(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueTax")));
+        evaluate.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        evaluate.setTimeCreated(timeCurrent);
+        evaluate.setTimeModified(timeCurrent);
+        return evaluate;
+    }
+}

@@ -10,6 +10,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.factory.declare.impl.CommonDeclareFactory;
 import com.example.csvccdshustbe.factory.declare.impl.HouseDeclareFactory;
 import com.example.csvccdshustbe.factory.module.impl.*;
+import com.example.csvccdshustbe.factory.original.impl.noShape.*;
 import com.example.csvccdshustbe.factory.original.impl.shape.*;
 
 
@@ -93,6 +94,21 @@ public class ProxyInitDataAssetUtil {
             }
             case ShapeOriginalAssetTransfer -> {
                 return new OriginalAssetTransferFactory();
+            }
+            case NoShapeOriginalAssetBuy -> {
+                return new NoOriginalAssetBuyFactory();
+            }
+            case NoShapeOriginalAssetGift -> {
+                return new NoOriginalAssetGiftFactory();
+            }
+            case NoShapeOriginalAssetEvaluate -> {
+                return new NoOriginalAssetEvaluateFactory();
+            }
+            case NoShapeOriginalAssetTransfer -> {
+                return new NoOriginalAssetTransferFactory();
+            }
+            case NoShapeOriginalAssetUseLand -> {
+                return new NoOriginalAssetUseLandFactory();
             }
             default -> {
                 throw new ValidateFiledException("Don't exits original");

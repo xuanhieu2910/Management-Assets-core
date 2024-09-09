@@ -5,17 +5,20 @@ import com.example.csvccdshustbe.entity.ShapeOriginalAssetConnectWoActor;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
 import com.example.csvccdshustbe.utility.ValueUtil;
 
+import java.util.Date;
 import java.util.Map;
 
 public class OriginalAssetConnectWoActorFactory implements OriginalFactory {
     @Override
     public IOriginal createOriginal(Map<String, Object> mapOriginalCreate) {
         ShapeOriginalAssetConnectWoActor connectWoActor = new ShapeOriginalAssetConnectWoActor();
-        connectWoActor.setIdOriginal(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idOriginal")));
         connectWoActor.setIdAsset(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idAsset")));
         connectWoActor.setValueBuy(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueBuy")));
         connectWoActor.setValueTax(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueTax")));
         connectWoActor.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        connectWoActor.setTimeCreated(timeCurrent);
+        connectWoActor.setTimeModified(timeCurrent);
         return connectWoActor;
     }
 }

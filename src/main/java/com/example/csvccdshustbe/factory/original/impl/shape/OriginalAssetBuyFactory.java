@@ -6,13 +6,13 @@ import com.example.csvccdshustbe.entity.ShapeOriginalAssetBuy;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
 import com.example.csvccdshustbe.utility.ValueUtil;
 
+import java.util.Date;
 import java.util.Map;
 
 public class OriginalAssetBuyFactory implements OriginalFactory {
     @Override
     public IOriginal createOriginal(Map<String, Object> mapOriginalCreate) {
         ShapeOriginalAssetBuy shapeOriginalAssetBuy = new ShapeOriginalAssetBuy();
-        shapeOriginalAssetBuy.setIdOriginal(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idOriginal")));
         shapeOriginalAssetBuy.setIdAsset(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idAsset")));
         shapeOriginalAssetBuy.setValueBuy(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueBuy")));
         shapeOriginalAssetBuy.setValueDiscount(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueDiscount")));
@@ -22,6 +22,9 @@ public class OriginalAssetBuyFactory implements OriginalFactory {
         shapeOriginalAssetBuy.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
         shapeOriginalAssetBuy.setIdMethodBuyAsset(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idMethodBuyAsset")));
         shapeOriginalAssetBuy.setIdTypeBuyAsset(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idTypeBuyAsset")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        shapeOriginalAssetBuy.setTimeCreated(timeCurrent);
+        shapeOriginalAssetBuy.setTimeModified(timeCurrent);
         return shapeOriginalAssetBuy;
     }
 }

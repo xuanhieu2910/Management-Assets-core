@@ -16,8 +16,6 @@ public class ShapeOriginalAssetConnectWoActor implements IOriginal{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_s_original_asset_connect_wo_actor")
     private Integer idShapeOriginalAssetConnectWoActor;
-    @Column(name = "id_original")
-    private Integer idOriginal;
     @Column(name = "id_asset")
     private Integer idAsset;
     @Column(name = "value_buy")
@@ -26,4 +24,8 @@ public class ShapeOriginalAssetConnectWoActor implements IOriginal{
     private Double valueTax;
     @Column(name = "value_other")
     private Double valueOther;
+    @Column(name = "time_created")
+    private String timeCreated;
+    @Column(name = "time_modified")
+    private String timeModified;
 }

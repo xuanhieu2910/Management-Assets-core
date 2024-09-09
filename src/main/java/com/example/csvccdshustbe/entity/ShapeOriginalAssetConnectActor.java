@@ -15,7 +15,10 @@ public class ShapeOriginalAssetConnectActor implements IOriginal{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_s_original_asset_connect_actor")
     private Integer idShapeOriginalAssetConnectActor;
-    @Column(name = "id_original")
-    private Integer idOriginal;
     @Column(name = "id_asset")
-    private Integer idAsset;}
+    private Integer idAsset;
+    @Column(name = "time_created")
+    private String timeCreated;
+    @Column(name = "time_modified")
+    private String timeModified;
+}

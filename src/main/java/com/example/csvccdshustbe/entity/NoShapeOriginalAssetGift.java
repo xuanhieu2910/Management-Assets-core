@@ -10,13 +10,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "ns_original_asset_gift")
-public class NoShapeOriginalAssetGift {
+public class NoShapeOriginalAssetGift implements IOriginal{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_ns_original_asset_gift")
     private Integer idNoShapeOriginalAssetGift;
-    @Column(name = "id_original")
-    private Integer idOriginal;
     @Column(name = "id_asset")
     private Integer idAsset;
     @Column(name = "value_buy")
@@ -27,4 +25,8 @@ public class NoShapeOriginalAssetGift {
     private Double valueTax;
     @Column(name = "value_other")
     private Double valueOther;
+    @Column(name = "time_created")
+    private String timeCreated;
+    @Column(name = "time_modified")
+    private String timeModified;
 }

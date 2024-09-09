@@ -3,7 +3,7 @@ package com.example.csvccdshustbe.enums;
 public enum EnumOriginalFactory {
     NoShapeOriginalAssetBuy,
     NoShapeOriginalAssetEvaluate,
-    NoShapeOriginalAssetAssetGift,
+    NoShapeOriginalAssetGift,
     NoShapeOriginalAssetTransfer,
     NoShapeOriginalAssetUseLand,
     ShapeOriginalAssetBuy,

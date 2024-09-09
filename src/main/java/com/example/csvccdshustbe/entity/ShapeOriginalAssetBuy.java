@@ -16,8 +16,6 @@ public class ShapeOriginalAssetBuy implements IOriginal{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_s_original_asset_buy")
     private Integer idShapeOriginalAssetBuy;
-    @Column(name = "id_original")
-    private Integer idOriginal;
     @Column(name = "id_asset")
     private Integer idAsset;
     @Column(name = "value_buy")
@@ -36,5 +34,9 @@ public class ShapeOriginalAssetBuy implements IOriginal{
     private Integer idMethodBuyAsset;
     @Column(name = "id_type_buy_asset")
     private Integer idTypeBuyAsset;
+    @Column(name = "time_created")
+    private String timeCreated;
+    @Column(name = "time_modified")
+    private String timeModified;
 
 }
