@@ -16,6 +16,7 @@ public class TreeAndAnimalModuleFactory implements ModuleFactory {
         animalTreeModule.setIdAsset(ValueUtil.getIntegerByObject(mapModuleCreate.get("idAsset")));
         animalTreeModule.setPublishDate(ValueUtil.getStringByObject(mapModuleCreate.get("publishDate")));
         animalTreeModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleCreate.get("idTypeUse")));
+        animalTreeModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleCreate.get("idCountryProducer")));
         return animalTreeModule;
     }
 }

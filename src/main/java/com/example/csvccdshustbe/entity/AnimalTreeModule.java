@@ -23,4 +23,6 @@ public class AnimalTreeModule implements IModules{
     private String publishDate;
     @Column(name = "id_type_use")
     private Integer idTypeUse;
+    @Column(name = "id_country_producer")
+    private Integer idCountryProducer;
 }

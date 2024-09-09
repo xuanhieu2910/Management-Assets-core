@@ -13,7 +13,7 @@ public class ArchitectureModuleFactory implements ModuleFactory {
     public IModules createModule(Map<String, Object> mapModuleCreate) {
         ArchitectureModule architectureModule = new ArchitectureModule();
         architectureModule.setIdAsset(ValueUtil.getIntegerByObject(mapModuleCreate.get("idAsset")));
-        architectureModule.setInstanceId(ValueUtil.getIntegerByObject(mapModuleCreate.get("instanceId")));
+        architectureModule.setIdInstance(ValueUtil.getIntegerByObject(mapModuleCreate.get("idInstance")));
         architectureModule.setLength(ValueUtil.getDoubleByObject(mapModuleCreate.get("length")));
         architectureModule.setAcreage(ValueUtil.getDoubleByObject(mapModuleCreate.get("acreage")));
         architectureModule.setVolume(ValueUtil.getDoubleByObject(mapModuleCreate.get("volume")));

@@ -25,7 +25,6 @@ public class GroundModule implements IModules{
     private String wardCode;
     @Column(name = "address_detail")
     private String addressDetail;
-    @Column(name = "value_ground")
-    private Double valueGround;
+
 
 }

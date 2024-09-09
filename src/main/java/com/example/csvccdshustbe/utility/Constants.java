@@ -178,4 +178,12 @@ public class Constants {
     public static final Integer TYPE_DECLARE_ASSET_ACTIVE = 1;
     public static final Integer TYPE_DECLARE_ASSET_UN_ACTIVE = -1;
     /*----------------------------------------------------*/
+
+    /**
+     * Constant House Modules
+     * */
+    public static final Integer HOUSE_MODULES_IS_MANAGE_HOUSE = 1;
+    public static final Integer HOUSE_MODULES_IS_NOT_MANAGE_HOUSE = -1;
+    /*----------------------------------------------------*/
+
 }

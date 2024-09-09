@@ -30,7 +30,7 @@ public class OtherVehicleTransportModuleFactory implements ModuleFactory {
         module.setSource(ValueUtil.getStringByObject(mapModuleCreate.get("source")));
         module.setColor(ValueUtil.getStringByObject(mapModuleCreate.get("color")));
         module.setIdUser(ValueUtil.getIntegerByObject(mapModuleCreate.get("idUser")));
-        module.setIdUseType(ValueUtil.getIntegerByObject(mapModuleCreate.get("idUseType")));
+        module.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleCreate.get("idTypeUse")));
         String timeCurrent = String.valueOf(new Date().getTime());
         module.setTimeCreated(timeCurrent);
         module.setTimeModified(timeCurrent);

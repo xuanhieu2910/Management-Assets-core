@@ -17,8 +17,6 @@ public class OtherAssetModule implements IModules{
     private Integer idOtherAssetModule;
     @Column(name = "id_asset")
     private Integer idAsset;
-    @Column(name = "license_plate")
-    private String licensePlate;
     @Column(name = "lable")
     private String lable;
     @Column(name = "model")

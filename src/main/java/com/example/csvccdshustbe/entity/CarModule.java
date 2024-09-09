@@ -25,10 +25,10 @@ public class CarModule implements IModules{
     private String valueTax;
     @Column(name = "license_plate")
     private String licensePlate;
-    @Column(name = "id_label_car")
-    private Integer idLabelCar;
-    @Column(name = "id_type_car")
-    private Integer idTypeCar;
+    @Column(name = "label_car")
+    private String labelCar;
+    @Column(name = "type_car")
+    private String typeCar;
     @Column(name = "load_capacity")
     private String loadCapacity;
     @Column(name = "number_seats")
@@ -46,7 +46,7 @@ public class CarModule implements IModules{
     @Column(name = "publish_year")
     private String publishYear;
     @Column(name = "id_country_producer")
-    private String idCountryProducer;
+    private Integer idCountryProducer;
     @Column(name = "license_certificate_register")
     private String licenseCertificateRegister;
     @Column(name = "publish_date_license")
@@ -59,8 +59,8 @@ public class CarModule implements IModules{
     private String color;
     @Column(name = "id_user")
     private Integer idUser;
-    @Column(name = "id_use_type")
-    private Integer idUseType;
+    @Column(name = "id_type_use")
+    private Integer idTypeUse;
     @Column(name = "time_created")
     private String timeCreated;
     @Column(name = "time_modified")

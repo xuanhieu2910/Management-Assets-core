@@ -19,8 +19,8 @@ public class ArchitectureModule implements IModules{
     private Integer idArchitectureModule;
     @Column(name = "id_asset")
     private Integer idAsset;
-    @Column(name = "instance_id")
-    private Integer instanceId;
+    @Column(name = "id_instance")
+    private Integer idInstance;
     @Column(name = "length")
     private Double length;
     @Column(name = "acreage")

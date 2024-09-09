@@ -17,8 +17,8 @@ public class HouseModule implements IModules{
     private Integer idHouseModule;
     @Column(name = "id_asset")
     private Integer idAsset;
-    @Column(name = "is_manage_house")
-    private Integer isManageHouse;
+    @Column(name = "is_manage_ground")
+    private Integer isManageGround;
     @Column(name = "province_code")
     private String provinceCode;
     @Column(name = "district_code")
@@ -33,5 +33,7 @@ public class HouseModule implements IModules{
     private Double acreage;
     @Column(name = "publish_year")
     private String publishYear;
+    @Column(name = "id_instance")
+    private Integer idInstance;
 
 }

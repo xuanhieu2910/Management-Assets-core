@@ -17,7 +17,6 @@ public class GroundModuleFactory implements ModuleFactory {
         groundModule.setDistrictCode(ValueUtil.getStringByObject(mapModuleCreate.get("districtCode")));
         groundModule.setWardCode(ValueUtil.getStringByObject(mapModuleCreate.get("wardCode")));
         groundModule.setAddressDetail(ValueUtil.getStringByObject(mapModuleCreate.get("addressDetail")));
-        groundModule.setValueGround(ValueUtil.getDoubleByObject(mapModuleCreate.get("valueGround")));
         return groundModule;
     }
 }

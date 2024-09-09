@@ -53,8 +53,8 @@ public class OtherVehicleTransportModule implements IModules{
     private String color;
     @Column(name = "id_user")
     private Integer idUser;
-    @Column(name = "id_use_type")
-    private Integer idUseType;
+    @Column(name = "id_type_use")
+    private Integer idTypeUse;
     @Column(name = "time_created")
     private String timeCreated;
     @Column(name = "time_modified")
