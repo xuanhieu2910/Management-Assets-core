@@ -102,6 +102,30 @@ public class OriginalRepositoryImpl implements OriginalRepositoryCustom {
                 "from original ori " +
                 "where ori.hard_code_dev = :hardCode " +
                 "and ori.visible = :visible ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("hardCode", hardCode);
+        query.setParameter("visible", status);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                Original original = new Original();
+                original.setIdOriginal(ValueUtil.getIntegerByObject(obj[0]));
+                original.setName(ValueUtil.getStringByObject(obj[1]));
+                original.setShortName(ValueUtil.getStringByObject(obj[2]));
+                original.setDescription(ValueUtil.getStringByObject(obj[3]));
+                original.setParent(ValueUtil.getIntegerByObject(obj[4]));
+                original.setSortOrder(ValueUtil.getStringByObject(obj[5]));
+                original.setVisible(ValueUtil.getIntegerByObject(obj[6]));
+                original.setTimeCreated(ValueUtil.getStringByObject(obj[7]));
+                original.setTimeModified(ValueUtil.getStringByObject(obj[8]));
+                original.setIdUserCreated(ValueUtil.getIntegerByObject(obj[9]));
+                original.setIdUserModified(ValueUtil.getIntegerByObject(obj[10]));
+                original.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[11]));
+                original.setHardCodeDev(ValueUtil.getStringByObject(obj[12]));
+                original.setIsDefault(ValueUtil.getIntegerByObject(obj[13]));
+                return Optional.of(original);
+            }
+        }
         return Optional.empty();
     }
 
