@@ -1,0 +1,8 @@
+package com.example.csvccdshustbe.repository.noShapeOriginalAssetEvaluate.impl;
+
+import com.example.csvccdshustbe.repository.noShapeOriginalAssetEvaluate.NoShapeOriginalAssetEvaluateRepositoryCustom;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class NoShapeOriginalAssetEvaluateRepositoryImpl implements NoShapeOriginalAssetEvaluateRepositoryCustom {
+}

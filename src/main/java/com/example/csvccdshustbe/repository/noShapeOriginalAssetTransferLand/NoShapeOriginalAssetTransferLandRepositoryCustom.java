@@ -1,0 +1,4 @@
+package com.example.csvccdshustbe.repository.noShapeOriginalAssetTransferLand;
+
+public interface NoShapeOriginalAssetTransferLandRepositoryCustom {
+}

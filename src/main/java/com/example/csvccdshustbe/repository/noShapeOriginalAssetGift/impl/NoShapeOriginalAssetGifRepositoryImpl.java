@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.noShapeOriginalAssetGift.impl;
+
+import com.example.csvccdshustbe.repository.noShapeOriginalAssetGift.NoShapeOriginalAssetGifRepositoryCustom;
+
+public class NoShapeOriginalAssetGifRepositoryImpl implements NoShapeOriginalAssetGifRepositoryCustom {
+}

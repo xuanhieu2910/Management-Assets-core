@@ -7,9 +7,11 @@ import com.example.csvccdshustbe.service.declare.DeclareService;
 import com.example.csvccdshustbe.utility.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DeclareServiceImpl implements DeclareService {
@@ -22,6 +24,15 @@ public class DeclareServiceImpl implements DeclareService {
         List<Declare> declares = declareRepository.findAllDeclareByIdAssetCategoryAndVisible(idAssetCategory,
                 Constants.DECLARE_VISIBLE);
         return convertToFindAllDeclareVisible(declares);
+    }
+
+    @Override
+    public Declare findDeclareByHardCodeAndVisible(String hardCode, Integer visible) {
+        Optional<Declare> declare = declareRepository.findDeclareByHardCodeAndVisible(hardCode, visible);
+        if (!declare.isPresent()) {
+            throw new NotFoundException("Don't exits declare by type declare!");
+        }
+        return declare.get();
     }
 
     private List<FindAllDeclareVisibleResponse> convertToFindAllDeclareVisible(List<Declare> declares) {

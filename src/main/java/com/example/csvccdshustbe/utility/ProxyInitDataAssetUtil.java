@@ -1,8 +1,6 @@
 package com.example.csvccdshustbe.utility;
 
-import com.example.csvccdshustbe.entity.GroundDeclare;
-import com.example.csvccdshustbe.entity.OtherAssetModule;
-import com.example.csvccdshustbe.entity.OtherVehicleTransportModule;
+import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.EnumDeclareFactory;
 import com.example.csvccdshustbe.enums.EnumModuleFactory;
 import com.example.csvccdshustbe.enums.EnumOriginalFactory;
@@ -109,6 +107,12 @@ public class ProxyInitDataAssetUtil {
             }
             case NoShapeOriginalAssetUseLand -> {
                 return new NoOriginalAssetUseLandFactory();
+            }
+            case NoShapeOriginalAssetRentLand -> {
+                return new NoShapeOriginalAssetRentLand();
+            }
+            case NoShapeOriginalAssetTransferLand -> {
+                return new NoShapeOriginalAssetTransfer();
             }
             default -> {
                 throw new ValidateFiledException("Don't exits original");

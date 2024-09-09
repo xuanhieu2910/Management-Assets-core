@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.noShapeOriginalAssetRentLand.impl;
+
+import com.example.csvccdshustbe.repository.noShapeOriginalAssetRentLand.NoShapeOriginalAssetRentLandRepositoryCustom;
+
+public class NoShapeOriginalAssetRentLandRepositoryImpl implements NoShapeOriginalAssetRentLandRepositoryCustom {
+}

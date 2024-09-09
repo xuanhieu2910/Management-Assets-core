@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.noShapeOriginalAssetTransferLand.impl;
+
+import com.example.csvccdshustbe.repository.noShapeOriginalAssetTransfer.NoShapeOriginalAssetTransferRepositoryCustom;
+
+public class NoShapeOriginalAssetTransferLandRepositoryImpl implements NoShapeOriginalAssetTransferRepositoryCustom {
+}

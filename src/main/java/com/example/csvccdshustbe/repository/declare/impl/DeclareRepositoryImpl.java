@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class DeclareRepositoryImpl implements DeclareRepositoryCustom {
 
@@ -47,5 +48,35 @@ public class DeclareRepositoryImpl implements DeclareRepositoryCustom {
             }
         }
         return declares;
+    }
+
+    @Override
+    public Optional<Declare> findDeclareByHardCodeAndVisible(String hardCode, Integer visible) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select decl.id_declare, decl.name, decl.code, " +
+                "       decl.visible, decl.time_created, decl.time_modified, " +
+                "       decl.id_category, decl.hard_code " +
+                "from `declare` decl  " +
+                "where decl.hard_code = :hardCode " +
+                "and decl.visible = :visible ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("hardCode", hardCode);
+        query.setParameter("visible", visible);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                Declare declare = new Declare();
+                declare.setIdDeclare(ValueUtil.getIntegerByObject(obj[0]));
+                declare.setName(ValueUtil.getStringByObject(obj[1]));
+                declare.setCode(ValueUtil.getStringByObject(obj[2]));
+                declare.setVisible(ValueUtil.getIntegerByObject(obj[3]));
+                declare.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                declare.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                declare.setIdCategory(ValueUtil.getIntegerByObject(obj[6]));
+                declare.setHardCode(ValueUtil.getStringByObject(obj[7]));
+                return Optional.of(declare);
+            }
+        }
+        return Optional.empty();
     }
 }

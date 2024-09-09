@@ -31,6 +31,8 @@ public class DeclareServiceFactory {
     AssetDeclareService assetDeclareService;
     @Autowired
     AssetCurrentUsageService assetCurrentUsageService;
+    @Autowired
+    DeclareService declareService;
 
 
     public void save(IDeclare declare, Map<String,Object> declareDataAsset) throws ValidateFiledException {
@@ -84,5 +86,8 @@ public class DeclareServiceFactory {
     }
 
     public void validateDataDeclare(Map<String,Object> dataDeclare) {
+        String typeDeclare = ValueUtil.getStringByObject(dataDeclare.get(Constants.KEY_TYPE_DECLARE));
+        Declare declare = declareService.findDeclareByHardCodeAndVisible(typeDeclare, Constants.DECLARE_VISIBLE);
+        dataDeclare.put("idDeclare", declare.getIdDeclare());
     }
 }

@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.original.impl;
 
 import com.example.csvccdshustbe.dto.original.FindAllOriginalDto;
+import com.example.csvccdshustbe.entity.Original;
 import com.example.csvccdshustbe.repository.original.OriginalRepositoryCustom;
 import com.example.csvccdshustbe.request.original.FindAllOriginalVisibleRequest;
 import com.example.csvccdshustbe.utility.Constants;
@@ -18,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class OriginalRepositoryImpl implements OriginalRepositoryCustom {
 
@@ -87,6 +89,20 @@ public class OriginalRepositoryImpl implements OriginalRepositoryCustom {
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllVisibleOriginalByIdAssetCategory(request));
+    }
+
+    @Override
+    public Optional<Original> findOriginalByHardCodeAndStatus(String hardCode, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select ori.id_original, ori.name, ori.short_name, " +
+                "       ori.description, ori.parent, ori.sort_order, " +
+                "       ori.visible, ori.time_created, ori.time_modified, " +
+                "       ori.id_user_created, ori.id_user_modified, " +
+                "       ori.id_asset_category, ori.hard_code_dev, ori.is_default " +
+                "from original ori " +
+                "where ori.hard_code_dev = :hardCode " +
+                "and ori.visible = :visible ");
+        return Optional.empty();
     }
 
     private void setParameterFindAllVisibleOriginalByIdAsssetCategory(FindAllOriginalVisibleRequest request, Query query) {

@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.original.impl;
 
 import com.example.csvccdshustbe.dto.original.FindAllOriginalDto;
+import com.example.csvccdshustbe.entity.Original;
 import com.example.csvccdshustbe.repository.original.OriginalRepository;
 import com.example.csvccdshustbe.request.original.FindAllOriginalVisibleRequest;
 import com.example.csvccdshustbe.response.original.FindAllOriginalVisibleResponse;
@@ -28,6 +29,12 @@ public class OriginalServiceImpl implements OriginalService {
         Page<FindAllOriginalDto> findAllOriginalDtos = originalRepository.findAllOriginalDtoByIdAssetCategory(request, pageable);
         return new PageImpl<>(convertToFindAllOriginalVisibleResponse(findAllOriginalDtos.get().collect(Collectors.toList())),
                 pageable, findAllOriginalDtos.getTotalElements());
+    }
+
+    @Override
+    public Original findOriginalByHardCodeAndStatus(String hardCode, Integer status) {
+
+        return null;
     }
 
     private List<FindAllOriginalVisibleResponse> convertToFindAllOriginalVisibleResponse(List<FindAllOriginalDto> collect) {

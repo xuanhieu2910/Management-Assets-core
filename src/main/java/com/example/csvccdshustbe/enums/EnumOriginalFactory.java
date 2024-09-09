@@ -6,6 +6,8 @@ public enum EnumOriginalFactory {
     NoShapeOriginalAssetGift,
     NoShapeOriginalAssetTransfer,
     NoShapeOriginalAssetUseLand,
+    NoShapeOriginalAssetRentLand,
+    NoShapeOriginalAssetTransferLand,
     ShapeOriginalAssetBuy,
     ShapeOriginalAssetConnectActor,
     ShapeOriginalAssetConnectWoActor,

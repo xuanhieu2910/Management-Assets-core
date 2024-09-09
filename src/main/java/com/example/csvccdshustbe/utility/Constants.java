@@ -186,4 +186,11 @@ public class Constants {
     public static final Integer HOUSE_MODULES_IS_NOT_MANAGE_HOUSE = -1;
     /*----------------------------------------------------*/
 
+    /**
+     * Constant Originals
+     * */
+    public static final Integer ORIGINALS_VISIBLE = 1;
+    public static final Integer ORIGINALS_UN_VISIBLE = -1;
+    /*----------------------------------------------------*/
+
 }
