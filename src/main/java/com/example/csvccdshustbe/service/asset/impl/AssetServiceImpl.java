@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.asset.impl;
 
+import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.EnumModuleFactory;
@@ -20,6 +21,7 @@ import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
 import com.example.csvccdshustbe.service.location.LocationService;
 import com.example.csvccdshustbe.service.modules.ModulesServiceFactory;
 import com.example.csvccdshustbe.service.original.OriginalServiceFactory;
+import com.example.csvccdshustbe.service.originalOfFormation.OriginalOfFormationService;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
 import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
@@ -39,6 +41,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.webjars.NotFoundException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -73,6 +76,8 @@ public class AssetServiceImpl implements AssetService {
     AssetOriginalOfFormationService assetOriginalOfFormationService;
     @Autowired
     CsvcUserService csvcUserService;
+    @Autowired
+    OriginalOfFormationService originalOfFormationService;
 
 
 
@@ -91,6 +96,22 @@ public class AssetServiceImpl implements AssetService {
         Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDto(request, pageable);
         return new PageImpl<>(convertToFindAllAssetResponse(findAllAssetDtos.get().collect(Collectors.toList())),
                     pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Map<String, Object> findDetailsAssetByCodeAsset(String codeAsset) {
+        Optional<AssetBluePrintDto> assetBluePrintDto = assetRepository.findDetailAssetByCodeAsset(codeAsset);
+        if (!assetBluePrintDto.isPresent()) {
+            throw new NotFoundException("Don't exits asset by code!");
+        }
+        assetBluePrintDto.get().
+                setBluePrintParentAssetCategoryDto(
+                        assetCategoriesService.findBluePrintParentAssetCategoryDtoById(assetBluePrintDto.get().getIdAsset()));
+        // setOriginalOfFormation
+        // setModulesDetail
+        // setOriginalDetail
+        // setDeclareDetail
+        return null;
     }
 
     private List<FindAllAssetResponse> convertToFindAllAssetResponse(List<FindAllAssetDto> collect) {
@@ -240,7 +261,6 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdDepartment(ValueUtil.getIntegerByObject(dataAsset.get("idDepartment")));
         asset.setIdLocation(ValueUtil.getIntegerByObject(dataAsset.get("idLocation")));
         asset.setIdUnit(ValueUtil.getIntegerByObject(dataAsset.get("idUnit")));
-        asset.setIdOriginal(ValueUtil.getIntegerByObject(dataAsset.get("idOriginal")));
         asset.setIdProjects(ValueUtil.getIntegerByObject(dataAsset.get("idProjects")));
         asset.setPurpose(ValueUtil.getStringByObject(dataAsset.get("purpose")));
         asset.setNotes(ValueUtil.getStringByObject(dataAsset.get("notes")));
@@ -252,6 +272,7 @@ public class AssetServiceImpl implements AssetService {
         asset.setTimeModified(timeCurrent);
         asset.setIdDepartmentDefault(ValueUtil.getIntegerByObject(dataAsset.get("idDepartmentDefault")));
         asset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(dataAsset.get("idLevelTypeAsset")));
+        asset.setIdInstance(ValueUtil.getIntegerByObject(dataAsset.get("idInstance")));
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());

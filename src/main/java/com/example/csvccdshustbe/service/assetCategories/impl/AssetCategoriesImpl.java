@@ -1,5 +1,7 @@
 package com.example.csvccdshustbe.service.assetCategories.impl;
 
+import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
+import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategoryDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
@@ -120,6 +122,16 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         }
         assetCategoriesRepository.delete(assetCategoriesOptional.get());
     }
+
+    @Override
+    public BluePrintParentAssetCategoryDto findBluePrintParentAssetCategoryDtoById(Integer idParentAssetCategory){
+        Optional<BluePrintParentAssetCategoryDto> dto = assetCategoriesRepository.findBluePrintAssetCategoryDtoById(idParentAssetCategory);
+        if (!dto.isPresent()) {
+            throw new NotFoundException("Don't exits asset category picked by id!");
+        }
+        return dto.get();
+    }
+
     private AssetCategories createAssetCategoryRequest(CreateAssetCategoryRequest request) {
         AssetCategories categories = new AssetCategories();
         categories.setName(request.getName());

@@ -1,5 +1,7 @@
 package com.example.csvccdshustbe.repository.assetCategories.impl;
 
+import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
+import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategoryDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
@@ -250,6 +252,26 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         query.setParameter("shortName", shortName);
         List<Object[]> result = query.getResultList();
         return CollectionUtils.isEmpty(result);
+    }
+
+    @Override
+    public Optional<BluePrintParentAssetCategoryDto> findBluePrintAssetCategoryDtoById(Integer idAssetCategory) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select assetCategory.code_name, assetCategory.id_asset_category " +
+                "from asset_categories assetCategory " +
+                "where assetCategory.id_asset_category = :idAssetCategory ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idAssetCategory", idAssetCategory);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj: result){
+                BluePrintParentAssetCategoryDto dto = new BluePrintParentAssetCategoryDto();
+                dto.setCodeParentAssetCategory(ValueUtil.getStringByObject(obj[0]));
+                dto.setIdParentAssetCategory(ValueUtil.getIntegerByObject(obj[1]));
+                return Optional.of(dto);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

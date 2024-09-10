@@ -1,5 +1,7 @@
 package com.example.csvccdshustbe.repository.assetCategories;
 
+import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
+import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategoryDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
@@ -24,4 +26,6 @@ public interface AssetCategoriesRepositoryCustom {
     Optional<AssetCategories> findAssetCategoryParentByParentId(Integer parentId);
     Optional<AssetCategories> findAssetCategoryById(Integer idAssetCategory);
     boolean checkExitsAssetCategoriesByNameOrShortName(String name, String shortName);
+
+    Optional<BluePrintParentAssetCategoryDto> findBluePrintAssetCategoryDtoById(Integer idAssetCategory);
 }

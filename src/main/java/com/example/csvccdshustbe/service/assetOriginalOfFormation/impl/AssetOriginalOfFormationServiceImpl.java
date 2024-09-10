@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.assetOriginalOfFormation.impl;
 
+import com.example.csvccdshustbe.dto.originalOfFormation.AssetOriginalOfFormDto;
 import com.example.csvccdshustbe.entity.AssetOriginalOfFormation;
 import com.example.csvccdshustbe.repository.assetOriginalOfFormation.AssetOriginalOfFormationRepository;
 import com.example.csvccdshustbe.service.assetOriginalOfFormation.AssetOriginalOfFormationService;
@@ -22,5 +23,10 @@ public class AssetOriginalOfFormationServiceImpl implements AssetOriginalOfForma
     @Override
     public List<AssetOriginalOfFormation> saveAll(List<AssetOriginalOfFormation> assetOriginalOfFormation) {
         return originalOfFormationRepository.saveAll(assetOriginalOfFormation);
+    }
+
+    @Override
+    public List<AssetOriginalOfFormDto> findOriginalOfFormationByIdAsset(Integer idAsset) {
+        return null;
     }
 }

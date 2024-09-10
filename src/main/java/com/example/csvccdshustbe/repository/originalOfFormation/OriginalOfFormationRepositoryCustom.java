@@ -9,4 +9,5 @@ public interface OriginalOfFormationRepositoryCustom {
 
     Page<FindAllOriginalOfFormationDto> findAllOriginalOfFormationVisible(Pageable pageable, FindAllOriginalOfFormationRequest request);
 
+
 }

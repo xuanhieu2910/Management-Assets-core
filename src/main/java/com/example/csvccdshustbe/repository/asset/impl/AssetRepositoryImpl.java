@@ -1,6 +1,22 @@
 package com.example.csvccdshustbe.repository.asset.impl;
 
+import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.asset.FindDetailsAssetDto;
+import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
+import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
+import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
+import com.example.csvccdshustbe.dto.department.BluePrintDepartmentDefaultDto;
+import com.example.csvccdshustbe.dto.department.BluePrintDepartmentDto;
+import com.example.csvccdshustbe.dto.documentAttack.BluePrintDocumentAttackDto;
+import com.example.csvccdshustbe.dto.levelTypeAsset.BluePrintLevelTypeAssetDto;
+import com.example.csvccdshustbe.dto.location.BluePrintLocationDto;
+import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
+import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
+import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
+import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
+import com.example.csvccdshustbe.dto.projects.BluePrintProjectsDto;
+import com.example.csvccdshustbe.dto.unit.BluePrintUnitDto;
 import com.example.csvccdshustbe.repository.asset.AssetRepositoryCustom;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -18,6 +34,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
@@ -46,8 +63,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
         List<FindAllAssetDto> responses = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj: result){
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
                 FindAllAssetDto findAllAssetDto = new FindAllAssetDto();
                 findAllAssetDto.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
                 findAllAssetDto.setCodeAsset(ValueUtil.getStringByObject(obj[1]));
@@ -66,6 +83,170 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllAsset(request));
+    }
+
+    @Override
+    public Optional<AssetBluePrintDto> findDetailAssetByCodeAsset(String codeAsset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select asset.id_asset, asset.name, asset.code_asset, assetCategory.id_asset_category idAssetCategory,   " +
+                "       assetCategory.name nameAssetCategory, de.code codeDepartment, de.id_department idDepartment, de.name nameDepartment,   " +
+                "       documentAttack.id_document_attack idDocumentAttack, documentAttack.name nameDocumentAttack,   " +
+                "       location.id_location idLocation, location.name nameLocation, unit.id_unit idUnit, unit.name nameUnit,   " +
+                "       project.id_project idProject, project.name nameProject, asset.purpose, asset.notes, asset.description, asset.file_attack,   " +
+                "       departmentDefault.id_department idDepartmentDefault, departmentDefault.name nameDepartmentDefault,   " +
+                "       levelTypeAsset.id_level_type_asset idLevelTypeAsset, levelTypeAsset.name nameLevelTypeAsset,   " +
+                "       modules.hard_code typeModules, modules.id_module, modules.name nameModules,   " +
+                "       assetModules.id_instance idInstanceModule,   " +
+                "       original.hard_code_dev typeOriginal, original.id_original, original.name nameOriginal,   " +
+                "       assetOriginal.id_instance idInstanceOriginal,   " +
+                "       decl.hard_code typeDeclare, decl.id_declare, decl.name nameDeclare,   " +
+                "       assetDeclare.id_instance inInstanceDeclare   " +
+                "from asset asset   " +
+                "    inner join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category   " +
+                "    inner join department de on asset.id_department = de.id_department   " +
+                "    inner join document_attack documentAttack on asset.id_document_attack = documentAttack.id_document_attack   " +
+                "    inner join location location on asset.id_location = location.id_location   " +
+                "    inner join units unit on asset.id_unit = unit.id_unit   " +
+                "    inner join projects project on asset.id_projects = project.id_project   " +
+                "    left join department departmentDefault on asset.id_department_default = departmentDefault.id_department   " +
+                "    left join level_type_asset levelTypeAsset on asset.id_level_type_asset = levelTypeAsset.id_level_type_asset   " +
+                "    inner join asset_modules assetModules on asset.id_asset = assetModules.id_asset   " +
+                "    inner join modules modules on assetModules.id_module = modules.id_module   " +
+                "    inner join asset_original assetOriginal on asset.id_asset = assetOriginal.id_asset   " +
+                "    inner join original original on assetOriginal.id_original = original.id_original   " +
+                "    inner join asset_declare assetDeclare on asset.id_asset = assetDeclare.id_asset   " +
+                "    inner join `declare` decl on assetDeclare.id_declare = decl.id_declare   " +
+                "where asset.code_asset = :codeAsset ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeAsset", codeAsset);
+        List<Object[]> result = query.getResultList();
+        AssetBluePrintDto dto = new AssetBluePrintDto();
+        if (!CollectionUtils.isEmpty(result)) {
+            Object[] obj = result.get(0);
+            setCommonBluePrintAsset(dto, obj);
+            setModulesBluePrintAsset(dto, result);
+            setOriginalBluePrintAsset(dto, obj);
+            setDeclareBluePrintAsset(dto, obj);
+            return Optional.of(dto);
+        }
+        return Optional.empty();
+    }
+
+
+    private void setDeclareBluePrintAsset(AssetBluePrintDto dto, Object[] obj) {
+        AssetDeclareDto assetDeclareDto = new AssetDeclareDto();
+        BluePrintDeclareDto bluePrintDeclareDto = new BluePrintDeclareDto();
+        bluePrintDeclareDto.setTypeDeclare(ValueUtil.getStringByObject(obj[32]));
+        bluePrintDeclareDto.setIdDeclare(ValueUtil.getIntegerByObject(obj[33]));
+        bluePrintDeclareDto.setNameDeclare(ValueUtil.getStringByObject(obj[34]));
+        bluePrintDeclareDto.setIdInstance(ValueUtil.getIntegerByObject(obj[35]));
+        assetDeclareDto.setBluePrintDeclare(bluePrintDeclareDto);
+        dto.setDeclare(assetDeclareDto);
+    }
+
+    private void setOriginalBluePrintAsset(AssetBluePrintDto dto, Object[] obj) {
+        AssetOriginalDto assetOriginalDto = new AssetOriginalDto();
+        BluePrintOriginalDto bluePrintOriginalDto = new BluePrintOriginalDto();
+        bluePrintOriginalDto.setTypeOriginal(ValueUtil.getStringByObject(obj[28]));
+        bluePrintOriginalDto.setIdOriginal(ValueUtil.getIntegerByObject(obj[29]));
+        bluePrintOriginalDto.setNameOriginal(ValueUtil.getStringByObject(obj[30]));
+        bluePrintOriginalDto.setIdInstance(ValueUtil.getIntegerByObject(obj[31]));
+        assetOriginalDto.setBluePrintOriginalDto(bluePrintOriginalDto);
+        dto.setOriginal(assetOriginalDto);
+    }
+
+    private void setModulesBluePrintAsset(AssetBluePrintDto dto, List<Object[]> result) {
+        List<AssetModulesDto> assetModulesDto = new ArrayList<>();
+        for (Object[] obj: result){
+            AssetModulesDto modulesDto = new AssetModulesDto();
+            setBluePrintModules(obj, modulesDto);
+            assetModulesDto.add(modulesDto);
+        }
+        dto.setModules(assetModulesDto);
+    }
+
+    private void setBluePrintModules(Object[] obj, AssetModulesDto modulesDto) {
+        BluePrintAssetModulesDto bluePrintAssetModulesDto = new BluePrintAssetModulesDto();
+        bluePrintAssetModulesDto.setTypeModules(ValueUtil.getStringByObject(obj[24]));
+        bluePrintAssetModulesDto.setIdModules(ValueUtil.getIntegerByObject(obj[25]));
+        bluePrintAssetModulesDto.setNameModules(ValueUtil.getStringByObject(obj[26]));
+        bluePrintAssetModulesDto.setIdInstance(ValueUtil.getIntegerByObject(obj[27]));
+        modulesDto.setBluePrintAssetModules(bluePrintAssetModulesDto);
+    }
+
+    private void setCommonBluePrintAsset(AssetBluePrintDto dto, Object[] obj) {
+        dto.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
+        dto.setName(ValueUtil.getStringByObject(obj[1]));
+        dto.setCodeAsset(ValueUtil.getStringByObject(obj[2]));
+        setBluePrintAssetCategory(dto, obj);
+        setBluePrintDepartment(dto, obj);
+        setBluePrintDocumentAttack(dto, obj);
+        setBluePrintLocation(dto, obj);
+        setBluePrintUnit(dto, obj);
+        setBluePrintProjects(dto, obj);
+        setBluePrintDepartmentDefault(dto, obj);
+        setBluePrintDepartmentLevelTypeAsset(dto, obj);
+        dto.setPurpose(ValueUtil.getStringByObject(obj[16]));
+        dto.setNotes(ValueUtil.getStringByObject(obj[17]));
+        dto.setDescription(ValueUtil.getStringByObject(obj[18]));
+        dto.setFileAttack(ValueUtil.getStringByObject(obj[19]));
+    }
+
+    private void setBluePrintDepartmentLevelTypeAsset(AssetBluePrintDto dto, Object[] obj) {
+        BluePrintLevelTypeAssetDto bluePrintLevelTypeAssetDto = new BluePrintLevelTypeAssetDto();
+        bluePrintLevelTypeAssetDto.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(obj[22]));
+        bluePrintLevelTypeAssetDto.setNameLevelTypeAsset(ValueUtil.getStringByObject(obj[23]));
+        dto.setLevelTypeAsset(bluePrintLevelTypeAssetDto);
+    }
+
+    private void setBluePrintDepartmentDefault(AssetBluePrintDto dto, Object[] obj) {
+        BluePrintDepartmentDefaultDto bluePrintDepartmentDefaultDto = new BluePrintDepartmentDefaultDto();
+        bluePrintDepartmentDefaultDto.setIdDefaultDepartment(ValueUtil.getIntegerByObject(obj[20]));
+        bluePrintDepartmentDefaultDto.setNameDefaultDepartment(ValueUtil.getStringByObject(obj[21]));
+        dto.setDepartmentDefault(bluePrintDepartmentDefaultDto);
+    }
+
+    private void setBluePrintProjects(AssetBluePrintDto dto, Object[] obj) {
+        BluePrintProjectsDto bluePrintProjectsDto = new BluePrintProjectsDto();
+        bluePrintProjectsDto.setIdProjects(ValueUtil.getIntegerByObject(obj[14]));
+        bluePrintProjectsDto.setNameProjects(ValueUtil.getStringByObject(obj[15]));
+        dto.setProjects(bluePrintProjectsDto);
+    }
+
+    private void setBluePrintUnit(AssetBluePrintDto dto, Object[] obj) {
+        BluePrintUnitDto bluePrintUnitDto = new BluePrintUnitDto();
+        bluePrintUnitDto.setIdUnit(ValueUtil.getIntegerByObject(obj[12]));
+        bluePrintUnitDto.setNameUnit(ValueUtil.getStringByObject(obj[13]));
+        dto.setUnits(bluePrintUnitDto);
+    }
+
+    private void setBluePrintLocation(AssetBluePrintDto dto, Object[] obj) {
+        BluePrintLocationDto bluePrintLocationDto = new BluePrintLocationDto();
+        bluePrintLocationDto.setIdLocation(ValueUtil.getIntegerByObject(obj[10]));
+        bluePrintLocationDto.setNameLocation(ValueUtil.getStringByObject(obj[11]));
+        dto.setLocation(bluePrintLocationDto);
+    }
+
+    private void setBluePrintDocumentAttack(AssetBluePrintDto dto, Object[] obj) {
+        BluePrintDocumentAttackDto bluePrintDocumentAttackDto = new BluePrintDocumentAttackDto();
+        bluePrintDocumentAttackDto.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[8]));
+        bluePrintDocumentAttackDto.setNameDocumentAttack(ValueUtil.getStringByObject(obj[9]));
+        dto.setDocumentAttack(bluePrintDocumentAttackDto);
+    }
+
+    private void setBluePrintDepartment(AssetBluePrintDto dto, Object[] obj) {
+        BluePrintDepartmentDto bluePrintDepartmentDto = new BluePrintDepartmentDto();
+        bluePrintDepartmentDto.setCodeDepartment(ValueUtil.getStringByObject(obj[5]));
+        bluePrintDepartmentDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
+        bluePrintDepartmentDto.setNameDepartment(ValueUtil.getStringByObject(obj[7]));
+        dto.setDepartment(bluePrintDepartmentDto);
+    }
+
+    private void setBluePrintAssetCategory(AssetBluePrintDto dto, Object[] obj) {
+        BluePrintAssetCategoryDto bluePrintAssetCategoryDto = new BluePrintAssetCategoryDto();
+        bluePrintAssetCategoryDto.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
+        bluePrintAssetCategoryDto.setNameAssetCategory(ValueUtil.getStringByObject(obj[4]));
+        dto.setAssetCategory(bluePrintAssetCategoryDto);
     }
 
     private long countFindAllAsset(FindAllAssetRequest request) {

@@ -24,7 +24,6 @@ public class ConcreteAssetFactory implements AssetsFactory {
         asset.setIdDocumentAttack(ValueUtil.getIntegerByObject(createAsset.get("idDocumentAttack")));
         asset.setIdLocation(ValueUtil.getIntegerByObject(createAsset.get("idLocation")));
         asset.setIdUnit(ValueUtil.getIntegerByObject(createAsset.get("idUnit")));
-        asset.setIdOriginal(ValueUtil.getIntegerByObject(createAsset.get("idOriginal")));
         asset.setIdProjects(ValueUtil.getIntegerByObject(createAsset.get("idProjects")));
         asset.setPurpose(ValueUtil.getStringByObject(createAsset.get("purpose")));
         asset.setNotes(ValueUtil.getStringByObject(createAsset.get("notes")));

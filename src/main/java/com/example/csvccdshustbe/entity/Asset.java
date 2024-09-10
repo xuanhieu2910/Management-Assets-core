@@ -31,8 +31,6 @@ public class Asset {
     private Integer idLocation;
     @Column(name = "id_unit")
     private Integer idUnit;
-    @Column(name = "id_original")
-    private Integer idOriginal;
     @Column(name = "id_projects")
     private Integer idProjects;
     @Column(name = "purpose")
@@ -57,5 +55,6 @@ public class Asset {
     private String description;
     @Column(name = "quantity")
     private Integer quantity;
-
+    @Column(name = "id_instance")
+    private Integer idInstance;
 }

@@ -1,5 +1,7 @@
 package com.example.csvccdshustbe.service.assetCategories;
 
+import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
+import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategoryDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
@@ -25,4 +27,6 @@ public interface AssetCategoriesService {
     void updateAssetCategory(UpdateAssetCategoryRequest request) throws ValidateFiledException;
 
     void deleteAssetCategoryByIdAssetCategory(Integer idAssetCategory);
+
+    BluePrintParentAssetCategoryDto findBluePrintParentAssetCategoryDtoById(Integer idParentAssetCategory);
 }

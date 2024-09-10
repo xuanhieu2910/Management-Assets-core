@@ -15,4 +15,6 @@ public interface AssetService {
     Page<FindAllAssetResponse> findAllAsset(FindAllAssetRequest request);
 
 
+    Map<String, Object> findDetailsAssetByCodeAsset(String codeAsset);
+
 }
