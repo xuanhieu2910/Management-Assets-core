@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.original.shape.ShapeOriginalAssetEvaluateDe
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetEvaluate;
 import com.example.csvccdshustbe.repository.shapeOriginalAssetEvaluate.ShapeOriginalAssetEvaluateRepository;
 import com.example.csvccdshustbe.service.original.shape.assetEvaluate.OriginalAssetEvaluateService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -23,12 +24,12 @@ public class OriginalAssetEvaluateServiceImpl implements OriginalAssetEvaluateSe
     }
 
     @Override
-    public Map<String, Object> findOriginalEvaluateById(Integer idInstance) {
+    public Map<String, Object> findOriginalEvaluateById(Integer idInstance) throws IllegalAccessException {
         Optional<ShapeOriginalAssetEvaluateDetailsDto> detailsDto =
                 shapeOriginalAssetEvaluateRepository.findShapeOriginalAssetEvaluateDetailsDtoBuyId(idInstance);
         if (!detailsDto.isPresent()) {
             throw new NotFoundException("Don't exits original shape asset evaluate");
         }
-        return null;
+        return ValueUtil.convertObjectToMap(detailsDto);
     }
 }

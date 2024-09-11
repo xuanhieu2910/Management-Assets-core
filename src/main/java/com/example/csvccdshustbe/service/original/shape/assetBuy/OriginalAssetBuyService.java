@@ -8,6 +8,6 @@ public interface OriginalAssetBuyService {
 
     ShapeOriginalAssetBuy save(ShapeOriginalAssetBuy assetBuy);
 
-    Map<String, Object> findOriginalAssetBuyId(Integer idOriginalAssetBuy);
+    Map<String, Object> findOriginalAssetBuyId(Integer idOriginalAssetBuy) throws IllegalAccessException;
 
 }

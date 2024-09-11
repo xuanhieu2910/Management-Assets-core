@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.original.shape.ShapeOriginalAssetConnectWoA
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetConnectWoActor;
 import com.example.csvccdshustbe.repository.shapeOriginalAssetConnectWoActor.ShapeOriginalAssetConnectWoActorRepository;
 import com.example.csvccdshustbe.service.original.shape.assetConnectWoActor.OriginalAssetConnectWoActorService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -23,12 +24,12 @@ public class OriginalAssetConnectWoActorServiceImpl implements OriginalAssetConn
     }
 
     @Override
-    public Map<String, Object> findOriginalConnectWoActorById(Integer idInstance) {
+    public Map<String, Object> findOriginalConnectWoActorById(Integer idInstance) throws IllegalAccessException {
         Optional<ShapeOriginalAssetConnectWoActorDetailsDto> detailsDto =
                 shapeOriginalAssetConnectWoActorRepository.findShapeOriginalAssetConnectWoActorDetailsDtoById(idInstance);
         if (!detailsDto.isPresent()) {
             throw new NotFoundException("Don't exits original connect without actor!");
         }
-        return null;
+        return ValueUtil.convertObjectToMap(detailsDto);
     }
 }

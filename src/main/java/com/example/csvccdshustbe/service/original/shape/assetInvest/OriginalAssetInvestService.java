@@ -8,5 +8,5 @@ public interface OriginalAssetInvestService {
 
     ShapeOriginalAssetInvest save(ShapeOriginalAssetInvest shapeOriginalAssetInvest);
 
-    Map<String, Object> findOriginalAssetInvestById(Integer idInstance);
+    Map<String, Object> findOriginalAssetInvestById(Integer idInstance) throws IllegalAccessException;
 }

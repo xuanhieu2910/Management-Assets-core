@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.original.shape.ShapeOriginalAssetBuyDetails
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetBuy;
 import com.example.csvccdshustbe.repository.shapeOriginalAssetBuy.ShapeOriginalAssetByRepository;
 import com.example.csvccdshustbe.service.original.shape.assetBuy.OriginalAssetBuyService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -22,11 +23,12 @@ public class OriginalAssetBuyServiceImpl implements OriginalAssetBuyService {
     }
 
     @Override
-    public Map<String, Object> findOriginalAssetBuyId(Integer idOriginalAssetBuy) {
-        Optional<ShapeOriginalAssetBuyDetailsDto> assetBuyDetailsDto = shapeOriginalAssetByRepository.findOriginalAssetBuyDetailsDtoById(idOriginalAssetBuy);
+    public Map<String, Object> findOriginalAssetBuyId(Integer idOriginalAssetBuy) throws IllegalAccessException {
+        Optional<ShapeOriginalAssetBuyDetailsDto> assetBuyDetailsDto =
+                shapeOriginalAssetByRepository.findOriginalAssetBuyDetailsDtoById(idOriginalAssetBuy);
         if (!assetBuyDetailsDto.isPresent()) {
             throw new NotFoundException("Don't exits original asset buy!");
         }
-        return null;
+        return ValueUtil.convertObjectToMap(assetBuyDetailsDto);
     }
 }

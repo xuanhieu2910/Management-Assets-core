@@ -8,5 +8,5 @@ public interface OriginalAssetGiftService {
 
     ShapeOriginalAssetGift save(ShapeOriginalAssetGift shapeOriginalAssetGift);
 
-    Map<String, Object> findOriginalAssetGiftById(Integer idInstance);
+    Map<String, Object> findOriginalAssetGiftById(Integer idInstance) throws IllegalAccessException;
 }

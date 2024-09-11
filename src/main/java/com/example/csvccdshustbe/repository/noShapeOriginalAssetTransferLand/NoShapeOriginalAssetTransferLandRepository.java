@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NoShapeOriginalAssetTransferLandRepository extends JpaRepository<NoShapeOriginalAssetTransferLand, Integer>,
-        NoShapeOriginalAssetTransferRepositoryCustom {
+        NoShapeOriginalAssetTransferLandRepositoryCustom {
 }

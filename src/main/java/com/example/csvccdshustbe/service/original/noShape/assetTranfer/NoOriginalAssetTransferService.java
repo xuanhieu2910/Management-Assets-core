@@ -8,5 +8,5 @@ public interface NoOriginalAssetTransferService {
 
     NoShapeOriginalAssetTransfer save(NoShapeOriginalAssetTransfer transfer);
 
-    Map<String, Object> findNoOriginalAssetTransferById(Integer idInstance);
+    Map<String, Object> findNoOriginalAssetTransferById(Integer idInstance) throws IllegalAccessException;
 }

@@ -8,5 +8,5 @@ public interface OriginalAssetConnectWoActorService {
 
     ShapeOriginalAssetConnectWoActor save(ShapeOriginalAssetConnectWoActor connectWoActor);
 
-    Map<String, Object> findOriginalConnectWoActorById(Integer idInstance);
+    Map<String, Object> findOriginalConnectWoActorById(Integer idInstance) throws IllegalAccessException;
 }

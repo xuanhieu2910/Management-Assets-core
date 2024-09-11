@@ -8,5 +8,5 @@ public interface NoOriginalAssetUseLandService {
 
     NoShapeOriginalAssetUseLand save(NoShapeOriginalAssetUseLand useLand);
 
-    Map<String, Object> findNoOriginalAssetUseLandById(Integer idInstance);
+    Map<String, Object> findNoOriginalAssetUseLandById(Integer idInstance) throws IllegalAccessException;
 }

@@ -119,7 +119,7 @@ public class AssetServiceImpl implements AssetService {
     private void setDataDeclareDetail(AssetBluePrintDto assetBluePrintDto) {
     }
 
-    private void setDataOriginalDetail(AssetBluePrintDto assetBluePrintDto) {
+    private void setDataOriginalDetail(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException, IllegalAccessException {
         String typeOriginal = assetBluePrintDto.getOriginal().getBluePrintOriginalDto().getTypeOriginal();
         Integer idInstance = assetBluePrintDto.getOriginal().getBluePrintOriginalDto().getIdInstance();
         Map<String,Object> dataOriginal = originalServiceFactory.findDataDetailByTypeOriginalAndIdInstance(typeOriginal, idInstance);
