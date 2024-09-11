@@ -134,4 +134,55 @@ public class OriginalServiceFactory {
         Original original = originalService.findOriginalByHardCodeAndStatus(keyTypeOriginal, Constants.ORIGINALS_VISIBLE);
         dataOriginal.put("idOriginal", original.getIdOriginal());
     }
+
+    public Map<String, Object> findDataDetailByTypeOriginalAndIdInstance(String typeOriginal, Integer idInstance) throws ValidateFiledException {
+        EnumOriginalFactory enumDeclareFactory = Enum.valueOf(EnumOriginalFactory.class, typeOriginal);
+        switch (enumDeclareFactory){
+            case ShapeOriginalAssetBuy -> {
+                return originalAssetBuyService.findOriginalAssetBuyId(idInstance);
+            }
+            case ShapeOriginalAssetConnectActor -> {
+                return originalAssetConnectActorService.findOriginalConnectActorById(idInstance);
+            }
+            case ShapeOriginalAssetConnectWoActor -> {
+                return originalAssetConnectWoActorService.findOriginalConnectWoActorById(idInstance);
+            }
+            case ShapeOriginalAssetEvaluate -> {
+                return originalAssetEvaluateService.findOriginalEvaluateById(idInstance);
+            }
+            case ShapeOriginalAssetGift -> {
+                return originalAssetGiftService.findOriginalAssetGiftById(idInstance);
+            }
+            case ShapeOriginalAssetInvest -> {
+                return originalAssetInvestService.findOriginalAssetInvestById(idInstance);
+            }
+            case ShapeOriginalAssetTransfer -> {
+                return originalAssetTransferService.findOriginalAssetTransferById(idInstance);
+            }
+            case NoShapeOriginalAssetGift -> {
+                return noOriginalAssetGiftService.findNoOriginalAssetGiftById(idInstance);
+            }
+            case NoShapeOriginalAssetBuy -> {
+                return noOriginalAssetBuyService.findNoOriginalAssetBuyId(idInstance);
+            }
+            case NoShapeOriginalAssetUseLand -> {
+                return noOriginalAssetUseLandService.findNoOriginalAssetUseLandById(idInstance);
+            }
+            case NoShapeOriginalAssetEvaluate -> {
+                return noOriginalAssetEvaluateService.findNoOriginalAssetEvaluateById(idInstance);
+            }
+            case NoShapeOriginalAssetTransfer -> {
+                return noOriginalAssetTransferService.findNoOriginalAssetTransferById(idInstance);
+            }
+            case NoShapeOriginalAssetRentLand ->  {
+                return noOriginalAssetRentLandService.findNoOriginalAssetRentLandById(idInstance);
+            }
+            case NoShapeOriginalAssetTransferLand -> {
+                return noOriginalAssetTransferLandService.findNoOriginalAssetTransferLandById(idInstance);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type original!");
+            }
+        }
+    }
 }

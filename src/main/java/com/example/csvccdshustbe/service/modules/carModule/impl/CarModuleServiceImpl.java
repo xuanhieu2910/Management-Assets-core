@@ -1,8 +1,10 @@
 package com.example.csvccdshustbe.service.modules.carModule.impl;
 
+import com.example.csvccdshustbe.dto.modules.carModules.CarModulesDetailsDto;
 import com.example.csvccdshustbe.entity.CarModule;
 import com.example.csvccdshustbe.repository.carModule.CarModuleRepository;
 import com.example.csvccdshustbe.service.modules.carModule.CarModuleService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -27,11 +29,11 @@ public class CarModuleServiceImpl implements CarModuleService {
     }
 
     @Override
-    public Map<String, Object> findCarModuleByIdCarModule(Integer idCarModule) {
-        Optional<CarModule> carModule = carModuleRepository.findCarModulesByIdCar(idCarModule);
+    public Map<String, Object> findCarModuleByIdCarModule(Integer idCarModule) throws IllegalAccessException {
+        Optional<CarModulesDetailsDto> carModule = carModuleRepository.findCarModulesDetailsDtoByIdCar(idCarModule);
         if (!carModule.isPresent()) {
             throw new NotFoundException("Don't exits car module!");
         }
-        return null;
+        return ValueUtil.convertObjectToMap(carModule);
     }
 }

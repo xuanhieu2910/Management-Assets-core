@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.service.original.shape.assetGift.OriginalAssetG
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class OriginalAssetGiftServiceImpl implements OriginalAssetGiftService {
 
@@ -16,5 +18,10 @@ public class OriginalAssetGiftServiceImpl implements OriginalAssetGiftService {
     @Override
     public ShapeOriginalAssetGift save(ShapeOriginalAssetGift shapeOriginalAssetGift) {
         return shapeOriginalAssetGiftRepository.save(shapeOriginalAssetGift);
+    }
+
+    @Override
+    public Map<String, Object> findOriginalAssetGiftById(Integer idInstance) {
+        return null;
     }
 }

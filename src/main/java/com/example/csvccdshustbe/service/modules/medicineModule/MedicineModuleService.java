@@ -10,5 +10,5 @@ public interface MedicineModuleService {
 
     void validateDataCreate(Map<String, Object> dataModule);
 
-    Map<String,Object> findMedicineModuleByIdMedicine(Integer idMedicine);
+    Map<String,Object> findMedicineModuleByIdMedicine(Integer idMedicine) throws IllegalAccessException;
 }

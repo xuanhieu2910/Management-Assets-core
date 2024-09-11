@@ -1,6 +1,41 @@
 package com.example.csvccdshustbe.repository.shapeOriginalAssetConnectActor.impl;
 
+import com.example.csvccdshustbe.dto.original.shape.ShapeOriginalAssetConnectActorDetailsDto;
 import com.example.csvccdshustbe.repository.shapeOriginalAssetConnectActor.ShapeOriginalAssetConnectActorRepositoryCustom;
+import com.example.csvccdshustbe.utility.ValueUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+import java.util.Optional;
 
 public class ShapeOriginalAssetConnectActorRepositoryImpl implements ShapeOriginalAssetConnectActorRepositoryCustom {
+
+    @PersistenceContext
+    EntityManager entityManager;
+
+    @Override
+    public Optional<ShapeOriginalAssetConnectActorDetailsDto> findShapeOriginalAssetConnectActorDetailsDtoById(Integer id) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select shape.id_s_original_asset_connect_actor, " +
+                "       shape.id_asset, shape.time_created, shape.time_modified " +
+                "from s_original_asset_connect_actor shape " +
+                "where shape.id_s_original_asset_connect_actor = :idShape ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idShape", id);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                ShapeOriginalAssetConnectActorDetailsDto dto = new ShapeOriginalAssetConnectActorDetailsDto();
+                dto.setIdShapeOriginalAssetConnectActor(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[3]));
+                return Optional.of(dto);
+            }
+        }
+        return Optional.empty();
+    }
 }

@@ -9,5 +9,5 @@ public interface GroundModuleService {
 
     void validateDataCreate(Map<String, Object> dataModule);
 
-    Map<String,Object> findGroundModuleByIdGroundModule(Integer groundModule);
+    Map<String,Object> findGroundModuleByIdGroundModule(Integer groundModule) throws IllegalAccessException;
 }

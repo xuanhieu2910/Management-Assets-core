@@ -1,10 +1,11 @@
 package com.example.csvccdshustbe.repository.otherAssetModule;
 
+import com.example.csvccdshustbe.dto.modules.otherAssetModules.OtherAssetModulesDetailsDto;
 import com.example.csvccdshustbe.entity.OtherAssetModule;
 
 import java.util.Optional;
 
 public interface OtherAssetModuleRepositoryCustom {
 
-    Optional<OtherAssetModule> findOtherAssetModuleByIdOtherAssetModule(Integer idOtherAssetModule);
+    Optional<OtherAssetModulesDetailsDto> findOtherAssetModuleDetailsDtoByIdOtherAssetModule(Integer idOtherAssetModule);
 }

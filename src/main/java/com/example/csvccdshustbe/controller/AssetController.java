@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.protobuf.Api;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
@@ -51,7 +52,8 @@ public class AssetController {
     @GetMapping
     public ResponseEntity<?> findAssetByCode(@RequestParam("code") String codeAsset){
         try {
-            return null;
+            return ApiResponseDto.createdWithState(assetService.findDetailsAssetByCodeAsset(codeAsset),
+                    "Find asset details success!", HttpStatus.OK);
         } catch (NotFoundException e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){

@@ -43,4 +43,5 @@ public class AssetBluePrintDto {
     private List<AssetModulesDto> modules;
     private AssetOriginalDto original;
     private AssetDeclareDto declare;
+    private Integer idInstance;
 }

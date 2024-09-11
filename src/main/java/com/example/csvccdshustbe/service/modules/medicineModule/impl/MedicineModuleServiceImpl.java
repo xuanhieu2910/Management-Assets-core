@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.repository.medicineModule.MedicineModuleReposit
 import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import com.example.csvccdshustbe.service.modules.medicineModule.MedicineModuleService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -35,11 +36,11 @@ public class MedicineModuleServiceImpl implements MedicineModuleService {
     }
 
     @Override
-    public Map<String, Object> findMedicineModuleByIdMedicine(Integer idMedicine) {
+    public Map<String, Object> findMedicineModuleByIdMedicine(Integer idMedicine) throws IllegalAccessException {
         Optional<MedicineModuleDetailsDto> medicineModule = medicineModuleRepository.findMedicineModuleDetailsDtoById(idMedicine);
         if (!medicineModule.isPresent()) {
             throw new NotFoundException("Don't exits medicine modules!");
         }
-        return null;
+        return ValueUtil.convertObjectToMap(medicineModule.get());
     }
 }

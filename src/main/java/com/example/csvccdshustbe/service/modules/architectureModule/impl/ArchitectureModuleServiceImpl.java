@@ -1,8 +1,10 @@
 package com.example.csvccdshustbe.service.modules.architectureModule.impl;
 
+import com.example.csvccdshustbe.dto.modules.architectureModules.ArchitectureModulesDetailsDto;
 import com.example.csvccdshustbe.entity.ArchitectureModule;
 import com.example.csvccdshustbe.repository.architectureModule.ArchitectureModuleRepository;
 import com.example.csvccdshustbe.service.modules.architectureModule.ArchitectureModuleService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -27,11 +29,12 @@ public class ArchitectureModuleServiceImpl implements ArchitectureModuleService 
     }
 
     @Override
-    public Map<String,Object> findArchitectureModuleByIdArchitectureModule(Integer idArchitectureModule) {
-        Optional<ArchitectureModule> module = architectureModuleRepository.findArchitectureModuleByIdArchitectureModule(idArchitectureModule);
+    public Map<String,Object> findArchitectureModuleByIdArchitectureModule(Integer idArchitectureModule) throws IllegalAccessException {
+        Optional<ArchitectureModulesDetailsDto> module = architectureModuleRepository.
+                findArchitectureModuleDetailsDtoByIdArchitectureModule(idArchitectureModule);
         if (!module.isPresent()){
             throw new NotFoundException("Don't exits architecture module!");
         }
-        return null;
+        return ValueUtil.convertObjectToMap(module.get());
     }
 }

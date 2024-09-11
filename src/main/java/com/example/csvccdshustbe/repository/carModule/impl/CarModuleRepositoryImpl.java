@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.carModule.impl;
 
+import com.example.csvccdshustbe.dto.modules.carModules.CarModulesDetailsDto;
 import com.example.csvccdshustbe.entity.CarModule;
 import com.example.csvccdshustbe.repository.carModule.CarModuleRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -17,24 +18,28 @@ public class CarModuleRepositoryImpl implements CarModuleRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public Optional<CarModule> findCarModulesByIdCar(Integer idCarModule) {
+    public Optional<CarModulesDetailsDto> findCarModulesDetailsDtoByIdCar(Integer idCarModule) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select carModule.id_car_module, carModule.id_asset, carModule.is_free_tax, " +
-                "       carModule.value_tax, carModule.license_plate, carModule.label_car, " +
-                "       carModule.type_car, carModule.load_capacity, carModule.number_seats, " +
-                "       carModule.capacity, carModule.cylinder_capacity, carModule.clutch_number, " +
-                "       carModule.vehicle_identification_number, carModule.machine_number, carModule.publish_year, " +
-                "       carModule.id_country_producer, carModule.license_certificate_register, carModule.publish_date_license, " +
-                "       carModule.company_register, carModule.source, carModule.color, carModule.id_user, carModule.id_type_use, " +
-                "       carModule.time_created, carModule.time_modified " +
-                "from car_module carModule " +
+        sb.append("select carModule.id_car_module, carModule.id_asset, carModule.is_free_tax,      " +
+                "         carModule.value_tax, carModule.license_plate, carModule.label_car,      " +
+                "         carModule.type_car, carModule.load_capacity, carModule.number_seats,      " +
+                "         carModule.capacity, carModule.cylinder_capacity, carModule.clutch_number,      " +
+                "         carModule.vehicle_identification_number, carModule.machine_number, carModule.publish_year,      " +
+                "         carModule.id_country_producer, carModule.license_certificate_register, carModule.publish_date_license,      " +
+                "         carModule.company_register, carModule.source, carModule.color, carModule.id_user, carModule.id_type_use,      " +
+                "         carModule.time_created, carModule.time_modified,   " +
+                "         countryProducer.name nameCountryProducer, us.user_name, us.full_name, ty.name nameTypeUse   " +
+                "from car_module carModule   " +
+                "    left join country_producer countryProducer on carModule.id_country_producer = countryProducer.id_country_producer   " +
+                "    left join csvc_user us on carModule.id_user = us.id_user   " +
+                "    left join type_use ty on carModule.id_type_use = ty.id_type_use   " +
                 "where carModule.id_car_module = :idCarModule ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idCarModule", idCarModule);
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)) {
             for (Object[] obj: result){
-                CarModule module = new CarModule();
+                CarModulesDetailsDto module = new CarModulesDetailsDto();
                 module.setIdCarModule(ValueUtil.getIntegerByObject(obj[0]));
                 module.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
                 module.setIsFreeTax(ValueUtil.getIntegerByObject(obj[2]));
@@ -60,6 +65,10 @@ public class CarModuleRepositoryImpl implements CarModuleRepositoryCustom {
                 module.setIdTypeUse(ValueUtil.getIntegerByObject(obj[22]));
                 module.setTimeCreated(ValueUtil.getStringByObject(obj[23]));
                 module.setTimeModified(ValueUtil.getStringByObject(obj[24]));
+                module.setNameCountryProducer(ValueUtil.getStringByObject(obj[25]));
+                module.setUserName(ValueUtil.getStringByObject(obj[26]));
+                module.setFullName(ValueUtil.getStringByObject(obj[27]));
+                module.setNameTypeUse(ValueUtil.getStringByObject(obj[28]));
                 return Optional.of(module);
             }
         }

@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.modules.houseModules.HouseModuleDetailsDto;
 import com.example.csvccdshustbe.entity.HouseModule;
 import com.example.csvccdshustbe.repository.houseModule.HouseModuleRepository;
 import com.example.csvccdshustbe.service.modules.houseModule.HouseModuleService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -28,11 +29,11 @@ public class HouseModuleServiceImpl implements HouseModuleService {
     }
 
     @Override
-    public Map<String, Object> findHouseModuleByIdHouseModule(Integer houseModule) {
+    public Map<String, Object> findHouseModuleByIdHouseModule(Integer houseModule) throws IllegalAccessException {
         Optional<HouseModuleDetailsDto> module = houseModuleRepository.findHouseModuleDetailsDtoByIdHouseModule(houseModule);
         if (!module.isPresent()){
             throw new NotFoundException("Don't exits house modules!");
         }
-        return null;
+        return ValueUtil.convertObjectToMap(module.get());
     }
 }

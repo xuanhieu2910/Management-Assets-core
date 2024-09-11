@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.modules.groundModules.GroundModulesDetailsD
 import com.example.csvccdshustbe.entity.GroundModule;
 import com.example.csvccdshustbe.repository.groundModule.GroundModuleRepository;
 import com.example.csvccdshustbe.service.modules.groundModule.GroundModuleService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -28,11 +29,11 @@ public class GroundModuleServiceImpl implements GroundModuleService {
     }
 
     @Override
-    public Map<String, Object> findGroundModuleByIdGroundModule(Integer groundModule) {
+    public Map<String, Object> findGroundModuleByIdGroundModule(Integer groundModule) throws IllegalAccessException {
         Optional<GroundModulesDetailsDto> module = groundModuleRepository.findGroundModuleDetailsDtoByIdGroundModule(groundModule);
         if (!module.isPresent()){
             throw new NotFoundException("Don't exits grounds modules!");
         }
-        return null;
+        return ValueUtil.convertObjectToMap(module);
     }
 }

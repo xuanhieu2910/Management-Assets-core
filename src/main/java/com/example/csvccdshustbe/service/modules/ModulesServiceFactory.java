@@ -155,7 +155,7 @@ public class ModulesServiceFactory {
 
 
 
-    public Map<String,Object> findDataDetailByTypeModulesAndIdInstance(String typeModules, Integer idInstance) throws ValidateFiledException {
+    public Map<String,Object> findDataDetailByTypeModulesAndIdInstance(String typeModules, Integer idInstance) throws ValidateFiledException, IllegalAccessException {
         EnumModuleFactory enumModuleFactory = Enum.valueOf(EnumModuleFactory.class, typeModules);
         switch (enumModuleFactory) {
             case MedicineModule -> {

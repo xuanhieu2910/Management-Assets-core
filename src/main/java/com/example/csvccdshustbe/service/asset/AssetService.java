@@ -15,7 +15,7 @@ public interface AssetService {
     Page<FindAllAssetResponse> findAllAsset(FindAllAssetRequest request);
 
 
-    Map<String, Object> findDetailsAssetByCodeAsset(String codeAsset);
+    Map<String, Object> findDetailsAssetByCodeAsset(String codeAsset) throws ValidateFiledException, IllegalAccessException;
 
 
 }

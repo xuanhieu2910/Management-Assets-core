@@ -30,6 +30,7 @@ public class MachineModuleRepositoryImpl implements MachineModuleRepositoryCusto
                 "    left join type_use ty on machineModule.id_type_use = ty.id_type_use  " +
                 "where machineModule.id_machine_module = :idMachineModule ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idMachineModule", idMachineModule);
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)) {
             for (Object[] obj: result){

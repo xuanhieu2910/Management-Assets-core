@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.asset.impl;
 
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.originalOfFormation.AssetOriginalOfFormDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.EnumModuleFactory;
@@ -102,7 +103,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Map<String, Object> findDetailsAssetByCodeAsset(String codeAsset) {
+    public Map<String, Object> findDetailsAssetByCodeAsset(String codeAsset) throws ValidateFiledException, IllegalAccessException {
         Optional<AssetBluePrintDto> assetBluePrintDto = assetRepository.findDetailAssetByCodeAsset(codeAsset);
         if (!assetBluePrintDto.isPresent()) {
             throw new NotFoundException("Don't exits asset by code!");
@@ -119,9 +120,19 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private void setDataOriginalDetail(AssetBluePrintDto assetBluePrintDto) {
+        String typeOriginal = assetBluePrintDto.getOriginal().getBluePrintOriginalDto().getTypeOriginal();
+        Integer idInstance = assetBluePrintDto.getOriginal().getBluePrintOriginalDto().getIdInstance();
+        Map<String,Object> dataOriginal = originalServiceFactory.findDataDetailByTypeOriginalAndIdInstance(typeOriginal, idInstance);
+        assetBluePrintDto.getOriginal().setDataDetails(dataOriginal);
     }
 
-    private void setDataModulesDetail(AssetBluePrintDto assetBluePrintDto) {
+    private void setDataModulesDetail(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException, IllegalAccessException {
+        for (AssetModulesDto modulesDto : assetBluePrintDto.getModules()) {
+            String typeModules = modulesDto.getBluePrintAssetModules().getTypeModules();
+            Integer idInstance = modulesDto.getBluePrintAssetModules().getIdInstance();
+            Map<String, Object> dataModules = modulesServiceFactory.findDataDetailByTypeModulesAndIdInstance(typeModules, idInstance);
+            modulesDto.setDataDetail(dataModules);
+        }
     }
 
     private void setOriginalOfFormation(AssetBluePrintDto assetBluePrintDto) {
@@ -132,7 +143,7 @@ public class AssetServiceImpl implements AssetService {
 
     private void setParentAssetCategory(AssetBluePrintDto assetBluePrintDto){
         assetBluePrintDto.setBluePrintParentAssetCategoryDto(
-                        assetCategoriesService.findBluePrintParentAssetCategoryDtoById(assetBluePrintDto.getIdAsset()));
+                        assetCategoriesService.findBluePrintParentAssetCategoryDtoById(assetBluePrintDto.getIdInstance()));
     }
 
     private List<FindAllAssetResponse> convertToFindAllAssetResponse(List<FindAllAssetDto> collect) {

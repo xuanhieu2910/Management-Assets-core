@@ -5,12 +5,14 @@ import com.google.common.base.Joiner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -131,4 +133,15 @@ public class ValueUtil {
         }
     }
 
+
+    public static <T> Map<String, Object> convertObjectToMap(T obj) throws IllegalAccessException {
+        Class<?> clazz = obj.getClass();
+        Map<String, Object> map = new HashMap<>();
+        for (Field field : clazz.getDeclaredFields()) {
+            field.setAccessible(true);
+            Object value = field.get(obj);
+            map.put(field.getName(), value);
+        }
+        return map;
+    }
 }

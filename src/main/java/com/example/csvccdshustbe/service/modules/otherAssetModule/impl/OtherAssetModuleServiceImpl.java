@@ -1,8 +1,10 @@
 package com.example.csvccdshustbe.service.modules.otherAssetModule.impl;
 
+import com.example.csvccdshustbe.dto.modules.otherAssetModules.OtherAssetModulesDetailsDto;
 import com.example.csvccdshustbe.entity.OtherAssetModule;
 import com.example.csvccdshustbe.repository.otherAssetModule.OtherAssetModuleRepository;
 import com.example.csvccdshustbe.service.modules.otherAssetModule.OtherAssetModuleService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -27,11 +29,12 @@ public class OtherAssetModuleServiceImpl implements OtherAssetModuleService {
     }
 
     @Override
-    public Map<String, Object> findOtherAssetModuleByIdOtherAssetModule(Integer idOtherAssetModule) {
-        Optional<OtherAssetModule> assetModule = otherAssetModuleRepository.findOtherAssetModuleByIdOtherAssetModule(idOtherAssetModule);
+    public Map<String, Object> findOtherAssetModuleByIdOtherAssetModule(Integer idOtherAssetModule) throws IllegalAccessException {
+        Optional<OtherAssetModulesDetailsDto> assetModule = otherAssetModuleRepository.
+                findOtherAssetModuleDetailsDtoByIdOtherAssetModule(idOtherAssetModule);
         if (!assetModule.isPresent()){
             throw new NotFoundException("Don't exits other asset modules!");
         }
-        return null;
+        return ValueUtil.convertObjectToMap(assetModule.get());
     }
 }

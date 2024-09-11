@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.modules.machineModules.MachineModuleDetails
 import com.example.csvccdshustbe.entity.MachineModule;
 import com.example.csvccdshustbe.repository.machineModule.MachineModuleRepository;
 import com.example.csvccdshustbe.service.modules.machineModule.MachineModuleService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -28,11 +29,11 @@ public class MachineModuleServiceImpl implements MachineModuleService {
     }
 
     @Override
-    public Map<String, Object> findMachineModuleByIdMachineModule(Integer machineModule) {
+    public Map<String, Object> findMachineModuleByIdMachineModule(Integer machineModule) throws IllegalAccessException {
         Optional<MachineModuleDetailsDto> module = machineModuleRepository.findMachineModuleDetailsDtoById(machineModule);
         if (!module.isPresent()) {
             throw new NotFoundException("Don't exits machine modules");
         }
-        return null;
+        return ValueUtil.convertObjectToMap(module.get());
     }
 }

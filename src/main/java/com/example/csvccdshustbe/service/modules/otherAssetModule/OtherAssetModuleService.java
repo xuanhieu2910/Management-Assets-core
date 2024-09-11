@@ -10,5 +10,5 @@ public interface OtherAssetModuleService {
 
     void validateDataCreate(Map<String, Object> dataModule);
 
-    Map<String,Object> findOtherAssetModuleByIdOtherAssetModule(Integer idOtherAssetModule);
+    Map<String,Object> findOtherAssetModuleByIdOtherAssetModule(Integer idOtherAssetModule) throws IllegalAccessException;
 }

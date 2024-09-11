@@ -1,24 +1,18 @@
-package com.example.csvccdshustbe.dto.modules.carModules;
-
+package com.example.csvccdshustbe.dto.modules.otherVehicleTransportModules;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-public class CarModulesDetailsDto {
+public class OtherVehicleTransportModuleDetailsDto {
 
-    private Integer idCarModule;
+    private Integer idOtherVehicleTransportModule;
     private Integer idAsset;
-    private Integer isFreeTax;
-    private String valueTax;
     private String licensePlate;
-    private String labelCar;
-    private String typeCar;
+    private String label;
     private String loadCapacity;
-    private Integer numberSeats;
+    private String numberSeats;
     private String capacity;
     private String cylinderCapacity;
     private String clutchNumber;
@@ -35,8 +29,10 @@ public class CarModulesDetailsDto {
     private Integer idTypeUse;
     private String timeCreated;
     private String timeModified;
+    private Integer idPositionName;
     private String nameCountryProducer;
     private String userName;
     private String fullName;
     private String nameTypeUse;
+    private String positionName;
 }

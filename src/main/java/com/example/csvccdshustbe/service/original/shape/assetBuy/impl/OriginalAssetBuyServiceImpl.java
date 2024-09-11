@@ -1,10 +1,15 @@
 package com.example.csvccdshustbe.service.original.shape.assetBuy.impl;
 
+import com.example.csvccdshustbe.dto.original.shape.ShapeOriginalAssetBuyDetailsDto;
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetBuy;
 import com.example.csvccdshustbe.repository.shapeOriginalAssetBuy.ShapeOriginalAssetByRepository;
 import com.example.csvccdshustbe.service.original.shape.assetBuy.OriginalAssetBuyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class OriginalAssetBuyServiceImpl implements OriginalAssetBuyService {
@@ -14,5 +19,14 @@ public class OriginalAssetBuyServiceImpl implements OriginalAssetBuyService {
     @Override
     public ShapeOriginalAssetBuy save(ShapeOriginalAssetBuy assetBuy) {
         return shapeOriginalAssetByRepository.save(assetBuy);
+    }
+
+    @Override
+    public Map<String, Object> findOriginalAssetBuyId(Integer idOriginalAssetBuy) {
+        Optional<ShapeOriginalAssetBuyDetailsDto> assetBuyDetailsDto = shapeOriginalAssetByRepository.findOriginalAssetBuyDetailsDtoById(idOriginalAssetBuy);
+        if (!assetBuyDetailsDto.isPresent()) {
+            throw new NotFoundException("Don't exits original asset buy!");
+        }
+        return null;
     }
 }
