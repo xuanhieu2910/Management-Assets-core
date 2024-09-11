@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.modules.groundModule.impl;
 
+import com.example.csvccdshustbe.dto.modules.groundModules.GroundModulesDetailsDto;
 import com.example.csvccdshustbe.entity.GroundModule;
 import com.example.csvccdshustbe.repository.groundModule.GroundModuleRepository;
 import com.example.csvccdshustbe.service.modules.groundModule.GroundModuleService;
@@ -28,7 +29,7 @@ public class GroundModuleServiceImpl implements GroundModuleService {
 
     @Override
     public Map<String, Object> findGroundModuleByIdGroundModule(Integer groundModule) {
-        Optional<GroundModule> module = groundModuleRepository.findGroundModuleByIdGroundModule(groundModule);
+        Optional<GroundModulesDetailsDto> module = groundModuleRepository.findGroundModuleDetailsDtoByIdGroundModule(groundModule);
         if (!module.isPresent()){
             throw new NotFoundException("Don't exits grounds modules!");
         }

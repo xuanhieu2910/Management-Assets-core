@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.modules.medicineModule.impl;
 
+import com.example.csvccdshustbe.dto.modules.medicineModules.MedicineModuleDetailsDto;
 import com.example.csvccdshustbe.entity.MedicineModule;
 import com.example.csvccdshustbe.repository.medicineModule.MedicineModuleRepository;
 import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
@@ -35,7 +36,7 @@ public class MedicineModuleServiceImpl implements MedicineModuleService {
 
     @Override
     public Map<String, Object> findMedicineModuleByIdMedicine(Integer idMedicine) {
-        Optional<MedicineModule> medicineModule = medicineModuleRepository.findMedicineModuleById(idMedicine);
+        Optional<MedicineModuleDetailsDto> medicineModule = medicineModuleRepository.findMedicineModuleDetailsDtoById(idMedicine);
         if (!medicineModule.isPresent()) {
             throw new NotFoundException("Don't exits medicine modules!");
         }

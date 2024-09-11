@@ -1,6 +1,6 @@
 package com.example.csvccdshustbe.repository.medicineModule.impl;
 
-import com.example.csvccdshustbe.entity.MedicineModule;
+import com.example.csvccdshustbe.dto.modules.medicineModules.MedicineModuleDetailsDto;
 import com.example.csvccdshustbe.repository.medicineModule.MedicineModuleRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -18,21 +18,23 @@ public class MedicineModuleRepositoryImpl implements MedicineModuleRepositoryCus
     EntityManager entityManager;
 
     @Override
-    public Optional<MedicineModule> findMedicineModuleById(Integer idMedicineModule) {
+    public Optional<MedicineModuleDetailsDto> findMedicineModuleDetailsDtoById(Integer idMedicineModule) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select medicineModule.id_medicine_module, medicineModule.id_asset, medicineModule.id_medicine_type, " +
-                "       medicineModule.id_medicine_group, medicineModule.publish_date, medicineModule.expiry_date, " +
-                "       medicineModule.circulation_number, medicineModule.number_batch_of_goods, " +
-                "       medicineModule.own_name_circulation_number, medicineModule.own_address_circulation_number, " +
-                "       medicineModule.spare_parts_attack " +
+        sb.append("select medicineModule.id_medicine_module, medicineModule.id_asset, medicineModule.id_medicine_type,  " +
+                "       medicineModule.id_medicine_group, medicineModule.publish_date, medicineModule.expiry_date,  " +
+                "       medicineModule.circulation_number, medicineModule.number_batch_of_goods,  " +
+                "       medicineModule.own_name_circulation_number, medicineModule.own_address_circulation_number,  " +
+                "       medicineModule.spare_parts_attack, medicineType.name nameMedicineType, medicineGroup.name nameMedicineGroup " +
                 "from medicine_module medicineModule " +
+                "    left join medicine_type medicineType on medicineModule.id_medicine_type = medicineType.id_medicine_type " +
+                "    left join medicine_group medicineGroup on medicineModule.id_medicine_group = medicineGroup.id_medicine_group " +
                 "where medicineModule.id_medicine_module = :idMedicineModule ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idMedicineModule", idMedicineModule);
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj: result){
-                MedicineModule medicineModule = new MedicineModule();
+                MedicineModuleDetailsDto medicineModule = new MedicineModuleDetailsDto();
                 medicineModule.setIdMedicineModule(ValueUtil.getIntegerByObject(obj[0]));
                 medicineModule.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
                 medicineModule.setIdMedicineType(ValueUtil.getIntegerByObject(obj[2]));
@@ -44,6 +46,8 @@ public class MedicineModuleRepositoryImpl implements MedicineModuleRepositoryCus
                 medicineModule.setOwnNameCirculationNumber(ValueUtil.getStringByObject(obj[8]));
                 medicineModule.setOwnAddressCirculationNumber(ValueUtil.getStringByObject(obj[9]));
                 medicineModule.setSparePartsAttack(ValueUtil.getStringByObject(obj[10]));
+                medicineModule.setNameMedicineType(ValueUtil.getStringByObject(obj[11]));
+                medicineModule.setNameMedicineGroup(ValueUtil.getStringByObject(obj[12]));
                 return Optional.of(medicineModule);
             }
         }

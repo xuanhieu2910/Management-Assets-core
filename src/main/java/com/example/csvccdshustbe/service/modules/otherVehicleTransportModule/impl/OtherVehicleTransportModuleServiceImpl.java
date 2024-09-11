@@ -5,8 +5,10 @@ import com.example.csvccdshustbe.repository.otherVehicleTransportModule.OtherVeh
 import com.example.csvccdshustbe.service.modules.otherVehicleTransportModule.OtherVehicleTransportModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class OtherVehicleTransportModuleServiceImpl implements OtherVehicleTransportModuleService {
@@ -27,6 +29,10 @@ public class OtherVehicleTransportModuleServiceImpl implements OtherVehicleTrans
 
     @Override
     public Map<String, Object> findOtherVehicleTransportModuleByIdOtherVehicleTransport(Integer id) {
+        Optional<OtherVehicleTransportModule> module = otherVehicleTransportRepository.findOtherVehicleTransportById(id);
+        if (!module.isPresent()) {
+            throw new NotFoundException("Don't exits other vehicle transport modules!");
+        }
         return null;
     }
 }

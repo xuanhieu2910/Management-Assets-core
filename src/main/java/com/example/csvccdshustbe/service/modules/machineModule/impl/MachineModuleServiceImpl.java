@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.modules.machineModule.impl;
 
+import com.example.csvccdshustbe.dto.modules.machineModules.MachineModuleDetailsDto;
 import com.example.csvccdshustbe.entity.MachineModule;
 import com.example.csvccdshustbe.repository.machineModule.MachineModuleRepository;
 import com.example.csvccdshustbe.service.modules.machineModule.MachineModuleService;
@@ -28,7 +29,7 @@ public class MachineModuleServiceImpl implements MachineModuleService {
 
     @Override
     public Map<String, Object> findMachineModuleByIdMachineModule(Integer machineModule) {
-        Optional<MachineModule> module = machineModuleRepository.findMachineModuleById(machineModule);
+        Optional<MachineModuleDetailsDto> module = machineModuleRepository.findMachineModuleDetailsDtoById(machineModule);
         if (!module.isPresent()) {
             throw new NotFoundException("Don't exits machine modules");
         }

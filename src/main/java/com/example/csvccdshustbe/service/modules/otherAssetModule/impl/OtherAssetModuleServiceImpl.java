@@ -5,8 +5,10 @@ import com.example.csvccdshustbe.repository.otherAssetModule.OtherAssetModuleRep
 import com.example.csvccdshustbe.service.modules.otherAssetModule.OtherAssetModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class OtherAssetModuleServiceImpl implements OtherAssetModuleService {
@@ -26,6 +28,10 @@ public class OtherAssetModuleServiceImpl implements OtherAssetModuleService {
 
     @Override
     public Map<String, Object> findOtherAssetModuleByIdOtherAssetModule(Integer idOtherAssetModule) {
+        Optional<OtherAssetModule> assetModule = otherAssetModuleRepository.findOtherAssetModuleByIdOtherAssetModule(idOtherAssetModule);
+        if (!assetModule.isPresent()){
+            throw new NotFoundException("Don't exits other asset modules!");
+        }
         return null;
     }
 }

@@ -5,8 +5,10 @@ import com.example.csvccdshustbe.repository.carModule.CarModuleRepository;
 import com.example.csvccdshustbe.service.modules.carModule.CarModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class CarModuleServiceImpl implements CarModuleService {
@@ -26,6 +28,10 @@ public class CarModuleServiceImpl implements CarModuleService {
 
     @Override
     public Map<String, Object> findCarModuleByIdCarModule(Integer idCarModule) {
+        Optional<CarModule> carModule = carModuleRepository.findCarModulesByIdCar(idCarModule);
+        if (!carModule.isPresent()) {
+            throw new NotFoundException("Don't exits car module!");
+        }
         return null;
     }
 }

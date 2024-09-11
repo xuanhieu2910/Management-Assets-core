@@ -1,6 +1,6 @@
 package com.example.csvccdshustbe.service.medicineType.impl;
 
-import com.example.csvccdshustbe.dto.medicine.FindAllMedicineTypeDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.FindAllMedicineTypeDto;
 import com.example.csvccdshustbe.entity.MedicineType;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.medicineType.MedicineTypeRepository;
@@ -11,7 +11,6 @@ import com.example.csvccdshustbe.request.medicineType.UpdateMedicineTypeRequest;
 import com.example.csvccdshustbe.response.medicineType.FindAllMedicineTypeResponse;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

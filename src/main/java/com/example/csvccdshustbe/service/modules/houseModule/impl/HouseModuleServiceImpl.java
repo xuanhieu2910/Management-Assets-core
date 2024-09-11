@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.modules.houseModule.impl;
 
+import com.example.csvccdshustbe.dto.modules.houseModules.HouseModuleDetailsDto;
 import com.example.csvccdshustbe.entity.HouseModule;
 import com.example.csvccdshustbe.repository.houseModule.HouseModuleRepository;
 import com.example.csvccdshustbe.service.modules.houseModule.HouseModuleService;
@@ -28,7 +29,7 @@ public class HouseModuleServiceImpl implements HouseModuleService {
 
     @Override
     public Map<String, Object> findHouseModuleByIdHouseModule(Integer houseModule) {
-        Optional<HouseModule> module = houseModuleRepository.findHouseModuleByIdHouseModule(houseModule);
+        Optional<HouseModuleDetailsDto> module = houseModuleRepository.findHouseModuleDetailsDtoByIdHouseModule(houseModule);
         if (!module.isPresent()){
             throw new NotFoundException("Don't exits house modules!");
         }

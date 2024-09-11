@@ -1,4 +1,4 @@
-package com.example.csvccdshustbe.dto.medicine;
+package com.example.csvccdshustbe.dto.modules.medicineModules;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

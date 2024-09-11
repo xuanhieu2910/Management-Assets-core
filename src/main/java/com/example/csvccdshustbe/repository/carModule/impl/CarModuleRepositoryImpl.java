@@ -53,7 +53,14 @@ public class CarModuleRepositoryImpl implements CarModuleRepositoryCustom {
                 module.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[15]));
                 module.setLicenseCertificateRegister(ValueUtil.getStringByObject(obj[16]));
                 module.setPublishDateLicense(ValueUtil.getStringByObject(obj[17]));
-                module
+                module.setCompanyRegister(ValueUtil.getStringByObject(obj[18]));
+                module.setSource(ValueUtil.getStringByObject(obj[19]));
+                module.setColor(ValueUtil.getStringByObject(obj[20]));
+                module.setIdUser(ValueUtil.getIntegerByObject(obj[21]));
+                module.setIdTypeUse(ValueUtil.getIntegerByObject(obj[22]));
+                module.setTimeCreated(ValueUtil.getStringByObject(obj[23]));
+                module.setTimeModified(ValueUtil.getStringByObject(obj[24]));
+                return Optional.of(module);
             }
         }
         return Optional.empty();

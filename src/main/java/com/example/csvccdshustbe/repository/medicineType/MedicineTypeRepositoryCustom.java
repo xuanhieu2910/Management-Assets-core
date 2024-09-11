@@ -1,6 +1,6 @@
 package com.example.csvccdshustbe.repository.medicineType;
 
-import com.example.csvccdshustbe.dto.medicine.FindAllMedicineTypeDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.FindAllMedicineTypeDto;
 import com.example.csvccdshustbe.entity.MedicineType;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
 import org.springframework.data.domain.Page;

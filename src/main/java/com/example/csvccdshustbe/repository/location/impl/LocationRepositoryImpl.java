@@ -1,12 +1,9 @@
 package com.example.csvccdshustbe.repository.location.impl;
 
 import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
-import com.example.csvccdshustbe.dto.medicine.FindAllMedicineTypeDto;
 import com.example.csvccdshustbe.entity.Location;
-import com.example.csvccdshustbe.entity.MedicineType;
 import com.example.csvccdshustbe.repository.location.LocationRepositoryCustom;
 import com.example.csvccdshustbe.request.Location.FindAllLocationRequest;
-import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;

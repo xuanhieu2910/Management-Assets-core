@@ -5,8 +5,10 @@ import com.example.csvccdshustbe.repository.treeAndAnimalModule.TreeAndAnimalMod
 import com.example.csvccdshustbe.service.modules.treeAndAnimalModule.TreeAndAnimalModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class TreeAndAnimalModuleServiceImpl implements TreeAndAnimalModuleService {
@@ -26,6 +28,10 @@ public class TreeAndAnimalModuleServiceImpl implements TreeAndAnimalModuleServic
 
     @Override
     public Map<String, Object> findAnimalTreeModuleByIdAnimalTree(Integer idAnimalTree) {
+        Optional<AnimalTreeModule> animalTreeModule = treeAndAnimalModuleRepository.findAnimalTreeModulesById(idAnimalTree);
+        if (!animalTreeModule.isPresent()) {
+            throw new NotFoundException("Don't exits animal tree modules");
+        }
         return null;
     }
 }
