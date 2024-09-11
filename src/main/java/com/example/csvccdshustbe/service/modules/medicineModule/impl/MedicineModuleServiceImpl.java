@@ -7,8 +7,10 @@ import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import com.example.csvccdshustbe.service.modules.medicineModule.MedicineModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class MedicineModuleServiceImpl implements MedicineModuleService {
@@ -29,5 +31,14 @@ public class MedicineModuleServiceImpl implements MedicineModuleService {
     @Override
     public void validateDataCreate(Map<String, Object> dataModule) {
 
+    }
+
+    @Override
+    public Map<String, Object> findMedicineModuleByIdMedicine(Integer idMedicine) {
+        Optional<MedicineModule> medicineModule = medicineModuleRepository.findMedicineModuleById(idMedicine);
+        if (!medicineModule.isPresent()) {
+            throw new NotFoundException("Don't exits medicine modules!");
+        }
+        return null;
     }
 }

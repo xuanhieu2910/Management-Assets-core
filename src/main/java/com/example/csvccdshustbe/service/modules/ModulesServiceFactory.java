@@ -153,4 +153,41 @@ public class ModulesServiceFactory {
         }
     }
 
+
+
+    public Map<String,Object> findDataDetailByTypeModulesAndIdInstance(String typeModules, Integer idInstance) throws ValidateFiledException {
+        EnumModuleFactory enumModuleFactory = Enum.valueOf(EnumModuleFactory.class, typeModules);
+        switch (enumModuleFactory) {
+            case MedicineModule -> {
+                return medicineModuleService.findMedicineModuleByIdMedicine(idInstance);
+            }
+            case MachineModule -> {
+                return machineModuleService.findMachineModuleByIdMachineModule(idInstance);
+            }
+            case HouseModule -> {
+                return houseModuleService.findHouseModuleByIdHouseModule(idInstance);
+            }
+            case GroundModule -> {
+                return groundModuleService.findGroundModuleByIdGroundModule(idInstance);
+            }
+            case CarModule -> {
+                return carModuleService.findCarModuleByIdCarModule(idInstance);
+            }
+            case TreeAndAnimalModule -> {
+                return treeAndAnimalModuleService.findAnimalTreeModuleByIdAnimalTree(idInstance);
+            }
+            case ArchitectureModule -> {
+                return architectureModuleService.findArchitectureModuleByIdArchitectureModule(idInstance);
+            }
+            case OtherAssetModule -> {
+                return otherAssetModuleService.findOtherAssetModuleByIdOtherAssetModule(idInstance);
+            }
+            case OtherVehicleTransportModule -> {
+                return otherVehicleTransportModuleService.findOtherVehicleTransportModuleByIdOtherVehicleTransport(idInstance);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type architecture to get data!");
+            }
+        }
+    }
 }

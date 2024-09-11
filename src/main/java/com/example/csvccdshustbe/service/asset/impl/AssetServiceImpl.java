@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.asset.impl;
 
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.originalOfFormation.AssetOriginalOfFormDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.EnumModuleFactory;
 import com.example.csvccdshustbe.enums.OAuth2Factory;
@@ -81,6 +82,8 @@ public class AssetServiceImpl implements AssetService {
 
 
 
+
+
     @Transactional
     @Override
     public void createAsset(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException {
@@ -104,14 +107,32 @@ public class AssetServiceImpl implements AssetService {
         if (!assetBluePrintDto.isPresent()) {
             throw new NotFoundException("Don't exits asset by code!");
         }
-        assetBluePrintDto.get().
-                setBluePrintParentAssetCategoryDto(
-                        assetCategoriesService.findBluePrintParentAssetCategoryDtoById(assetBluePrintDto.get().getIdAsset()));
-        // setOriginalOfFormation
-        // setModulesDetail
-        // setOriginalDetail
-        // setDeclareDetail
+        setParentAssetCategory(assetBluePrintDto.get());
+        setOriginalOfFormation(assetBluePrintDto.get());
+        setDataModulesDetail(assetBluePrintDto.get());
+        setDataOriginalDetail(assetBluePrintDto.get());
+        setDataDeclareDetail(assetBluePrintDto.get());
         return null;
+    }
+
+    private void setDataDeclareDetail(AssetBluePrintDto assetBluePrintDto) {
+    }
+
+    private void setDataOriginalDetail(AssetBluePrintDto assetBluePrintDto) {
+    }
+
+    private void setDataModulesDetail(AssetBluePrintDto assetBluePrintDto) {
+    }
+
+    private void setOriginalOfFormation(AssetBluePrintDto assetBluePrintDto) {
+        assetBluePrintDto.
+                setOriginOfFormation(assetOriginalOfFormationService.
+                        findOriginalOfFormationByIdAsset(assetBluePrintDto.getIdAsset()));
+    }
+
+    private void setParentAssetCategory(AssetBluePrintDto assetBluePrintDto){
+        assetBluePrintDto.setBluePrintParentAssetCategoryDto(
+                        assetCategoriesService.findBluePrintParentAssetCategoryDtoById(assetBluePrintDto.getIdAsset()));
     }
 
     private List<FindAllAssetResponse> convertToFindAllAssetResponse(List<FindAllAssetDto> collect) {

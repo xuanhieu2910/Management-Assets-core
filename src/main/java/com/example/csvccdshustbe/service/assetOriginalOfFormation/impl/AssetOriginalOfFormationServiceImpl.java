@@ -27,6 +27,6 @@ public class AssetOriginalOfFormationServiceImpl implements AssetOriginalOfForma
 
     @Override
     public List<AssetOriginalOfFormDto> findOriginalOfFormationByIdAsset(Integer idAsset) {
-        return null;
+        return originalOfFormationRepository.findOriginalOfFormationByIdAsset(idAsset);
     }
 }

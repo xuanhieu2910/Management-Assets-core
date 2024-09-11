@@ -23,4 +23,9 @@ public class TreeAndAnimalModuleServiceImpl implements TreeAndAnimalModuleServic
     public void validateDataCreate(Map<String, Object> dataModule) {
 
     }
+
+    @Override
+    public Map<String, Object> findAnimalTreeModuleByIdAnimalTree(Integer idAnimalTree) {
+        return null;
+    }
 }

@@ -9,4 +9,6 @@ public interface HouseModuleService {
     HouseModule save(HouseModule houseModule);
 
     void validateDataCreate(Map<String, Object> dataModule);
+
+    Map<String, Object> findHouseModuleByIdHouseModule(Integer houseModule);
 }

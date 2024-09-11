@@ -9,4 +9,6 @@ public interface MedicineModuleService {
     MedicineModule save(MedicineModule medicineModule);
 
     void validateDataCreate(Map<String, Object> dataModule);
+
+    Map<String,Object> findMedicineModuleByIdMedicine(Integer idMedicine);
 }

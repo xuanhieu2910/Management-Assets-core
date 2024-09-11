@@ -8,4 +8,6 @@ public interface GroundModuleService {
     GroundModule saveGroundModule(GroundModule module);
 
     void validateDataCreate(Map<String, Object> dataModule);
+
+    Map<String,Object> findGroundModuleByIdGroundModule(Integer groundModule);
 }

@@ -9,4 +9,6 @@ public interface TreeAndAnimalModuleService {
     AnimalTreeModule save(AnimalTreeModule animalTreeModule);
 
     void validateDataCreate(Map<String, Object> dataModule);
+
+    Map<String,Object> findAnimalTreeModuleByIdAnimalTree(Integer idAnimalTree);
 }

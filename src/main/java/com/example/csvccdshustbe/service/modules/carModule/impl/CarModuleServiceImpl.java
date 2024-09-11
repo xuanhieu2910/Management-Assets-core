@@ -23,4 +23,9 @@ public class CarModuleServiceImpl implements CarModuleService {
     public void validateDataCreate(Map<String, Object> dataModule) {
 
     }
+
+    @Override
+    public Map<String, Object> findCarModuleByIdCarModule(Integer idCarModule) {
+        return null;
+    }
 }

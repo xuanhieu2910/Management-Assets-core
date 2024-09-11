@@ -9,4 +9,6 @@ public interface OtherVehicleTransportModuleService {
     OtherVehicleTransportModule save(OtherVehicleTransportModule module);
 
     void validateDataCreate(Map<String, Object> dataModule);
+
+    Map<String,Object> findOtherVehicleTransportModuleByIdOtherVehicleTransport(Integer id);
 }

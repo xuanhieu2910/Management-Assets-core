@@ -9,4 +9,6 @@ public interface MachineModuleService {
     MachineModule save(MachineModule machineModule);
 
     void validateDataCreate(Map<String, Object> dataModule);
+
+    Map<String,Object> findMachineModuleByIdMachineModule(Integer machineModule);
 }

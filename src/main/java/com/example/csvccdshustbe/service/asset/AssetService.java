@@ -17,4 +17,5 @@ public interface AssetService {
 
     Map<String, Object> findDetailsAssetByCodeAsset(String codeAsset);
 
+
 }

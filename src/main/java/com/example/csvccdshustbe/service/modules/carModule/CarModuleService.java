@@ -9,4 +9,6 @@ public interface CarModuleService {
     CarModule save(CarModule carModule);
 
     void validateDataCreate(Map<String, Object> dataModule);
+
+    Map<String,Object> findCarModuleByIdCarModule(Integer idCarModule);
 }

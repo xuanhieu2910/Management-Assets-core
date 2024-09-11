@@ -39,7 +39,7 @@ public class AssetBluePrintDto {
     private String fileAttack;
     private BluePrintDepartmentDefaultDto departmentDefault;
     private BluePrintLevelTypeAssetDto levelTypeAsset;
-    private AssetOriginalOfFormDto originOfFormation;
+    private List<AssetOriginalOfFormDto> originOfFormation;
     private List<AssetModulesDto> modules;
     private AssetOriginalDto original;
     private AssetDeclareDto declare;

@@ -24,4 +24,9 @@ public class OtherVehicleTransportModuleServiceImpl implements OtherVehicleTrans
     public void validateDataCreate(Map<String, Object> dataModule) {
 
     }
+
+    @Override
+    public Map<String, Object> findOtherVehicleTransportModuleByIdOtherVehicleTransport(Integer id) {
+        return null;
+    }
 }

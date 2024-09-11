@@ -5,8 +5,10 @@ import com.example.csvccdshustbe.repository.machineModule.MachineModuleRepositor
 import com.example.csvccdshustbe.service.modules.machineModule.MachineModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class MachineModuleServiceImpl implements MachineModuleService {
@@ -22,5 +24,14 @@ public class MachineModuleServiceImpl implements MachineModuleService {
     @Override
     public void validateDataCreate(Map<String, Object> dataModule) {
 
+    }
+
+    @Override
+    public Map<String, Object> findMachineModuleByIdMachineModule(Integer machineModule) {
+        Optional<MachineModule> module = machineModuleRepository.findMachineModuleById(machineModule);
+        if (!module.isPresent()) {
+            throw new NotFoundException("Don't exits machine modules");
+        }
+        return null;
     }
 }

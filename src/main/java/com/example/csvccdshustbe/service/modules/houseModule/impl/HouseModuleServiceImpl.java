@@ -5,8 +5,10 @@ import com.example.csvccdshustbe.repository.houseModule.HouseModuleRepository;
 import com.example.csvccdshustbe.service.modules.houseModule.HouseModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class HouseModuleServiceImpl implements HouseModuleService {
@@ -22,5 +24,14 @@ public class HouseModuleServiceImpl implements HouseModuleService {
     @Override
     public void validateDataCreate(Map<String, Object> dataModule) {
 
+    }
+
+    @Override
+    public Map<String, Object> findHouseModuleByIdHouseModule(Integer houseModule) {
+        Optional<HouseModule> module = houseModuleRepository.findHouseModuleByIdHouseModule(houseModule);
+        if (!module.isPresent()){
+            throw new NotFoundException("Don't exits house modules!");
+        }
+        return null;
     }
 }

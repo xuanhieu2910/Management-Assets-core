@@ -23,4 +23,9 @@ public class OtherAssetModuleServiceImpl implements OtherAssetModuleService {
     public void validateDataCreate(Map<String, Object> dataModule) {
 
     }
+
+    @Override
+    public Map<String, Object> findOtherAssetModuleByIdOtherAssetModule(Integer idOtherAssetModule) {
+        return null;
+    }
 }

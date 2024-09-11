@@ -9,4 +9,6 @@ public interface ArchitectureModuleService {
     ArchitectureModule save(ArchitectureModule architectureModule);
 
     void validateDataCreate(Map<String, Object> dataModule);
+
+    Map<String,Object> findArchitectureModuleByIdArchitectureModule(Integer idArchitectureModule);
 }
