@@ -1,6 +1,8 @@
 package com.example.csvccdshustbe.repository.originalOfFormation.impl;
 
 import com.example.csvccdshustbe.dto.originalOfFormation.FindAllOriginalOfFormationDto;
+import com.example.csvccdshustbe.entity.Department;
+import com.example.csvccdshustbe.entity.OriginalOfFormation;
 import com.example.csvccdshustbe.repository.originalOfFormation.OriginalOfFormationRepositoryCustom;
 import com.example.csvccdshustbe.request.originalOfFormation.FindAllOriginalOfFormationRequest;
 import com.example.csvccdshustbe.utility.Constants;
@@ -17,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRepositoryCustom {
 
@@ -60,8 +63,8 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
         List<FindAllOriginalOfFormationDto> dtos = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj: result){
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
                 FindAllOriginalOfFormationDto dto = new FindAllOriginalOfFormationDto();
                 dto.setIdOriginalOfFormation(ValueUtil.getIntegerByObject(obj[0]));
                 dto.setName(ValueUtil.getStringByObject(obj[1]));
@@ -89,13 +92,13 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
     }
 
     private void setConditionFindAllOriginalOfFormation(FindAllOriginalOfFormationRequest request, StringBuilder sb) {
-        if (StringUtils.isNotBlank(request.getKeyword())){
+        if (StringUtils.isNotBlank(request.getKeyword())) {
             sb.append(" and (cte.name REGEXP :keyword )  ");
         }
         sb.append(" ORDER BY path ");
     }
 
-    private long countFindAllOriginalOfFormation(FindAllOriginalOfFormationRequest request){
+    private long countFindAllOriginalOfFormation(FindAllOriginalOfFormationRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" WITH RECURSIVE cte_projects as (    " +
                 "       select originalOfFormation.id_original_of_formation, originalOfFormation.name, " +
@@ -125,7 +128,134 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
         setConditionFindAllOriginalOfFormation(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllOriginalOfFormation(request, query);
-        return  ValueUtil.getLongByObject(query.getSingleResult());
+        return ValueUtil.getLongByObject(query.getSingleResult());
     }
 
+    @Override
+
+    public Optional<OriginalOfFormation> findOriginalOfFormationByName(String name) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select oof.id_original_of_formation, oof.name, " +
+                "       oof.short_name, oof.code_name, oof.description, oof.parent, " +
+                "oof.sort_order, oof.visible, " +
+                "       oof.time_created, oof.time_modified  " +
+                "from original_of_formation oof " +
+                "where oof.name = :name ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("name", name);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                OriginalOfFormation originalOfFormation = new OriginalOfFormation();
+                originalOfFormation.setIdOriginalOfFormation(ValueUtil.getIntegerByObject(obj[0]));
+                originalOfFormation.setName(ValueUtil.getStringByObject(obj[1]));
+                originalOfFormation.setShortName(ValueUtil.getStringByObject(obj[2]));
+                originalOfFormation.setCodeName(ValueUtil.getStringByObject(obj[3]));
+                originalOfFormation.setDescription(ValueUtil.getStringByObject(obj[4]));
+                originalOfFormation.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                originalOfFormation.setSortOrder(ValueUtil.getStringByObject(obj[6]));
+                originalOfFormation.setVisible(ValueUtil.getIntegerByObject(obj[7]));
+                originalOfFormation.setTimeCreated(ValueUtil.getStringByObject(obj[8]));
+                originalOfFormation.setTimeModified(ValueUtil.getStringByObject(obj[9]));
+
+                return Optional.of(originalOfFormation);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+
+    public Optional<OriginalOfFormation> findOriginalOfFormationByIdParent(Integer idParent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select oof.id_original_of_formation, oof.name, " +
+                "       oof.short_name, oof.code_name, oof.description, oof.parent, " +
+                "oof.sort_order, oof.visible, " +
+                "       oof.time_created, oof.time_modified  " +
+                "from original_of_formation oof " +
+                "where oof.id_original_of_formation = :idParent ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idParent", idParent);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                OriginalOfFormation originalOfFormation = new OriginalOfFormation();
+                originalOfFormation.setIdOriginalOfFormation(ValueUtil.getIntegerByObject(obj[0]));
+                originalOfFormation.setName(ValueUtil.getStringByObject(obj[1]));
+                originalOfFormation.setShortName(ValueUtil.getStringByObject(obj[2]));
+                originalOfFormation.setCodeName(ValueUtil.getStringByObject(obj[3]));
+                originalOfFormation.setDescription(ValueUtil.getStringByObject(obj[4]));
+                originalOfFormation.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                originalOfFormation.setSortOrder(ValueUtil.getStringByObject(obj[6]));
+                originalOfFormation.setVisible(ValueUtil.getIntegerByObject(obj[7]));
+                originalOfFormation.setTimeCreated(ValueUtil.getStringByObject(obj[8]));
+                originalOfFormation.setTimeModified(ValueUtil.getStringByObject(obj[9]));
+
+                return Optional.of(originalOfFormation);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+
+    public Optional<OriginalOfFormation> findOriginalOfFormationById(Integer idOriginalOfFormation) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select oof.id_original_of_formation, oof.name, " +
+                "       oof.short_name, oof.code_name, oof.description, oof.parent, " +
+                "oof.sort_order, oof.visible, " +
+                "       oof.time_created, oof.time_modified  " +
+                "from original_of_formation oof " +
+                "where oof.id_original_of_formation = :idOriginalOfFormation ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idOriginalOfFormation", idOriginalOfFormation);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                OriginalOfFormation originalOfFormation = new OriginalOfFormation();
+                originalOfFormation.setIdOriginalOfFormation(ValueUtil.getIntegerByObject(obj[0]));
+                originalOfFormation.setName(ValueUtil.getStringByObject(obj[1]));
+                originalOfFormation.setShortName(ValueUtil.getStringByObject(obj[2]));
+                originalOfFormation.setCodeName(ValueUtil.getStringByObject(obj[3]));
+                originalOfFormation.setDescription(ValueUtil.getStringByObject(obj[4]));
+                originalOfFormation.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                originalOfFormation.setSortOrder(ValueUtil.getStringByObject(obj[6]));
+                originalOfFormation.setVisible(ValueUtil.getIntegerByObject(obj[7]));
+                originalOfFormation.setTimeCreated(ValueUtil.getStringByObject(obj[8]));
+                originalOfFormation.setTimeModified(ValueUtil.getStringByObject(obj[9]));
+
+                return Optional.of(originalOfFormation);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean checkExitsOriginalOfFormationByNameOrShortNameOrCodeName(String name,String codeName,String shortName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select * " +
+                "from original_of_formation oof " +
+                "where 1 = 1 ");
+        if (StringUtils.isNotBlank(name)){
+            sb.append(" or oof.name = :name ");
+        }
+        if (StringUtils.isNotBlank(codeName)){
+            sb.append(" or oof.code_name = :codeName ");
+        }
+        if (StringUtils.isNotBlank(shortName)){
+            sb.append(" or oof.short_name = :shortName ");
+        }
+        Query query = entityManager.createNativeQuery(sb.toString());
+        if (StringUtils.isNotBlank(name)){
+            query.setParameter("name", name);
+        }
+        if (StringUtils.isNotBlank(codeName)){
+            query.setParameter("codeName", codeName);
+        }
+        if (StringUtils.isNotBlank(shortName)){
+            query.setParameter("shortName", shortName);
+        }
+        List<Object[]> result = query.getResultList();
+        return CollectionUtils.isEmpty(result);
+    }
 }

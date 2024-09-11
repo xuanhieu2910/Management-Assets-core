@@ -25,7 +25,7 @@ public class LocationController {
     @Autowired
     LocationService locationService;
     @GetMapping("/find-all")
-    public ResponseEntity<?> findAllTypeMedicineVisible(@And({
+            public ResponseEntity<?> findAllLocationVisible(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)

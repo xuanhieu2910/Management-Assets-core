@@ -17,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class MethodBuyAssetRepositoryImpl implements MethodBuyAssetRepositoryCustom {
 
@@ -74,5 +75,53 @@ public class MethodBuyAssetRepositoryImpl implements MethodBuyAssetRepositoryCus
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllActiveMethodBuyAsset(request, query);
         return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+
+    @Override
+    public Optional<MethodBuyAsset> findMethodBuyAssetByTitle(String title){
+        StringBuilder sb=new StringBuilder();
+        sb.append(" select mba.id_method_buy_asset, mba.title, mba.status, " +
+                "       mba.time_created, mba.time_modified " +
+                "from method_buy_asset mba " +
+                "where mba.title = :title ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("title", title);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                MethodBuyAsset methodBuyAsset = new MethodBuyAsset();
+                methodBuyAsset.setIdMethodBuyAsset(ValueUtil.getIntegerByObject(obj[0]));
+                methodBuyAsset.setTitle(ValueUtil.getStringByObject(obj[1]));
+                methodBuyAsset.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                methodBuyAsset.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                methodBuyAsset.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                return Optional.of(methodBuyAsset);
+            }
+        }
+        return Optional.empty();
+    }
+    @Override
+    public Optional<MethodBuyAsset> findMethodBuyAssetById(Integer idMethodBuyAsset){
+        StringBuilder sb=new StringBuilder();
+        sb.append(" select mba.id_method_buy_asset, mba.title, mba.status, " +
+                "       mba.time_created, mba.time_modified " +
+                "from method_buy_asset mba " +
+                "where mba.id_method_buy_asset = :idMethodBuyAsset ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idMethodBuyAsset", idMethodBuyAsset);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                MethodBuyAsset methodBuyAsset = new MethodBuyAsset();
+                methodBuyAsset.setIdMethodBuyAsset(ValueUtil.getIntegerByObject(obj[0]));
+                methodBuyAsset.setTitle(ValueUtil.getStringByObject(obj[1]));
+                methodBuyAsset.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                methodBuyAsset.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                methodBuyAsset.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                return Optional.of(methodBuyAsset);
+            }
+        }
+        return Optional.empty();
     }
 }
