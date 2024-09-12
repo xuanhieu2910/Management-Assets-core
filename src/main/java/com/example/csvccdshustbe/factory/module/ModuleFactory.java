@@ -8,4 +8,5 @@ public interface ModuleFactory {
 
     IModules createModule(Map<String, Object> mapModuleCreate);
 
+    IModules updateModule(Map<String,Object> mapModuleUpdate, IModules iModules);
 }

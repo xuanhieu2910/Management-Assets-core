@@ -19,4 +19,14 @@ public class GroundModuleFactory implements ModuleFactory {
         groundModule.setAddressDetail(ValueUtil.getStringByObject(mapModuleCreate.get("addressDetail")));
         return groundModule;
     }
+
+    @Override
+    public IModules updateModule(Map<String, Object> mapModuleUpdate, IModules iModules) {
+        GroundModule groundModule = (GroundModule) iModules;
+        groundModule.setProvinceCode(ValueUtil.getStringByObject(mapModuleUpdate.get("provinceCode")));
+        groundModule.setDistrictCode(ValueUtil.getStringByObject(mapModuleUpdate.get("districtCode")));
+        groundModule.setWardCode(ValueUtil.getStringByObject(mapModuleUpdate.get("wardCode")));
+        groundModule.setAddressDetail(ValueUtil.getStringByObject(mapModuleUpdate.get("addressDetail")));
+        return groundModule;
+    }
 }

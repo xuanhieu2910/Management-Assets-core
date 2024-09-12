@@ -27,4 +27,21 @@ public class HouseModuleFactory implements ModuleFactory {
         houseModule.setPublishYear(ValueUtil.getStringByObject(mapModuleCreate.get("publishYear")));
         return houseModule;
     }
+
+    @Override
+    public IModules updateModule(Map<String, Object> mapModuleUpdate, IModules iModules) {
+        HouseModule houseModule = (HouseModule) iModules;
+        houseModule.setIsManageGround(ValueUtil.getIntegerByObject(mapModuleUpdate.get("isManageGround")));
+        if (ValueUtil.getIntegerByObject(mapModuleUpdate.get("isManageHouse")).equals(Constants.HOUSE_MODULES_IS_MANAGE_HOUSE)) {
+            houseModule.setIdInstance(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idInstance")));
+        }
+        houseModule.setProvinceCode(ValueUtil.getStringByObject(mapModuleUpdate.get("provinceCode")));
+        houseModule.setDistrictCode(ValueUtil.getStringByObject(mapModuleUpdate.get("districtCode")));
+        houseModule.setWardCode(ValueUtil.getStringByObject(mapModuleUpdate.get("wardCode")));
+        houseModule.setAddressDetail(ValueUtil.getStringByObject(mapModuleUpdate.get("addressDetail")));
+        houseModule.setFloorsNumber(ValueUtil.getIntegerByObject(mapModuleUpdate.get("floorsNumber")));
+        houseModule.setAcreage(ValueUtil.getDoubleByObject(mapModuleUpdate.get("acreage")));
+        houseModule.setPublishYear(ValueUtil.getStringByObject(mapModuleUpdate.get("publishYear")));
+        return houseModule;
+    }
 }

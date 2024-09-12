@@ -67,7 +67,7 @@ public class ModulesServiceFactory {
                 idInstance = houseModuleService.save((HouseModule) modules).getIdHouseModule();
             }
             case GroundModule -> {
-                idInstance = groundModuleService.saveGroundModule((GroundModule) modules).getIdGroundModule();
+                idInstance = groundModuleService.save((GroundModule) modules).getIdGroundModule();
             }
             case CarModule -> {
                 idInstance = carModuleService.save((CarModule) modules).getIdCarModule();
@@ -193,7 +193,7 @@ public class ModulesServiceFactory {
         }
     }
 
-    public <T> Object findDataModulesByTypeModulesAndIdInstance(String typeModules, Integer idInstance)
+    public <T> IModules findDataModulesByTypeModulesAndIdInstance(String typeModules, Integer idInstance)
             throws ValidateFiledException, IllegalAccessException {
         EnumModuleFactory enumModuleFactory = Enum.valueOf(EnumModuleFactory.class, typeModules);
         switch (enumModuleFactory) {
@@ -223,6 +223,43 @@ public class ModulesServiceFactory {
             }
             case OtherVehicleTransportModule -> {
                 return otherVehicleTransportModuleService.findOtherVehicleTransportModuleByIdOtherVehicleTransport(idInstance);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type modules to get data!");
+            }
+        }
+    }
+
+    public <T> IModules update(String typeModules, T dataModule)
+            throws ValidateFiledException {
+        EnumModuleFactory enumModuleFactory = Enum.valueOf(EnumModuleFactory.class, typeModules);
+        switch (enumModuleFactory) {
+            case MedicineModule -> {
+                return medicineModuleService.save((MedicineModule) dataModule);
+            }
+            case MachineModule -> {
+                return machineModuleService.save((MachineModule) dataModule);
+            }
+            case HouseModule -> {
+                return houseModuleService.save((HouseModule) dataModule);
+            }
+            case GroundModule -> {
+                return groundModuleService.save((GroundModule) dataModule);
+            }
+            case CarModule -> {
+                return carModuleService.save((CarModule) dataModule);
+            }
+            case TreeAndAnimalModule -> {
+                return treeAndAnimalModuleService.save((AnimalTreeModule) dataModule);
+            }
+            case ArchitectureModule -> {
+                return architectureModuleService.save((ArchitectureModule) dataModule);
+            }
+            case OtherAssetModule -> {
+                return otherAssetModuleService.save((OtherAssetModule) dataModule);
+            }
+            case OtherVehicleTransportModule -> {
+                return otherVehicleTransportModuleService.save((OtherVehicleTransportModule) dataModule);
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type modules to get data!");

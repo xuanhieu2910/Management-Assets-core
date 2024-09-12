@@ -116,14 +116,15 @@ public class AssetServiceImpl implements AssetService {
 
     @Transactional
     @Override
-    public void updateAsset(HashMap<String, Object> updateAssetRequest) throws JsonProcessingException, ValidateFiledException {
+    public void updateAsset(HashMap<String, Object> updateAssetRequest) throws JsonProcessingException, ValidateFiledException,
+            IllegalAccessException {
         Map<String, Object> dataCreateAssetRequest =
                 objectMapper.readValue(JSONObjectUtils.toJSONString(updateAssetRequest), Map.class);
         validateDataUpdateAsset(dataCreateAssetRequest);
         updateDataAsset(dataCreateAssetRequest);
     }
 
-    private void updateDataAsset(Map<String, Object> dataUpdateAssetRequest) throws ValidateFiledException {
+    private void updateDataAsset(Map<String, Object> dataUpdateAssetRequest) throws ValidateFiledException, IllegalAccessException {
         Asset asset = updateCommonDataAsset(dataUpdateAssetRequest);
         updateModulesDataAsset(dataUpdateAssetRequest, asset);
         updateOriginalDataAsset(dataUpdateAssetRequest, asset);
@@ -140,54 +141,79 @@ public class AssetServiceImpl implements AssetService {
         Map<String,Object> originalDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_ORIGINAL_ASSET);
     }
 
-    private void updateModulesDataAsset(Map<String, Object> dataUpdateAssetRequest, Asset asset) throws ValidateFiledException {
+    private void updateModulesDataAsset(Map<String, Object> dataUpdateAssetRequest, Asset asset) throws ValidateFiledException, IllegalAccessException {
         log.info("Start update modules data asset by code asset " + asset.getCodeAsset());
         List<BluePrintAssetModulesDto> bluePrintAssetModulesDtos = modulesServiceFactory.findBluePrintAssetModulesByIdAsset(asset.getIdAsset());
         List<HashMap<String,Object>> modulesDataAsset = (List<HashMap<String,Object>>) dataUpdateAssetRequest.get(Constants.KEY_MODULE);
-        if (!CollectionUtils.isEmpty(modulesDataAsset)) {
-            for (HashMap<String,Object> dataModule : modulesDataAsset){
-                deleteAssetModule(bluePrintAssetModulesDtos, dataModule);
-                createNewAssetModule(bluePrintAssetModulesDtos,dataModule,asset);
-                updateAssetModule(dataModule);
-            }
-        } else {
-            modulesServiceFactory.deleteAssetModulesByIdAsset(bluePrintAssetModulesDtos);
-        }
+
+        deleteAssetModule(bluePrintAssetModulesDtos, modulesDataAsset);
+        createNewAssetModule(bluePrintAssetModulesDtos,modulesDataAsset,asset);
+        updateAssetModule(bluePrintAssetModulesDtos, modulesDataAsset);
     }
 
-    private void updateAssetModule(HashMap<String, Object> dataModule) {
-
-
-
-
+    private void updateAssetModule(List<BluePrintAssetModulesDto> bluePrintAssetModulesDtos,
+                                   List<HashMap<String, Object>> dataModule) throws ValidateFiledException, IllegalAccessException {
+        for (HashMap<String,Object> dataAsset: dataModule) {
+            String typeModules;
+            Integer idInstance;
+            for (BluePrintAssetModulesDto bluePrintAssetModulesDto : bluePrintAssetModulesDtos) {
+                if (ValueUtil.getStringByObject(dataAsset.get(Constants.KEY_TYPE_MODULE)).
+                        equals(bluePrintAssetModulesDto.getTypeModules())) {
+                    typeModules = bluePrintAssetModulesDto.getTypeModules();
+                    idInstance = bluePrintAssetModulesDto.getIdModules();
+                    IModules iModulesDetails = modulesServiceFactory.
+                            findDataModulesByTypeModulesAndIdInstance(typeModules,idInstance);
+                    ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
+                            proxyInitModuleDataAsset(ValueUtil.getStringByObject(dataAsset.get(Constants.KEY_TYPE_MODULE)));
+                    IModules iModules = moduleFactory.updateModule(dataAsset,iModulesDetails);
+                    modulesServiceFactory.update(ValueUtil.getStringByObject(dataAsset.get(Constants.KEY_TYPE_MODULE)), iModules);
+                }
+            }
+        }
 
     }
 
     private void createNewAssetModule(List<BluePrintAssetModulesDto> assetModulesDtos ,
-                                      HashMap<String,Object> moduleDataAsset, Asset asset) throws ValidateFiledException {
-        String typeModuleData = ValueUtil.getStringByObject(moduleDataAsset.get(Constants.KEY_TYPE_MODULE));
-        for (BluePrintAssetModulesDto modulesDto : assetModulesDtos){
-            if (!modulesDto.getTypeModules().equals(typeModuleData)) {
-                if (StringUtils.isNotBlank(ValueUtil.getStringByObject(moduleDataAsset.get("codeUser")))){
-                    CsvcUser user = csvcUserService.findByCodeUser(ValueUtil.getStringByObject(moduleDataAsset.get("codeUser")));
-                    moduleDataAsset.put("idUser", user.getIdUser());
+                                      List<HashMap<String,Object>> moduleDataAsset,
+                                      Asset asset) throws ValidateFiledException {
+        for (HashMap<String,Object> dataAsset: moduleDataAsset){
+            boolean checkEqual = false;
+            for (BluePrintAssetModulesDto bluePrintAssetModulesDto : assetModulesDtos){
+                if (ValueUtil.getStringByObject(dataAsset.get(Constants.KEY_TYPE_MODULE)).
+                        equals(bluePrintAssetModulesDto.getTypeModules())) {
+                    checkEqual = true;
+                    break;
                 }
-                moduleDataAsset.put("idAsset", asset.getIdAsset());
+            }
+            if (!checkEqual){
+                if (StringUtils.isNotBlank(ValueUtil.getStringByObject(dataAsset.get("codeUser")))) {
+                    CsvcUser user = csvcUserService.findByCodeUser(ValueUtil.getStringByObject(dataAsset.get("codeUser")));
+                    dataAsset.put("idUser", user.getIdUser());
+                }
+                dataAsset.put("idAsset", asset.getIdAsset());
                 ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
-                        proxyInitModuleDataAsset(ValueUtil.getStringByObject(moduleDataAsset.get(Constants.KEY_TYPE_MODULE)));
-                IModules iModules = moduleFactory.createModule(moduleDataAsset);
-                modulesServiceFactory.save(iModules, moduleDataAsset);
+                        proxyInitModuleDataAsset(ValueUtil.getStringByObject(dataAsset.get(Constants.KEY_TYPE_MODULE)));
+                IModules iModules = moduleFactory.createModule(dataAsset);
+                modulesServiceFactory.save(iModules, dataAsset);
                 log.info("Finish store module factory " + moduleFactory.getClass());
             }
         }
     }
 
-    private void deleteAssetModule(List<BluePrintAssetModulesDto> assetModulesDtos, HashMap<String,Object> dataModule ) throws ValidateFiledException {
-        String typeModuleData = ValueUtil.getStringByObject(dataModule.get(Constants.KEY_TYPE_MODULE));
-        for (BluePrintAssetModulesDto modulesDto : assetModulesDtos){
-            if (!modulesDto.getTypeModules().equals(typeModuleData)) {
-                modulesServiceFactory.deleteModulesByTypeModulesAndIdInstance(modulesDto.getTypeModules(),
-                        modulesDto.getIdInstance(),modulesDto.getIdModules());
+    private void deleteAssetModule(List<BluePrintAssetModulesDto> bluePrintAssetModulesDtoList,
+                                   List<HashMap<String,Object>> modulesDataAsset ) throws ValidateFiledException {
+        for (BluePrintAssetModulesDto bluePrintAssetModulesDto : bluePrintAssetModulesDtoList){
+            boolean checkEqual = false;
+            for (HashMap<String,Object> dataAsset : modulesDataAsset) {
+                if (bluePrintAssetModulesDto.getTypeModules().
+                        equals(ValueUtil.getStringByObject(dataAsset.get(Constants.KEY_TYPE_MODULE)))) {
+                    checkEqual = true;
+                    break;
+                }
+            }
+            if (!checkEqual) {
+                modulesServiceFactory.deleteModulesByTypeModulesAndIdInstance(bluePrintAssetModulesDto.getTypeModules(),
+                        bluePrintAssetModulesDto.getIdInstance(), bluePrintAssetModulesDto.getIdModules());
             }
         }
     }

@@ -22,4 +22,17 @@ public class MachineModuleFactory implements ModuleFactory {
         machineModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleCreate.get("idTypeUse")));
         return machineModule;
     }
+
+    @Override
+    public IModules updateModule(Map<String, Object> mapModuleUpdate, IModules iModules) {
+        MachineModule machineModule = (MachineModule) iModules;
+        machineModule.setLabelMachine(ValueUtil.getStringByObject(mapModuleUpdate.get("labelMachine")));
+        machineModule.setModel(ValueUtil.getStringByObject(mapModuleUpdate.get("model")));
+        machineModule.setSerial(ValueUtil.getStringByObject(mapModuleUpdate.get("serial")));
+        machineModule.setPublishDate(ValueUtil.getStringByObject(mapModuleUpdate.get("publishDate")));
+        machineModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idCountryProducer")));
+        machineModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idUser")));
+        machineModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
+        return machineModule;
+    }
 }

@@ -16,4 +16,5 @@ public interface MedicineModuleService {
     void deleteMedicineModuleById(Integer idInstance);
 
     MedicineModule findMedicineModuleByIdMedicine(Integer idInstance);
+
 }

@@ -5,7 +5,7 @@ import com.example.csvccdshustbe.entity.GroundModule;
 import java.util.Map;
 
 public interface GroundModuleService {
-    GroundModule saveGroundModule(GroundModule module);
+    GroundModule save(GroundModule module);
 
     void validateDataCreate(Map<String, Object> dataModule);
 

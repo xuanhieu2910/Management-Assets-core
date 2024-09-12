@@ -51,6 +51,10 @@ public class MedicineModuleServiceImpl implements MedicineModuleService {
 
     @Override
     public MedicineModule findMedicineModuleByIdMedicine(Integer idInstance) {
-        return null;
+        Optional<MedicineModule> medicineModule = medicineModuleRepository.findMedicineModuleById(idInstance);
+        if (!medicineModule.isPresent()) {
+            throw new NotFoundException("Don't exits medicine module by id");
+        }
+        return medicineModule.get();
     }
 }

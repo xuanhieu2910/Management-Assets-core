@@ -40,4 +40,33 @@ public class CarModuleFactory implements ModuleFactory {
         carModule.setTimeModified(timeCurrent);
         return carModule;
     }
+
+    @Override
+    public IModules updateModule(Map<String, Object> mapModuleUpdate, IModules iModules) {
+        CarModule carModule = (CarModule) iModules;
+        carModule.setIsFreeTax(ValueUtil.getIntegerByObject(mapModuleUpdate.get("isFreeTax")));
+        carModule.setValueTax(ValueUtil.getStringByObject(mapModuleUpdate.get("valueTax")));
+        carModule.setLicensePlate(ValueUtil.getStringByObject(mapModuleUpdate.get("licensePlate")));
+        carModule.setLabelCar(ValueUtil.getStringByObject(mapModuleUpdate.get("labelCar")));
+        carModule.setTypeCar(ValueUtil.getStringByObject(mapModuleUpdate.get("typeCar")));
+        carModule.setLoadCapacity(ValueUtil.getStringByObject(mapModuleUpdate.get("loadCapacity")));
+        carModule.setNumberSeats(ValueUtil.getIntegerByObject(mapModuleUpdate.get("numberSeats")));
+        carModule.setCapacity(ValueUtil.getStringByObject(mapModuleUpdate.get("capacity")));
+        carModule.setCylinderCapacity(ValueUtil.getStringByObject(mapModuleUpdate.get("cylinderCapacity")));
+        carModule.setClutchNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("clutchNumber")));
+        carModule.setVehicleIdentificationNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("vehicleIdentificationNumber")));
+        carModule.setMachineNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("machineNumber")));
+        carModule.setPublishYear(ValueUtil.getStringByObject(mapModuleUpdate.get("publishYear")));
+        carModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idCountryProducer")));
+        carModule.setLicenseCertificateRegister(ValueUtil.getStringByObject(mapModuleUpdate.get("licenseCertificateRegister")));
+        carModule.setPublishDateLicense(ValueUtil.getStringByObject(mapModuleUpdate.get("publishDateLicense")));
+        carModule.setCompanyRegister(ValueUtil.getStringByObject(mapModuleUpdate.get("companyRegister")));
+        carModule.setSource(ValueUtil.getStringByObject(mapModuleUpdate.get("source")));
+        carModule.setColor(ValueUtil.getStringByObject(mapModuleUpdate.get("color")));
+        carModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idUser")));
+        carModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        carModule.setTimeModified(timeCurrent);
+        return carModule;
+    }
 }

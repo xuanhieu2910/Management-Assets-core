@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.medicineModule.impl;
 
 import com.example.csvccdshustbe.dto.modules.medicineModules.MedicineModuleDetailsDto;
+import com.example.csvccdshustbe.entity.MedicineModule;
 import com.example.csvccdshustbe.repository.medicineModule.MedicineModuleRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -66,5 +67,38 @@ public class MedicineModuleRepositoryImpl implements MedicineModuleRepositoryCus
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idMedicineModule", idMedicineModule);
         query.executeUpdate();
+    }
+
+    @Override
+    public Optional<MedicineModule> findMedicineModuleById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select me.id_medicine_module, me.id_asset, me.id_medicine_type, " +
+                "       me.id_medicine_group, me.publish_date, me.expiry_date, " +
+                "       me.circulation_number, me.number_batch_of_goods,  " +
+                "       me.own_name_circulation_number, me.own_address_circulation_number, " +
+                "       me.spare_parts_attack " +
+                "from medicine_module me  " +
+                "where me.id_medicine_module = :idMedicine ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idMedicine", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                MedicineModule medicineModule = new MedicineModule();
+                medicineModule.setIdMedicineModule(ValueUtil.getIntegerByObject(obj[0]));
+                medicineModule.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                medicineModule.setIdMedicineType(ValueUtil.getIntegerByObject(obj[2]));
+                medicineModule.setIdMedicineGroup(ValueUtil.getIntegerByObject(obj[3]));
+                medicineModule.setPublishDate(ValueUtil.getStringByObject(obj[4]));
+                medicineModule.setExpiryDate(ValueUtil.getStringByObject(obj[5]));
+                medicineModule.setCirculationNumber(ValueUtil.getStringByObject(obj[6]));
+                medicineModule.setNumberBatchOfGoods(ValueUtil.getStringByObject(obj[7]));
+                medicineModule.setOwnNameCirculationNumber(ValueUtil.getStringByObject(obj[8]));
+                medicineModule.setOwnAddressCirculationNumber(ValueUtil.getStringByObject(obj[9]));
+                medicineModule.setSparePartsAttack(ValueUtil.getStringByObject(obj[10]));
+                return Optional.of(medicineModule);
+            }
+        }
+        return Optional.empty();
     }
 }

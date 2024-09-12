@@ -24,4 +24,19 @@ public class MedicineModuleFactory implements ModuleFactory {
         medicineModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleCreate.get("sparePartsAttack")));
         return medicineModule;
     }
+
+    @Override
+    public IModules updateModule(Map<String, Object> mapModuleUpdate, IModules iModules) {
+        MedicineModule medicineModule = (MedicineModule) iModules;
+        medicineModule.setIdMedicineType(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idMedicineType")));
+        medicineModule.setIdMedicineGroup(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idMedicineGroup")));
+        medicineModule.setPublishDate(ValueUtil.getStringByObject(mapModuleUpdate.get("publishDate")));
+        medicineModule.setExpiryDate(ValueUtil.getStringByObject(mapModuleUpdate.get("expiryDate")));
+        medicineModule.setCirculationNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("circulationNumber")));
+        medicineModule.setNumberBatchOfGoods(ValueUtil.getStringByObject(mapModuleUpdate.get("numberBatchOfGoods")));
+        medicineModule.setOwnNameCirculationNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("ownNameCirculationNumber")));
+        medicineModule.setOwnAddressCirculationNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("ownAddressCirculationNumber")));
+        medicineModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
+        return medicineModule;
+    }
 }

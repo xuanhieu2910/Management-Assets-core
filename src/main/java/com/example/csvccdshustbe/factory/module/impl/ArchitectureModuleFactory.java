@@ -21,4 +21,16 @@ public class ArchitectureModuleFactory implements ModuleFactory {
         architectureModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleCreate.get("idCountryProducer")));
         return architectureModule;
     }
+
+    @Override
+    public IModules updateModule(Map<String, Object> mapModuleUpdate, IModules iModules) {
+        ArchitectureModule architectureModule  = (ArchitectureModule) iModules;
+        architectureModule.setIdInstance(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idInstance")));
+        architectureModule.setLength(ValueUtil.getDoubleByObject(mapModuleUpdate.get("length")));
+        architectureModule.setAcreage(ValueUtil.getDoubleByObject(mapModuleUpdate.get("acreage")));
+        architectureModule.setVolume(ValueUtil.getDoubleByObject(mapModuleUpdate.get("volume")));
+        architectureModule.setPublishDate(ValueUtil.getStringByObject(mapModuleUpdate.get("publishDate")));
+        architectureModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idCountryProducer")));
+        return architectureModule;
+    }
 }

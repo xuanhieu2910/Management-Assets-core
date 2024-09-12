@@ -23,4 +23,17 @@ public class OtherAssetModuleFactory implements ModuleFactory {
         otherAssetModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleCreate.get("idTypeUse")));
         return otherAssetModule;
     }
+
+    @Override
+    public IModules updateModule(Map<String, Object> mapModuleUpdate, IModules iModules) {
+        OtherAssetModule otherAssetModule = (OtherAssetModule) iModules;
+        otherAssetModule.setLabel(ValueUtil.getStringByObject(mapModuleUpdate.get("label")));
+        otherAssetModule.setModel(ValueUtil.getStringByObject(mapModuleUpdate.get("model")));
+        otherAssetModule.setSerial(ValueUtil.getStringByObject(mapModuleUpdate.get("serial")));
+        otherAssetModule.setPublishDate(ValueUtil.getStringByObject(mapModuleUpdate.get("publishDate")));
+        otherAssetModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idCountryProducer")));
+        otherAssetModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idUser")));
+        otherAssetModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
+        return otherAssetModule;
+    }
 }

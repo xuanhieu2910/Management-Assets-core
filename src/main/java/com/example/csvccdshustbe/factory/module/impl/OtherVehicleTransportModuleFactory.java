@@ -37,4 +37,31 @@ public class OtherVehicleTransportModuleFactory implements ModuleFactory {
         module.setIdPositionName(ValueUtil.getIntegerByObject(mapModuleCreate.get("idPositionName")));
         return module;
     }
+
+    @Override
+    public IModules updateModule(Map<String, Object> mapModuleUpdate, IModules iModules) {
+        OtherVehicleTransportModule  module = (OtherVehicleTransportModule) iModules;
+        module.setLicensePlate(ValueUtil.getStringByObject(mapModuleUpdate.get("licensePlate")));
+        module.setLabel(ValueUtil.getStringByObject(mapModuleUpdate.get("label")));
+        module.setLoadCapacity(ValueUtil.getStringByObject(mapModuleUpdate.get("loadCapacity")));
+        module.setNumberSeats(ValueUtil.getStringByObject(mapModuleUpdate.get("numberSeats")));
+        module.setCapacity(ValueUtil.getStringByObject(mapModuleUpdate.get("capacity")));
+        module.setCylinderCapacity(ValueUtil.getStringByObject(mapModuleUpdate.get("cylinderCapacity")));
+        module.setClutchNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("clutchNumber")));
+        module.setVehicleIdentificationNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("vehicleIdentificationNumber")));
+        module.setMachineNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("machineNumber")));
+        module.setPublishYear(ValueUtil.getStringByObject(mapModuleUpdate.get("publishYear")));
+        module.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idCountryProducer")));
+        module.setLicenseCertificateRegister(ValueUtil.getStringByObject(mapModuleUpdate.get("licenseCertificateRegister")));
+        module.setPublishDateLicense(ValueUtil.getStringByObject(mapModuleUpdate.get("publishDateLicense")));
+        module.setCompanyRegister(ValueUtil.getStringByObject(mapModuleUpdate.get("companyRegister")));
+        module.setSource(ValueUtil.getStringByObject(mapModuleUpdate.get("source")));
+        module.setColor(ValueUtil.getStringByObject(mapModuleUpdate.get("color")));
+        module.setIdUser(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idUser")));
+        module.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        module.setTimeModified(timeCurrent);
+        module.setIdPositionName(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idPositionName")));
+        return module;
+    }
 }
