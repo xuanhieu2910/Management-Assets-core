@@ -1,11 +1,9 @@
 package com.example.csvccdshustbe.service.assetCategories.impl;
 
-import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
 import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategoryDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
-
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepository;
 import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
@@ -13,10 +11,10 @@ import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesR
 import com.example.csvccdshustbe.request.assetCategories.UpdateAssetCategoryRequest;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
+import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -130,6 +128,15 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             throw new NotFoundException("Don't exits asset category picked by id!");
         }
         return dto.get();
+    }
+
+    @Override
+    public FindAssetCategoryDetailsResponse findAssetCategoryDetailsResponseByCode(String codeAssetCategory) {
+        Optional<FindAssetCategoryDetailsResponse> response = assetCategoriesRepository.findAssetCategoryDetailsPickedResponseByCode(codeAssetCategory);
+        if (!response.isPresent()) {
+            throw new NotFoundException("Don't exits asset category by code!");
+        }
+        return response.get();
     }
 
     private AssetCategories createAssetCategoryRequest(CreateAssetCategoryRequest request) {

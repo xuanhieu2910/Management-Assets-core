@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequ
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
 import com.example.csvccdshustbe.request.assetCategories.UpdateAssetCategoryRequest;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
+import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -84,6 +85,19 @@ public class AssetCategoriesController {
         try {
             assetCategoriesService.deleteAssetCategoryByIdAssetCategory(idCurrentUsage);
             return ApiResponseDto.createdWithMessage("Delete asset category success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> findDetailsAssetCategoryByCodeParentCategory(@RequestParam("code") String codeAssetCategory){
+        try {
+            return ApiResponseDto.createdWithState(
+                    assetCategoriesService.findAssetCategoryDetailsResponseByCode(codeAssetCategory),
+                    "Find asset category details success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){

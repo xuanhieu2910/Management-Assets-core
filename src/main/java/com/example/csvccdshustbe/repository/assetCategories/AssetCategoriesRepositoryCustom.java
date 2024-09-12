@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCod
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
+import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -28,4 +29,7 @@ public interface AssetCategoriesRepositoryCustom {
     boolean checkExitsAssetCategoriesByNameOrShortName(String name, String shortName);
 
     Optional<BluePrintParentAssetCategoryDto> findBluePrintAssetCategoryDtoById(Integer idAssetCategory);
+
+    Optional<FindAssetCategoryDetailsResponse> findAssetCategoryDetailsPickedResponseByCode(String code);
+
 }

@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPicke
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepositoryCustom;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
+import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -21,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryCustom {
@@ -271,6 +273,35 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 dto.setIdParentAssetCategory(ValueUtil.getIntegerByObject(obj[1]));
                 dto.setNameParentAssetCategory(ValueUtil.getStringByObject(obj[2]));
                 return Optional.of(dto);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<FindAssetCategoryDetailsResponse> findAssetCategoryDetailsPickedResponseByCode(String code) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select asset.id_asset_category, asset.code_name,  " +
+                "       asset.name, asset.parent " +
+                "from asset_categories asset " +
+                "where asset.code_name = :codeName " +
+                "and asset.is_pick = :isPicked ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeName", code);
+        query.setParameter("isPicked", Constants.ASSET_CATEGORY_IS_PICK);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result) {
+                FindAssetCategoryDetailsResponse response = new FindAssetCategoryDetailsResponse();
+                response.setIdInstance(ValueUtil.getIntegerByObject(obj[0]));
+                response.setCodeAssetCategory(ValueUtil.getStringByObject(obj[1]));
+                response.setNameAssetCategory(ValueUtil.getStringByObject(obj[2]));
+                if (Objects.isNull(obj[3])){
+                    response.setIdParentAssetCategory(response.getIdInstance());
+                } else {
+                    response.setIdParentAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
+                }
+                return Optional.of(response);
             }
         }
         return Optional.empty();

@@ -9,6 +9,7 @@ import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesR
 import com.example.csvccdshustbe.request.assetCategories.UpdateAssetCategoryRequest;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
+import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -29,4 +30,6 @@ public interface AssetCategoriesService {
     void deleteAssetCategoryByIdAssetCategory(Integer idAssetCategory);
 
     BluePrintParentAssetCategoryDto findBluePrintParentAssetCategoryDtoById(Integer idParentAssetCategory);
+
+    FindAssetCategoryDetailsResponse findAssetCategoryDetailsResponseByCode(String codeAssetCategory);
 }
