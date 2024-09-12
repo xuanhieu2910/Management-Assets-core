@@ -56,6 +56,7 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
     }
 
 
+    @Override
     public void createMedicineType(CreateMedicineTypeRequest request) throws ValidateFiledException {
         validateDataCreateMedicineType(request);
         medicineTypeRepository.save(contructMedicineType(request));

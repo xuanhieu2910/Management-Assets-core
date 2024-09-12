@@ -161,15 +161,15 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
                         for (Object[] obj: result){
                             Department department = new Department();
                             department.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
-                department.setName(ValueUtil.getStringByObject(obj[1]));
-                department.setCode(ValueUtil.getStringByObject(obj[2]));
-                department.setShortName(ValueUtil.getStringByObject(obj[3]));
-                department.setDescription(ValueUtil.getStringByObject(obj[4]));
-                department.setParent(ValueUtil.getIntegerByObject(obj[5]));
-                department.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
-                department.setTimeModified(ValueUtil.getStringByObject(obj[7]));
-                department.setStatus(ValueUtil.getIntegerByObject(obj[8]));
-                return Optional.of(department);
+                            department.setName(ValueUtil.getStringByObject(obj[1]));
+                            department.setCode(ValueUtil.getStringByObject(obj[2]));
+                            department.setShortName(ValueUtil.getStringByObject(obj[3]));
+                            department.setDescription(ValueUtil.getStringByObject(obj[4]));
+                            department.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                            department.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                            department.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                            department.setStatus(ValueUtil.getIntegerByObject(obj[8]));
+                            return Optional.of(department);
             }
         }
         return Optional.empty();
