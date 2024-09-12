@@ -9,4 +9,5 @@ public class BluePrintParentAssetCategoryDto {
 
     private String codeParentAssetCategory;
     private Integer idParentAssetCategory;
+    private String nameParentAssetCategory;
 }

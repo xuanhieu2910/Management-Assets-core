@@ -41,7 +41,7 @@ public class DeclareServiceFactory {
         Integer idInstance;
         switch (enumDeclareFactory){
             case HouseDeclare -> {
-                idInstance = houseDeclareService.save((HouseDeclare) declare).getIdArchitectureDeclare();
+                idInstance = houseDeclareService.save((HouseDeclare) declare).getIdHouseDeclare();
             }
             case GroundDeclare -> {
                 idInstance = groundDeclareService.save((GroundDeclare) declare).getIdGroundDeclare();
@@ -89,5 +89,23 @@ public class DeclareServiceFactory {
         String typeDeclare = ValueUtil.getStringByObject(dataDeclare.get(Constants.KEY_TYPE_DECLARE));
         Declare declare = declareService.findDeclareByHardCodeAndVisible(typeDeclare, Constants.DECLARE_VISIBLE);
         dataDeclare.put("idDeclare", declare.getIdDeclare());
+    }
+
+    public Map<String, Object> findDataDetailByTypeDeclareAndIdInstance(String typeDeclare, Integer idInstance) throws ValidateFiledException, IllegalAccessException {
+        EnumDeclareFactory enumDeclareFactory = Enum.valueOf(EnumDeclareFactory.class, typeDeclare);
+        switch (enumDeclareFactory){
+            case HouseDeclare -> {
+                return houseDeclareService.findHouseDeclareDetailsDtoById(idInstance);
+            }
+            case GroundDeclare -> {
+                return groundDeclareService.findGroundDeclareDetailsDtoById(idInstance);
+            }
+            case CommonDeclare -> {
+                return commonDeclareService.findCommonDeclareDetailsDtoById(idInstance);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type declare!");
+            }
+        }
     }
 }

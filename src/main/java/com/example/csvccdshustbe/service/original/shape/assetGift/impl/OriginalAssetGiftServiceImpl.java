@@ -31,6 +31,6 @@ public class OriginalAssetGiftServiceImpl implements OriginalAssetGiftService {
         if (!detailsDto.isPresent()) {
             throw new NotFoundException("Don't exits asset gift!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto);
+        return ValueUtil.convertObjectToMap(detailsDto.get());
     }
 }

@@ -257,7 +257,8 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     @Override
     public Optional<BluePrintParentAssetCategoryDto> findBluePrintAssetCategoryDtoById(Integer idAssetCategory) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select assetCategory.code_name, assetCategory.id_asset_category " +
+        sb.append(" select assetCategory.code_name, assetCategory.id_asset_category, " +
+                "       assetCategory.name nameAsset " +
                 "from asset_categories assetCategory " +
                 "where assetCategory.id_asset_category = :idAssetCategory ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -268,6 +269,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 BluePrintParentAssetCategoryDto dto = new BluePrintParentAssetCategoryDto();
                 dto.setCodeParentAssetCategory(ValueUtil.getStringByObject(obj[0]));
                 dto.setIdParentAssetCategory(ValueUtil.getIntegerByObject(obj[1]));
+                dto.setNameParentAssetCategory(ValueUtil.getStringByObject(obj[2]));
                 return Optional.of(dto);
             }
         }

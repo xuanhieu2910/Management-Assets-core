@@ -34,6 +34,6 @@ public class CarModuleServiceImpl implements CarModuleService {
         if (!carModule.isPresent()) {
             throw new NotFoundException("Don't exits car module!");
         }
-        return ValueUtil.convertObjectToMap(carModule);
+        return ValueUtil.convertObjectToMap(carModule.get());
     }
 }

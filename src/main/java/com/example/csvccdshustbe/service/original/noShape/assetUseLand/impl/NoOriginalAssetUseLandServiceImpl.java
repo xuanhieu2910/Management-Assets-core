@@ -31,6 +31,6 @@ public class NoOriginalAssetUseLandServiceImpl implements NoOriginalAssetUseLand
         if (!detailsDto.isPresent()){
             throw new NotFoundException("Don't exits original asset use land!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto);
+        return ValueUtil.convertObjectToMap(detailsDto.get());
     }
 }

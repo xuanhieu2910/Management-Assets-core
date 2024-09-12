@@ -30,6 +30,6 @@ public class NoOriginalAssetGiftServiceImpl implements NoOriginalAssetGiftServic
         if (!detailsDto.isPresent()) {
             throw new NotFoundException("Don't exits no shape original asset gift!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto);
+        return ValueUtil.convertObjectToMap(detailsDto.get());
     }
 }

@@ -29,6 +29,6 @@ public class OriginalAssetBuyServiceImpl implements OriginalAssetBuyService {
         if (!assetBuyDetailsDto.isPresent()) {
             throw new NotFoundException("Don't exits original asset buy!");
         }
-        return ValueUtil.convertObjectToMap(assetBuyDetailsDto);
+        return ValueUtil.convertObjectToMap(assetBuyDetailsDto.get());
     }
 }

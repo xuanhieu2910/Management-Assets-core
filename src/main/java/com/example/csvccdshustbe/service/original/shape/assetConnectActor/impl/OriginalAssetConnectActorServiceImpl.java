@@ -31,6 +31,6 @@ public class OriginalAssetConnectActorServiceImpl implements OriginalAssetConnec
         if (!detailsDto.isPresent()) {
             throw new NotFoundException("Don't exits original connect actor!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto);
+        return ValueUtil.convertObjectToMap(detailsDto.get());
     }
 }

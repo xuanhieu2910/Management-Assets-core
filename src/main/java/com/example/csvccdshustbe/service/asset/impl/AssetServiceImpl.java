@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.asset.impl;
 
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
+import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.originalOfFormation.AssetOriginalOfFormDto;
@@ -14,6 +15,7 @@ import com.example.csvccdshustbe.factory.original.OriginalFactory;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.response.asset.FindAllAssetResponse;
+import com.example.csvccdshustbe.response.asset.FindDetailsAssetResponse;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.assetOriginalOfFormation.AssetOriginalOfFormationService;
@@ -103,7 +105,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Map<String, Object> findDetailsAssetByCodeAsset(String codeAsset) throws ValidateFiledException, IllegalAccessException {
+    public FindDetailsAssetResponse findDetailsAssetByCodeAsset(String codeAsset) throws ValidateFiledException, IllegalAccessException {
         Optional<AssetBluePrintDto> assetBluePrintDto = assetRepository.findDetailAssetByCodeAsset(codeAsset);
         if (!assetBluePrintDto.isPresent()) {
             throw new NotFoundException("Don't exits asset by code!");
@@ -113,10 +115,50 @@ public class AssetServiceImpl implements AssetService {
         setDataModulesDetail(assetBluePrintDto.get());
         setDataOriginalDetail(assetBluePrintDto.get());
         setDataDeclareDetail(assetBluePrintDto.get());
-        return null;
+        return convertToFindDetailsAssetResponse(assetBluePrintDto.get());
     }
 
-    private void setDataDeclareDetail(AssetBluePrintDto assetBluePrintDto) {
+    private FindDetailsAssetResponse convertToFindDetailsAssetResponse(AssetBluePrintDto assetBluePrintDto) {
+        FindDetailsAssetResponse response = new FindDetailsAssetResponse();
+        response.setCodeParentAssetCategory(assetBluePrintDto.getBluePrintParentAssetCategoryDto().getCodeParentAssetCategory());
+        response.setIdParentAssetCategory(assetBluePrintDto.getBluePrintParentAssetCategoryDto().getIdParentAssetCategory());
+        response.setNameParentAssetCategory(assetBluePrintDto.getBluePrintParentAssetCategoryDto().getNameParentAssetCategory());
+        response.setCommon(setCommonDetailsAssetResponse(assetBluePrintDto));
+        response.setModules(assetBluePrintDto.getModules());
+        response.setOriginal(assetBluePrintDto.getOriginal());
+        response.setDeclare(assetBluePrintDto.getDeclare());
+        return response;
+    }
+
+
+    private CommonAssetDto setCommonDetailsAssetResponse(AssetBluePrintDto assetBluePrintDto) {
+        CommonAssetDto commonAssetDto = new CommonAssetDto();
+        commonAssetDto.setIdAsset(assetBluePrintDto.getIdAsset());
+        commonAssetDto.setName(assetBluePrintDto.getName());
+        commonAssetDto.setCodeAsset(assetBluePrintDto.getCodeAsset());
+        commonAssetDto.setAssetCategory(assetBluePrintDto.getAssetCategory());
+        commonAssetDto.setDepartment(assetBluePrintDto.getDepartment());
+        commonAssetDto.setDocumentAttack(assetBluePrintDto.getDocumentAttack());
+        commonAssetDto.setLocation(assetBluePrintDto.getLocation());
+        commonAssetDto.setUnits(assetBluePrintDto.getUnits());
+        commonAssetDto.setProjects(assetBluePrintDto.getProjects());
+        commonAssetDto.setPurpose(assetBluePrintDto.getPurpose());
+        commonAssetDto.setNotes(assetBluePrintDto.getNotes());
+        commonAssetDto.setDescription(assetBluePrintDto.getDescription());
+        commonAssetDto.setQuantity(assetBluePrintDto.getQuantity());
+        commonAssetDto.setFileAttack(assetBluePrintDto.getFileAttack());
+        commonAssetDto.setDepartmentDefault(assetBluePrintDto.getDepartmentDefault());
+        commonAssetDto.setLevelTypeAsset(assetBluePrintDto.getLevelTypeAsset());
+        commonAssetDto.setOriginOfFormation(assetBluePrintDto.getOriginOfFormation());
+        commonAssetDto.setIdInstance(assetBluePrintDto.getIdInstance());
+        return commonAssetDto;
+    }
+
+    private void setDataDeclareDetail(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException, IllegalAccessException {
+        String typeDeclare = assetBluePrintDto.getDeclare().getBluePrintDeclare().getTypeDeclare();
+        Integer idInstance = assetBluePrintDto.getDeclare().getBluePrintDeclare().getIdInstance();
+        Map<String, Object> dataDeclare = declareServiceFactory.findDataDetailByTypeDeclareAndIdInstance(typeDeclare, idInstance);
+        assetBluePrintDto.getDeclare().setDataDetail(dataDeclare);
     }
 
     private void setDataOriginalDetail(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException, IllegalAccessException {

@@ -1,10 +1,16 @@
 package com.example.csvccdshustbe.service.declare.groundDeclare.impl;
 
+import com.example.csvccdshustbe.dto.declare.GroundDeclareDetailsDto;
 import com.example.csvccdshustbe.entity.GroundDeclare;
 import com.example.csvccdshustbe.repository.groundDeclare.GroundDeclareRepository;
 import com.example.csvccdshustbe.service.declare.groundDeclare.GroundDeclareService;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class GroundDeclareServiceImpl implements GroundDeclareService {
@@ -14,5 +20,14 @@ public class GroundDeclareServiceImpl implements GroundDeclareService {
     @Override
     public GroundDeclare save(GroundDeclare groundDeclare) {
         return groundDeclareRepository.save(groundDeclare);
+    }
+
+    @Override
+    public Map<String, Object> findGroundDeclareDetailsDtoById(Integer idInstance) throws IllegalAccessException {
+        Optional<GroundDeclareDetailsDto> detailsDto = groundDeclareRepository.findGroundDeclareDetailsDtoById(idInstance);
+        if (!detailsDto.isPresent()){
+            throw new NotFoundException("Don't exits ground declare details!");
+        }
+        return ValueUtil.convertObjectToMap(detailsDto.get());
     }
 }

@@ -15,8 +15,8 @@ public class HouseDeclare implements IDeclare{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_architecture_declare")
-    private Integer idArchitectureDeclare;
+    @Column(name = "id_house_declare")
+    private Integer idHouseDeclare;
     @Column(name = "id_asset")
     private Integer idAsset;
     @Column(name = "work_place")

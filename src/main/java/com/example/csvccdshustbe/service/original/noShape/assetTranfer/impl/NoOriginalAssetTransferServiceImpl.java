@@ -30,6 +30,6 @@ public class NoOriginalAssetTransferServiceImpl implements NoOriginalAssetTransf
         if (!detailsDto.isPresent()) {
             throw new NotFoundException("Don't exits no shape original asset transfer!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto);
+        return ValueUtil.convertObjectToMap(detailsDto.get());
     }
 }

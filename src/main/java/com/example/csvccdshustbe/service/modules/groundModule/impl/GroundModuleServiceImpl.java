@@ -34,6 +34,6 @@ public class GroundModuleServiceImpl implements GroundModuleService {
         if (!module.isPresent()){
             throw new NotFoundException("Don't exits grounds modules!");
         }
-        return ValueUtil.convertObjectToMap(module);
+        return ValueUtil.convertObjectToMap(module.get());
     }
 }

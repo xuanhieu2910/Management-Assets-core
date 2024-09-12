@@ -31,6 +31,6 @@ public class NoOriginalAssetBuyServiceImpl implements NoOriginalAssetBuyService 
         if (!detailsDto.isPresent()){
             throw new NotFoundException("Don't exits no shape original asset buy!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto);
+        return ValueUtil.convertObjectToMap(detailsDto.get());
     }
 }

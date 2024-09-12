@@ -1,8 +1,18 @@
 package com.example.csvccdshustbe.dto.asset;
 
+import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
+import com.example.csvccdshustbe.dto.department.BluePrintDepartmentDefaultDto;
+import com.example.csvccdshustbe.dto.department.BluePrintDepartmentDto;
+import com.example.csvccdshustbe.dto.documentAttack.BluePrintDocumentAttackDto;
+import com.example.csvccdshustbe.dto.levelTypeAsset.BluePrintLevelTypeAssetDto;
+import com.example.csvccdshustbe.dto.location.BluePrintLocationDto;
 import com.example.csvccdshustbe.dto.originalOfFormation.AssetOriginalOfFormDto;
+import com.example.csvccdshustbe.dto.projects.BluePrintProjectsDto;
+import com.example.csvccdshustbe.dto.unit.BluePrintUnitDto;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -11,29 +21,19 @@ public class CommonAssetDto {
     private Integer idAsset;
     private String name;
     private String codeAsset;
-    private Integer idAssetCategory;
-    private String nameAssetCategory;
-    private String codeDepartment;
-    private Integer idDepartment;
-    private Integer idDocumentAttack;
-    private String nameDocumentAttack;
-    private Integer idLocation;
-    private String nameLocation;
-    private Integer idUnit;
-    private String nameUnit;
-    private Integer idOriginal;
-    private String nameOriginal;
-    private Integer idProjects;
-    private String nameProjects;
+    private BluePrintAssetCategoryDto assetCategory;
+    private BluePrintDepartmentDto department;
+    private BluePrintDocumentAttackDto documentAttack;
+    private BluePrintLocationDto location;
+    private BluePrintUnitDto units;
+    private BluePrintProjectsDto projects;
     private String purpose;
     private String notes;
     private String description;
     private Integer quantity;
     private String fileAttack;
-    private String nameDefaultDepartment;
-    private Integer idDefaultDepartment;
-    private String nameLevelTypeAsset;
-    private Integer idLevelTypeAsset;
-    private AssetOriginalOfFormDto originOfFormation;
-
+    private BluePrintDepartmentDefaultDto departmentDefault;
+    private BluePrintLevelTypeAssetDto levelTypeAsset;
+    private List<AssetOriginalOfFormDto> originOfFormation;
+    private Integer idInstance;
 }

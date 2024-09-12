@@ -30,6 +30,6 @@ public class NoOriginalAssetRentLandServiceImpl implements NoOriginalAssetRentLa
         if (!detailsDto.isPresent()){
             throw new NotFoundException("Don't exits no shape original asset rent land!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto);
+        return ValueUtil.convertObjectToMap(detailsDto.get());
     }
 }

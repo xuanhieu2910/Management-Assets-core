@@ -30,6 +30,6 @@ public class OriginalAssetInvestServiceImpl implements OriginalAssetInvestServic
         if (!detailsDto.isPresent()) {
             throw new NotFoundException("Don't exits original asset invest!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto);
+        return ValueUtil.convertObjectToMap(detailsDto.get());
     }
 }

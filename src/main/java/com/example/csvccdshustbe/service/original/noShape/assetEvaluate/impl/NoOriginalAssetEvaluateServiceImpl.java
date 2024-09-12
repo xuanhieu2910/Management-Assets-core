@@ -30,6 +30,6 @@ public class NoOriginalAssetEvaluateServiceImpl implements NoOriginalAssetEvalua
         if (!detailsDto.isPresent()){
             throw new NotFoundException("Don't exits no shape original asset evaluate!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto);
+        return ValueUtil.convertObjectToMap(detailsDto.get());
     }
 }

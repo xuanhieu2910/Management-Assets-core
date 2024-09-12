@@ -34,6 +34,6 @@ public class TreeAndAnimalModuleServiceImpl implements TreeAndAnimalModuleServic
         if (!animalTreeModule.isPresent()) {
             throw new NotFoundException("Don't exits animal tree modules");
         }
-        return ValueUtil.convertObjectToMap(animalTreeModule);
+        return ValueUtil.convertObjectToMap(animalTreeModule.get());
     }
 }
