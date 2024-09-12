@@ -109,10 +109,10 @@ public class ProxyInitDataAssetUtil {
                 return new NoOriginalAssetUseLandFactory();
             }
             case NoShapeOriginalAssetRentLand -> {
-                return new NoShapeOriginalAssetRentLand();
+                return new NoShapeOriginalAssetRentLandFactory();
             }
             case NoShapeOriginalAssetTransferLand -> {
-                return new NoShapeOriginalAssetTransfer();
+                return new NoShapeOriginalAssetTransferLandFactory();
             }
             default -> {
                 throw new ValidateFiledException("Don't exits original");

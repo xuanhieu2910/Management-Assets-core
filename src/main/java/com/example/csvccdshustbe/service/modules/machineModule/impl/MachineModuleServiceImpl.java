@@ -29,11 +29,21 @@ public class MachineModuleServiceImpl implements MachineModuleService {
     }
 
     @Override
-    public Map<String, Object> findMachineModuleByIdMachineModule(Integer machineModule) throws IllegalAccessException {
+    public MachineModule findMachineModuleByIdMachineModule(Integer machineModule) {
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> findMachineModuleDetailsByIdMachineModule(Integer machineModule) throws IllegalAccessException {
         Optional<MachineModuleDetailsDto> module = machineModuleRepository.findMachineModuleDetailsDtoById(machineModule);
         if (!module.isPresent()) {
             throw new NotFoundException("Don't exits machine modules");
         }
         return ValueUtil.convertObjectToMap(module.get());
+    }
+
+    @Override
+    public void deleteMachineModuleById(Integer idInstance) {
+        machineModuleRepository.deleteMachineModuleByIdMachineModule(idInstance);
     }
 }

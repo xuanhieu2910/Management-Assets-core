@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface OtherVehicleTransportRepositoryCustom {
 
     Optional<OtherVehicleTransportModuleDetailsDto> findOtherVehicleTransportDetailsDtoById(Integer idOtherVehicleTransport);
+
+    void deleteOtherVehicleTransportById(Integer idInstance);
 }

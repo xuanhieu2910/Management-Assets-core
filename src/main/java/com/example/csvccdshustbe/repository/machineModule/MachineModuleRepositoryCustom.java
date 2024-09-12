@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface MachineModuleRepositoryCustom {
 
     Optional<MachineModuleDetailsDto> findMachineModuleDetailsDtoById(Integer idMachineModule);
+
+    void deleteMachineModuleByIdMachineModule(Integer idMachineModule);
 }

@@ -4,6 +4,8 @@ import com.example.csvccdshustbe.dto.modules.otherAssetModules.OtherAssetModules
 import com.example.csvccdshustbe.entity.OtherAssetModule;
 import com.example.csvccdshustbe.repository.otherAssetModule.OtherAssetModuleRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
@@ -52,5 +54,17 @@ public class OtherAssetModuleRepositoryImpl implements OtherAssetModuleRepositor
             }
         }
         return Optional.empty();
+    }
+
+    @Modifying
+    @Transactional
+    @Override
+    public void deleteOtherAssetModuleByIdOtherAsset(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from other_asset_module ot " +
+                "where ot.id_other_asset_module = :idOtherAsset ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idOtherAsset", idInstance);
+        query.executeUpdate();
     }
 }

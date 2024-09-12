@@ -16,6 +16,7 @@ import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
 import com.example.csvccdshustbe.dto.projects.BluePrintProjectsDto;
 import com.example.csvccdshustbe.dto.unit.BluePrintUnitDto;
+import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.repository.asset.AssetRepositoryCustom;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -127,6 +128,52 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             setOriginalBluePrintAsset(dto, obj);
             setDeclareBluePrintAsset(dto, obj);
             return Optional.of(dto);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Asset> findAssetByCodeAsset(String codeAsset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select asset.id_asset, asset.name, asset.code_asset, " +
+                "       asset.id_asset_category, asset.id_document_attack, " +
+                "       asset.id_department, asset.id_location, " +
+                "       asset.id_unit, asset.id_projects, asset.description, " +
+                "       asset.purpose, asset.notes, asset.file_attack, " +
+                "       asset.time_created, asset.time_modified, asset.id_department_default, " +
+                "       asset.id_level_type_asset, asset.id_user_created, " +
+                "       asset.id_user_modified, asset.quantity, asset.id_instance " +
+                "from asset  " +
+                "where asset.code_asset = :codeAsset ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeAsset", codeAsset);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                Asset asset = new Asset();
+                asset.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
+                asset.setName(ValueUtil.getStringByObject(obj[1]));
+                asset.setCodeAsset(ValueUtil.getStringByObject(obj[2]));
+                asset.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
+                asset.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[4]));
+                asset.setIdDepartment(ValueUtil.getIntegerByObject(obj[5]));
+                asset.setIdLocation(ValueUtil.getIntegerByObject(obj[6]));
+                asset.setIdUnit(ValueUtil.getIntegerByObject(obj[7]));
+                asset.setIdProjects(ValueUtil.getIntegerByObject(obj[8]));
+                asset.setDescription(ValueUtil.getStringByObject(obj[9]));
+                asset.setPurpose(ValueUtil.getStringByObject(obj[10]));
+                asset.setNotes(ValueUtil.getStringByObject(obj[11]));
+                asset.setFileAttack(ValueUtil.getStringByObject(obj[12]));
+                asset.setTimeCreated(ValueUtil.getStringByObject(obj[13]));
+                asset.setTimeModified(ValueUtil.getStringByObject(obj[14]));
+                asset.setIdDepartmentDefault(ValueUtil.getIntegerByObject(obj[15]));
+                asset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(obj[16]));
+                asset.setIdUserCreated(ValueUtil.getIntegerByObject(obj[17]));
+                asset.setIdUserModified(ValueUtil.getIntegerByObject(obj[18]));
+                asset.setQuantity(ValueUtil.getIntegerByObject(obj[19]));
+                asset.setIdInstance(ValueUtil.getIntegerByObject(obj[20]));
+                return Optional.of(asset);
+            }
         }
         return Optional.empty();
     }

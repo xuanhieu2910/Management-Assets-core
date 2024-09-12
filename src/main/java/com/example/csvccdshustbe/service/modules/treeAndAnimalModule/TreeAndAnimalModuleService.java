@@ -10,5 +10,9 @@ public interface TreeAndAnimalModuleService {
 
     void validateDataCreate(Map<String, Object> dataModule);
 
-    Map<String,Object> findAnimalTreeModuleByIdAnimalTree(Integer idAnimalTree) throws IllegalAccessException;
+    Map<String,Object> findAnimalTreeModuleDetailsByIdAnimalTree(Integer idAnimalTree) throws IllegalAccessException;
+
+    void deleteTreeAndAnimalById(Integer idInstance);
+
+    AnimalTreeModule findAnimalTreeModuleByIdAnimalTree(Integer idInstance);
 }

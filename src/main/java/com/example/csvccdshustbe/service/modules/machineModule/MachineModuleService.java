@@ -10,5 +10,9 @@ public interface MachineModuleService {
 
     void validateDataCreate(Map<String, Object> dataModule);
 
-    Map<String,Object> findMachineModuleByIdMachineModule(Integer machineModule) throws IllegalAccessException;
+    Map<String,Object> findMachineModuleDetailsByIdMachineModule(Integer machineModule) throws IllegalAccessException;
+
+    void deleteMachineModuleById(Integer idInstance);
+
+    MachineModule findMachineModuleByIdMachineModule(Integer idInstance);
 }

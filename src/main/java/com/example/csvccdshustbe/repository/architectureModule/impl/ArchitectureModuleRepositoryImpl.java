@@ -7,6 +7,8 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -51,5 +53,17 @@ public class ArchitectureModuleRepositoryImpl implements ArchitectureModuleRepos
             }
         }
         return Optional.empty();
+    }
+
+    @Modifying
+    @Transactional
+    @Override
+    public void deleteArchitectureModuleByIdArchitecture(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from architecture_module ar " +
+                "where ar.id_architecture_module = :idAr");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idAr", idInstance);
+        query.executeUpdate();
     }
 }

@@ -29,12 +29,23 @@ public class ArchitectureModuleServiceImpl implements ArchitectureModuleService 
     }
 
     @Override
-    public Map<String,Object> findArchitectureModuleByIdArchitectureModule(Integer idArchitectureModule) throws IllegalAccessException {
+    public Map<String,Object> findArchitectureModuleDetailsByIdArchitectureModule(Integer idArchitectureModule)
+            throws IllegalAccessException {
         Optional<ArchitectureModulesDetailsDto> module = architectureModuleRepository.
                 findArchitectureModuleDetailsDtoByIdArchitectureModule(idArchitectureModule);
         if (!module.isPresent()){
             throw new NotFoundException("Don't exits architecture module!");
         }
         return ValueUtil.convertObjectToMap(module.get());
+    }
+
+    @Override
+    public void deleteArchitectureById(Integer idInstance) {
+        architectureModuleRepository.deleteArchitectureModuleByIdArchitecture(idInstance);
+    }
+
+    @Override
+    public ArchitectureModule findArchitectureModuleByIdArchitectureModule(Integer idInstance) {
+        return null;
     }
 }

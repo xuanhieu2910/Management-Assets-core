@@ -10,5 +10,9 @@ public interface HouseModuleService {
 
     void validateDataCreate(Map<String, Object> dataModule);
 
-    Map<String, Object> findHouseModuleByIdHouseModule(Integer houseModule) throws IllegalAccessException;
+    Map<String, Object> findHouseModuleDetailsByIdHouseModule(Integer houseModule) throws IllegalAccessException;
+
+    void deleteHouseModuleById(Integer idInstance);
+
+    HouseModule findHouseModuleByIdHouseModule(Integer idInstance);
 }

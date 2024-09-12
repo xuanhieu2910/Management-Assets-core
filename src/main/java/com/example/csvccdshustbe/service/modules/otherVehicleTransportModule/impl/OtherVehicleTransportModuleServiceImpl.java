@@ -30,12 +30,22 @@ public class OtherVehicleTransportModuleServiceImpl implements OtherVehicleTrans
     }
 
     @Override
-    public Map<String, Object> findOtherVehicleTransportModuleByIdOtherVehicleTransport(Integer id) throws IllegalAccessException {
+    public Map<String, Object> findOtherVehicleTransportDetailsModuleByIdOtherVehicleTransport(Integer id) throws IllegalAccessException {
         Optional<OtherVehicleTransportModuleDetailsDto> module = otherVehicleTransportRepository.
                 findOtherVehicleTransportDetailsDtoById(id);
         if (!module.isPresent()) {
             throw new NotFoundException("Don't exits other vehicle transport modules!");
         }
         return ValueUtil.convertObjectToMap(module.get());
+    }
+
+    @Override
+    public void deleteOtherVehicleTransportById(Integer idInstance) {
+        otherVehicleTransportRepository.deleteOtherVehicleTransportById(idInstance);
+    }
+
+    @Override
+    public OtherVehicleTransportModule findOtherVehicleTransportModuleByIdOtherVehicleTransport(Integer idInstance) {
+        return null;
     }
 }

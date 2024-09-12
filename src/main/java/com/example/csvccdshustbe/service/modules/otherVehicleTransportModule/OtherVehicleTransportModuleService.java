@@ -10,5 +10,10 @@ public interface OtherVehicleTransportModuleService {
 
     void validateDataCreate(Map<String, Object> dataModule);
 
-    Map<String,Object> findOtherVehicleTransportModuleByIdOtherVehicleTransport(Integer id) throws IllegalAccessException;
+    Map<String,Object> findOtherVehicleTransportDetailsModuleByIdOtherVehicleTransport(Integer id)
+            throws IllegalAccessException;
+
+    void deleteOtherVehicleTransportById(Integer idInstance);
+
+    OtherVehicleTransportModule findOtherVehicleTransportModuleByIdOtherVehicleTransport(Integer idInstance);
 }

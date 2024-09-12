@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface MedicineModuleRepositoryCustom {
 
     Optional<MedicineModuleDetailsDto> findMedicineModuleDetailsDtoById(Integer idMedicineModule);
+
+    void deleteMedicineModuleById(Integer idMedicineModule);
 }

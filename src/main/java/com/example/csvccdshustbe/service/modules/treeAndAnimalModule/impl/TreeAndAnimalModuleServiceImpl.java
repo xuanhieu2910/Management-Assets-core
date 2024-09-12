@@ -29,11 +29,22 @@ public class TreeAndAnimalModuleServiceImpl implements TreeAndAnimalModuleServic
     }
 
     @Override
-    public Map<String, Object> findAnimalTreeModuleByIdAnimalTree(Integer idAnimalTree) throws IllegalAccessException {
+    public Map<String, Object> findAnimalTreeModuleDetailsByIdAnimalTree(Integer idAnimalTree) throws IllegalAccessException {
         Optional<TreeAndAnimalModulesDetailsDto> animalTreeModule = treeAndAnimalModuleRepository.findAnimalTreeModulesDetailsDtoById(idAnimalTree);
         if (!animalTreeModule.isPresent()) {
             throw new NotFoundException("Don't exits animal tree modules");
         }
         return ValueUtil.convertObjectToMap(animalTreeModule.get());
+    }
+
+    @Override
+    public void deleteTreeAndAnimalById(Integer idInstance) {
+        treeAndAnimalModuleRepository.deleteTreeAndAnimalModuleById(idInstance);
+
+    }
+
+    @Override
+    public AnimalTreeModule findAnimalTreeModuleByIdAnimalTree(Integer idInstance) {
+        return null;
     }
 }

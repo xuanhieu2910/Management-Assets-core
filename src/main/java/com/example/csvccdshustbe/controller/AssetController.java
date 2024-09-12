@@ -34,7 +34,7 @@ public class AssetController {
         try{
             assetService.createAsset(createAssetRequest);
             return ApiResponseDto.createdWithMessage("Create asset success!", HttpStatus.OK);
-        }catch (ValidateFiledException e ){
+        } catch (ValidateFiledException e ){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (JsonProcessingException e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -43,10 +43,19 @@ public class AssetController {
         }
     }
 
-//    @PutMapping("/update")
-//    public ResponseEntity<?> updateAsset(){
-//
-//    }
+    @PutMapping("/update")
+    public ResponseEntity<?> updateAsset(@RequestBody HashMap<String,Object> updateAssetRequest){
+        try {
+            assetService.updateAsset(updateAssetRequest);
+            return ApiResponseDto.createdWithMessage("Update asset success!", HttpStatus.OK);
+        }catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (JsonProcessingException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
     @GetMapping

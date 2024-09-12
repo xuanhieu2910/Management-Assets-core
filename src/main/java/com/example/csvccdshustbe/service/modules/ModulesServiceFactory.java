@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.modules;
 
+import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.EnumModuleFactory;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -84,7 +85,7 @@ public class ModulesServiceFactory {
                 idInstance = otherVehicleTransportModuleService.save((OtherVehicleTransportModule) modules).getIdOtherVehicleTransportModule();
             }
             default -> {
-                throw new ValidateFiledException("Don't exits type architecture!");
+                throw new ValidateFiledException("Don't exits type modules!");
             }
         }
         assetModulesService.save(createAssetModules(moduleDataAsset, idInstance));
@@ -148,14 +149,52 @@ public class ModulesServiceFactory {
                 otherVehicleTransportModuleService.validateDataCreate(dataModule);
             }
             default -> {
-                throw new ValidateFiledException("Don't exits type architecture to validate!");
+                throw new ValidateFiledException("Don't exits type modules to validate!");
             }
         }
     }
 
 
 
-    public Map<String,Object> findDataDetailByTypeModulesAndIdInstance(String typeModules, Integer idInstance) throws ValidateFiledException, IllegalAccessException {
+    public Map<String,Object> findDataDetailByTypeModulesAndIdInstance(String typeModules, Integer idInstance)
+            throws ValidateFiledException, IllegalAccessException {
+        EnumModuleFactory enumModuleFactory = Enum.valueOf(EnumModuleFactory.class, typeModules);
+        switch (enumModuleFactory) {
+            case MedicineModule -> {
+                return medicineModuleService.findMedicineModuleDetailsByIdMedicine(idInstance);
+            }
+            case MachineModule -> {
+                return machineModuleService.findMachineModuleDetailsByIdMachineModule(idInstance);
+            }
+            case HouseModule -> {
+                return houseModuleService.findHouseModuleDetailsByIdHouseModule(idInstance);
+            }
+            case GroundModule -> {
+                return groundModuleService.findGroundModuleDetailsByIdGroundModule(idInstance);
+            }
+            case CarModule -> {
+                return carModuleService.findCarModuleDetailsByIdCarModule(idInstance);
+            }
+            case TreeAndAnimalModule -> {
+                return treeAndAnimalModuleService.findAnimalTreeModuleDetailsByIdAnimalTree(idInstance);
+            }
+            case ArchitectureModule -> {
+                return architectureModuleService.findArchitectureModuleDetailsByIdArchitectureModule(idInstance);
+            }
+            case OtherAssetModule -> {
+                return otherAssetModuleService.findOtherAssetModuleDetailsByIdOtherAssetModule(idInstance);
+            }
+            case OtherVehicleTransportModule -> {
+                return otherVehicleTransportModuleService.findOtherVehicleTransportDetailsModuleByIdOtherVehicleTransport(idInstance);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type modules to get data!");
+            }
+        }
+    }
+
+    public <T> Object findDataModulesByTypeModulesAndIdInstance(String typeModules, Integer idInstance)
+            throws ValidateFiledException, IllegalAccessException {
         EnumModuleFactory enumModuleFactory = Enum.valueOf(EnumModuleFactory.class, typeModules);
         switch (enumModuleFactory) {
             case MedicineModule -> {
@@ -186,8 +225,58 @@ public class ModulesServiceFactory {
                 return otherVehicleTransportModuleService.findOtherVehicleTransportModuleByIdOtherVehicleTransport(idInstance);
             }
             default -> {
-                throw new ValidateFiledException("Don't exits type architecture to get data!");
+                throw new ValidateFiledException("Don't exits type modules to get data!");
             }
         }
+    }
+
+
+    public void deleteModulesByTypeModulesAndIdInstance(String typeModules, Integer idInstance,
+                                                        Integer idModule) throws ValidateFiledException {
+        EnumModuleFactory enumModuleFactory = Enum.valueOf(EnumModuleFactory.class, typeModules);
+        switch (enumModuleFactory) {
+            case MedicineModule -> {
+                 medicineModuleService.deleteMedicineModuleById(idInstance);
+            }
+            case MachineModule -> {
+                 machineModuleService.deleteMachineModuleById(idInstance);
+            }
+            case HouseModule -> {
+                 houseModuleService.deleteHouseModuleById(idInstance);
+            }
+            case GroundModule -> {
+                 groundModuleService.deleteGroundModuleById(idInstance);
+            }
+            case CarModule -> {
+                 carModuleService.deleteCarModuleById(idInstance);
+            }
+            case TreeAndAnimalModule -> {
+                 treeAndAnimalModuleService.deleteTreeAndAnimalById(idInstance);
+            }
+            case ArchitectureModule -> {
+                 architectureModuleService.deleteArchitectureById(idInstance);
+            }
+            case OtherAssetModule -> {
+                 otherAssetModuleService.deleteOtherAssetById(idInstance);
+            }
+            case OtherVehicleTransportModule -> {
+                 otherVehicleTransportModuleService.deleteOtherVehicleTransportById(idInstance);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type modules to get delete!");
+            }
+        }
+        assetModulesService.deleteAssetModulesByIdInstanceAndIdModule(idInstance, idModule);
+    }
+
+    public void deleteAssetModulesByIdAsset(List<BluePrintAssetModulesDto> assetModulesDtos) throws ValidateFiledException {
+        for (BluePrintAssetModulesDto modulesDto : assetModulesDtos){
+            deleteModulesByTypeModulesAndIdInstance(modulesDto.getTypeModules(), modulesDto.getIdInstance(),
+                    modulesDto.getIdModules());
+        }
+    }
+
+    public List<BluePrintAssetModulesDto> findBluePrintAssetModulesByIdAsset(Integer idAsset) {
+        return assetModulesService.findBluePrintAssetModulesDtoByIdAsset(idAsset);
     }
 }

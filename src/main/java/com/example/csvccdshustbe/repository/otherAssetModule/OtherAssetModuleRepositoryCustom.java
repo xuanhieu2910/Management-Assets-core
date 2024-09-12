@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface OtherAssetModuleRepositoryCustom {
 
     Optional<OtherAssetModulesDetailsDto> findOtherAssetModuleDetailsDtoByIdOtherAssetModule(Integer idOtherAssetModule);
+
+    void deleteOtherAssetModuleByIdOtherAsset(Integer idInstance);
 }

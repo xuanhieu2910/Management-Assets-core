@@ -29,12 +29,23 @@ public class OtherAssetModuleServiceImpl implements OtherAssetModuleService {
     }
 
     @Override
-    public Map<String, Object> findOtherAssetModuleByIdOtherAssetModule(Integer idOtherAssetModule) throws IllegalAccessException {
+    public Map<String, Object> findOtherAssetModuleDetailsByIdOtherAssetModule(Integer idOtherAssetModule)
+            throws IllegalAccessException {
         Optional<OtherAssetModulesDetailsDto> assetModule = otherAssetModuleRepository.
                 findOtherAssetModuleDetailsDtoByIdOtherAssetModule(idOtherAssetModule);
         if (!assetModule.isPresent()){
             throw new NotFoundException("Don't exits other asset modules!");
         }
         return ValueUtil.convertObjectToMap(assetModule.get());
+    }
+
+    @Override
+    public void deleteOtherAssetById(Integer idInstance) {
+        otherAssetModuleRepository.deleteOtherAssetModuleByIdOtherAsset(idInstance);
+    }
+
+    @Override
+    public OtherAssetModule findOtherAssetModuleByIdOtherAssetModule(Integer idInstance) {
+        return null;
     }
 }

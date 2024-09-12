@@ -9,4 +9,5 @@ public interface HouseModuleRepositoryCustom {
 
     Optional<HouseModuleDetailsDto> findHouseModuleDetailsDtoByIdHouseModule(Integer idHouseModule);
 
+    void deleteHouseModuleByIdHouseModule(Integer idInstance);
 }

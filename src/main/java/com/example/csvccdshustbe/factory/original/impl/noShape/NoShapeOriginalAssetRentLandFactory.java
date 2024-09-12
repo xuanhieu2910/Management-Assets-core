@@ -8,7 +8,7 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import java.util.Date;
 import java.util.Map;
 
-public class NoShapeAssetRentLandFactory  implements OriginalFactory {
+public class NoShapeOriginalAssetRentLandFactory implements OriginalFactory {
     @Override
     public IOriginal createOriginal(Map<String, Object> mapOriginalCreate) {
         NoShapeOriginalAssetRentLand rentLand = new NoShapeOriginalAssetRentLand();

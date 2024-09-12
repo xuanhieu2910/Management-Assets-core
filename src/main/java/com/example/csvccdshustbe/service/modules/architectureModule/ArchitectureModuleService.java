@@ -10,5 +10,9 @@ public interface ArchitectureModuleService {
 
     void validateDataCreate(Map<String, Object> dataModule);
 
-    Map<String,Object> findArchitectureModuleByIdArchitectureModule(Integer idArchitectureModule) throws IllegalAccessException;
+    Map<String,Object> findArchitectureModuleDetailsByIdArchitectureModule(Integer idArchitectureModule) throws IllegalAccessException;
+
+    void deleteArchitectureById(Integer idInstance);
+
+    ArchitectureModule findArchitectureModuleByIdArchitectureModule(Integer idInstance);
 }

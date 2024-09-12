@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -52,5 +54,18 @@ public class MachineModuleRepositoryImpl implements MachineModuleRepositoryCusto
             }
         }
         return Optional.empty();
+    }
+
+
+    @Transactional
+    @Modifying
+    @Override
+    public void deleteMachineModuleByIdMachineModule(Integer idMachineModule) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from machine_module machineModule " +
+                "where machineModule.id_machine_module = :idMachineModule ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idMachineModule", idMachineModule);
+        query.executeUpdate();
     }
 }

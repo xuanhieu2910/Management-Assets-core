@@ -7,6 +7,8 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -47,5 +49,18 @@ public class GroundModuleRepositoryImpl implements GroundModuleRepositoryCustom 
             }
         }
         return Optional.empty();
+    }
+
+
+    @Modifying
+    @Transactional
+    @Override
+    public void deleteGroundModuleByIdGroundModule(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from ground_module groundModule " +
+                "where groundModule.id_ground_module = :idGroundModule ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idGroundModule", idInstance);
+        query.executeUpdate();
     }
 }

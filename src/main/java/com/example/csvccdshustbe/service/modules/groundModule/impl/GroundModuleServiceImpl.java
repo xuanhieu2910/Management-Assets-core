@@ -29,11 +29,21 @@ public class GroundModuleServiceImpl implements GroundModuleService {
     }
 
     @Override
-    public Map<String, Object> findGroundModuleByIdGroundModule(Integer groundModule) throws IllegalAccessException {
+    public Map<String, Object> findGroundModuleDetailsByIdGroundModule(Integer groundModule) throws IllegalAccessException {
         Optional<GroundModulesDetailsDto> module = groundModuleRepository.findGroundModuleDetailsDtoByIdGroundModule(groundModule);
         if (!module.isPresent()){
             throw new NotFoundException("Don't exits grounds modules!");
         }
         return ValueUtil.convertObjectToMap(module.get());
+    }
+
+    @Override
+    public void deleteGroundModuleById(Integer idInstance) {
+        groundModuleRepository.deleteGroundModuleByIdGroundModule(idInstance);
+    }
+
+    @Override
+    public GroundModule findGroundModuleByIdGroundModule(Integer idInstance) {
+        return null;
     }
 }

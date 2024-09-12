@@ -4,6 +4,8 @@ import com.example.csvccdshustbe.dto.modules.otherVehicleTransportModules.OtherV
 import com.example.csvccdshustbe.entity.OtherVehicleTransportModule;
 import com.example.csvccdshustbe.repository.otherVehicleTransportModule.OtherVehicleTransportRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
@@ -74,5 +76,17 @@ public class OtherVehicleTransportRepositoryImpl implements OtherVehicleTranspor
             }
         }
         return Optional.empty();
+    }
+
+    @Modifying
+    @Transactional
+    @Override
+    public void deleteOtherVehicleTransportById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from other_vehicle_transport_module ot  " +
+                "where ot.id_other_vehicle_transport_module = :idOt ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idOt", idInstance);
+        query.executeUpdate();
     }
 }

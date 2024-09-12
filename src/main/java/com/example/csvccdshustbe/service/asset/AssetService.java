@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.response.asset.FindDetailsAssetResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public interface AssetService {
@@ -19,4 +20,5 @@ public interface AssetService {
     FindDetailsAssetResponse findDetailsAssetByCodeAsset(String codeAsset) throws ValidateFiledException, IllegalAccessException;
 
 
+    void updateAsset(HashMap<String, Object> updateAssetRequest) throws JsonProcessingException, ValidateFiledException;
 }

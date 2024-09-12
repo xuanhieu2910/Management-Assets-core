@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface GroundModuleRepositoryCustom {
 
     Optional<GroundModulesDetailsDto> findGroundModuleDetailsDtoByIdGroundModule(Integer idGroundModule);
+
+    void deleteGroundModuleByIdGroundModule(Integer idInstance);
 }
