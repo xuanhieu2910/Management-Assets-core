@@ -10,4 +10,6 @@ public interface ArchitectureModuleRepositoryCustom {
     Optional<ArchitectureModulesDetailsDto> findArchitectureModuleDetailsDtoByIdArchitectureModule(Integer idArchitectureModule);
 
     void deleteArchitectureModuleByIdArchitecture(Integer idInstance);
+
+    Optional<ArchitectureModule> findArchitectureModuleByIdArchitectureModule(Integer idInstance);
 }

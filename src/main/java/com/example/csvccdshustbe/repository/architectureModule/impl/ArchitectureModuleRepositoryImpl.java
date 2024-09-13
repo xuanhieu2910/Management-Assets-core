@@ -66,4 +66,33 @@ public class ArchitectureModuleRepositoryImpl implements ArchitectureModuleRepos
         query.setParameter("idAr", idInstance);
         query.executeUpdate();
     }
+
+    @Override
+    public Optional<ArchitectureModule> findArchitectureModuleByIdArchitectureModule(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select ar.id_architecture_module, ar.id_asset, ar.id_instance, " +
+                "       ar.length, ar.acreage, ar.volume, ar.publish_date, " +
+                "       ar.id_country_producer " +
+                "from architecture_module ar  " +
+                "where ar.id_architecture_module = :idArchitectureModule ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idArchitectureModule", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj: result){
+                ArchitectureModule module = new ArchitectureModule();
+                module.setIdArchitectureModule(ValueUtil.getIntegerByObject(obj[0]));
+                module.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                module.setIdInstance(ValueUtil.getIntegerByObject(obj[2]));
+                module.setLength(ValueUtil.getDoubleByObject(obj[3]));
+                module.setAcreage(ValueUtil.getDoubleByObject(obj[4]));
+                module.setVolume(ValueUtil.getDoubleByObject(obj[5]));
+                module.setPublishDate(ValueUtil.getStringByObject(obj[6]));
+                module.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[7]));
+                return Optional.of(module);
+            }
+        }
+
+        return Optional.empty();
+    }
 }

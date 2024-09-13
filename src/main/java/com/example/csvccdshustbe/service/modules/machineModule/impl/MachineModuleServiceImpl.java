@@ -30,7 +30,11 @@ public class MachineModuleServiceImpl implements MachineModuleService {
 
     @Override
     public MachineModule findMachineModuleByIdMachineModule(Integer machineModule) {
-        return null;
+        Optional<MachineModule> optionalMachineModule = machineModuleRepository.findMachineModuleByIdMachineModule(machineModule);
+        if (!optionalMachineModule.isPresent()){
+            throw new NotFoundException("Don't exits machine module by id!");
+        }
+        return optionalMachineModule.get();
     }
 
     @Override

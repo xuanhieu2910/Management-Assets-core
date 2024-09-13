@@ -46,6 +46,10 @@ public class OtherAssetModuleServiceImpl implements OtherAssetModuleService {
 
     @Override
     public OtherAssetModule findOtherAssetModuleByIdOtherAssetModule(Integer idInstance) {
-        return null;
+        Optional<OtherAssetModule> assetModule = otherAssetModuleRepository.findOtherAssetModuleByIdOtherAssetModule(idInstance);
+        if (assetModule.isEmpty()){
+            throw new NotFoundException("Don't exits other asset module!");
+        }
+        return assetModule.get();
     }
 }

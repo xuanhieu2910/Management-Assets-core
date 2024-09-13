@@ -10,4 +10,6 @@ public interface OtherAssetModuleRepositoryCustom {
     Optional<OtherAssetModulesDetailsDto> findOtherAssetModuleDetailsDtoByIdOtherAssetModule(Integer idOtherAssetModule);
 
     void deleteOtherAssetModuleByIdOtherAsset(Integer idInstance);
+
+    Optional<OtherAssetModule> findOtherAssetModuleByIdOtherAssetModule(Integer idInstance);
 }

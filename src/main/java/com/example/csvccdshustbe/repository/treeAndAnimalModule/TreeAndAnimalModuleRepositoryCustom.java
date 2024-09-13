@@ -10,4 +10,6 @@ public interface TreeAndAnimalModuleRepositoryCustom {
     Optional<TreeAndAnimalModulesDetailsDto> findAnimalTreeModulesDetailsDtoById(Integer idAnimalTree);
 
     void deleteTreeAndAnimalModuleById(Integer idInstance);
+
+    Optional<AnimalTreeModule> findAnimalTreeModulesByIdTreeAnimal(Integer idInstance);
 }

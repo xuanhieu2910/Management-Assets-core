@@ -89,4 +89,51 @@ public class OtherVehicleTransportRepositoryImpl implements OtherVehicleTranspor
         query.setParameter("idOt", idInstance);
         query.executeUpdate();
     }
+
+    @Override
+    public Optional<OtherVehicleTransportModule> findOtherVehicleTransportModuleByIdOtherVehicle(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select oth.id_other_vehicle_transport_module, oth.id_asset, oth.license_plate, " +
+                "       oth.label, oth.load_capacity, oth.number_seats, oth.capacity, " +
+                "       oth.cylinder_capacity, oth.clutch_number, oth.vehicle_identification_number, " +
+                "       oth.machine_number, oth.publish_year, oth.id_country_producer, " +
+                "       oth.license_certificate_register, oth.publish_date_license, oth.company_register, " +
+                "       oth.source, oth.color, oth.id_user, oth.id_type_use, " +
+                "       oth.time_created, oth.time_modified, oth.id_position_name " +
+                "from other_vehicle_transport_module oth  " +
+                "where oth.id_other_vehicle_transport_module = :idOtherVehicle ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idOtherVehicle", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                OtherVehicleTransportModule module = new OtherVehicleTransportModule();
+                module.setIdOtherVehicleTransportModule(ValueUtil.getIntegerByObject(obj[0]));
+                module.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                module.setLicensePlate(ValueUtil.getStringByObject(obj[2]));
+                module.setLabel(ValueUtil.getStringByObject(obj[3]));
+                module.setLoadCapacity(ValueUtil.getStringByObject(obj[4]));
+                module.setNumberSeats(ValueUtil.getStringByObject(obj[5]));
+                module.setCapacity(ValueUtil.getStringByObject(obj[6]));
+                module.setCylinderCapacity(ValueUtil.getStringByObject(obj[7]));
+                module.setClutchNumber(ValueUtil.getStringByObject(obj[8]));
+                module.setVehicleIdentificationNumber(ValueUtil.getStringByObject(obj[9]));
+                module.setMachineNumber(ValueUtil.getStringByObject(obj[10]));
+                module.setPublishYear(ValueUtil.getStringByObject(obj[11]));
+                module.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[12]));
+                module.setLicenseCertificateRegister(ValueUtil.getStringByObject(obj[13]));
+                module.setPublishDateLicense(ValueUtil.getStringByObject(obj[14]));
+                module.setCompanyRegister(ValueUtil.getStringByObject(obj[15]));
+                module.setSource(ValueUtil.getStringByObject(obj[16]));
+                module.setColor(ValueUtil.getStringByObject(obj[17]));
+                module.setIdUser(ValueUtil.getIntegerByObject(obj[18]));
+                module.setIdTypeUse(ValueUtil.getIntegerByObject(obj[19]));
+                module.setTimeCreated(ValueUtil.getStringByObject(obj[20]));
+                module.setTimeModified(ValueUtil.getStringByObject(obj[21]));
+                module.setIdPositionName(ValueUtil.getIntegerByObject(obj[22]));
+                return Optional.of(module);
+            }
+        }
+        return Optional.empty();
+    }
 }

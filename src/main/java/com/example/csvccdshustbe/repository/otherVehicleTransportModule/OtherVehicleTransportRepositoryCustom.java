@@ -10,4 +10,6 @@ public interface OtherVehicleTransportRepositoryCustom {
     Optional<OtherVehicleTransportModuleDetailsDto> findOtherVehicleTransportDetailsDtoById(Integer idOtherVehicleTransport);
 
     void deleteOtherVehicleTransportById(Integer idInstance);
+
+    Optional<OtherVehicleTransportModule> findOtherVehicleTransportModuleByIdOtherVehicle(Integer idInstance);
 }

@@ -44,6 +44,10 @@ public class CarModuleServiceImpl implements CarModuleService {
 
     @Override
     public CarModule findCarModuleByIdCarModule(Integer idInstance) {
-        return null;
+        Optional<CarModule> module = carModuleRepository.findCarModuleByIdCarModule(idInstance);
+        if (module.isEmpty()){
+            throw new NotFoundException("Don't exits car module by id!");
+        }
+        return module.get();
     }
 }

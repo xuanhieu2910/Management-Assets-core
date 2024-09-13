@@ -45,6 +45,10 @@ public class TreeAndAnimalModuleServiceImpl implements TreeAndAnimalModuleServic
 
     @Override
     public AnimalTreeModule findAnimalTreeModuleByIdAnimalTree(Integer idInstance) {
-        return null;
+        Optional<AnimalTreeModule> module = treeAndAnimalModuleRepository.findAnimalTreeModulesByIdTreeAnimal(idInstance);
+        if (module.isEmpty()){
+            throw new NotFoundException("Don't exits animal tree module by id!");
+        }
+        return module.get();
     }
 }

@@ -19,7 +19,7 @@ public class GroundModuleServiceImpl implements GroundModuleService {
     GroundModuleRepository groundModuleRepository;
 
     @Override
-    public GroundModule saveGroundModule(GroundModule module) {
+    public GroundModule save(GroundModule module) {
         return groundModuleRepository.save(module);
     }
 
@@ -44,6 +44,10 @@ public class GroundModuleServiceImpl implements GroundModuleService {
 
     @Override
     public GroundModule findGroundModuleByIdGroundModule(Integer idInstance) {
-        return null;
+        Optional<GroundModule> module = groundModuleRepository.findGroundModuleByIdGroundModule(idInstance);
+        if (module.isEmpty()){
+            throw new NotFoundException("Don't exits ground module by id!");
+        }
+        return module.get();
     }
 }

@@ -67,4 +67,33 @@ public class OtherAssetModuleRepositoryImpl implements OtherAssetModuleRepositor
         query.setParameter("idOtherAsset", idInstance);
         query.executeUpdate();
     }
+
+    @Override
+    public Optional<OtherAssetModule> findOtherAssetModuleByIdOtherAssetModule(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select oth.id_other_asset_module, oth.id_asset, oth.label, " +
+                "       oth.model, oth.serial, oth.publish_date, oth.id_country_producer, " +
+                "       oth.id_user, oth.id_type_use  " +
+                "from other_asset_module oth  " +
+                "where oth.id_other_asset_module = :idOtherAssetModule ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idOtherAssetModule", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (CollectionUtils.isEmpty(result)) {
+          for (Object[] obj : result){
+              OtherAssetModule assetModule = new OtherAssetModule();
+              assetModule.setIdOtherAssetModule(ValueUtil.getIntegerByObject(obj[0]));
+              assetModule.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+              assetModule.setLabel(ValueUtil.getStringByObject(obj[2]));
+              assetModule.setModel(ValueUtil.getStringByObject(obj[3]));
+              assetModule.setSerial(ValueUtil.getStringByObject(obj[4]));
+              assetModule.setPublishDate(ValueUtil.getStringByObject(obj[5]));
+              assetModule.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[6]));
+              assetModule.setIdUser(ValueUtil.getIntegerByObject(obj[7]));
+              assetModule.setIdTypeUse(ValueUtil.getIntegerByObject(obj[8]));
+              return Optional.of(assetModule);
+          }
+        }
+        return Optional.empty();
+    }
 }

@@ -10,4 +10,6 @@ public interface GroundModuleRepositoryCustom {
     Optional<GroundModulesDetailsDto> findGroundModuleDetailsDtoByIdGroundModule(Integer idGroundModule);
 
     void deleteGroundModuleByIdGroundModule(Integer idInstance);
+
+    Optional<GroundModule> findGroundModuleByIdGroundModule(Integer idInstance);
 }

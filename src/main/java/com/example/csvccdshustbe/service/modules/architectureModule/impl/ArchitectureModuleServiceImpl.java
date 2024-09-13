@@ -46,6 +46,11 @@ public class ArchitectureModuleServiceImpl implements ArchitectureModuleService 
 
     @Override
     public ArchitectureModule findArchitectureModuleByIdArchitectureModule(Integer idInstance) {
-        return null;
+        Optional<ArchitectureModule> architectureModule = architectureModuleRepository.
+                findArchitectureModuleByIdArchitectureModule(idInstance);
+        if (architectureModule.isEmpty()){
+            throw new NotFoundException("Don't exits architecture modules by id!");
+        }
+        return architectureModule.get();
     }
 }

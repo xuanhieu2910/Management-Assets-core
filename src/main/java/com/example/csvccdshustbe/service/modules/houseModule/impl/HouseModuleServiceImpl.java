@@ -44,6 +44,10 @@ public class HouseModuleServiceImpl implements HouseModuleService {
 
     @Override
     public HouseModule findHouseModuleByIdHouseModule(Integer idInstance) {
-        return null;
+        Optional<HouseModule> houseModule = houseModuleRepository.findHouseModuleByIdHouseModule(idInstance);
+        if (houseModule.isEmpty()){
+            throw new NotFoundException("Don't exits house module by id!");
+        }
+        return houseModule.get();
     }
 }

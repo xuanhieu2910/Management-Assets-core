@@ -11,4 +11,6 @@ public interface CarModuleRepositoryCustom {
     Optional<CarModulesDetailsDto> findCarModulesDetailsDtoByIdCar(Integer idCarModule);
 
     void deleteCarModuleByIdCarModule(Integer idInstance);
+
+    Optional<CarModule> findCarModuleByIdCarModule(Integer idInstance);
 }

@@ -61,4 +61,29 @@ public class TreeAndAnimalModuleRepositoryImpl implements TreeAndAnimalModuleRep
         query.setParameter("idAnimalAndTree", idInstance);
         query.executeUpdate();
     }
+
+    @Override
+    public Optional<AnimalTreeModule> findAnimalTreeModulesByIdTreeAnimal(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select ani.id_animal_tree_module, ani.id_asset, " +
+                "       ani.publish_date, ani.id_type_use, " +
+                "       ani.id_country_producer " +
+                "from animal_tree_module ani  " +
+                "where ani.id_animal_tree_module = :idAnimalAndTree ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idAnimalAndTree", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                AnimalTreeModule animalTreeModule = new AnimalTreeModule();
+                animalTreeModule.setIdAnimalTreeModule(ValueUtil.getIntegerByObject(obj[0]));
+                animalTreeModule.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                animalTreeModule.setPublishDate(ValueUtil.getStringByObject(obj[2]));
+                animalTreeModule.setIdTypeUse(ValueUtil.getIntegerByObject(obj[3]));
+                animalTreeModule.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[4]));
+                return Optional.of(animalTreeModule);
+            }
+        }
+        return Optional.empty();
+    }
 }

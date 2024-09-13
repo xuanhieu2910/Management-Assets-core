@@ -46,6 +46,11 @@ public class OtherVehicleTransportModuleServiceImpl implements OtherVehicleTrans
 
     @Override
     public OtherVehicleTransportModule findOtherVehicleTransportModuleByIdOtherVehicleTransport(Integer idInstance) {
-        return null;
+        Optional<OtherVehicleTransportModule> transportModule =
+                otherVehicleTransportRepository.findOtherVehicleTransportModuleByIdOtherVehicle(idInstance);
+        if (transportModule.isEmpty()){
+            throw new NotFoundException("Don't exits vehicle transport module");
+        }
+        return transportModule.get();
     }
 }

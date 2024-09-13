@@ -63,4 +63,29 @@ public class GroundModuleRepositoryImpl implements GroundModuleRepositoryCustom 
         query.setParameter("idGroundModule", idInstance);
         query.executeUpdate();
     }
+
+    @Override
+    public Optional<GroundModule> findGroundModuleByIdGroundModule(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select ground.id_ground_module, ground.asset_id, ground.province_code, " +
+                "       ground.district_code, ground.ward_code, ground.address_detail " +
+                "from ground_module ground " +
+                "where ground.id_ground_module = :idGroundModule ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idGroundModule", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                GroundModule module = new GroundModule();
+                module.setIdGroundModule(ValueUtil.getIntegerByObject(obj[0]));
+                module.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                module.setProvinceCode(ValueUtil.getStringByObject(obj[2]));
+                module.setDistrictCode(ValueUtil.getStringByObject(obj[3]));
+                module.setWardCode(ValueUtil.getStringByObject(obj[4]));
+                module.setAddressDetail(ValueUtil.getStringByObject(obj[5]));
+                return Optional.of(module);
+            }
+        }
+        return Optional.empty();
+    }
 }
