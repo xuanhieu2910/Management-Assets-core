@@ -244,4 +244,57 @@ public class OriginalServiceFactory {
         assetOriginalService.deleteAssetOriginalByIdOriginalAndIdInstance(idOriginal,idInstance);
     }
 
+
+    public static IOriginal findIOriginalByTypeOriginalAndIdInstance(String typeOriginal, Integer idInstance) {
+        EnumOriginalFactory enumDeclareFactory = Enum.valueOf(EnumOriginalFactory.class, typeOriginal);
+        return null;
+//        switch (enumDeclareFactory){
+//            case ShapeOriginalAssetBuy -> {
+//                return originalAssetBuyService.deleteShapeOriginalAssetById(idInstance);
+//            }
+//            case ShapeOriginalAssetConnectActor -> {
+//                originalAssetConnectActorService.deleteShapeOriginalAssetConnectActorById(idInstance);
+//            }
+//            case ShapeOriginalAssetConnectWoActor -> {
+//                originalAssetConnectWoActorService.deleteShapeOriginalAssetConnectWoById(idInstance);
+//            }
+//            case ShapeOriginalAssetEvaluate -> {
+//                originalAssetEvaluateService.deleteShapeOriginalAssetEvaluateById(idInstance);
+//            }
+//            case ShapeOriginalAssetGift -> {
+//                originalAssetGiftService.deleteShapeOriginalAssetGiftById(idInstance);
+//            }
+//            case ShapeOriginalAssetInvest -> {
+//                originalAssetInvestService.deleteShapeOriginalAssetInvestById(idInstance);
+//            }
+//            case ShapeOriginalAssetTransfer -> {
+//                originalAssetTransferService.deleteShapeOriginalAssetTransfer(idInstance);
+//            }
+//            case NoShapeOriginalAssetGift -> {
+//                noOriginalAssetGiftService.deleteNoShapeOriginalAssetGiftById(idInstance);
+//            }
+//            case NoShapeOriginalAssetBuy -> {
+//                noOriginalAssetBuyService.deleteNoShapeOriginalAssetById(idInstance);
+//            }
+//            case NoShapeOriginalAssetUseLand -> {
+//                noOriginalAssetUseLandService.deleteNoShapeOriginalAssetUseLandById(idInstance);
+//            }
+//            case NoShapeOriginalAssetEvaluate -> {
+//                noOriginalAssetEvaluateService.deleteNoShapeOriginalAssetEvaluateById(idInstance);
+//            }
+//            case NoShapeOriginalAssetTransfer -> {
+//                noOriginalAssetTransferService.deleteNoShapeOriginalAssetTransferById(idInstance);
+//            }
+//            case NoShapeOriginalAssetRentLand ->  {
+//                noOriginalAssetRentLandService.deleteNoShapeOriginalAssetRendLandById(idInstance);
+//            }
+//            case NoShapeOriginalAssetTransferLand -> {
+//                noOriginalAssetTransferLandService.deleteNoShapOriginalAssetTransferLandById(idInstance);
+//            }
+//            default -> {
+//                throw new ValidateFiledException("Don't exits type original!");
+//            }
+//        }
+    }
+
 }

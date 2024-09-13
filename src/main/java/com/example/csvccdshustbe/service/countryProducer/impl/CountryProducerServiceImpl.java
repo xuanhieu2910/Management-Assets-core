@@ -99,7 +99,7 @@ public class CountryProducerServiceImpl implements CountryProducerService {
         for (CountryProducer countryProducer : allCountryProducerByStatus){
             FindAllCountryProducerPickedResponse response = new FindAllCountryProducerPickedResponse();
             response.setIdCountryProducer(countryProducer.getIdCountryProducer());
-            response.setName(countryProducer.getName());
+            response.setNameCountryProducer(countryProducer.getName());
             responses.add(response);
         }
         return responses;

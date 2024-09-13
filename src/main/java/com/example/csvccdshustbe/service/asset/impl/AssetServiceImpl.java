@@ -150,7 +150,7 @@ public class AssetServiceImpl implements AssetService {
         if (!bluePrintOriginalDto.getTypeOriginal().equals(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)))){
             String typeOriginal = bluePrintOriginalDto.getTypeOriginal();
             Integer idInstance = bluePrintOriginalDto.getIdInstance();
-//            IOriginal iOriginal = OriginalFactory.findIOrignalByTypeOriginalAndIdInstance()
+            IOriginal iOriginal = OriginalServiceFactory.findIOriginalByTypeOriginalAndIdInstance(typeOriginal, idInstance);
         }
     }
 
