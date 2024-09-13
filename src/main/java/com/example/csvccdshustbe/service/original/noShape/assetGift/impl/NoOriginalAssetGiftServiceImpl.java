@@ -32,4 +32,9 @@ public class NoOriginalAssetGiftServiceImpl implements NoOriginalAssetGiftServic
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteNoShapeOriginalAssetGiftById(Integer idInstance) {
+        noShapeOriginalAssetGifRepository.deleteNoShapeOriginalAssetGiftById(idInstance);
+    }
 }

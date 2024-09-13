@@ -8,4 +8,6 @@ public interface ShapeOriginalAssetTransferRepositoryCustom {
 
 
     Optional<ShapeOriginalAssetTransferDetailsDto> findShapeOriginalAssetTransferDetailsDtoById(Integer id);
+
+    void deleteShapeOriginalAssetTransferById(Integer idInstance);
 }

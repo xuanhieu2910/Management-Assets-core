@@ -32,4 +32,9 @@ public class OriginalAssetEvaluateServiceImpl implements OriginalAssetEvaluateSe
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteShapeOriginalAssetEvaluateById(Integer idInstance) {
+        shapeOriginalAssetEvaluateRepository.deleteOriginalAssetEvaluateById(idInstance);
+    }
 }

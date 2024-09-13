@@ -6,7 +6,9 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -43,5 +45,18 @@ public class NoShapeOriginalAssetGifRepositoryImpl implements NoShapeOriginalAss
             }
         }
         return Optional.empty();
+    }
+
+
+    @Modifying
+    @Transactional
+    @Override
+    public void deleteNoShapeOriginalAssetGiftById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from ns_original_asset_gift nsGift " +
+                "where nsGift.id_ns_original_asset_gift = :idnsGift ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idnsGift", idInstance);
+        query.executeUpdate();
     }
 }

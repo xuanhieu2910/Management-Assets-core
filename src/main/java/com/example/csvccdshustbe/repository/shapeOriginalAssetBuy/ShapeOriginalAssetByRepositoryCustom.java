@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface ShapeOriginalAssetByRepositoryCustom {
 
     Optional<ShapeOriginalAssetBuyDetailsDto> findOriginalAssetBuyDetailsDtoById (Integer idAssetBuy);
+
+    void deleteShapeOriginalAssetById(Integer idInstance);
 }

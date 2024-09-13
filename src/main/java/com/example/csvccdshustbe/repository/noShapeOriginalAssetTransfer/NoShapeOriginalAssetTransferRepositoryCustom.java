@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface NoShapeOriginalAssetTransferRepositoryCustom {
 
     Optional<NoShapeOriginalAssetTransferDetailsDto> findNoShapeOriginalAssetTransferDetailsDtoById(Integer id);
+
+    void deleteNoShapeOriginalAssetTransferById(Integer idInstance);
 }

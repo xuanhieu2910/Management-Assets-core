@@ -33,4 +33,9 @@ public class NoOriginalAssetBuyServiceImpl implements NoOriginalAssetBuyService 
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteNoShapeOriginalAssetById(Integer idInstance) {
+        noShapeOriginalAssetBuyRepository.deleteNoShapeOriginalAssetBuyById(idInstance);
+    }
 }

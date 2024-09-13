@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -42,5 +44,17 @@ public class ShapeOriginalAssetEvaluateRepositoryImpl implements ShapeOriginalAs
             }
         }
         return Optional.empty();
+    }
+
+    @Transactional
+    @Modifying
+    @Override
+    public void deleteOriginalAssetEvaluateById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from s_original_asset_evaluate sEva " +
+                "where sEva.id_s_original_asset_evaluate = :idsEva ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsEva", idInstance);
+        query.executeUpdate();
     }
 }

@@ -8,4 +8,6 @@ public interface ShapeOriginalAssetConnectActorRepositoryCustom {
 
 
     Optional<ShapeOriginalAssetConnectActorDetailsDto> findShapeOriginalAssetConnectActorDetailsDtoById (Integer id);
+
+    void deleteShapeOriginalAssetConnectActorById(Integer idInstance);
 }

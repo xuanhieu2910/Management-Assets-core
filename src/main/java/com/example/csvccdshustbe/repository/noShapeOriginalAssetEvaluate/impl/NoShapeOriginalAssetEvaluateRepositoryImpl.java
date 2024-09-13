@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -42,5 +44,16 @@ public class NoShapeOriginalAssetEvaluateRepositoryImpl implements NoShapeOrigin
             }
         }
         return Optional.empty();
+    }
+
+    @Modifying
+    @Transactional
+    @Override
+    public void deleteNoShapeOriginalAssetEvaluateById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from ns_original_asset_evaluate nsEva " +
+                "where nsEva.id_ns_original_asset_evaluate = :idNsEva ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.executeUpdate();
     }
 }

@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -45,5 +47,17 @@ public class ShapeOriginalAssetGiftRepositoryImpl implements ShapeOriginalAssetG
         return Optional.empty();
 
 
+    }
+
+    @Transactional
+    @Modifying
+    @Override
+    public void deleteShapeOriginalAssetGiftById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from s_original_asset_gift sGift " +
+                "where sGift.id_s_original_asset_gift = :idSGift ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idSGift", idInstance);
+        query.executeUpdate();
     }
 }

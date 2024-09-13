@@ -38,4 +38,13 @@ public class ShapeOriginalAssetConnectActorRepositoryImpl implements ShapeOrigin
         }
         return Optional.empty();
     }
+
+    @Override
+    public void deleteShapeOriginalAssetConnectActorById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from s_original_asset_connect_actor sactor " +
+                "where sactor.id_s_original_asset_connect_actor = :idsactor ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.executeUpdate();
+    }
 }

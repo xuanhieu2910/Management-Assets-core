@@ -10,4 +10,5 @@ public interface OriginalAssetBuyService {
 
     Map<String, Object> findOriginalAssetBuyId(Integer idOriginalAssetBuy) throws IllegalAccessException;
 
+    void deleteShapeOriginalAssetById(Integer idInstance);
 }

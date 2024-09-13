@@ -32,4 +32,9 @@ public class OriginalAssetTransferServiceImpl implements OriginalAssetTransferSe
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteShapeOriginalAssetTransfer(Integer idInstance) {
+        shapeOriginalAssetTransferRepository.deleteShapeOriginalAssetTransferById(idInstance);
+    }
 }

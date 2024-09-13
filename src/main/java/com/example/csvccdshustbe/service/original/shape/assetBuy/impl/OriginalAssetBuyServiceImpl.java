@@ -5,7 +5,9 @@ import com.example.csvccdshustbe.entity.ShapeOriginalAssetBuy;
 import com.example.csvccdshustbe.repository.shapeOriginalAssetBuy.ShapeOriginalAssetByRepository;
 import com.example.csvccdshustbe.service.original.shape.assetBuy.OriginalAssetBuyService;
 import com.example.csvccdshustbe.utility.ValueUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -30,5 +32,11 @@ public class OriginalAssetBuyServiceImpl implements OriginalAssetBuyService {
             throw new NotFoundException("Don't exits original asset buy!");
         }
         return ValueUtil.convertObjectToMap(assetBuyDetailsDto.get());
+    }
+
+
+    @Override
+    public void deleteShapeOriginalAssetById(Integer idInstance) {
+        shapeOriginalAssetByRepository.deleteShapeOriginalAssetById(idInstance);
     }
 }

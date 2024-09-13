@@ -9,4 +9,6 @@ public interface NoOriginalAssetRentLandService {
     NoShapeOriginalAssetRentLand save(NoShapeOriginalAssetRentLand land);
 
     Map<String, Object> findNoOriginalAssetRentLandById(Integer idInstance) throws IllegalAccessException;
+
+    void deleteNoShapeOriginalAssetRendLandById(Integer idInstance);
 }

@@ -16,20 +16,25 @@ import java.util.Optional;
 public class NoOriginalAssetEvaluateServiceImpl implements NoOriginalAssetEvaluateService {
 
     @Autowired
-    NoShapeOriginalAssetEvaluateRepository shapeOriginalAssetEvaluateRepository;
+    NoShapeOriginalAssetEvaluateRepository noShapeOriginalAssetEvaluateRepository;
 
     @Override
     public NoShapeOriginalAssetEvaluate save(NoShapeOriginalAssetEvaluate evaluate) {
-        return shapeOriginalAssetEvaluateRepository.save(evaluate);
+        return noShapeOriginalAssetEvaluateRepository.save(evaluate);
     }
 
     @Override
     public Map<String, Object> findNoOriginalAssetEvaluateById(Integer idInstance) throws IllegalAccessException {
         Optional<NoShapeOriginalAssetEvaluateDetailsDto> detailsDto =
-                shapeOriginalAssetEvaluateRepository.findNoShapeOriginalAssetEvaluateDetailsDto(idInstance);
+                noShapeOriginalAssetEvaluateRepository.findNoShapeOriginalAssetEvaluateDetailsDto(idInstance);
         if (!detailsDto.isPresent()){
             throw new NotFoundException("Don't exits no shape original asset evaluate!");
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
+    }
+
+    @Override
+    public void deleteNoShapeOriginalAssetEvaluateById(Integer idInstance) {
+        noShapeOriginalAssetEvaluateRepository.deleteNoShapeOriginalAssetEvaluateById(idInstance);
     }
 }

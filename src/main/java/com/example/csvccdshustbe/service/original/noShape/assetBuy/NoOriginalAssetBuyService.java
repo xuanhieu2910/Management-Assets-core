@@ -9,4 +9,6 @@ public interface NoOriginalAssetBuyService {
     NoShapeOriginalAssetBuy save(NoShapeOriginalAssetBuy assetBuy);
 
     Map<String, Object> findNoOriginalAssetBuyId(Integer idInstance) throws IllegalAccessException;
+
+    void deleteNoShapeOriginalAssetById(Integer idInstance);
 }

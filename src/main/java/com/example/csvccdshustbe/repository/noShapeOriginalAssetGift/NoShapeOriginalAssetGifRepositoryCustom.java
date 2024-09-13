@@ -8,4 +8,5 @@ public interface NoShapeOriginalAssetGifRepositoryCustom {
 
     Optional<NoShapeOriginalAssetGiftDetailsDto> findShapeOriginalAssetGiftDetailsDtoById(Integer id);
 
+    void deleteNoShapeOriginalAssetGiftById(Integer idInstance);
 }

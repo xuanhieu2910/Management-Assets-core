@@ -33,4 +33,9 @@ public class NoOriginalAssetTransferLandServiceImpl implements NoOriginalAssetTr
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteNoShapOriginalAssetTransferLandById(Integer idInstance) {
+        noShapeOriginalAssetTransferLandRepository.deleteNoShapeOriginalAssetTransferLandById(idInstance);
+    }
 }

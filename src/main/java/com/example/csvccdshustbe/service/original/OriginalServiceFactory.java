@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.original;
 
+import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.EnumOriginalFactory;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class OriginalServiceFactory {
@@ -185,4 +187,61 @@ public class OriginalServiceFactory {
             }
         }
     }
+
+    public BluePrintOriginalDto findBluePrintAssetOriginalByIdAsset(Integer idAsset) {
+        return assetOriginalService.findBluePrintAssetOriginalByIdAsset(idAsset);
+    }
+
+    public void deleteAssetOriginal(String typeOriginal, Integer idInstance, Integer idOriginal) throws ValidateFiledException {
+        EnumOriginalFactory enumDeclareFactory = Enum.valueOf(EnumOriginalFactory.class, typeOriginal);
+        switch (enumDeclareFactory){
+            case ShapeOriginalAssetBuy -> {
+                 originalAssetBuyService.deleteShapeOriginalAssetById(idInstance);
+            }
+            case ShapeOriginalAssetConnectActor -> {
+                 originalAssetConnectActorService.deleteShapeOriginalAssetConnectActorById(idInstance);
+            }
+            case ShapeOriginalAssetConnectWoActor -> {
+                 originalAssetConnectWoActorService.deleteShapeOriginalAssetConnectWoById(idInstance);
+            }
+            case ShapeOriginalAssetEvaluate -> {
+                 originalAssetEvaluateService.deleteShapeOriginalAssetEvaluateById(idInstance);
+            }
+            case ShapeOriginalAssetGift -> {
+                 originalAssetGiftService.deleteShapeOriginalAssetGiftById(idInstance);
+            }
+            case ShapeOriginalAssetInvest -> {
+                 originalAssetInvestService.deleteShapeOriginalAssetInvestById(idInstance);
+            }
+            case ShapeOriginalAssetTransfer -> {
+                 originalAssetTransferService.deleteShapeOriginalAssetTransfer(idInstance);
+            }
+            case NoShapeOriginalAssetGift -> {
+                 noOriginalAssetGiftService.deleteNoShapeOriginalAssetGiftById(idInstance);
+            }
+            case NoShapeOriginalAssetBuy -> {
+                 noOriginalAssetBuyService.deleteNoShapeOriginalAssetById(idInstance);
+            }
+            case NoShapeOriginalAssetUseLand -> {
+                 noOriginalAssetUseLandService.deleteNoShapeOriginalAssetUseLandById(idInstance);
+            }
+            case NoShapeOriginalAssetEvaluate -> {
+                 noOriginalAssetEvaluateService.deleteNoShapeOriginalAssetEvaluateById(idInstance);
+            }
+            case NoShapeOriginalAssetTransfer -> {
+                 noOriginalAssetTransferService.deleteNoShapeOriginalAssetTransferById(idInstance);
+            }
+            case NoShapeOriginalAssetRentLand ->  {
+                 noOriginalAssetRentLandService.deleteNoShapeOriginalAssetRendLandById(idInstance);
+            }
+            case NoShapeOriginalAssetTransferLand -> {
+                 noOriginalAssetTransferLandService.deleteNoShapOriginalAssetTransferLandById(idInstance);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type original!");
+            }
+        }
+        assetOriginalService.deleteAssetOriginalByIdOriginalAndIdInstance(idOriginal,idInstance);
+    }
+
 }

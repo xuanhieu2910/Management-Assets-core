@@ -8,4 +8,5 @@ public interface ShapeOriginalAssetEvaluateRepositoryCustom {
 
     Optional<ShapeOriginalAssetEvaluateDetailsDto> findShapeOriginalAssetEvaluateDetailsDtoBuyId(Integer id);
 
+    void deleteOriginalAssetEvaluateById(Integer idInstance);
 }

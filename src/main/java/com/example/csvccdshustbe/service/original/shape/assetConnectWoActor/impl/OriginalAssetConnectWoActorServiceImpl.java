@@ -32,4 +32,9 @@ public class OriginalAssetConnectWoActorServiceImpl implements OriginalAssetConn
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteShapeOriginalAssetConnectWoById(Integer idInstance) {
+        shapeOriginalAssetConnectWoActorRepository.deleteShapeOriginalAssetConnectWoActorById(idInstance);
+    }
 }

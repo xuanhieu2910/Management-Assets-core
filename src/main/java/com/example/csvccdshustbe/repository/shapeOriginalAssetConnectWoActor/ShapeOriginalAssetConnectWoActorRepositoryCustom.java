@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface ShapeOriginalAssetConnectWoActorRepositoryCustom {
 
     Optional<ShapeOriginalAssetConnectWoActorDetailsDto> findShapeOriginalAssetConnectWoActorDetailsDtoById(Integer id);
+
+    void deleteShapeOriginalAssetConnectWoActorById(Integer idInstance);
 }

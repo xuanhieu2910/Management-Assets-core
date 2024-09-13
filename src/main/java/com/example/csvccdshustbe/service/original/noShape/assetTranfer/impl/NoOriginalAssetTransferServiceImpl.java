@@ -16,20 +16,25 @@ import java.util.Optional;
 public class NoOriginalAssetTransferServiceImpl implements NoOriginalAssetTransferService {
 
     @Autowired
-    NoShapeOriginalAssetTransferRepository shapeOriginalAssetTransferRepository;
+    NoShapeOriginalAssetTransferRepository noShapeOriginalAssetTransferRepository;
 
     @Override
     public NoShapeOriginalAssetTransfer save(NoShapeOriginalAssetTransfer transfer) {
-        return shapeOriginalAssetTransferRepository.save(transfer);
+        return noShapeOriginalAssetTransferRepository.save(transfer);
     }
 
     @Override
     public Map<String, Object> findNoOriginalAssetTransferById(Integer idInstance) throws IllegalAccessException {
         Optional<NoShapeOriginalAssetTransferDetailsDto> detailsDto =
-                shapeOriginalAssetTransferRepository.findNoShapeOriginalAssetTransferDetailsDtoById(idInstance);
-        if (!detailsDto.isPresent()) {
+                noShapeOriginalAssetTransferRepository.findNoShapeOriginalAssetTransferDetailsDtoById(idInstance);
+        if (detailsDto.isEmpty()) {
             throw new NotFoundException("Don't exits no shape original asset transfer!");
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
+    }
+
+    @Override
+    public void deleteNoShapeOriginalAssetTransferById(Integer idInstance) {
+        noShapeOriginalAssetTransferRepository.deleteNoShapeOriginalAssetTransferById(idInstance);
     }
 }

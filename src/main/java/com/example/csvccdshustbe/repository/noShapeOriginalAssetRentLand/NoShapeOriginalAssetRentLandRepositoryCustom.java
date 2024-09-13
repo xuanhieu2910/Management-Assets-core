@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface NoShapeOriginalAssetRentLandRepositoryCustom {
 
     Optional<NoShapeOriginalAssetRentLandDetailsDto> findNoShapeOriginalAssetRentLandDetailsDtoById(Integer id);
+
+    void deleteNoShapeOriginalAssetRentLandById(Integer idInstance);
 }

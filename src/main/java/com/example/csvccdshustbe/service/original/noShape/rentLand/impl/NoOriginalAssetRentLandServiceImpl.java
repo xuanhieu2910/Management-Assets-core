@@ -32,4 +32,9 @@ public class NoOriginalAssetRentLandServiceImpl implements NoOriginalAssetRentLa
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteNoShapeOriginalAssetRendLandById(Integer idInstance) {
+        noShapeOriginalAssetRentLandRepository.deleteNoShapeOriginalAssetRentLandById(idInstance);
+    }
 }

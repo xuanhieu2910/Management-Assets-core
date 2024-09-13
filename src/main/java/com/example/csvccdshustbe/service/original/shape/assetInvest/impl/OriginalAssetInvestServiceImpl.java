@@ -32,4 +32,9 @@ public class OriginalAssetInvestServiceImpl implements OriginalAssetInvestServic
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteShapeOriginalAssetInvestById(Integer idInstance) {
+        shapeOriginalAssetInvestRepository.deleteShapeOriginalAssetInvestById(idInstance);
+    }
 }

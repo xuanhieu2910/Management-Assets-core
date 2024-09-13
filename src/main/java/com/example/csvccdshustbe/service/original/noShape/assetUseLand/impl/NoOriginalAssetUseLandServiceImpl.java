@@ -33,4 +33,9 @@ public class NoOriginalAssetUseLandServiceImpl implements NoOriginalAssetUseLand
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteNoShapeOriginalAssetUseLandById(Integer idInstance) {
+        noShapeOriginalAssetUseLandRepository.deleteNoShapeOriginalAssetUseLandById(idInstance);
+    }
 }

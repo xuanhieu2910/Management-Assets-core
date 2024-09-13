@@ -9,4 +9,6 @@ public interface OriginalAssetTransferService {
     ShapeOriginalAssetTransfer save(ShapeOriginalAssetTransfer shapeOriginalAssetTransfer);
 
     Map<String, Object> findOriginalAssetTransferById(Integer idInstance) throws IllegalAccessException;
+
+    void deleteShapeOriginalAssetTransfer(Integer idInstance);
 }

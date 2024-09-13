@@ -9,4 +9,6 @@ public interface NoOriginalAssetEvaluateService {
     NoShapeOriginalAssetEvaluate save(NoShapeOriginalAssetEvaluate evaluate);
 
     Map<String, Object> findNoOriginalAssetEvaluateById(Integer idInstance) throws IllegalAccessException;
+
+    void deleteNoShapeOriginalAssetEvaluateById(Integer idInstance);
 }

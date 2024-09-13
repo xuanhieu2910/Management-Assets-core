@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
+import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.factory.declare.DeclareFactory;
@@ -136,9 +137,41 @@ public class AssetServiceImpl implements AssetService {
         Map<String,Object> declareDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_DECLARE_ASSET);
     }
 
-    private void updateOriginalDataAsset(Map<String, Object> dataUpdateAssetRequest, Asset asset) {
+    private void updateOriginalDataAsset(Map<String, Object> dataUpdateAssetRequest, Asset asset) throws ValidateFiledException {
         log.info("Start update original data asset by code asset " + asset.getCodeAsset());
         Map<String,Object> originalDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_ORIGINAL_ASSET);
+        BluePrintOriginalDto bluePrintOriginalDto = originalServiceFactory.findBluePrintAssetOriginalByIdAsset(asset.getIdAsset());
+        deleteAssetOriginal(bluePrintOriginalDto, originalDataAsset);
+        createNewAssetOriginal(bluePrintOriginalDto, originalDataAsset, asset);
+        updateAssetOriginal(bluePrintOriginalDto, originalDataAsset);
+    }
+
+    private void updateAssetOriginal(BluePrintOriginalDto bluePrintOriginalDto, Map<String, Object> originalDataAsset) {
+        if (!bluePrintOriginalDto.getTypeOriginal().equals(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)))){
+            String typeOriginal = bluePrintOriginalDto.getTypeOriginal();
+            Integer idInstance = bluePrintOriginalDto.getIdInstance();
+//            IOriginal iOriginal = OriginalFactory.findIOrignalByTypeOriginalAndIdInstance()
+        }
+    }
+
+    private void createNewAssetOriginal(BluePrintOriginalDto bluePrintOriginalDto, Map<String, Object> originalDataAssetRq, Asset asset) throws ValidateFiledException {
+        if (!bluePrintOriginalDto.getTypeOriginal().equals(ValueUtil.getStringByObject(originalDataAssetRq.get(Constants.KEY_TYPE_ORIGINAL_ASSET)))){
+            log.info("Storing original data asset");
+            Map<String,Object> originalDataAsset = (Map<String, Object>) originalDataAssetRq.get(Constants.KEY_ORIGINAL_ASSET);
+            originalDataAsset.put("idAsset", asset.getIdAsset());
+            OriginalFactory originalFactory = (OriginalFactory) ProxyInitDataAssetUtil.
+                    proxyInitOriginalDataAsset(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)));
+            IOriginal iOriginal = originalFactory.createOriginal(originalDataAsset);
+            originalServiceFactory.save(iOriginal, originalDataAsset);
+            log.info("Finish store original factory " + originalFactory.getClass());
+        }
+    }
+
+    private void deleteAssetOriginal(BluePrintOriginalDto bluePrintOriginalDto, Map<String, Object> originalDataAsset) throws ValidateFiledException {
+        if (!bluePrintOriginalDto.getTypeOriginal().equals(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)))){
+            originalServiceFactory.deleteAssetOriginal(bluePrintOriginalDto.getTypeOriginal(), bluePrintOriginalDto.getIdInstance(),
+                    bluePrintOriginalDto.getIdOriginal());
+        }
     }
 
     private void updateModulesDataAsset(Map<String, Object> dataUpdateAssetRequest, Asset asset) throws ValidateFiledException, IllegalAccessException {

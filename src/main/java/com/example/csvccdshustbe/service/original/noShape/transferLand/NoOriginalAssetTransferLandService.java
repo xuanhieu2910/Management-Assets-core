@@ -9,4 +9,6 @@ public interface NoOriginalAssetTransferLandService {
     NoShapeOriginalAssetTransferLand save(NoShapeOriginalAssetTransferLand land);
 
     Map<String, Object> findNoOriginalAssetTransferLandById(Integer idInstance) throws IllegalAccessException;
+
+    void deleteNoShapOriginalAssetTransferLandById(Integer idInstance);
 }

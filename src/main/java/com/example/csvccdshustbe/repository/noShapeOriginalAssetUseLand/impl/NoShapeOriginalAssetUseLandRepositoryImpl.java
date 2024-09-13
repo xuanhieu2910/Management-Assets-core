@@ -6,7 +6,9 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -42,5 +44,17 @@ public class NoShapeOriginalAssetUseLandRepositoryImpl implements NoShapeOrigina
             }
         }
         return Optional.empty();
+    }
+
+    @Modifying
+    @Transactional
+    @Override
+    public void deleteNoShapeOriginalAssetUseLandById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from ns_original_asset_use_land nsUseLand " +
+                "where nsUseLand.id_ns_original_asset_use_land = :idnsUseLand ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idnsUseLand", idInstance);
+        query.executeUpdate();
     }
 }

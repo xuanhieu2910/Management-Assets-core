@@ -33,4 +33,9 @@ public class OriginalAssetGiftServiceImpl implements OriginalAssetGiftService {
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteShapeOriginalAssetGiftById(Integer idInstance) {
+        shapeOriginalAssetGiftRepository.deleteShapeOriginalAssetGiftById(idInstance);
+    }
 }
