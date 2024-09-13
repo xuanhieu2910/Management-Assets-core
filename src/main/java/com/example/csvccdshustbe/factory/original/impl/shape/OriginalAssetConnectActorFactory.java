@@ -18,4 +18,12 @@ public class OriginalAssetConnectActorFactory implements OriginalFactory {
         connectActor.setTimeModified(timeCurrent);
         return connectActor;
     }
+
+    @Override
+    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+        ShapeOriginalAssetConnectActor connectActor = (ShapeOriginalAssetConnectActor) iOriginalDetails;
+        String timeCurrent = String.valueOf(new Date().getTime());
+        connectActor.setTimeModified(timeCurrent);
+        return connectActor;
+    }
 }

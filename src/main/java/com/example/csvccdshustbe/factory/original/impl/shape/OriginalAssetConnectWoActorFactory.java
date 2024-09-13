@@ -21,4 +21,15 @@ public class OriginalAssetConnectWoActorFactory implements OriginalFactory {
         connectWoActor.setTimeModified(timeCurrent);
         return connectWoActor;
     }
+
+    @Override
+    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+        ShapeOriginalAssetConnectWoActor connectWoActor = (ShapeOriginalAssetConnectWoActor) iOriginalDetails;
+        connectWoActor.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
+        connectWoActor.setValueTax(ValueUtil.getDoubleByObject(originalDataAsset.get("valueTax")));
+        connectWoActor.setValueOther(ValueUtil.getDoubleByObject(originalDataAsset.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        connectWoActor.setTimeModified(timeCurrent);
+        return connectWoActor;
+    }
 }

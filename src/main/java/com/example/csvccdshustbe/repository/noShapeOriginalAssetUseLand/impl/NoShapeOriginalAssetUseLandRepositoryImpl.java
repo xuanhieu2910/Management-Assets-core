@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.noShapeOriginalAssetUseLand.impl;
 
 import com.example.csvccdshustbe.dto.original.noShape.NoShapeOriginalAssetUseLandDetailsDto;
+import com.example.csvccdshustbe.entity.NoShapeOriginalAssetUseLand;
 import com.example.csvccdshustbe.repository.noShapeOriginalAssetUseLand.NoShapeOriginalAssetUseLandRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -20,7 +21,7 @@ public class NoShapeOriginalAssetUseLandRepositoryImpl implements NoShapeOrigina
     EntityManager entityManager;
 
     @Override
-    public Optional<NoShapeOriginalAssetUseLandDetailsDto> findNoShapeOriginalAssetUseLandById(Integer id) {
+    public Optional<NoShapeOriginalAssetUseLandDetailsDto> findNoShapeOriginalAssetUseLandDetailsById(Integer id) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select shape.id_ns_original_asset_use_land, shape.id_asset, " +
                 "       shape.value_buy, shape.value_tax, shape.value_other, " +
@@ -56,5 +57,32 @@ public class NoShapeOriginalAssetUseLandRepositoryImpl implements NoShapeOrigina
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idnsUseLand", idInstance);
         query.executeUpdate();
+    }
+
+    @Override
+    public Optional<NoShapeOriginalAssetUseLand> findNoShapeOriginalAssetUseLandById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select useLand.id_ns_original_asset_use_land, useLand.id_asset, " +
+                "       useLand.value_buy, useLand.value_tax, useLand.value_other, " +
+                "       useLand.time_created, useLand.time_modified " +
+                "from ns_original_asset_use_land useLand " +
+                "where useLand.id_ns_original_asset_use_land = :idUseLand ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idUseLand", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                NoShapeOriginalAssetUseLand useLand = new NoShapeOriginalAssetUseLand();
+                useLand.setIdNoShapeOriginalAssetUseLand(ValueUtil.getIntegerByObject(obj[0]));
+                useLand.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                useLand.setValueBuy(ValueUtil.getDoubleByObject(obj[2]));
+                useLand.setValueTax(ValueUtil.getDoubleByObject(obj[3]));
+                useLand.setValueOther(ValueUtil.getDoubleByObject(obj[4]));
+                useLand.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+                useLand.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                return Optional.of(useLand);
+            }
+        }
+        return Optional.empty();
     }
 }

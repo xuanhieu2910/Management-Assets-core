@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.noShapeOriginalAssetEvaluate.impl;
 
 import com.example.csvccdshustbe.dto.original.noShape.NoShapeOriginalAssetEvaluateDetailsDto;
+import com.example.csvccdshustbe.entity.NoShapeOriginalAssetEvaluate;
 import com.example.csvccdshustbe.repository.noShapeOriginalAssetEvaluate.NoShapeOriginalAssetEvaluateRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -21,7 +22,7 @@ public class NoShapeOriginalAssetEvaluateRepositoryImpl implements NoShapeOrigin
     EntityManager entityManager;
 
     @Override
-    public Optional<NoShapeOriginalAssetEvaluateDetailsDto> findNoShapeOriginalAssetEvaluateDetailsDto(Integer id) {
+    public Optional<NoShapeOriginalAssetEvaluateDetailsDto> findNoShapeOriginalAssetEvaluateDetailsDtoById(Integer id) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select shape.id_ns_original_asset_evaluate, shape.id_asset, " +
                 "       shape.value_buy, shape.value_tax, shape.value_other, " +
@@ -55,5 +56,32 @@ public class NoShapeOriginalAssetEvaluateRepositoryImpl implements NoShapeOrigin
                 "where nsEva.id_ns_original_asset_evaluate = :idNsEva ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.executeUpdate();
+    }
+
+    @Override
+    public Optional<NoShapeOriginalAssetEvaluate> findNoShapeOriginalAssetEvaluateById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select evaluate.id_ns_original_asset_evaluate, evaluate.id_asset, " +
+                "       evaluate.value_buy, evaluate.value_tax, evaluate.value_other, " +
+                "       evaluate.time_created, evaluate.time_modified " +
+                "from ns_original_asset_evaluate evaluate " +
+                "where evaluate.id_ns_original_asset_evaluate = :idEvaluate ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idEvaluate", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                NoShapeOriginalAssetEvaluate evaluate = new NoShapeOriginalAssetEvaluate();
+                evaluate.setIdNoShapeOriginalAssetEvaluate(ValueUtil.getIntegerByObject(obj[0]));
+                evaluate.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                evaluate.setValueBuy(ValueUtil.getDoubleByObject(obj[2]));
+                evaluate.setValueTax(ValueUtil.getDoubleByObject(obj[3]));
+                evaluate.setValueOther(ValueUtil.getDoubleByObject(obj[4]));
+                evaluate.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+                evaluate.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                return Optional.of(evaluate);
+            }
+        }
+        return Optional.empty();
     }
 }

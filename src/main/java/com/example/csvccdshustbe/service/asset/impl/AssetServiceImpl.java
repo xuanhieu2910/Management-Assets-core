@@ -146,23 +146,27 @@ public class AssetServiceImpl implements AssetService {
         updateAssetOriginal(bluePrintOriginalDto, originalDataAsset);
     }
 
-    private void updateAssetOriginal(BluePrintOriginalDto bluePrintOriginalDto, Map<String, Object> originalDataAsset) {
-        if (!bluePrintOriginalDto.getTypeOriginal().equals(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)))){
+    private void updateAssetOriginal(BluePrintOriginalDto bluePrintOriginalDto, Map<String, Object> originalDataAsset) throws ValidateFiledException {
+        if (bluePrintOriginalDto.getTypeOriginal().equals(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)))){
             String typeOriginal = bluePrintOriginalDto.getTypeOriginal();
             Integer idInstance = bluePrintOriginalDto.getIdInstance();
-            IOriginal iOriginal = OriginalServiceFactory.findIOriginalByTypeOriginalAndIdInstance(typeOriginal, idInstance);
+            IOriginal iOriginalDetails = originalServiceFactory.findIOriginalByTypeOriginalAndIdInstance(typeOriginal, idInstance);
+            OriginalFactory originalFactory = (OriginalFactory) ProxyInitDataAssetUtil.
+                    proxyInitOriginalDataAsset(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)));
+            IOriginal iOriginal = originalFactory.updateModule(originalDataAsset,iOriginalDetails);
+            originalServiceFactory.update(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)), iOriginal);
+            log.info("Finish update original factory " + originalFactory.getClass());
         }
     }
 
     private void createNewAssetOriginal(BluePrintOriginalDto bluePrintOriginalDto, Map<String, Object> originalDataAssetRq, Asset asset) throws ValidateFiledException {
         if (!bluePrintOriginalDto.getTypeOriginal().equals(ValueUtil.getStringByObject(originalDataAssetRq.get(Constants.KEY_TYPE_ORIGINAL_ASSET)))){
             log.info("Storing original data asset");
-            Map<String,Object> originalDataAsset = (Map<String, Object>) originalDataAssetRq.get(Constants.KEY_ORIGINAL_ASSET);
-            originalDataAsset.put("idAsset", asset.getIdAsset());
+            originalDataAssetRq.put("idAsset", asset.getIdAsset());
             OriginalFactory originalFactory = (OriginalFactory) ProxyInitDataAssetUtil.
-                    proxyInitOriginalDataAsset(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)));
-            IOriginal iOriginal = originalFactory.createOriginal(originalDataAsset);
-            originalServiceFactory.save(iOriginal, originalDataAsset);
+                    proxyInitOriginalDataAsset(ValueUtil.getStringByObject(originalDataAssetRq.get(Constants.KEY_TYPE_ORIGINAL_ASSET)));
+            IOriginal iOriginal = originalFactory.createOriginal(originalDataAssetRq);
+            originalServiceFactory.save(iOriginal, originalDataAssetRq);
             log.info("Finish store original factory " + originalFactory.getClass());
         }
     }
@@ -273,8 +277,8 @@ public class AssetServiceImpl implements AssetService {
             } else {
                 asset.setCodeAsset(String.valueOf(UUID.randomUUID()));
             }
-            asset.setIdDepartment(ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment")));
         }
+        asset.setIdDepartment(ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment")));
         asset.setIdLocation(ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation")));
         asset.setIdUnit(ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit")));
         asset.setIdProjects(ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects")));

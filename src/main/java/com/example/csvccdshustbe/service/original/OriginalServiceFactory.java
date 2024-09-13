@@ -245,56 +245,105 @@ public class OriginalServiceFactory {
     }
 
 
-    public static IOriginal findIOriginalByTypeOriginalAndIdInstance(String typeOriginal, Integer idInstance) {
+    public IOriginal findIOriginalByTypeOriginalAndIdInstance(String typeOriginal, Integer idInstance) throws ValidateFiledException {
         EnumOriginalFactory enumDeclareFactory = Enum.valueOf(EnumOriginalFactory.class, typeOriginal);
-        return null;
-//        switch (enumDeclareFactory){
-//            case ShapeOriginalAssetBuy -> {
-//                return originalAssetBuyService.deleteShapeOriginalAssetById(idInstance);
-//            }
-//            case ShapeOriginalAssetConnectActor -> {
-//                originalAssetConnectActorService.deleteShapeOriginalAssetConnectActorById(idInstance);
-//            }
-//            case ShapeOriginalAssetConnectWoActor -> {
-//                originalAssetConnectWoActorService.deleteShapeOriginalAssetConnectWoById(idInstance);
-//            }
-//            case ShapeOriginalAssetEvaluate -> {
-//                originalAssetEvaluateService.deleteShapeOriginalAssetEvaluateById(idInstance);
-//            }
-//            case ShapeOriginalAssetGift -> {
-//                originalAssetGiftService.deleteShapeOriginalAssetGiftById(idInstance);
-//            }
-//            case ShapeOriginalAssetInvest -> {
-//                originalAssetInvestService.deleteShapeOriginalAssetInvestById(idInstance);
-//            }
-//            case ShapeOriginalAssetTransfer -> {
-//                originalAssetTransferService.deleteShapeOriginalAssetTransfer(idInstance);
-//            }
-//            case NoShapeOriginalAssetGift -> {
-//                noOriginalAssetGiftService.deleteNoShapeOriginalAssetGiftById(idInstance);
-//            }
-//            case NoShapeOriginalAssetBuy -> {
-//                noOriginalAssetBuyService.deleteNoShapeOriginalAssetById(idInstance);
-//            }
-//            case NoShapeOriginalAssetUseLand -> {
-//                noOriginalAssetUseLandService.deleteNoShapeOriginalAssetUseLandById(idInstance);
-//            }
-//            case NoShapeOriginalAssetEvaluate -> {
-//                noOriginalAssetEvaluateService.deleteNoShapeOriginalAssetEvaluateById(idInstance);
-//            }
-//            case NoShapeOriginalAssetTransfer -> {
-//                noOriginalAssetTransferService.deleteNoShapeOriginalAssetTransferById(idInstance);
-//            }
-//            case NoShapeOriginalAssetRentLand ->  {
-//                noOriginalAssetRentLandService.deleteNoShapeOriginalAssetRendLandById(idInstance);
-//            }
-//            case NoShapeOriginalAssetTransferLand -> {
-//                noOriginalAssetTransferLandService.deleteNoShapOriginalAssetTransferLandById(idInstance);
-//            }
-//            default -> {
-//                throw new ValidateFiledException("Don't exits type original!");
-//            }
-//        }
+        switch (enumDeclareFactory){
+            case ShapeOriginalAssetBuy -> {
+                return originalAssetBuyService.findShapeOriginalAssetBuyById(idInstance);
+            }
+            case ShapeOriginalAssetConnectActor -> {
+                return originalAssetConnectActorService.findShapeOriginalAssetConnectActorById(idInstance);
+            }
+            case ShapeOriginalAssetConnectWoActor -> {
+                return originalAssetConnectWoActorService.findShapeOriginalAssetConnecWoActorById(idInstance);
+            }
+            case ShapeOriginalAssetEvaluate -> {
+                return originalAssetEvaluateService.findShapeOriginalAssetEvaluateById(idInstance);
+            }
+            case ShapeOriginalAssetGift -> {
+                return originalAssetGiftService.findShapeOriginalAssetGiftById(idInstance);
+            }
+            case ShapeOriginalAssetInvest -> {
+                return originalAssetInvestService.findShapeOriginalAssetInvestById(idInstance);
+            }
+            case ShapeOriginalAssetTransfer -> {
+                return originalAssetTransferService.findShapeOriginalAssetTransferById(idInstance);
+            }
+            case NoShapeOriginalAssetGift -> {
+                return noOriginalAssetGiftService.findNoShapeOriginalAssetGiftById(idInstance);
+            }
+            case NoShapeOriginalAssetBuy -> {
+                return noOriginalAssetBuyService.findNoShapeOriginalAssetBuyById(idInstance);
+            }
+            case NoShapeOriginalAssetUseLand -> {
+                return noOriginalAssetUseLandService.findNoShapeOriginalAssetUseLandById(idInstance);
+            }
+            case NoShapeOriginalAssetEvaluate -> {
+                return noOriginalAssetEvaluateService.findNoShapeOriginalAssetEvaluateById(idInstance);
+            }
+            case NoShapeOriginalAssetTransfer -> {
+                return noOriginalAssetTransferService.findNoShapeOriginalAssetTransferById(idInstance);
+            }
+            case NoShapeOriginalAssetRentLand ->  {
+                return noOriginalAssetRentLandService.findNoShapeOriginalAssetRentLandById(idInstance);
+            }
+            case NoShapeOriginalAssetTransferLand -> {
+                return noOriginalAssetTransferLandService.findNoShapeOriginalAssetTransferLandById(idInstance);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type original!");
+            }
+        }
     }
 
+    public <T> IOriginal update(String typeOriginal, T dataOriginal) throws ValidateFiledException {
+        EnumOriginalFactory enumDeclareFactory = Enum.valueOf(EnumOriginalFactory.class, typeOriginal);
+        switch (enumDeclareFactory){
+            case ShapeOriginalAssetBuy -> {
+                return originalAssetBuyService.save((ShapeOriginalAssetBuy) dataOriginal);
+            }
+            case ShapeOriginalAssetConnectActor -> {
+                return originalAssetConnectActorService.save((ShapeOriginalAssetConnectActor) dataOriginal);
+            }
+            case ShapeOriginalAssetConnectWoActor -> {
+                return originalAssetConnectWoActorService.save((ShapeOriginalAssetConnectWoActor) dataOriginal);
+            }
+            case ShapeOriginalAssetEvaluate -> {
+                return originalAssetEvaluateService.save((ShapeOriginalAssetEvaluate) dataOriginal);
+            }
+            case ShapeOriginalAssetGift -> {
+                return originalAssetGiftService.save((ShapeOriginalAssetGift) dataOriginal);
+            }
+            case ShapeOriginalAssetInvest -> {
+                return originalAssetInvestService.save((ShapeOriginalAssetInvest) dataOriginal);
+            }
+            case ShapeOriginalAssetTransfer -> {
+                return originalAssetTransferService.save((ShapeOriginalAssetTransfer) dataOriginal);
+            }
+            case NoShapeOriginalAssetGift -> {
+                return noOriginalAssetGiftService.save((NoShapeOriginalAssetGift) dataOriginal);
+            }
+            case NoShapeOriginalAssetBuy -> {
+                return noOriginalAssetBuyService.save((NoShapeOriginalAssetBuy) dataOriginal);
+            }
+            case NoShapeOriginalAssetUseLand -> {
+                return noOriginalAssetUseLandService.save((NoShapeOriginalAssetUseLand) dataOriginal);
+            }
+            case NoShapeOriginalAssetEvaluate -> {
+                return noOriginalAssetEvaluateService.save((NoShapeOriginalAssetEvaluate) dataOriginal);
+            }
+            case NoShapeOriginalAssetTransfer -> {
+                return noOriginalAssetTransferService.save((NoShapeOriginalAssetTransfer) dataOriginal);
+            }
+            case NoShapeOriginalAssetRentLand ->  {
+                return noOriginalAssetRentLandService.save((NoShapeOriginalAssetRentLand) dataOriginal);
+            }
+            case NoShapeOriginalAssetTransferLand -> {
+                return noOriginalAssetTransferLandService.save((NoShapeOriginalAssetTransferLand) dataOriginal);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type original!");
+            }
+        }
+    }
 }

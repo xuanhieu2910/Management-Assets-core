@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.shapeOriginalAssetConnectWoActor.impl;
 
 import com.example.csvccdshustbe.dto.original.shape.ShapeOriginalAssetConnectWoActorDetailsDto;
+import com.example.csvccdshustbe.entity.ShapeOriginalAssetConnectWoActor;
 import com.example.csvccdshustbe.repository.shapeOriginalAssetConnectWoActor.ShapeOriginalAssetConnectWoActorRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -58,5 +59,32 @@ public class ShapeOriginalAssetConnectWoActorRepositoryImpl implements ShapeOrig
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("swoactor", idInstance);
         query.executeUpdate();
+    }
+
+    @Override
+    public Optional<ShapeOriginalAssetConnectWoActor> findShapeOriginalAssetConnectWoActorById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select woActor.id_s_original_asset_connect_wo_actor, woActor.id_asset, " +
+                "       woActor.value_buy, woActor.value_tax, woActor.value_other, " +
+                "       woActor.time_created, woActor.time_modified " +
+                "from s_original_asset_connect_wo_actor woActor " +
+                "where woActor.id_s_original_asset_connect_wo_actor = :idWoActor ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idWoActor", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                ShapeOriginalAssetConnectWoActor woActor = new ShapeOriginalAssetConnectWoActor();
+                woActor.setIdShapeOriginalAssetConnectWoActor(ValueUtil.getIntegerByObject(obj[0]));
+                woActor.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                woActor.setValueBuy(ValueUtil.getDoubleByObject(obj[2]));
+                woActor.setValueTax(ValueUtil.getDoubleByObject(obj[3]));
+                woActor.setValueOther(ValueUtil.getDoubleByObject(obj[4]));
+                woActor.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+                woActor.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                return Optional.of(woActor);
+            }
+        }
+        return Optional.empty();
     }
 }

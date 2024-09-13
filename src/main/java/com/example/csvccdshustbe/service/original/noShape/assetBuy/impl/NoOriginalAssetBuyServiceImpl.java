@@ -28,7 +28,7 @@ public class NoOriginalAssetBuyServiceImpl implements NoOriginalAssetBuyService 
     public Map<String, Object> findNoOriginalAssetBuyId(Integer idInstance) throws IllegalAccessException {
         Optional<NoShapeOriginalAssetBuyDetailsDto> detailsDto =
                 noShapeOriginalAssetBuyRepository.findNoShapeOriginalAssetBuyDetailsBuyId(idInstance);
-        if (!detailsDto.isPresent()){
+        if (detailsDto.isEmpty()){
             throw new NotFoundException("Don't exits no shape original asset buy!");
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
@@ -37,5 +37,15 @@ public class NoOriginalAssetBuyServiceImpl implements NoOriginalAssetBuyService 
     @Override
     public void deleteNoShapeOriginalAssetById(Integer idInstance) {
         noShapeOriginalAssetBuyRepository.deleteNoShapeOriginalAssetBuyById(idInstance);
+    }
+
+    @Override
+    public NoShapeOriginalAssetBuy findNoShapeOriginalAssetBuyById(Integer idInstance) {
+        Optional<NoShapeOriginalAssetBuy> noShapeOriginalAssetBuy =
+                noShapeOriginalAssetBuyRepository.findNoShapeOriginalAssetBuyById(idInstance);
+        if (noShapeOriginalAssetBuy.isEmpty()){
+            throw new NotFoundException("Don't exits no shape original asset buy!");
+        }
+        return noShapeOriginalAssetBuy.get();
     }
 }

@@ -20,4 +20,13 @@ public class OriginalAssetInvestFactory implements OriginalFactory {
         assetInvest.setTimeModified(timeCurrent);
         return assetInvest;
     }
+
+    @Override
+    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+        ShapeOriginalAssetInvest assetInvest = (ShapeOriginalAssetInvest) iOriginalDetails;
+        assetInvest.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetInvest.setTimeModified(timeCurrent);
+        return assetInvest;
+    }
 }

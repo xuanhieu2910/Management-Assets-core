@@ -37,4 +37,14 @@ public class OriginalAssetConnectWoActorServiceImpl implements OriginalAssetConn
     public void deleteShapeOriginalAssetConnectWoById(Integer idInstance) {
         shapeOriginalAssetConnectWoActorRepository.deleteShapeOriginalAssetConnectWoActorById(idInstance);
     }
+
+    @Override
+    public ShapeOriginalAssetConnectWoActor findShapeOriginalAssetConnecWoActorById(Integer idInstance) {
+        Optional<ShapeOriginalAssetConnectWoActor> woActor =
+                shapeOriginalAssetConnectWoActorRepository.findShapeOriginalAssetConnectWoActorById(idInstance);
+        if (woActor.isEmpty()){
+            throw new NotFoundException("Don't exits shape original asset connect wo actor by id!");
+        }
+        return woActor.get();
+    }
 }

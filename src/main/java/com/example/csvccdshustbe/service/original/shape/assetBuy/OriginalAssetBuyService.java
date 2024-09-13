@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.original.shape.assetBuy;
 
+import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetBuy;
 
 import java.util.Map;
@@ -11,4 +12,6 @@ public interface OriginalAssetBuyService {
     Map<String, Object> findOriginalAssetBuyId(Integer idOriginalAssetBuy) throws IllegalAccessException;
 
     void deleteShapeOriginalAssetById(Integer idInstance);
+
+    ShapeOriginalAssetBuy findShapeOriginalAssetBuyById(Integer idInstance);
 }

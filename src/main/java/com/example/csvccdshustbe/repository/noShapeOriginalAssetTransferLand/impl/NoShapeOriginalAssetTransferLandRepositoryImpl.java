@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.noShapeOriginalAssetTransferLand.impl;
 
 import com.example.csvccdshustbe.dto.original.noShape.NoShapeOriginalAssetTransferLandDetailsDto;
+import com.example.csvccdshustbe.entity.NoShapeOriginalAssetTransferLand;
 import com.example.csvccdshustbe.repository.noShapeOriginalAssetTransferLand.NoShapeOriginalAssetTransferLandRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -52,5 +53,33 @@ public class NoShapeOriginalAssetTransferLandRepositoryImpl implements NoShapeOr
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idNsTransferLand", idInstance);
         query.executeUpdate();
+    }
+
+    @Override
+    public Optional<NoShapeOriginalAssetTransferLand> findNoShapeOriginalAssetTransferLandById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select transferLand.id_ns_original_asset_transfer_land, transferLand.id_asset, " +
+                "       transferLand.value_use, transferLand.value_tax, " +
+                "       transferLand.value_other, transferLand.time_created, " +
+                "       transferLand.time_modified " +
+                "from ns_original_asset_transfer_land transferLand " +
+                "where transferLand.id_ns_original_asset_transfer_land = :idTransferLand ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idTransferLand", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                NoShapeOriginalAssetTransferLand transferLand = new NoShapeOriginalAssetTransferLand();
+                transferLand.setIdNoShapeOriginalAssetTransferLand(ValueUtil.getIntegerByObject(obj[0]));
+                transferLand.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                transferLand.setValueUse(ValueUtil.getDoubleByObject(obj[2]));
+                transferLand.setValueTax(ValueUtil.getDoubleByObject(obj[3]));
+                transferLand.setValueOther(ValueUtil.getDoubleByObject(obj[4]));
+                transferLand.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+                transferLand.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                return Optional.of(transferLand);
+            }
+        }
+        return Optional.empty();
     }
 }

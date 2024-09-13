@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.shapeOriginalAssetEvaluate.impl;
 
 import com.example.csvccdshustbe.dto.original.shape.ShapeOriginalAssetEvaluateDetailsDto;
+import com.example.csvccdshustbe.entity.ShapeOriginalAssetEvaluate;
 import com.example.csvccdshustbe.repository.shapeOriginalAssetEvaluate.ShapeOriginalAssetEvaluateRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -56,5 +57,31 @@ public class ShapeOriginalAssetEvaluateRepositoryImpl implements ShapeOriginalAs
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsEva", idInstance);
         query.executeUpdate();
+    }
+
+    @Override
+    public Optional<ShapeOriginalAssetEvaluate> findShapeOriginalAssetEvaluateById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select eva.id_s_original_asset_evaluate, eva.id_asset, eva.value_buy, " +
+                "       eva.value_tax, eva.value_other, eva.time_created, eva.time_modified " +
+                "from s_original_asset_evaluate eva " +
+                "where eva.id_s_original_asset_evaluate = :idEvaluate ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idEvaluate", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                ShapeOriginalAssetEvaluate evaluate = new ShapeOriginalAssetEvaluate();
+                evaluate.setIdShapeOriginalAssetEvaluate(ValueUtil.getIntegerByObject(obj[0]));
+                evaluate.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                evaluate.setValueBuy(ValueUtil.getDoubleByObject(obj[2]));
+                evaluate.setValueTax(ValueUtil.getDoubleByObject(obj[3]));
+                evaluate.setValueOther(ValueUtil.getDoubleByObject(obj[4]));
+                evaluate.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+                evaluate.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                return Optional.of(evaluate);
+            }
+        }
+        return Optional.empty();
     }
 }

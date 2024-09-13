@@ -24,4 +24,17 @@ public class OriginalAssetGiftFactory implements OriginalFactory {
         assetGift.setTimeModified(timeCurrent);
         return assetGift;
     }
+
+    @Override
+    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+        ShapeOriginalAssetGift assetGift = (ShapeOriginalAssetGift) iOriginalDetails;
+        assetGift.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
+        assetGift.setValueWork(ValueUtil.getDoubleByObject(originalDataAsset.get("valueWork")));
+        assetGift.setValueRecallWork(ValueUtil.getDoubleByObject(originalDataAsset.get("valueRecallWork")));
+        assetGift.setValueTax(ValueUtil.getDoubleByObject(originalDataAsset.get("valueTax")));
+        assetGift.setValueOther(ValueUtil.getDoubleByObject(originalDataAsset.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetGift.setTimeModified(timeCurrent);
+        return assetGift;
+    }
 }

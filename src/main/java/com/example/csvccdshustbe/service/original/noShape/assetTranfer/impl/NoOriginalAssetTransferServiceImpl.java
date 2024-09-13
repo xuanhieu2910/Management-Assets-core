@@ -37,4 +37,14 @@ public class NoOriginalAssetTransferServiceImpl implements NoOriginalAssetTransf
     public void deleteNoShapeOriginalAssetTransferById(Integer idInstance) {
         noShapeOriginalAssetTransferRepository.deleteNoShapeOriginalAssetTransferById(idInstance);
     }
+
+    @Override
+    public NoShapeOriginalAssetTransfer findNoShapeOriginalAssetTransferById(Integer idInstance) {
+        Optional<NoShapeOriginalAssetTransfer> assetTransfer =
+                noShapeOriginalAssetTransferRepository.findNoShapeOriginalAssetTransferById(idInstance);
+        if (assetTransfer.isEmpty()){
+            throw new NotFoundException("Don't exits no shape original asset transfer!");
+        }
+        return assetTransfer.get();
+    }
 }

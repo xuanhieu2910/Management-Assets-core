@@ -22,4 +22,15 @@ public class OriginalAssetEvaluateFactory implements OriginalFactory {
         assetEvaluate.setTimeModified(timeCurrent);
         return assetEvaluate;
     }
+
+    @Override
+    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+        ShapeOriginalAssetEvaluate assetEvaluate = (ShapeOriginalAssetEvaluate) iOriginalDetails;
+        assetEvaluate.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
+        assetEvaluate.setValueTax(ValueUtil.getDoubleByObject(originalDataAsset.get("valueTax")));
+        assetEvaluate.setValueOther(ValueUtil.getDoubleByObject(originalDataAsset.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetEvaluate.setTimeModified(timeCurrent);
+        return assetEvaluate;
+    }
 }

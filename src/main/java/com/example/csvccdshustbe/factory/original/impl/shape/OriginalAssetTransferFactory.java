@@ -23,4 +23,17 @@ public class OriginalAssetTransferFactory implements OriginalFactory {
         assetTransfer.setTimeModified(timeCurrent);
         return assetTransfer;
     }
+
+    @Override
+    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+        ShapeOriginalAssetTransfer assetTransfer = (ShapeOriginalAssetTransfer) iOriginalDetails;
+        assetTransfer.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
+        assetTransfer.setValueWork(ValueUtil.getDoubleByObject(originalDataAsset.get("valueWork")));
+        assetTransfer.setValueRecallWork(ValueUtil.getDoubleByObject(originalDataAsset.get("valueRecallWork")));
+        assetTransfer.setValueTax(ValueUtil.getDoubleByObject(originalDataAsset.get("valueTax")));
+        assetTransfer.setValueOther(ValueUtil.getDoubleByObject(originalDataAsset.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetTransfer.setTimeModified(timeCurrent);
+        return assetTransfer;
+    }
 }

@@ -27,7 +27,7 @@ public class NoOriginalAssetGiftServiceImpl implements NoOriginalAssetGiftServic
     public Map<String, Object> findNoOriginalAssetGiftById(Integer idInstance) throws IllegalAccessException {
         Optional<NoShapeOriginalAssetGiftDetailsDto> detailsDto =
                 noShapeOriginalAssetGifRepository.findShapeOriginalAssetGiftDetailsDtoById(idInstance);
-        if (!detailsDto.isPresent()) {
+        if (detailsDto.isEmpty()) {
             throw new NotFoundException("Don't exits no shape original asset gift!");
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
@@ -36,5 +36,15 @@ public class NoOriginalAssetGiftServiceImpl implements NoOriginalAssetGiftServic
     @Override
     public void deleteNoShapeOriginalAssetGiftById(Integer idInstance) {
         noShapeOriginalAssetGifRepository.deleteNoShapeOriginalAssetGiftById(idInstance);
+    }
+
+    @Override
+    public NoShapeOriginalAssetGift findNoShapeOriginalAssetGiftById(Integer idInstance) {
+        Optional<NoShapeOriginalAssetGift> noAssetGift =
+                noShapeOriginalAssetGifRepository.findShapeOriginalAssetGiftById(idInstance);
+        if (noAssetGift.isEmpty()) {
+            throw new NotFoundException("Don't exits no shape original asset gift!");
+        }
+        return noAssetGift.get();
     }
 }

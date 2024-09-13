@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.original.noShape.assetGift;
 
+import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.NoShapeOriginalAssetGift;
 
 import java.util.Map;
@@ -11,4 +12,6 @@ public interface NoOriginalAssetGiftService {
     Map<String, Object> findNoOriginalAssetGiftById(Integer idInstance) throws IllegalAccessException;
 
     void deleteNoShapeOriginalAssetGiftById(Integer idInstance);
+
+    NoShapeOriginalAssetGift findNoShapeOriginalAssetGiftById(Integer idInstance);
 }

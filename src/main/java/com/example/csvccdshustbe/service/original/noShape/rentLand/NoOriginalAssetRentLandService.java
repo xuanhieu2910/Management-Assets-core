@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.original.noShape.rentLand;
 
+import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.NoShapeOriginalAssetRentLand;
 
 import java.util.Map;
@@ -11,4 +12,6 @@ public interface NoOriginalAssetRentLandService {
     Map<String, Object> findNoOriginalAssetRentLandById(Integer idInstance) throws IllegalAccessException;
 
     void deleteNoShapeOriginalAssetRendLandById(Integer idInstance);
+
+    NoShapeOriginalAssetRentLand findNoShapeOriginalAssetRentLandById(Integer idInstance);
 }

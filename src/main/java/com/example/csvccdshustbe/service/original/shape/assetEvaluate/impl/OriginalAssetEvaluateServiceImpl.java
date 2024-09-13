@@ -37,4 +37,14 @@ public class OriginalAssetEvaluateServiceImpl implements OriginalAssetEvaluateSe
     public void deleteShapeOriginalAssetEvaluateById(Integer idInstance) {
         shapeOriginalAssetEvaluateRepository.deleteOriginalAssetEvaluateById(idInstance);
     }
+
+    @Override
+    public ShapeOriginalAssetEvaluate findShapeOriginalAssetEvaluateById(Integer idInstance) {
+        Optional<ShapeOriginalAssetEvaluate> shapeOriginalAssetEvaluate =
+                shapeOriginalAssetEvaluateRepository.findShapeOriginalAssetEvaluateById(idInstance);
+        if (shapeOriginalAssetEvaluate.isEmpty()){
+            throw new NotFoundException("Don't exits shape original asset evaluate!");
+        }
+        return shapeOriginalAssetEvaluate.get();
+    }
 }

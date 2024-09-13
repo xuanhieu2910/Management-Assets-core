@@ -37,4 +37,14 @@ public class OriginalAssetInvestServiceImpl implements OriginalAssetInvestServic
     public void deleteShapeOriginalAssetInvestById(Integer idInstance) {
         shapeOriginalAssetInvestRepository.deleteShapeOriginalAssetInvestById(idInstance);
     }
+
+    @Override
+    public ShapeOriginalAssetInvest findShapeOriginalAssetInvestById(Integer idInstance) {
+        Optional<ShapeOriginalAssetInvest> assetInvest =
+                shapeOriginalAssetInvestRepository.findOriginalAssetInvestById(idInstance);
+        if (assetInvest.isEmpty()){
+            throw new NotFoundException("Don't exits original asset invest!");
+        }
+        return assetInvest.get();
+    }
 }

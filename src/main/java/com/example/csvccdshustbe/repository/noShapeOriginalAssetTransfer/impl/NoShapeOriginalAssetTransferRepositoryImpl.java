@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.noShapeOriginalAssetTransfer.impl;
 
 import com.example.csvccdshustbe.dto.original.noShape.NoShapeOriginalAssetTransferDetailsDto;
+import com.example.csvccdshustbe.entity.NoShapeOriginalAssetTransfer;
 import com.example.csvccdshustbe.repository.noShapeOriginalAssetTransfer.NoShapeOriginalAssetTransferRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -58,5 +59,33 @@ public class NoShapeOriginalAssetTransferRepositoryImpl implements NoShapeOrigin
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idnsTransfer", idInstance);
         query.executeUpdate();
+    }
+
+    @Override
+    public Optional<NoShapeOriginalAssetTransfer> findNoShapeOriginalAssetTransferById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select transfer.id_ns_original_asset_transfer, transfer.id_asset, " +
+                "       transfer.value_buy, transfer.value_work, transfer.value_tax, " +
+                "       transfer.value_other, transfer.time_created, transfer.time_modified " +
+                "from ns_original_asset_transfer transfer " +
+                "where transfer.id_ns_original_asset_transfer = :idTransfer ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idTransfer", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result) {
+                NoShapeOriginalAssetTransfer assetTransfer = new NoShapeOriginalAssetTransfer();
+                assetTransfer.setIdNoShapeOriginalAssetTransfer(ValueUtil.getIntegerByObject(obj[0]));
+                assetTransfer.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                assetTransfer.setValueBuy(ValueUtil.getDoubleByObject(obj[2]));
+                assetTransfer.setValueWork(ValueUtil.getDoubleByObject(obj[3]));
+                assetTransfer.setValueTax(ValueUtil.getDoubleByObject(obj[4]));
+                assetTransfer.setValueOther(ValueUtil.getDoubleByObject(obj[5]));
+                assetTransfer.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                assetTransfer.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                return Optional.of(assetTransfer);
+            }
+        }
+        return Optional.empty();
     }
 }

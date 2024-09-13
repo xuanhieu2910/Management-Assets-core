@@ -26,7 +26,7 @@ public class NoOriginalAssetEvaluateServiceImpl implements NoOriginalAssetEvalua
     @Override
     public Map<String, Object> findNoOriginalAssetEvaluateById(Integer idInstance) throws IllegalAccessException {
         Optional<NoShapeOriginalAssetEvaluateDetailsDto> detailsDto =
-                noShapeOriginalAssetEvaluateRepository.findNoShapeOriginalAssetEvaluateDetailsDto(idInstance);
+                noShapeOriginalAssetEvaluateRepository.findNoShapeOriginalAssetEvaluateDetailsDtoById(idInstance);
         if (!detailsDto.isPresent()){
             throw new NotFoundException("Don't exits no shape original asset evaluate!");
         }
@@ -36,5 +36,15 @@ public class NoOriginalAssetEvaluateServiceImpl implements NoOriginalAssetEvalua
     @Override
     public void deleteNoShapeOriginalAssetEvaluateById(Integer idInstance) {
         noShapeOriginalAssetEvaluateRepository.deleteNoShapeOriginalAssetEvaluateById(idInstance);
+    }
+
+    @Override
+    public NoShapeOriginalAssetEvaluate findNoShapeOriginalAssetEvaluateById(Integer idInstance) {
+        Optional<NoShapeOriginalAssetEvaluate> evaluate =
+                noShapeOriginalAssetEvaluateRepository.findNoShapeOriginalAssetEvaluateById(idInstance);
+        if (evaluate.isEmpty()){
+            throw new NotFoundException("Don't exits no shape original asset evaluate!");
+        }
+        return evaluate.get();
     }
 }

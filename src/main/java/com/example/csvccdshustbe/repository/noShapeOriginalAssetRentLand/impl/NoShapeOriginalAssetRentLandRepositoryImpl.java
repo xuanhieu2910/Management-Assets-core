@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.noShapeOriginalAssetRentLand.impl;
 
 import com.example.csvccdshustbe.dto.original.noShape.NoShapeOriginalAssetRentLandDetailsDto;
+import com.example.csvccdshustbe.entity.NoShapeOriginalAssetRentLand;
 import com.example.csvccdshustbe.repository.noShapeOriginalAssetRentLand.NoShapeOriginalAssetRentLandRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -55,5 +56,32 @@ public class NoShapeOriginalAssetRentLandRepositoryImpl implements NoShapeOrigin
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idNsRentLand", idInstance);
         query.executeUpdate();
+    }
+
+    @Override
+    public Optional<NoShapeOriginalAssetRentLand> findNoShapeOriginalAssetRentLandById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select rentLand.id_ns_original_asset_rent_land, rentLand.id_asset, " +
+                "       rentLand.value_rent, rentLand.value_work, " +
+                "       rentLand.time_created, rentLand.time_modified " +
+                "from ns_original_asset_rent_land rentLand  " +
+                "where rentLand.id_ns_original_asset_rent_land = :idRentLand ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idRentLand", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                NoShapeOriginalAssetRentLand rentLand = new NoShapeOriginalAssetRentLand();
+                rentLand.setIdNoShapeOriginalAssetRentLand(ValueUtil.getIntegerByObject(obj[0]));
+                rentLand.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                rentLand.setValueRent(ValueUtil.getDoubleByObject(obj[2]));
+                rentLand.setValueWork(ValueUtil.getDoubleByObject(obj[3]));
+                rentLand.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                rentLand.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                return Optional.of(rentLand);
+            }
+        }
+
+        return Optional.empty();
     }
 }

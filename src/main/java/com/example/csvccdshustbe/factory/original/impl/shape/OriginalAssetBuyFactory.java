@@ -27,4 +27,20 @@ public class OriginalAssetBuyFactory implements OriginalFactory {
         shapeOriginalAssetBuy.setTimeModified(timeCurrent);
         return shapeOriginalAssetBuy;
     }
+
+    @Override
+    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+        ShapeOriginalAssetBuy shapeOriginalAssetBuy = (ShapeOriginalAssetBuy) iOriginalDetails;
+        shapeOriginalAssetBuy.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
+        shapeOriginalAssetBuy.setValueDiscount(ValueUtil.getDoubleByObject(originalDataAsset.get("valueDiscount")));
+        shapeOriginalAssetBuy.setValueWork(ValueUtil.getDoubleByObject(originalDataAsset.get("valueWork")));
+        shapeOriginalAssetBuy.setValueRecallWork(ValueUtil.getDoubleByObject(originalDataAsset.get("valueRecallWork")));
+        shapeOriginalAssetBuy.setValueTax(ValueUtil.getDoubleByObject(originalDataAsset.get("valueTax")));
+        shapeOriginalAssetBuy.setValueOther(ValueUtil.getDoubleByObject(originalDataAsset.get("valueOther")));
+        shapeOriginalAssetBuy.setIdMethodBuyAsset(ValueUtil.getIntegerByObject(originalDataAsset.get("idMethodBuyAsset")));
+        shapeOriginalAssetBuy.setIdTypeBuyAsset(ValueUtil.getIntegerByObject(originalDataAsset.get("idTypeBuyAsset")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        shapeOriginalAssetBuy.setTimeModified(timeCurrent);
+        return shapeOriginalAssetBuy;
+    }
 }

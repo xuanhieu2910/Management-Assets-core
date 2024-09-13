@@ -21,4 +21,15 @@ public class NoShapeOriginalAssetRentLandFactory implements OriginalFactory {
         rentLand.setTimeModified(timeCurrent);
         return rentLand;
     }
+
+    @Override
+    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+        NoShapeOriginalAssetRentLand rentLand = (NoShapeOriginalAssetRentLand) iOriginalDetails;
+        rentLand.setValueRent(ValueUtil.getDoubleByObject(originalDataAsset.get("valueRent")));
+        rentLand.setValueWork(ValueUtil.getDoubleByObject(originalDataAsset.get("valueWork")));
+        rentLand.setValueOther(ValueUtil.getDoubleByObject(originalDataAsset.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        rentLand.setTimeModified(timeCurrent);
+        return rentLand;
+    }
 }

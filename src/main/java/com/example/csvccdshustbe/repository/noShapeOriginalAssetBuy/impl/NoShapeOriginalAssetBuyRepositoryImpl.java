@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.noShapeOriginalAssetBuy.impl;
 
 import com.example.csvccdshustbe.dto.original.noShape.NoShapeOriginalAssetBuyDetailsDto;
+import com.example.csvccdshustbe.entity.NoShapeOriginalAssetBuy;
 import com.example.csvccdshustbe.repository.noShapeOriginalAssetBuy.NoShapeOriginalAssetBuyRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -63,5 +64,35 @@ public class NoShapeOriginalAssetBuyRepositoryImpl implements NoShapeOriginalAss
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idnsBuy", idInstance);
         query.executeUpdate();
+    }
+
+    @Override
+    public Optional<NoShapeOriginalAssetBuy> findNoShapeOriginalAssetBuyById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select assetBuy.id_ns_original_asset_buy, assetBuy.id_asset, " +
+                "       assetBuy.value_buy, assetBuy.value_tax, assetBuy.value_other, " +
+                "       assetBuy.time_created, assetBuy.time_modified, assetBuy.id_method_buy_asset, " +
+                "       assetBuy.id_type_buy_asset " +
+                "from ns_original_asset_buy assetBuy " +
+                "where assetBuy.id_ns_original_asset_buy = :idAssetBuy ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idAssetBuy", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                NoShapeOriginalAssetBuy assetBuy = new NoShapeOriginalAssetBuy();
+                assetBuy.setIdNoShapeOriginalAssetBuy(ValueUtil.getIntegerByObject(obj[0]));
+                assetBuy.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                assetBuy.setValueBuy(ValueUtil.getDoubleByObject(obj[2]));
+                assetBuy.setValueTax(ValueUtil.getDoubleByObject(obj[3]));
+                assetBuy.setValueOther(ValueUtil.getDoubleByObject(obj[4]));
+                assetBuy.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+                assetBuy.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                assetBuy.setIdMethodBuyAsset(ValueUtil.getIntegerByObject(obj[7]));
+                assetBuy.setIdTypeBuyAsset(ValueUtil.getIntegerByObject(obj[8]));
+                return Optional.of(assetBuy);
+            }
+        }
+        return Optional.empty();
     }
 }

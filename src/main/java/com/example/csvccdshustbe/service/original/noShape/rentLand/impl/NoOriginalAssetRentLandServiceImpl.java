@@ -37,4 +37,14 @@ public class NoOriginalAssetRentLandServiceImpl implements NoOriginalAssetRentLa
     public void deleteNoShapeOriginalAssetRendLandById(Integer idInstance) {
         noShapeOriginalAssetRentLandRepository.deleteNoShapeOriginalAssetRentLandById(idInstance);
     }
+
+    @Override
+    public NoShapeOriginalAssetRentLand findNoShapeOriginalAssetRentLandById(Integer idInstance) {
+        Optional<NoShapeOriginalAssetRentLand> rentLand =
+                noShapeOriginalAssetRentLandRepository.findNoShapeOriginalAssetRentLandById(idInstance);
+        if (rentLand.isEmpty()) {
+            throw new NotFoundException("Don't exits no shape original asset rent land!");
+        }
+        return rentLand.get();
+    }
 }

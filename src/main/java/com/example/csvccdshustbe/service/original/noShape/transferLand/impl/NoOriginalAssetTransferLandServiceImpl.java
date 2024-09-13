@@ -38,4 +38,14 @@ public class NoOriginalAssetTransferLandServiceImpl implements NoOriginalAssetTr
     public void deleteNoShapOriginalAssetTransferLandById(Integer idInstance) {
         noShapeOriginalAssetTransferLandRepository.deleteNoShapeOriginalAssetTransferLandById(idInstance);
     }
+
+    @Override
+    public NoShapeOriginalAssetTransferLand findNoShapeOriginalAssetTransferLandById(Integer idInstance) {
+        Optional<NoShapeOriginalAssetTransferLand> transferLand =
+                noShapeOriginalAssetTransferLandRepository.findNoShapeOriginalAssetTransferLandById(idInstance);
+        if (transferLand.isEmpty()){
+            throw new NotFoundException("Don't exits no shape original asset transfer land!");
+        }
+        return transferLand.get();
+    }
 }

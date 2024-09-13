@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.shapeOriginalAssetInvest.impl;
 
 import com.example.csvccdshustbe.dto.original.shape.ShapeOriginalAssetInvestDetailsDto;
+import com.example.csvccdshustbe.entity.ShapeOriginalAssetInvest;
 import com.example.csvccdshustbe.repository.shapeOriginalAssetInvest.ShapeOriginalAssetInvestRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -55,5 +56,29 @@ public class ShapeOriginalAssetInvestRepositoryImpl implements ShapeOriginalAsse
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsInvest", idInstance);
         query.executeUpdate();
+    }
+
+    @Override
+    public Optional<ShapeOriginalAssetInvest> findOriginalAssetInvestById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select invest.id_s_original_asset_invest, invest.id_asset, " +
+                "       invest.value_buy, invest.time_created, invest.time_modified  " +
+                "from s_original_asset_invest invest " +
+                "where invest.id_s_original_asset_invest = :idInvest ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idInvest", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                ShapeOriginalAssetInvest assetInvest = new ShapeOriginalAssetInvest();
+                assetInvest.setIdShapeOriginalAssetInvest(ValueUtil.getIntegerByObject(obj[0]));
+                assetInvest.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                assetInvest.setValueBuy(ValueUtil.getDoubleByObject(obj[2]));
+                assetInvest.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                assetInvest.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                return Optional.of(assetInvest);
+            }
+        }
+        return Optional.empty();
     }
 }

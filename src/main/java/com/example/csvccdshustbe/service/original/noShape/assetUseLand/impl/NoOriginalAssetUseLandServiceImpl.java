@@ -27,7 +27,7 @@ public class NoOriginalAssetUseLandServiceImpl implements NoOriginalAssetUseLand
     @Override
     public Map<String, Object> findNoOriginalAssetUseLandById(Integer idInstance) throws IllegalAccessException {
         Optional<NoShapeOriginalAssetUseLandDetailsDto> detailsDto =
-                noShapeOriginalAssetUseLandRepository.findNoShapeOriginalAssetUseLandById(idInstance);
+                noShapeOriginalAssetUseLandRepository.findNoShapeOriginalAssetUseLandDetailsById(idInstance);
         if (!detailsDto.isPresent()){
             throw new NotFoundException("Don't exits original asset use land!");
         }
@@ -37,5 +37,15 @@ public class NoOriginalAssetUseLandServiceImpl implements NoOriginalAssetUseLand
     @Override
     public void deleteNoShapeOriginalAssetUseLandById(Integer idInstance) {
         noShapeOriginalAssetUseLandRepository.deleteNoShapeOriginalAssetUseLandById(idInstance);
+    }
+
+    @Override
+    public NoShapeOriginalAssetUseLand findNoShapeOriginalAssetUseLandById(Integer idInstance) {
+        Optional<NoShapeOriginalAssetUseLand> assetUseLand =
+                noShapeOriginalAssetUseLandRepository.findNoShapeOriginalAssetUseLandById(idInstance);
+        if (assetUseLand.isEmpty()){
+            throw new NotFoundException("Don't exits original asset use land");
+        }
+        return assetUseLand.get();
     }
 }

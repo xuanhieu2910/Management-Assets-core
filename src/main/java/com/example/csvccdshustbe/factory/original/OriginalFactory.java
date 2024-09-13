@@ -8,4 +8,5 @@ public interface OriginalFactory {
 
     IOriginal createOriginal(Map<String, Object> mapOriginalCreate);
 
+    IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails);
 }

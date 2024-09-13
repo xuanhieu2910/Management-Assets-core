@@ -39,4 +39,13 @@ public class OriginalAssetBuyServiceImpl implements OriginalAssetBuyService {
     public void deleteShapeOriginalAssetById(Integer idInstance) {
         shapeOriginalAssetByRepository.deleteShapeOriginalAssetById(idInstance);
     }
+
+    @Override
+    public ShapeOriginalAssetBuy findShapeOriginalAssetBuyById(Integer idInstance) {
+        Optional<ShapeOriginalAssetBuy> shapeOriginalAssetBuy = shapeOriginalAssetByRepository.findShapeOriginalAssetBuyById(idInstance);
+        if (shapeOriginalAssetBuy.isEmpty()){
+            throw new NotFoundException("Don't exits shape original asset buy by id!");
+        }
+        return shapeOriginalAssetBuy.get();
+    }
 }

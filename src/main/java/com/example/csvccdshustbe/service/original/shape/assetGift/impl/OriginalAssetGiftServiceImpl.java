@@ -38,4 +38,14 @@ public class OriginalAssetGiftServiceImpl implements OriginalAssetGiftService {
     public void deleteShapeOriginalAssetGiftById(Integer idInstance) {
         shapeOriginalAssetGiftRepository.deleteShapeOriginalAssetGiftById(idInstance);
     }
+
+    @Override
+    public ShapeOriginalAssetGift findShapeOriginalAssetGiftById(Integer idInstance) {
+        Optional<ShapeOriginalAssetGift> shapeOriginalAssetGift =
+                shapeOriginalAssetGiftRepository.findShapeOriginalAssetGiftById(idInstance);
+        if (shapeOriginalAssetGift.isEmpty()){
+            throw new NotFoundException("Don't exits shape original asset gift!");
+        }
+        return shapeOriginalAssetGift.get();
+    }
 }
