@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.declare;
 
 
+import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.EnumDeclareFactory;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -102,6 +103,65 @@ public class DeclareServiceFactory {
             }
             case CommonDeclare -> {
                 return commonDeclareService.findCommonDeclareDetailsDtoById(idInstance);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type declare!");
+            }
+        }
+    }
+
+    public BluePrintDeclareDto findBluePrintAssetDeclareByIdAsset(Integer idAsset) {
+        return assetDeclareService.findBluePrintAssetDeclareByIdAsset(idAsset);
+    }
+
+    public void deleteAssetDeclare(String typeDeclare, Integer idInstance, Integer idDeclare) throws ValidateFiledException {
+        EnumDeclareFactory enumDeclareFactory = Enum.valueOf(EnumDeclareFactory.class, typeDeclare);
+        switch (enumDeclareFactory){
+            case HouseDeclare -> {
+                houseDeclareService.deleteHouseDeclareById(idInstance);
+            }
+            case GroundDeclare -> {
+                groundDeclareService.deleteGroundDeclareById(idInstance);
+            }
+            case CommonDeclare -> {
+                commonDeclareService.deleteCommonDeclareById(idInstance);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type declare!");
+            }
+        }
+        assetDeclareService.deleteAssetDeclareByIdInstanceAndIdDeclare(idInstance, idDeclare);
+    }
+
+    public IDeclare findIDeclareByTypeDeclareAndIdInstance(String typeDeclare, Integer idInstance) throws ValidateFiledException {
+        EnumDeclareFactory enumDeclareFactory = Enum.valueOf(EnumDeclareFactory.class, typeDeclare);
+        switch (enumDeclareFactory){
+            case HouseDeclare -> {
+                return houseDeclareService.findHouseDeclareById(idInstance);
+            }
+            case GroundDeclare -> {
+                return groundDeclareService.findGroundDeclareById(idInstance);
+            }
+            case CommonDeclare -> {
+                return commonDeclareService.findCommonDeclareById(idInstance);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type declare!");
+            }
+        }
+    }
+
+    public <T> IDeclare update(String typeDeclare, T dataDeclare) throws ValidateFiledException {
+        EnumDeclareFactory enumDeclareFactory = Enum.valueOf(EnumDeclareFactory.class, typeDeclare);
+        switch (enumDeclareFactory){
+            case HouseDeclare -> {
+                return houseDeclareService.save((HouseDeclare) dataDeclare);
+            }
+            case GroundDeclare -> {
+                return groundDeclareService.save((GroundDeclare) dataDeclare);
+            }
+            case CommonDeclare -> {
+                return commonDeclareService.save((CommonDeclare) dataDeclare);
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type declare!");

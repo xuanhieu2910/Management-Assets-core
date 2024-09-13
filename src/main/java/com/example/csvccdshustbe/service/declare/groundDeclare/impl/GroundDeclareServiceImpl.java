@@ -30,4 +30,18 @@ public class GroundDeclareServiceImpl implements GroundDeclareService {
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteGroundDeclareById(Integer idInstance) {
+        groundDeclareRepository.deleteGroundDeclareById(idInstance);
+    }
+
+    @Override
+    public GroundDeclare findGroundDeclareById(Integer idInstance) {
+        Optional<GroundDeclare> groundDeclare = groundDeclareRepository.findGroundDeclareById(idInstance);
+        if (groundDeclare.isEmpty()){
+            throw new NotFoundException("Don't exits ground declare!");
+        }
+        return groundDeclare.get();
+    }
 }

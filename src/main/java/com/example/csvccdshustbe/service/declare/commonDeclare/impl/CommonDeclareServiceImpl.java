@@ -32,4 +32,18 @@ public class CommonDeclareServiceImpl implements CommonDeclareService {
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteCommonDeclareById(Integer idInstance) {
+        commonDeclareRepository.deleteCommonDeclareById(idInstance);
+    }
+
+    @Override
+    public CommonDeclare findCommonDeclareById(Integer idInstance) {
+        Optional<CommonDeclare> commonDeclare = commonDeclareRepository.findCommonDeclareById(idInstance);
+        if (commonDeclare.isEmpty()){
+            throw new NotFoundException("Don't exits find common declare!");
+        }
+        return commonDeclare.get();
+    }
 }

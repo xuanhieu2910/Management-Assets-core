@@ -29,7 +29,7 @@ public class OriginalAssetBuyFactory implements OriginalFactory {
     }
 
     @Override
-    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+    public IOriginal updateOriginal(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
         ShapeOriginalAssetBuy shapeOriginalAssetBuy = (ShapeOriginalAssetBuy) iOriginalDetails;
         shapeOriginalAssetBuy.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
         shapeOriginalAssetBuy.setValueDiscount(ValueUtil.getDoubleByObject(originalDataAsset.get("valueDiscount")));

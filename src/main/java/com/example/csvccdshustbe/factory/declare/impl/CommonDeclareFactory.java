@@ -23,4 +23,14 @@ public class CommonDeclareFactory implements DeclareFactory {
         declare.setTimeModified(timeCurrent);
         return declare;
     }
+
+    @Override
+    public IDeclare updateDeclare(Map<String, Object> declareDataAsset, IDeclare iDeclareDetails) {
+        CommonDeclare declare = (CommonDeclare) iDeclareDetails;
+        declare.setSpecification(ValueUtil.getStringByObject(declareDataAsset.get("specification")));
+        declare.setIdTypeDeclareAsset(ValueUtil.getIntegerByObject(declareDataAsset.get("idTypeDeclareAsset")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        declare.setTimeModified(timeCurrent);
+        return declare;
+    }
 }

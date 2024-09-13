@@ -26,7 +26,7 @@ public class OriginalAssetGiftFactory implements OriginalFactory {
     }
 
     @Override
-    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+    public IOriginal updateOriginal(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
         ShapeOriginalAssetGift assetGift = (ShapeOriginalAssetGift) iOriginalDetails;
         assetGift.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
         assetGift.setValueWork(ValueUtil.getDoubleByObject(originalDataAsset.get("valueWork")));

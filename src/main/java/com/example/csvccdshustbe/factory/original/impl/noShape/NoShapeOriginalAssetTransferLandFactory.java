@@ -23,7 +23,7 @@ public class NoShapeOriginalAssetTransferLandFactory implements OriginalFactory 
     }
 
     @Override
-    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+    public IOriginal updateOriginal(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
         NoShapeOriginalAssetTransferLand transferLand = (NoShapeOriginalAssetTransferLand) iOriginalDetails;
         transferLand.setValueUse(ValueUtil.getDoubleByObject(originalDataAsset.get("valueUse")));
         transferLand.setValueTax(ValueUtil.getDoubleByObject(originalDataAsset.get("valueTax")));

@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.service.asset.impl;
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
 import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
 import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
@@ -132,9 +133,45 @@ public class AssetServiceImpl implements AssetService {
         updateDeclareDataAsset(dataUpdateAssetRequest, asset);
     }
 
-    private void updateDeclareDataAsset(Map<String, Object> dataUpdateAssetRequest, Asset asset) {
+    private void updateDeclareDataAsset(Map<String, Object> dataUpdateAssetRequest, Asset asset) throws ValidateFiledException {
         log.info("Start update declare data asset by code asset " + asset.getCodeAsset());
         Map<String,Object> declareDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_DECLARE_ASSET);
+        BluePrintDeclareDto bluePrintDeclareDto = declareServiceFactory.findBluePrintAssetDeclareByIdAsset(asset.getIdAsset());
+        deleteAssetDeclare(bluePrintDeclareDto, declareDataAsset);
+        createNewAssetDeclare(bluePrintDeclareDto, declareDataAsset, asset);
+        updateAssetDeclare(bluePrintDeclareDto, declareDataAsset);
+    }
+
+    private void updateAssetDeclare(BluePrintDeclareDto bluePrintDeclareDto, Map<String, Object> declareDataAsset) throws ValidateFiledException {
+        if (bluePrintDeclareDto.getTypeDeclare().equals(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)))){
+            String typeDeclare = bluePrintDeclareDto.getTypeDeclare();
+            Integer idInstance = bluePrintDeclareDto.getIdInstance();
+            IDeclare iDeclareDetails = declareServiceFactory.findIDeclareByTypeDeclareAndIdInstance(typeDeclare, idInstance);
+            DeclareFactory declareFactory = (DeclareFactory) ProxyInitDataAssetUtil.
+                    proxyInitOriginalDataAsset(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)));
+            IDeclare iDeclare = declareFactory.updateDeclare(declareDataAsset,iDeclareDetails);
+            declareServiceFactory.update(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)), iDeclare);
+            log.info("Finish update original factory " + declareFactory.getClass());
+        }
+    }
+
+    private void createNewAssetDeclare(BluePrintDeclareDto bluePrintDeclareDto, Map<String, Object> declareDataAsset, Asset asset) throws ValidateFiledException {
+        if (!bluePrintDeclareDto.getTypeDeclare().equals(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)))){
+            log.info("Storing declare data asset");
+            declareDataAsset.put("idAsset", asset.getIdAsset());
+            DeclareFactory declareFactory = (DeclareFactory) ProxyInitDataAssetUtil.
+                    proxyInitDeclareDataAsset(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)));
+            IDeclare iDeclare = declareFactory.createDeclare(declareDataAsset);
+            declareServiceFactory.save(iDeclare,declareDataAsset);
+            log.info("Finish store declare factory " + declareFactory.getClass());
+        }
+    }
+
+    private void deleteAssetDeclare(BluePrintDeclareDto bluePrintDeclareDto, Map<String, Object> declareDataAsset) throws ValidateFiledException {
+        if (!bluePrintDeclareDto.getIdDeclare().equals(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)))) {
+            declareServiceFactory.deleteAssetDeclare(bluePrintDeclareDto.getTypeDeclare(), bluePrintDeclareDto.getIdInstance(),
+                    bluePrintDeclareDto.getIdDeclare());
+        }
     }
 
     private void updateOriginalDataAsset(Map<String, Object> dataUpdateAssetRequest, Asset asset) throws ValidateFiledException {
@@ -153,7 +190,7 @@ public class AssetServiceImpl implements AssetService {
             IOriginal iOriginalDetails = originalServiceFactory.findIOriginalByTypeOriginalAndIdInstance(typeOriginal, idInstance);
             OriginalFactory originalFactory = (OriginalFactory) ProxyInitDataAssetUtil.
                     proxyInitOriginalDataAsset(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)));
-            IOriginal iOriginal = originalFactory.updateModule(originalDataAsset,iOriginalDetails);
+            IOriginal iOriginal = originalFactory.updateOriginal(originalDataAsset,iOriginalDetails);
             originalServiceFactory.update(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)), iOriginal);
             log.info("Finish update original factory " + originalFactory.getClass());
         }

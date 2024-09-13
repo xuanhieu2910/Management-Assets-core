@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.commonDeclare.impl;
 
 import com.example.csvccdshustbe.dto.declare.CommonDeclareDetailsDto;
+import com.example.csvccdshustbe.entity.CommonDeclare;
 import com.example.csvccdshustbe.repository.commonDeclare.CommonDeclareRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -40,6 +41,42 @@ public class CommonDeclareRepositoryImpl implements CommonDeclareRepositoryCusto
                 detailsDto.setTimeModified(ValueUtil.getStringByObject(obj[5]));
                 detailsDto.setNameTypeDeclare(ValueUtil.getStringByObject(obj[6]));
                 return Optional.of(detailsDto);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public void deleteCommonDeclareById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from common_declare commonDeclare " +
+                "where commonDeclare.id_other_declare = :idCommonDeclare ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idCommonDeclare", idInstance);
+        query.executeUpdate();
+    }
+
+    @Override
+    public Optional<CommonDeclare> findCommonDeclareById(Integer idInstance) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select commonDeclare.id_other_declare, commonDeclare.id_asset,    " +
+                "          commonDeclare.specification, commonDeclare.id_type_declare_asset,    " +
+                "          commonDeclare.time_created, commonDeclare.time_modified " +
+                "from common_declare commonDeclare    " +
+                "where commonDeclare.id_other_declare = :idOtherDeclare ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idOtherDeclare", idInstance);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                CommonDeclare commonDeclare = new CommonDeclare();
+                commonDeclare.setIdOtherDeclare(ValueUtil.getIntegerByObject(obj[0]));
+                commonDeclare.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                commonDeclare.setSpecification(ValueUtil.getStringByObject(obj[2]));
+                commonDeclare.setIdTypeDeclareAsset(ValueUtil.getIntegerByObject(obj[3]));
+                commonDeclare.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                commonDeclare.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                return Optional.of(commonDeclare);
             }
         }
         return Optional.empty();

@@ -25,7 +25,7 @@ public class OriginalAssetTransferFactory implements OriginalFactory {
     }
 
     @Override
-    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+    public IOriginal updateOriginal(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
         ShapeOriginalAssetTransfer assetTransfer = (ShapeOriginalAssetTransfer) iOriginalDetails;
         assetTransfer.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
         assetTransfer.setValueWork(ValueUtil.getDoubleByObject(originalDataAsset.get("valueWork")));

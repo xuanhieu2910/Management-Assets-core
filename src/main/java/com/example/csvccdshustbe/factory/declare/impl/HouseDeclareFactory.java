@@ -32,4 +32,24 @@ public class HouseDeclareFactory implements DeclareFactory {
         declare.setTimeModified(timeCurrent);
         return declare;
     }
+
+    @Override
+    public IDeclare updateDeclare(Map<String, Object> declareDataAsset, IDeclare iDeclareDetails) {
+        HouseDeclare declare = (HouseDeclare) iDeclareDetails;
+        declare.setWorkplace(ValueUtil.getDoubleByObject(declareDataAsset.get("workplace")));
+        declare.setHdsnNoBussiness(ValueUtil.getDoubleByObject(declareDataAsset.get("hdsnNoBussiness")));
+        declare.setHdsnBussiness(ValueUtil.getDoubleByObject(declareDataAsset.get("hdsnBussiness")));
+        declare.setHdsnRent(ValueUtil.getDoubleByObject(declareDataAsset.get("hdsnRent")));
+        declare.setHdsnBonds(ValueUtil.getDoubleByObject(declareDataAsset.get("hdsnBonds")));
+        declare.setLivePlace(ValueUtil.getDoubleByObject(declareDataAsset.get("LivePlace")));
+        declare.setBlankPlace(ValueUtil.getDoubleByObject(declareDataAsset.get("blankPlace")));
+        declare.setEncroachedPlace(ValueUtil.getDoubleByObject(declareDataAsset.get("encroachedPlace")));
+        declare.setSyntheticUse(ValueUtil.getDoubleByObject(declareDataAsset.get("syntheticUse")));
+        declare.setOtherUse(ValueUtil.getDoubleByObject(declareDataAsset.get("otherUse")));
+        declare.setAcreage(ValueUtil.getDoubleByObject(declareDataAsset.get("acreage")));
+        declare.setIdTypeDeclareAsset(ValueUtil.getIntegerByObject(declareDataAsset.get("idTypeDeclareAsset")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        declare.setTimeModified(timeCurrent);
+        return declare;
+    }
 }

@@ -25,7 +25,7 @@ public class NoOriginalAssetBuyFactory implements OriginalFactory {
     }
 
     @Override
-    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+    public IOriginal updateOriginal(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
         NoShapeOriginalAssetBuy noShapeOriginalAssetBuy = (NoShapeOriginalAssetBuy) iOriginalDetails;
         noShapeOriginalAssetBuy.setIdMethodBuyAsset(ValueUtil.getIntegerByObject(originalDataAsset.get("idMethodBuyAsset")));
         noShapeOriginalAssetBuy.setIdTypeBuyAsset(ValueUtil.getIntegerByObject(originalDataAsset.get("idTypeBuyAsset")));

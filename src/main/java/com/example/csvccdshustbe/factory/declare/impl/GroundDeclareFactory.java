@@ -43,4 +43,36 @@ public class GroundDeclareFactory implements DeclareFactory {
         declare.setDateNumberDecisionRentGround(ValueUtil.getStringByObject(mapDeclareRequest.get("dateNumberDecisionRentGround")));
         return declare;
     }
+
+    @Override
+    public IDeclare updateDeclare(Map<String, Object> declareDataAsset, IDeclare iDeclareDetails) {
+        GroundDeclare declare = (GroundDeclare) iDeclareDetails;
+        declare.setIdGoalsUseGround(ValueUtil.getIntegerByObject(declareDataAsset.get("idGoalsUseGround")));
+        declare.setWorkplace(ValueUtil.getDoubleByObject(declareDataAsset.get("workplace")));
+        declare.setHdsnNoBussiness(ValueUtil.getDoubleByObject(declareDataAsset.get("hdsnNoBussiness")));
+        declare.setHdsnBussiness(ValueUtil.getDoubleByObject(declareDataAsset.get("hdsnBussiness")));
+        declare.setHdsnRent(ValueUtil.getDoubleByObject(declareDataAsset.get("hdsnRent")));
+        declare.setHdsnBonds(ValueUtil.getDoubleByObject(declareDataAsset.get("hdsnBonds")));
+        declare.setLivePlace(ValueUtil.getDoubleByObject(declareDataAsset.get("livePlace")));
+        declare.setBlankPlace(ValueUtil.getDoubleByObject(declareDataAsset.get("blankPlace")));
+        declare.setEncroachedPlace(ValueUtil.getDoubleByObject(declareDataAsset.get("encroachedPlace")));
+        declare.setSyntheticUse(ValueUtil.getDoubleByObject(declareDataAsset.get("syntheticUse")));
+        declare.setOtherUse(ValueUtil.getDoubleByObject(declareDataAsset.get("otherUse")));
+        declare.setAcreage(ValueUtil.getDoubleByObject(declareDataAsset.get("acreage")));
+        declare.setLicenseCertificateUseGround(ValueUtil.getStringByObject(declareDataAsset.get("licenseCertificateUseGround")));
+        declare.setDateLicenseCertificateUseGround(ValueUtil.getStringByObject(declareDataAsset.get("dateLicenseCertificateUseGround")));
+        declare.setNumberDecisionDeliverGround(ValueUtil.getStringByObject(declareDataAsset.get("numberDecisionDeliverGround")));
+        declare.setDateNumberDecisionDeliverGround(ValueUtil.getStringByObject(declareDataAsset.get("dateNumberDecisionDeliverGround")));
+        declare.setContractNumberRentGround(ValueUtil.getStringByObject(declareDataAsset.get("contractNumberRentGround")));
+        declare.setDateContractNumberRentGround(ValueUtil.getStringByObject(declareDataAsset.get("dateContractNumberRentGround")));
+        declare.setAnotherContract(ValueUtil.getStringByObject(declareDataAsset.get("anotherContract")));
+        declare.setIdTypeDeclareAsset(ValueUtil.getIntegerByObject(declareDataAsset.get("idTypeDeclareAsset")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        declare.setTimeModified(timeCurrent);
+        declare.setContractNumberTransferGround(ValueUtil.getStringByObject(declareDataAsset.get("contractNumberTransferGround")));
+        declare.setDateContractNumberTransferGround(ValueUtil.getStringByObject(declareDataAsset.get("dateContractNumberTransferGround")));
+        declare.setNumberDecisionRentGround(ValueUtil.getStringByObject(declareDataAsset.get("numberDecisionRentGround")));
+        declare.setDateNumberDecisionRentGround(ValueUtil.getStringByObject(declareDataAsset.get("dateNumberDecisionRentGround")));
+        return declare;
+    }
 }

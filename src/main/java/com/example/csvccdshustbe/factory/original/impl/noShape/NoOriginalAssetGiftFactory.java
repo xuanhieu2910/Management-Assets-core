@@ -24,7 +24,7 @@ public class NoOriginalAssetGiftFactory implements OriginalFactory {
     }
 
     @Override
-    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+    public IOriginal updateOriginal(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
         NoShapeOriginalAssetGift gift = (NoShapeOriginalAssetGift) iOriginalDetails;
         gift.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
         gift.setValueWork(ValueUtil.getDoubleByObject(originalDataAsset.get("valueWork")));

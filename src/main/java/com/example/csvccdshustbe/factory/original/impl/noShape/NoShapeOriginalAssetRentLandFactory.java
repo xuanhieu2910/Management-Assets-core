@@ -23,7 +23,7 @@ public class NoShapeOriginalAssetRentLandFactory implements OriginalFactory {
     }
 
     @Override
-    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+    public IOriginal updateOriginal(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
         NoShapeOriginalAssetRentLand rentLand = (NoShapeOriginalAssetRentLand) iOriginalDetails;
         rentLand.setValueRent(ValueUtil.getDoubleByObject(originalDataAsset.get("valueRent")));
         rentLand.setValueWork(ValueUtil.getDoubleByObject(originalDataAsset.get("valueWork")));

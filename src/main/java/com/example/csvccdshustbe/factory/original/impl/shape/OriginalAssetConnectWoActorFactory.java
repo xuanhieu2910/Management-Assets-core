@@ -23,7 +23,7 @@ public class OriginalAssetConnectWoActorFactory implements OriginalFactory {
     }
 
     @Override
-    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+    public IOriginal updateOriginal(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
         ShapeOriginalAssetConnectWoActor connectWoActor = (ShapeOriginalAssetConnectWoActor) iOriginalDetails;
         connectWoActor.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
         connectWoActor.setValueTax(ValueUtil.getDoubleByObject(originalDataAsset.get("valueTax")));

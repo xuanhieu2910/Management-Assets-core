@@ -31,4 +31,18 @@ public class HouseDeclareServiceImpl implements HouseDeclareService {
         }
         return ValueUtil.convertObjectToMap(detailsDto.get());
     }
+
+    @Override
+    public void deleteHouseDeclareById(Integer idInstance) {
+        houseDeclareRepository.deleteHouseDeclareById(idInstance);
+    }
+
+    @Override
+    public HouseDeclare findHouseDeclareById(Integer idInstance) {
+        Optional<HouseDeclare> houseDeclare = houseDeclareRepository.findHouseDeclareById(idInstance);
+        if (houseDeclare.isEmpty()){
+            throw new NotFoundException("Don't exits house declare");
+        }
+        return houseDeclare.get();
+    }
 }

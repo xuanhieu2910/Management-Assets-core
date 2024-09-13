@@ -24,7 +24,7 @@ public class OriginalAssetEvaluateFactory implements OriginalFactory {
     }
 
     @Override
-    public IOriginal updateModule(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
+    public IOriginal updateOriginal(Map<String, Object> originalDataAsset, IOriginal iOriginalDetails) {
         ShapeOriginalAssetEvaluate assetEvaluate = (ShapeOriginalAssetEvaluate) iOriginalDetails;
         assetEvaluate.setValueBuy(ValueUtil.getDoubleByObject(originalDataAsset.get("valueBuy")));
         assetEvaluate.setValueTax(ValueUtil.getDoubleByObject(originalDataAsset.get("valueTax")));

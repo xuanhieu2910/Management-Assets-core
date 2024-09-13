@@ -11,4 +11,5 @@ public interface DeclareFactory {
     IDeclare createDeclare(Map<String, Object> mapDeclareRequest);
 
 
+    IDeclare updateDeclare(Map<String, Object> declareDataAsset, IDeclare iDeclareDetails);
 }
