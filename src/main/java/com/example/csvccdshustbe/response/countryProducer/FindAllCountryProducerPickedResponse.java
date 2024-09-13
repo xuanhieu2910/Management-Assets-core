@@ -13,6 +13,6 @@ public class FindAllCountryProducerPickedResponse {
 
     @JsonProperty("id_country_producer")
     private Integer idCountryProducer;
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("name_country_producer")
+    private String nameCountryProducer;
 }
