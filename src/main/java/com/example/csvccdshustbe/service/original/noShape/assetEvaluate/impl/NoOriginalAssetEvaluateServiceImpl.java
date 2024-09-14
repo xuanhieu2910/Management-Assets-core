@@ -24,13 +24,13 @@ public class NoOriginalAssetEvaluateServiceImpl implements NoOriginalAssetEvalua
     }
 
     @Override
-    public Map<String, Object> findNoOriginalAssetEvaluateById(Integer idInstance) throws IllegalAccessException {
+    public NoShapeOriginalAssetEvaluateDetailsDto findNoOriginalAssetEvaluateById(Integer idInstance) throws IllegalAccessException {
         Optional<NoShapeOriginalAssetEvaluateDetailsDto> detailsDto =
                 noShapeOriginalAssetEvaluateRepository.findNoShapeOriginalAssetEvaluateDetailsDtoById(idInstance);
-        if (!detailsDto.isPresent()){
+        if (detailsDto.isEmpty()){
             throw new NotFoundException("Don't exits no shape original asset evaluate!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

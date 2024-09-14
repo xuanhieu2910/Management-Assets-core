@@ -76,7 +76,7 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
 
             Optional<Department> departmentOptional = departmentRepository.findDepartmentById(request.getIdDepartment());
-            if (!departmentOptional.isPresent()) {
+            if (departmentOptional.isEmpty()) {
                 throw new ValidateFiledException("Don't exits department of Document Attack!");
             }
         }
@@ -102,7 +102,7 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
 
     private DocumentAttack validateDataUpdateDocumentAttack(UpdateDocumentAttackRequest request) throws ValidateFiledException{
         Optional<DocumentAttack> documentAttackOptional = documentAttackRepository.findDocumentAttackById(request.getIdDocumentAttack());
-        if (!documentAttackOptional.isPresent()) {
+        if (documentAttackOptional.isEmpty()) {
             throw new NotFoundException("Don't exits document Attack by id!");
         }
         if (StringUtils.isBlank(request.getName())) {
@@ -123,7 +123,7 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
     @Override
     public void deleteDocumentAttackByIdDA(Integer idDocumentAttack) {
         Optional<DocumentAttack> documentAttackOptional = documentAttackRepository.findDocumentAttackById(idDocumentAttack);
-        if (!documentAttackOptional.isPresent()){
+        if (documentAttackOptional.isEmpty()){
             throw new NotFoundException("Don't exits  document attack by id !");
         }
         documentAttackRepository.delete(documentAttackOptional.get());
@@ -133,7 +133,7 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
     public DocumentAttack findDocumentAttackByIdDocumentAndStatus(Integer idDocumentAttack, Integer status) {
         Optional<DocumentAttack>documentAttackOptional = documentAttackRepository.
                 findDocumentAttackByIdDocumentAndStatus(idDocumentAttack, status);
-        if (!documentAttackOptional.isPresent()) {
+        if (documentAttackOptional.isEmpty()) {
             throw new NotFoundException("Don't exits document attack!");
         }
         return documentAttackOptional.get();

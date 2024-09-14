@@ -1,6 +1,8 @@
 package com.example.csvccdshustbe.repository.medicineModule.impl;
 
 import com.example.csvccdshustbe.dto.modules.medicineModules.MedicineModuleDetailsDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineGroup.MedicineGroupDetailsDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineType.MedicineTypeDetailsDto;
 import com.example.csvccdshustbe.entity.MedicineModule;
 import com.example.csvccdshustbe.repository.medicineModule.MedicineModuleRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -40,8 +42,8 @@ public class MedicineModuleRepositoryImpl implements MedicineModuleRepositoryCus
                 MedicineModuleDetailsDto medicineModule = new MedicineModuleDetailsDto();
                 medicineModule.setIdMedicineModule(ValueUtil.getIntegerByObject(obj[0]));
                 medicineModule.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
-                medicineModule.setIdMedicineType(ValueUtil.getIntegerByObject(obj[2]));
-                medicineModule.setIdMedicineGroup(ValueUtil.getIntegerByObject(obj[3]));
+                setMedicineGroup(medicineModule,obj);
+                setMedicineType(medicineModule,obj);
                 medicineModule.setPublishDate(ValueUtil.getStringByObject(obj[4]));
                 medicineModule.setExpiryDate(ValueUtil.getStringByObject(obj[5]));
                 medicineModule.setCirculationNumber(ValueUtil.getStringByObject(obj[6]));
@@ -49,12 +51,24 @@ public class MedicineModuleRepositoryImpl implements MedicineModuleRepositoryCus
                 medicineModule.setOwnNameCirculationNumber(ValueUtil.getStringByObject(obj[8]));
                 medicineModule.setOwnAddressCirculationNumber(ValueUtil.getStringByObject(obj[9]));
                 medicineModule.setSparePartsAttack(ValueUtil.getStringByObject(obj[10]));
-                medicineModule.setNameMedicineType(ValueUtil.getStringByObject(obj[11]));
-                medicineModule.setNameMedicineGroup(ValueUtil.getStringByObject(obj[12]));
                 return Optional.of(medicineModule);
             }
         }
         return Optional.empty();
+    }
+
+    private void setMedicineGroup(MedicineModuleDetailsDto medicineModule, Object[] obj) {
+        MedicineGroupDetailsDto medicineGroupDetailsDto = new MedicineGroupDetailsDto();
+        medicineGroupDetailsDto.setIdMedicineGroup(ValueUtil.getIntegerByObject(obj[3]));
+        medicineGroupDetailsDto.setName(ValueUtil.getStringByObject(obj[12]));
+        medicineModule.setMedicineGroupDetailsDto(medicineGroupDetailsDto);
+    }
+
+    private void setMedicineType(MedicineModuleDetailsDto medicineModule, Object[] obj) {
+        MedicineTypeDetailsDto medicineTypeDetailsDto = new MedicineTypeDetailsDto();
+        medicineTypeDetailsDto.setIdMedicineType(ValueUtil.getIntegerByObject(obj[2]));
+        medicineTypeDetailsDto.setName(ValueUtil.getStringByObject(obj[11]));
+        medicineModule.setMedicineTypeDetailsDto(medicineTypeDetailsDto);
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.declare.groundDeclare;
 
+import com.example.csvccdshustbe.dto.declare.GroundDeclareDetailsDto;
 import com.example.csvccdshustbe.entity.GroundDeclare;
 import com.example.csvccdshustbe.entity.IDeclare;
 
@@ -9,7 +10,7 @@ public interface GroundDeclareService {
 
     GroundDeclare save(GroundDeclare groundDeclare);
 
-    Map<String, Object> findGroundDeclareDetailsDtoById(Integer idInstance) throws IllegalAccessException;
+    GroundDeclareDetailsDto findGroundDeclareDetailsDtoById(Integer idInstance) throws IllegalAccessException;
 
     void deleteGroundDeclareById(Integer idInstance);
 

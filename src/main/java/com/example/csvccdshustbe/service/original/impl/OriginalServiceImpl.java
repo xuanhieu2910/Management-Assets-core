@@ -36,7 +36,7 @@ public class OriginalServiceImpl implements OriginalService {
     @Override
     public Original findOriginalByHardCodeAndStatus(String hardCode, Integer status) {
         Optional<Original> original = originalRepository.findOriginalByHardCodeAndStatus(hardCode, status);
-        if (!original.isPresent()) {
+        if (original.isEmpty()) {
             throw new NotFoundException("Don't exits original!");
         }
         return original.get();

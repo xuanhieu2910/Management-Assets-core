@@ -75,7 +75,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     @Override
     public void deleteProjectByIdProject(Integer idProject) {
         Optional<Projects> projectsOptional = projectsRepository.findProjectById(idProject);
-        if (!projectsOptional.isPresent()){
+        if (projectsOptional.isEmpty()){
             throw new NotFoundException("Don't exits Project by id!");
         }
         projectsRepository.delete(projectsOptional.get());
@@ -84,7 +84,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     @Override
     public Projects findProjectsByIdProjectAndStatus(Integer idProject, Integer status) {
         Optional<Projects> projects = projectsRepository.findProjectsByIdAndStatus(idProject, status);
-        if (!projects.isPresent()) {
+        if (projects.isEmpty()) {
             throw new NotFoundException("Don't exits projects by id!");
         }
         return projects.get();
@@ -106,7 +106,7 @@ public class ProjectsServiceImpl implements ProjectsService {
 
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<Projects> projects = projectsRepository.findProjectByIdParent(request.getParentId());
-            if (!projects.isPresent()){
+            if (projects.isEmpty()){
                 throw new ValidateFiledException("Don't exits Project by id parent!");
             }
         }
@@ -132,7 +132,7 @@ public class ProjectsServiceImpl implements ProjectsService {
 
     private Projects validateDataUpdateProjects(UpdateProjectsRequest request) throws ValidateFiledException{
         Optional<Projects> projectsOptional = projectsRepository.findProjectById(request.getIdProject());
-        if (!projectsOptional.isPresent()) {
+        if (projectsOptional.isEmpty()) {
             throw new NotFoundException("Don't exits project by id!");
         }
         if (StringUtils.isBlank(request.getName())) {
@@ -147,7 +147,7 @@ public class ProjectsServiceImpl implements ProjectsService {
         }
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<Projects> projectByIdParent = projectsRepository.findProjectByIdParent(request.getParentId());
-            if (!projectByIdParent.isPresent()){
+            if (projectByIdParent.isEmpty()){
                 throw new ValidateFiledException("Don't exits project by id parent!");
             }
         }

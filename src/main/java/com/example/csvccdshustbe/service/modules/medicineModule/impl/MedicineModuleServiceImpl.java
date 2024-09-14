@@ -36,12 +36,12 @@ public class MedicineModuleServiceImpl implements MedicineModuleService {
     }
 
     @Override
-    public Map<String, Object> findMedicineModuleDetailsByIdMedicine(Integer idMedicine) throws IllegalAccessException {
+    public MedicineModuleDetailsDto findMedicineModuleDetailsByIdMedicine(Integer idMedicine) throws IllegalAccessException {
         Optional<MedicineModuleDetailsDto> medicineModule = medicineModuleRepository.findMedicineModuleDetailsDtoById(idMedicine);
-        if (!medicineModule.isPresent()) {
+        if (medicineModule.isEmpty()) {
             throw new NotFoundException("Don't exits medicine modules!");
         }
-        return ValueUtil.convertObjectToMap(medicineModule.get());
+        return medicineModule.get();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class MedicineModuleServiceImpl implements MedicineModuleService {
     @Override
     public MedicineModule findMedicineModuleByIdMedicine(Integer idInstance) {
         Optional<MedicineModule> medicineModule = medicineModuleRepository.findMedicineModuleById(idInstance);
-        if (!medicineModule.isPresent()) {
+        if (medicineModule.isEmpty()) {
             throw new NotFoundException("Don't exits medicine module by id");
         }
         return medicineModule.get();

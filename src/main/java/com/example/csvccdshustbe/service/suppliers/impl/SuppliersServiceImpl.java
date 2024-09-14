@@ -64,7 +64,7 @@ public class SuppliersServiceImpl implements SuppliersService {
     @Override
     public void deleteSuppliersByIdSuppliers(Integer idSuppliers) {
         Optional<Suppliers> suppliersOptional = suppliersRepository.findSuppliersById(idSuppliers);
-        if (!suppliersOptional.isPresent()){
+        if (suppliersOptional.isEmpty()){
             throw new NotFoundException("Don't exits Suppliers by id!");
         }
         suppliersRepository.delete(suppliersOptional.get());
@@ -99,7 +99,7 @@ public class SuppliersServiceImpl implements SuppliersService {
 
     private Suppliers validateDataUpdateSuppliers(UpdateSuppliersRequest request) throws ValidateFiledException{
         Optional<Suppliers> suppliersOptional = suppliersRepository.findSuppliersById(request.getIdSuppliers());
-        if (!suppliersOptional.isPresent()) {
+        if (suppliersOptional.isEmpty()) {
             throw new NotFoundException("Don't exits suppliers by id!");
         }
         if (StringUtils.isBlank(request.getName())) {

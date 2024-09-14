@@ -46,7 +46,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Department findDepartmentByIdDepartmentAndStatus(Integer idDepartment, Integer status) {
         Optional<Department> departmentOptional = departmentRepository.findDepartmentByIdDepartmentAndStatus(idDepartment, status);
-        if (!departmentOptional.isPresent()){
+        if (departmentOptional.isEmpty()){
             throw new NotFoundException("Don't exits department by id and status");
         }
         return departmentOptional.get();
@@ -75,7 +75,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public void deleteDepartmentByIdDepartment(Integer idDepartment) {
         Optional<Department> departmentOptional = departmentRepository.findDepartmentById(idDepartment);
-        if (!departmentOptional.isPresent()){
+        if (departmentOptional.isEmpty()){
             throw new NotFoundException("Don't exits department by id department!");
         }
         departmentRepository.delete(departmentOptional.get());
@@ -95,7 +95,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private Department validateDataUpdateDepartment(UpdateDepartmentRequest request) throws ValidateFiledException {
         Optional<Department> departmentOptional = departmentRepository.findDepartmentById(request.getIdDepartment());
-        if (!departmentOptional.isPresent()) {
+        if (departmentOptional.isEmpty()) {
             throw new NotFoundException("Don't exits department by id!");
         }
         if (StringUtils.isBlank(request.getName())) {
@@ -111,7 +111,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<Department> departmentByIdParent = departmentRepository.findDepartmentByIdParent(request.getParentId());
-            if (!departmentByIdParent.isPresent()){
+            if (departmentByIdParent.isEmpty()){
                 throw new ValidateFiledException("Don't exits department by id parent!");
             }
         }
@@ -160,7 +160,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<Department> departmentOptional = departmentRepository.findDepartmentByIdParent(request.getParentId());
-            if (!departmentOptional.isPresent()){
+            if (departmentOptional.isEmpty()){
                 throw new ValidateFiledException("Don't exits department by id parent!");
             }
         }

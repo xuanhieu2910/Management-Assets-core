@@ -62,7 +62,7 @@ public class LevelTypeAssetServiceImpl implements LevelTypeAssetService {
     @Override
     public void deleteLevelTypeAssetsByIdLTA(Integer idLevelTypeAsset) {
         Optional<LevelTypeAsset> levelTypeAssetOptional = levelTypeAssetRepository.findLevelTypeAssetById(idLevelTypeAsset);
-        if (!levelTypeAssetOptional.isPresent()){
+        if (levelTypeAssetOptional.isEmpty()){
             throw new NotFoundException("Don't exits  Level type asset by id !");
         }
         levelTypeAssetRepository.delete(levelTypeAssetOptional.get());
@@ -94,7 +94,7 @@ public class LevelTypeAssetServiceImpl implements LevelTypeAssetService {
     private LevelTypeAsset validateDataUpdateLevelTypeAsset(UpdateLevelTypeAssetRequest request) throws ValidateFiledException{
 
         Optional<LevelTypeAsset> levelTypeAssetOptional = levelTypeAssetRepository.findLevelTypeAssetById(request.getIdLevelTypeAsset());
-        if (!levelTypeAssetOptional.isPresent()) {
+        if (levelTypeAssetOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Level Type Asset by id!");
         }
         if (StringUtils.isBlank(request.getName())) {

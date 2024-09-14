@@ -23,12 +23,12 @@ public class GroundDeclareServiceImpl implements GroundDeclareService {
     }
 
     @Override
-    public Map<String, Object> findGroundDeclareDetailsDtoById(Integer idInstance) throws IllegalAccessException {
+    public GroundDeclareDetailsDto findGroundDeclareDetailsDtoById(Integer idInstance) throws IllegalAccessException {
         Optional<GroundDeclareDetailsDto> detailsDto = groundDeclareRepository.findGroundDeclareDetailsDtoById(idInstance);
-        if (!detailsDto.isPresent()){
+        if (detailsDto.isEmpty()){
             throw new NotFoundException("Don't exits ground declare details!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

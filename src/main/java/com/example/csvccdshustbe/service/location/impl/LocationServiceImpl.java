@@ -82,7 +82,7 @@ public class LocationServiceImpl implements LocationService {
 
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<Location> location = locationRepository.findLocationByIdParent(request.getParentId());
-            if (!location.isPresent()){
+            if (location.isEmpty()){
                 throw new ValidateFiledException("Don't exits location by id parent!");
             }
         }
@@ -117,7 +117,7 @@ public class LocationServiceImpl implements LocationService {
 
     private Location validateDataUpdateLocation(UpdateLocationRequest request) throws ValidateFiledException{
         Optional<Location> locationOptional = locationRepository.findLocationById(request.getIdLocation());
-        if (!locationOptional.isPresent()) {
+        if (locationOptional.isEmpty()) {
             throw new NotFoundException("Don't exits location by id!");
         }
         if (StringUtils.isBlank(request.getName())) {
@@ -132,13 +132,13 @@ public class LocationServiceImpl implements LocationService {
         }
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<Location> locationByIdParent = locationRepository.findLocationByIdParent(request.getParentId());
-            if (!locationByIdParent.isPresent()){
+            if (locationByIdParent.isEmpty()){
                 throw new ValidateFiledException("Don't exits location by id parent!");
             }
         }
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             Optional<Department> departmentOptional = departmentRepository.findDepartmentById(request.getIdDepartment());
-            if (!departmentOptional.isPresent()){
+            if (departmentOptional.isEmpty()){
                 throw new ValidateFiledException("Don't exits department by id when update location!");
             }
         }
@@ -159,7 +159,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public void deleteLocationByIdLocation(Integer idLocation) {
         Optional<Location> locationOptional = locationRepository.findLocationById(idLocation);
-        if (!locationOptional.isPresent()){
+        if (locationOptional.isEmpty()){
             throw new NotFoundException("Don't exits location by id!");
         }
         locationRepository.delete(locationOptional.get());
@@ -170,7 +170,7 @@ public class LocationServiceImpl implements LocationService {
                                                                       Integer visible) {
         Optional<Location> location = locationRepository.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation,
                 idDepartment, visible);
-        if (!location.isPresent()) {
+        if (location.isEmpty()) {
             throw new NotFoundException("Don't exits location!");
         }
         return location.get();

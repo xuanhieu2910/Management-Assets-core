@@ -29,14 +29,13 @@ public class ArchitectureModuleServiceImpl implements ArchitectureModuleService 
     }
 
     @Override
-    public Map<String,Object> findArchitectureModuleDetailsByIdArchitectureModule(Integer idArchitectureModule)
-            throws IllegalAccessException {
+    public ArchitectureModulesDetailsDto findArchitectureModuleDetailsByIdArchitectureModule(Integer idArchitectureModule) {
         Optional<ArchitectureModulesDetailsDto> module = architectureModuleRepository.
                 findArchitectureModuleDetailsDtoByIdArchitectureModule(idArchitectureModule);
-        if (!module.isPresent()){
+        if (module.isEmpty()){
             throw new NotFoundException("Don't exits architecture module!");
         }
-        return ValueUtil.convertObjectToMap(module.get());
+        return module.get();
     }
 
     @Override

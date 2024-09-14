@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.original.noShape.rentLand;
 
+import com.example.csvccdshustbe.dto.original.noShape.NoShapeOriginalAssetRentLandDetailsDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.NoShapeOriginalAssetRentLand;
 
@@ -9,7 +10,7 @@ public interface NoOriginalAssetRentLandService {
 
     NoShapeOriginalAssetRentLand save(NoShapeOriginalAssetRentLand land);
 
-    Map<String, Object> findNoOriginalAssetRentLandById(Integer idInstance) throws IllegalAccessException;
+    NoShapeOriginalAssetRentLandDetailsDto findNoOriginalAssetRentLandById(Integer idInstance) throws IllegalAccessException;
 
     void deleteNoShapeOriginalAssetRendLandById(Integer idInstance);
 

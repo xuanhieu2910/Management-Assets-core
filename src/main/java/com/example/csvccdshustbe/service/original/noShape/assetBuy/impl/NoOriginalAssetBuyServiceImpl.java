@@ -25,13 +25,13 @@ public class NoOriginalAssetBuyServiceImpl implements NoOriginalAssetBuyService 
     }
 
     @Override
-    public Map<String, Object> findNoOriginalAssetBuyId(Integer idInstance) throws IllegalAccessException {
+    public NoShapeOriginalAssetBuyDetailsDto findNoOriginalAssetBuyId(Integer idInstance) throws IllegalAccessException {
         Optional<NoShapeOriginalAssetBuyDetailsDto> detailsDto =
                 noShapeOriginalAssetBuyRepository.findNoShapeOriginalAssetBuyDetailsBuyId(idInstance);
         if (detailsDto.isEmpty()){
             throw new NotFoundException("Don't exits no shape original asset buy!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

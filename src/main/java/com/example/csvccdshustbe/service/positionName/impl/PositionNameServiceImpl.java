@@ -90,7 +90,7 @@ public class PositionNameServiceImpl implements PositionNameService {
 
     private PositionName validateDataUpdatePositionName(UpdatePositionNameRequest request) throws ValidateFiledException{
         Optional<PositionName> positionNameOptional = positionNameRepository.findPositionNameById(request.getIdPositionName());
-        if (!positionNameOptional.isPresent()) {
+        if (positionNameOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Position by id!");
         }
         if (StringUtils.isBlank(request.getName())) {

@@ -22,7 +22,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     public Role findRoleByUserName(String title) throws RoleException {
         Optional<Role> role = roleRepository.findByTitleRole(title.trim());
-        if (!role.isPresent()){
+        if (role.isEmpty()){
             throw new RoleException("Not found role by title role: " + title);
         }
         return role.get();

@@ -24,12 +24,12 @@ public class HouseDeclareServiceImpl implements HouseDeclareService {
     }
 
     @Override
-    public Map<String, Object> findHouseDeclareDetailsDtoById(Integer idInstance) throws IllegalAccessException {
+    public HouseDeclareDetailsDto findHouseDeclareDetailsDtoById(Integer idInstance) throws IllegalAccessException {
         Optional<HouseDeclareDetailsDto> detailsDto = houseDeclareRepository.findHouseDeclareDetailsById(idInstance);
-        if (!detailsDto.isPresent()) {
+        if (detailsDto.isEmpty()) {
             throw new NotFoundException("Don't exits house declare!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

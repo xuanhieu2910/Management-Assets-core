@@ -52,7 +52,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     @Override
     public AssetCategories findAssetCategoriesVisibleByCodeName(String codeName) throws Exception {
         Optional<AssetCategories> categories = assetCategoriesRepository.findAssetCategoriesVisibleByCodeName(codeName);
-        if (!categories.isPresent()) {
+        if (categories.isEmpty()) {
             throw new Exception("Not found asset category by code name!");
         }
         return categories.get();
@@ -62,7 +62,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     public AssetCategories findAssetCategoriesByVisibleAndIdAssetCategory(Integer idAssetCategory, Integer visible) {
         Optional<AssetCategories> categories = assetCategoriesRepository.
                 findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, visible);
-        if (!categories.isPresent()) {
+        if (categories.isEmpty()) {
             throw new NotFoundException("Don't exits asset category!");
         }
         return categories.get();
@@ -82,7 +82,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
 
     private AssetCategories validateUpdateAssetCategory(UpdateAssetCategoryRequest request)  throws ValidateFiledException{
         Optional<AssetCategories> assetCategoriesOptional = assetCategoriesRepository.findAssetCategoryById(request.getIdAssetCategory());
-        if (!assetCategoriesOptional.isPresent()) {
+        if (assetCategoriesOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Medicine Type by id!");
         }
         if (StringUtils.isBlank(request.getName())) {
@@ -115,7 +115,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     @Override
     public void deleteAssetCategoryByIdAssetCategory(Integer idAssetCategory) {
         Optional<AssetCategories> assetCategoriesOptional = assetCategoriesRepository.findAssetCategoryById(idAssetCategory);
-        if (!assetCategoriesOptional.isPresent()) {
+        if (assetCategoriesOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Asset category by id by id!");
         }
         assetCategoriesRepository.delete(assetCategoriesOptional.get());
@@ -124,7 +124,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     @Override
     public BluePrintParentAssetCategoryDto findBluePrintParentAssetCategoryDtoById(Integer idParentAssetCategory){
         Optional<BluePrintParentAssetCategoryDto> dto = assetCategoriesRepository.findBluePrintAssetCategoryDtoById(idParentAssetCategory);
-        if (!dto.isPresent()) {
+        if (dto.isEmpty()) {
             throw new NotFoundException("Don't exits asset category picked by id!");
         }
         return dto.get();
@@ -133,7 +133,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     @Override
     public FindAssetCategoryDetailsResponse findAssetCategoryDetailsResponseByCode(String codeAssetCategory) {
         Optional<FindAssetCategoryDetailsResponse> response = assetCategoriesRepository.findAssetCategoryDetailsPickedResponseByCode(codeAssetCategory);
-        if (!response.isPresent()) {
+        if (response.isEmpty()) {
             throw new NotFoundException("Don't exits asset category by code!");
         }
         return response.get();
@@ -162,7 +162,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         }
         if (Objects.nonNull(request.getParentId())){
             Optional<AssetCategories> categories = assetCategoriesRepository.findAssetCategoryParentByParentId(request.getParentId());
-            if (!categories.isPresent()) {
+            if (categories.isEmpty()) {
                 throw new NotFoundException("Don't exits asset category by id " + request.getParentId());
             }
             if (!assetCategoriesRepository.checkAssetCategoriesByParentIdAndName(request.getParentId(), request.getName())){

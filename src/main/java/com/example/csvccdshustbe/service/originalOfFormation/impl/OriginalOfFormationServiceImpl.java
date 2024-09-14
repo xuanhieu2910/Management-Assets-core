@@ -85,7 +85,7 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
         }
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<OriginalOfFormation> originalOfFormationOptional = originalOfFormationRepository.findOriginalOfFormationByIdParent(request.getParentId());
-            if (!originalOfFormationOptional.isPresent()) {
+            if (originalOfFormationOptional.isEmpty()) {
                 throw new ValidateFiledException("Don't exits original Of Formation by id parent!");
             }
         }
@@ -128,7 +128,7 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
 
     private OriginalOfFormation validateDataUpdateOriginalOfFormation(UpdateOriginalOfFormationRequest request) throws ValidateFiledException{
         Optional<OriginalOfFormation> originalOfFormationOptional=originalOfFormationRepository.findOriginalOfFormationById(request.getIdOriginalOfFormation());
-        if (!originalOfFormationOptional.isPresent()) {
+        if (originalOfFormationOptional.isEmpty()) {
             throw new NotFoundException("Don't exits original Of Formation by id!");
         }
         if (StringUtils.isBlank(request.getName())) {
@@ -144,7 +144,7 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
         }
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<OriginalOfFormation> originalOfFormation = originalOfFormationRepository.findOriginalOfFormationByIdParent(request.getParentId());
-            if (!originalOfFormation.isPresent()){
+            if (originalOfFormation.isEmpty()){
                 throw new ValidateFiledException("Don't exits original Of Formation by id parent!");
             }
         }
@@ -165,7 +165,7 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
     @Override
     public void deleteOriginalOfFormationServiceById(Integer idOriginalOfFormation){
         Optional<OriginalOfFormation> originalOfFormation= originalOfFormationRepository.findOriginalOfFormationById(idOriginalOfFormation);
-        if (!originalOfFormation.isPresent()) {
+        if (originalOfFormation.isEmpty()) {
             throw new NotFoundException("Don't exits original Of Formation by id!");
         }
         originalOfFormationRepository.delete(originalOfFormation.get());

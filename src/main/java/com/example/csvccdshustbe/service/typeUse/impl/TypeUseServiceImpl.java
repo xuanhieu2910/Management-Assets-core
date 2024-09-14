@@ -62,7 +62,7 @@ public class TypeUseServiceImpl implements TypeUseService{
     @Override
     public void deleteTypeUseByIdTypeUse(Integer idTypeUse) {
         Optional<TypeUse> typeUseOptional = typeUseRepository.findTypeUseById(idTypeUse);
-        if (!typeUseOptional.isPresent()){
+        if (typeUseOptional.isEmpty()){
             throw new NotFoundException("Don't exits Type use by id type use!");
         }
         typeUseRepository.delete(typeUseOptional.get());
@@ -90,7 +90,7 @@ public class TypeUseServiceImpl implements TypeUseService{
     }
     private TypeUse validateDataUpdateTypeUse(UpdateTypeUseRequest request) throws ValidateFiledException {
         Optional<TypeUse> typeUseOptional = typeUseRepository.findTypeUseById(request.getIdTypeUse());
-        if (!typeUseOptional.isPresent()) {
+        if (typeUseOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Type use by id!");
         }
         if (StringUtils.isBlank(request.getName())) {

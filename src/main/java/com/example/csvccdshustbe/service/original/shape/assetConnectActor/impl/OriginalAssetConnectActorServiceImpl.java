@@ -25,13 +25,13 @@ public class OriginalAssetConnectActorServiceImpl implements OriginalAssetConnec
     }
 
     @Override
-    public Map<String, Object> findOriginalConnectActorById(Integer idInstance) throws IllegalAccessException {
+    public ShapeOriginalAssetConnectActorDetailsDto findOriginalConnectActorById(Integer idInstance) throws IllegalAccessException {
         Optional<ShapeOriginalAssetConnectActorDetailsDto> detailsDto = shapeOriginalAssetConnectActorRepository.
                 findShapeOriginalAssetConnectActorDetailsDtoById(idInstance);
-        if (!detailsDto.isPresent()) {
+        if (detailsDto.isEmpty()) {
             throw new NotFoundException("Don't exits original connect actor!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

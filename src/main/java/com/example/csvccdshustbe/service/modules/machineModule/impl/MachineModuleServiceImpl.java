@@ -31,19 +31,19 @@ public class MachineModuleServiceImpl implements MachineModuleService {
     @Override
     public MachineModule findMachineModuleByIdMachineModule(Integer machineModule) {
         Optional<MachineModule> optionalMachineModule = machineModuleRepository.findMachineModuleByIdMachineModule(machineModule);
-        if (!optionalMachineModule.isPresent()){
+        if (optionalMachineModule.isEmpty()){
             throw new NotFoundException("Don't exits machine module by id!");
         }
         return optionalMachineModule.get();
     }
 
     @Override
-    public Map<String, Object> findMachineModuleDetailsByIdMachineModule(Integer machineModule) throws IllegalAccessException {
+    public MachineModuleDetailsDto findMachineModuleDetailsByIdMachineModule(Integer machineModule) throws IllegalAccessException {
         Optional<MachineModuleDetailsDto> module = machineModuleRepository.findMachineModuleDetailsDtoById(machineModule);
-        if (!module.isPresent()) {
+        if (module.isEmpty()) {
             throw new NotFoundException("Don't exits machine modules");
         }
-        return ValueUtil.convertObjectToMap(module.get());
+        return module.get();
     }
 
     @Override

@@ -197,7 +197,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         bluePrintOriginalDto.setIdOriginal(ValueUtil.getIntegerByObject(obj[29]));
         bluePrintOriginalDto.setNameOriginal(ValueUtil.getStringByObject(obj[30]));
         bluePrintOriginalDto.setIdInstance(ValueUtil.getIntegerByObject(obj[31]));
-        assetOriginalDto.setBluePrintOriginalDto(bluePrintOriginalDto);
+        assetOriginalDto.setBluePrintAssetOriginalDto(bluePrintOriginalDto);
         dto.setOriginal(assetOriginalDto);
     }
 

@@ -92,7 +92,7 @@ public class DeclareServiceFactory {
         dataDeclare.put("idDeclare", declare.getIdDeclare());
     }
 
-    public Map<String, Object> findDataDetailByTypeDeclareAndIdInstance(String typeDeclare, Integer idInstance) throws ValidateFiledException, IllegalAccessException {
+    public <T> Object findDataDetailByTypeDeclareAndIdInstance(String typeDeclare, Integer idInstance) throws ValidateFiledException, IllegalAccessException {
         EnumDeclareFactory enumDeclareFactory = Enum.valueOf(EnumDeclareFactory.class, typeDeclare);
         switch (enumDeclareFactory){
             case HouseDeclare -> {

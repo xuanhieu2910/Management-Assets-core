@@ -24,13 +24,13 @@ public class NoOriginalAssetRentLandServiceImpl implements NoOriginalAssetRentLa
     }
 
     @Override
-    public Map<String, Object> findNoOriginalAssetRentLandById(Integer idInstance) throws IllegalAccessException {
+    public NoShapeOriginalAssetRentLandDetailsDto findNoOriginalAssetRentLandById(Integer idInstance) throws IllegalAccessException {
         Optional<NoShapeOriginalAssetRentLandDetailsDto> detailsDto =
                 noShapeOriginalAssetRentLandRepository.findNoShapeOriginalAssetRentLandDetailsDtoById(idInstance);
-        if (!detailsDto.isPresent()){
+        if (detailsDto.isEmpty()){
             throw new NotFoundException("Don't exits no shape original asset rent land!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.modules.carModule;
 
+import com.example.csvccdshustbe.dto.modules.carModules.CarModulesDetailsDto;
 import com.example.csvccdshustbe.entity.CarModule;
 
 import java.util.Map;
@@ -10,7 +11,7 @@ public interface CarModuleService {
 
     void validateDataCreate(Map<String, Object> dataModule);
 
-    Map<String,Object> findCarModuleDetailsByIdCarModule(Integer idCarModule) throws IllegalAccessException;
+    CarModulesDetailsDto findCarModuleDetailsByIdCarModule(Integer idCarModule) throws IllegalAccessException;
 
     void deleteCarModuleById(Integer idInstance);
 

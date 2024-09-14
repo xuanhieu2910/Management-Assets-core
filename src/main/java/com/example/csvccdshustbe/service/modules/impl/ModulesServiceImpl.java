@@ -29,7 +29,7 @@ public class ModulesServiceImpl implements ModulesService {
     @Override
     public Modules findModulesByTypeModules(String typeModules) {
         Optional<Modules> modules = modulesRepository.findModulesByTypeModulesAndStatus(typeModules, Constants.MODULES_VISIBLE);
-        if (!modules.isPresent()) {
+        if (modules.isEmpty()) {
             throw new NotFoundException("Don't exits modules by type modules!");
         }
         return modules.get();

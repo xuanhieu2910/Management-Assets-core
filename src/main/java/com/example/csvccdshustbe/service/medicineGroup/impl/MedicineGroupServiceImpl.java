@@ -72,7 +72,7 @@ public class MedicineGroupServiceImpl implements MedicineGroupService {
     @Override
     public void deleteMedicineGroupByIdMedicineGroup(Integer idMedicineGroup) {
         Optional<MedicineGroup> medicineGroupOptional = medicineGroupRepository.findMedicineGroupById(idMedicineGroup);
-        if (!medicineGroupOptional.isPresent()){
+        if (medicineGroupOptional.isEmpty()){
             throw new NotFoundException("Don't exits medicine group by id!");
         }
         medicineGroupRepository.delete(medicineGroupOptional.get());
@@ -112,7 +112,7 @@ public class MedicineGroupServiceImpl implements MedicineGroupService {
 
     private MedicineGroup validateDataUpdateMedicineGroup(UpdateMedicineGroupRequest request) throws ValidateFiledException{
         Optional<MedicineGroup> medicineGroupOptional = medicineGroupRepository.findMedicineGroupById(request.getIdMedicineGroup());
-        if (!medicineGroupOptional.isPresent()) {
+        if (medicineGroupOptional.isEmpty()) {
             throw new NotFoundException("Don't exits medicine group by id!");
         }
         if (StringUtils.isBlank(request.getName())) {

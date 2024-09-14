@@ -90,7 +90,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     private void validateRefreshToken(Optional<RefreshToken> refreshToken,String tokenRequest){
-        if (!refreshToken.isPresent()){
+        if (refreshToken.isEmpty()){
             throw new TokenException(tokenRequest,"Refresh token does not exist");
         }
     }

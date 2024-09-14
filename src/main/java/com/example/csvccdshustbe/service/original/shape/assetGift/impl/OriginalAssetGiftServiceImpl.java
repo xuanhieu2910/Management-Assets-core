@@ -25,13 +25,13 @@ public class OriginalAssetGiftServiceImpl implements OriginalAssetGiftService {
     }
 
     @Override
-    public Map<String, Object> findOriginalAssetGiftById(Integer idInstance) throws IllegalAccessException {
+    public ShapeOriginalAssetGiftDetailsDto findOriginalAssetGiftById(Integer idInstance) throws IllegalAccessException {
         Optional<ShapeOriginalAssetGiftDetailsDto> detailsDto =
                 shapeOriginalAssetGiftRepository.findShapeOriginalAssetGiftDetailsDtoById(idInstance);
-        if (!detailsDto.isPresent()) {
+        if (detailsDto.isEmpty()) {
             throw new NotFoundException("Don't exits asset gift!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

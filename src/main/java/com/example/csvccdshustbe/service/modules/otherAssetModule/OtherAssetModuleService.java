@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.modules.otherAssetModule;
 
+import com.example.csvccdshustbe.dto.modules.otherAssetModules.OtherAssetModulesDetailsDto;
 import com.example.csvccdshustbe.entity.OtherAssetModule;
 
 import java.util.Map;
@@ -10,7 +11,7 @@ public interface OtherAssetModuleService {
 
     void validateDataCreate(Map<String, Object> dataModule);
 
-    Map<String,Object> findOtherAssetModuleDetailsByIdOtherAssetModule(Integer idOtherAssetModule) throws IllegalAccessException;
+    OtherAssetModulesDetailsDto findOtherAssetModuleDetailsByIdOtherAssetModule(Integer idOtherAssetModule) throws IllegalAccessException;
 
     void deleteOtherAssetById(Integer idInstance);
 

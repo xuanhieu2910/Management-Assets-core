@@ -70,7 +70,7 @@ public class CountryProducerServiceImpl implements CountryProducerService {
     @Override
     public void deleteCountryProducerByIdCP(Integer idCountryProducer) {
         Optional<CountryProducer> countryProducerOptional = countryProducerRepository.findCountryProducerById(idCountryProducer);
-        if (!countryProducerOptional.isPresent()){
+        if (countryProducerOptional.isEmpty()){
             throw new NotFoundException("Don't exits Country producer by id");
         }
         countryProducerRepository.delete(countryProducerOptional.get());
@@ -78,7 +78,7 @@ public class CountryProducerServiceImpl implements CountryProducerService {
 
     private CountryProducer validateDataUpdateCountryProducer(UpdateCountryProducerRequest request) throws ValidateFiledException {
         Optional<CountryProducer> countryProducerOptional = countryProducerRepository.findCountryProducerById(request.getIdCountryProducer());
-        if (!countryProducerOptional.isPresent()) {
+        if (countryProducerOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Country producer by id!");
         }
         if (StringUtils.isBlank(request.getName())) {

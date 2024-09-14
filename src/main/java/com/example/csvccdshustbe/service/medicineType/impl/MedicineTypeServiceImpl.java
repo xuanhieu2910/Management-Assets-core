@@ -73,7 +73,7 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
     @Override
     public void deleteMedicineTypeByIdMedicineType(Integer idMedicineType) {
         Optional<MedicineType> medicineTypeOptional = medicineTypeRepository.findMedicineTypeById(idMedicineType);
-        if (!medicineTypeOptional.isPresent()) {
+        if (medicineTypeOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Medicine Type by id!");
         }
         medicineTypeRepository.delete(medicineTypeOptional.get());
@@ -99,7 +99,7 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
         }
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<MedicineType> medicineTypeOptional = medicineTypeRepository.findMedicineTypeByIdParent(request.getParentId());
-            if (!medicineTypeOptional.isPresent()) {
+            if (medicineTypeOptional.isEmpty()) {
                 throw new ValidateFiledException("Don't exits medicine type by id parent!");
             }
         }
@@ -132,7 +132,7 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
 
     private MedicineType validateDataUpdateMedicineType(UpdateMedicineTypeRequest request) throws ValidateFiledException {
         Optional<MedicineType> medicineTypeOptional = medicineTypeRepository.findMedicineTypeById(request.getIdMedicineType());
-        if (!medicineTypeOptional.isPresent()) {
+        if (medicineTypeOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Medicine Type by id!");
         }
         if (StringUtils.isBlank(request.getName())) {

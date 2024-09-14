@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.dto.modules;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,8 @@ import lombok.Setter;
 @Setter
 public class AssetModulesDto {
 
+    @JsonProperty("blue_print_asset_modules")
     private BluePrintAssetModulesDto bluePrintAssetModules;
-    private Object dataDetail;
+    @JsonProperty("data_details")
+    private Object dataDetails;
 }

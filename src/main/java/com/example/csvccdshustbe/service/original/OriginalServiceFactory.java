@@ -137,7 +137,7 @@ public class OriginalServiceFactory {
         dataOriginal.put("idOriginal", original.getIdOriginal());
     }
 
-    public Map<String, Object> findDataDetailByTypeOriginalAndIdInstance(String typeOriginal, Integer idInstance) throws ValidateFiledException, IllegalAccessException {
+    public <T> Object findDataDetailByTypeOriginalAndIdInstance(String typeOriginal, Integer idInstance) throws ValidateFiledException, IllegalAccessException {
         EnumOriginalFactory enumDeclareFactory = Enum.valueOf(EnumOriginalFactory.class, typeOriginal);
         switch (enumDeclareFactory){
             case ShapeOriginalAssetBuy -> {

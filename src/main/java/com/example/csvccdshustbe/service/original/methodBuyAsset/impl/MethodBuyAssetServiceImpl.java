@@ -88,7 +88,7 @@ public class MethodBuyAssetServiceImpl implements MethodBuyAssetService {
     }
     private MethodBuyAsset validateUpdateMethodBuyAsset(UpdateMethodBuyAssetRequest request) throws ValidateFiledException{
     Optional<MethodBuyAsset> methodBuyAssetOptional=methodBuyAssetRepository.findMethodBuyAssetById(request.getIdMethodBuyAsset());
-        if (!methodBuyAssetOptional.isPresent()) {
+        if (methodBuyAssetOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Medicine Type by id!");
         }
         if (StringUtils.isBlank(request.getTitle())) {
@@ -100,7 +100,7 @@ public class MethodBuyAssetServiceImpl implements MethodBuyAssetService {
     @Override
     public void deleteMethodBuyAssetService(Integer idMethodBuyAsset) {
         Optional<MethodBuyAsset> methodBuyAssetOptional=methodBuyAssetRepository.findMethodBuyAssetById(idMethodBuyAsset);
-        if (!methodBuyAssetOptional.isPresent()) {
+        if (methodBuyAssetOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Method buy asset by id!");
         }
         methodBuyAssetRepository.delete(methodBuyAssetOptional.get());

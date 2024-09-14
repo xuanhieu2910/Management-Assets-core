@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.original.shape.assetGift;
 
+import com.example.csvccdshustbe.dto.original.shape.ShapeOriginalAssetGiftDetailsDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetGift;
 
@@ -9,7 +10,7 @@ public interface OriginalAssetGiftService {
 
     ShapeOriginalAssetGift save(ShapeOriginalAssetGift shapeOriginalAssetGift);
 
-    Map<String, Object> findOriginalAssetGiftById(Integer idInstance) throws IllegalAccessException;
+    ShapeOriginalAssetGiftDetailsDto findOriginalAssetGiftById(Integer idInstance) throws IllegalAccessException;
 
     void deleteShapeOriginalAssetGiftById(Integer idInstance);
 

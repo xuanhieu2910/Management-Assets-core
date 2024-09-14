@@ -29,12 +29,12 @@ public class CarModuleServiceImpl implements CarModuleService {
     }
 
     @Override
-    public Map<String, Object> findCarModuleDetailsByIdCarModule(Integer idCarModule) throws IllegalAccessException {
+    public CarModulesDetailsDto findCarModuleDetailsByIdCarModule(Integer idCarModule) throws IllegalAccessException {
         Optional<CarModulesDetailsDto> carModule = carModuleRepository.findCarModulesDetailsDtoByIdCar(idCarModule);
-        if (!carModule.isPresent()) {
+        if (carModule.isEmpty()) {
             throw new NotFoundException("Don't exits car module!");
         }
-        return ValueUtil.convertObjectToMap(carModule.get());
+        return carModule.get();
     }
 
     @Override

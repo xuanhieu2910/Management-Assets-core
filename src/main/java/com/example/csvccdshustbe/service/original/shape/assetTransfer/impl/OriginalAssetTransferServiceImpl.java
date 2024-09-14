@@ -24,13 +24,13 @@ public class OriginalAssetTransferServiceImpl implements OriginalAssetTransferSe
     }
 
     @Override
-    public Map<String, Object> findOriginalAssetTransferById(Integer idInstance) throws IllegalAccessException {
+    public ShapeOriginalAssetTransferDetailsDto findOriginalAssetTransferById(Integer idInstance) throws IllegalAccessException {
         Optional<ShapeOriginalAssetTransferDetailsDto> detailsDto =
                 shapeOriginalAssetTransferRepository.findShapeOriginalAssetTransferDetailsDtoById(idInstance);
         if (detailsDto.isEmpty()) {
             throw new NotFoundException("Don't exits shape original asset transfer!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

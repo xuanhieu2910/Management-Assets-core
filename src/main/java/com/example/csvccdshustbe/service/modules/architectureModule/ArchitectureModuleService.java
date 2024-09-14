@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.modules.architectureModule;
 
+import com.example.csvccdshustbe.dto.modules.architectureModules.ArchitectureModulesDetailsDto;
 import com.example.csvccdshustbe.entity.ArchitectureModule;
 
 import java.util.Map;
@@ -10,7 +11,7 @@ public interface ArchitectureModuleService {
 
     void validateDataCreate(Map<String, Object> dataModule);
 
-    Map<String,Object> findArchitectureModuleDetailsByIdArchitectureModule(Integer idArchitectureModule) throws IllegalAccessException;
+    ArchitectureModulesDetailsDto findArchitectureModuleDetailsByIdArchitectureModule(Integer idArchitectureModule) throws IllegalAccessException;
 
     void deleteArchitectureById(Integer idInstance);
 

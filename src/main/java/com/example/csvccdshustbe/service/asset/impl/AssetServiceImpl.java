@@ -375,23 +375,20 @@ public class AssetServiceImpl implements AssetService {
     private void setDataDeclareDetail(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException, IllegalAccessException {
         String typeDeclare = assetBluePrintDto.getDeclare().getBluePrintDeclare().getTypeDeclare();
         Integer idInstance = assetBluePrintDto.getDeclare().getBluePrintDeclare().getIdInstance();
-        Map<String, Object> dataDeclare = declareServiceFactory.findDataDetailByTypeDeclareAndIdInstance(typeDeclare, idInstance);
-        assetBluePrintDto.getDeclare().setDataDetail(dataDeclare);
+        assetBluePrintDto.getDeclare().setDataDetail(declareServiceFactory.findDataDetailByTypeDeclareAndIdInstance(typeDeclare, idInstance));
     }
 
     private void setDataOriginalDetail(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException, IllegalAccessException {
-        String typeOriginal = assetBluePrintDto.getOriginal().getBluePrintOriginalDto().getTypeOriginal();
-        Integer idInstance = assetBluePrintDto.getOriginal().getBluePrintOriginalDto().getIdInstance();
-        Map<String,Object> dataOriginal = originalServiceFactory.findDataDetailByTypeOriginalAndIdInstance(typeOriginal, idInstance);
-        assetBluePrintDto.getOriginal().setDataDetails(dataOriginal);
+        String typeOriginal = assetBluePrintDto.getOriginal().getBluePrintAssetOriginalDto().getTypeOriginal();
+        Integer idInstance = assetBluePrintDto.getOriginal().getBluePrintAssetOriginalDto().getIdInstance();
+        assetBluePrintDto.getOriginal().setDataDetails(originalServiceFactory.findDataDetailByTypeOriginalAndIdInstance(typeOriginal, idInstance));
     }
 
     private void setDataModulesDetail(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException, IllegalAccessException {
         for (AssetModulesDto modulesDto : assetBluePrintDto.getModules()) {
             String typeModules = modulesDto.getBluePrintAssetModules().getTypeModules();
             Integer idInstance = modulesDto.getBluePrintAssetModules().getIdInstance();
-            Map<String, Object> dataModules = modulesServiceFactory.findDataDetailByTypeModulesAndIdInstance(typeModules, idInstance);
-            modulesDto.setDataDetail(dataModules);
+            modulesDto.setDataDetails( modulesServiceFactory.findDataDetailByTypeModulesAndIdInstance(typeModules, idInstance));
         }
     }
 

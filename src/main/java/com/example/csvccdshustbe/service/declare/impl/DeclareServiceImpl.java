@@ -29,7 +29,7 @@ public class DeclareServiceImpl implements DeclareService {
     @Override
     public Declare findDeclareByHardCodeAndVisible(String hardCode, Integer visible) {
         Optional<Declare> declare = declareRepository.findDeclareByHardCodeAndVisible(hardCode, visible);
-        if (!declare.isPresent()) {
+        if (declare.isEmpty()) {
             throw new NotFoundException("Don't exits declare by type declare!");
         }
         return declare.get();

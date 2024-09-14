@@ -59,7 +59,7 @@ public class CurrentUsageServiceImpl implements CurrentUsageService {
     @Override
     public void deleteCurrentUsageByIdCU(Integer idCurrentUsage) {
         Optional<CurrentUsage> currentUsageOptional = currentUsageRepository.findCurrentUsageById(idCurrentUsage);
-        if (!currentUsageOptional.isPresent()){
+        if (currentUsageOptional.isEmpty()){
             throw new NotFoundException("Don't exits Current Usage by id");
         }
         currentUsageRepository.delete(currentUsageOptional.get());
@@ -94,7 +94,7 @@ public class CurrentUsageServiceImpl implements CurrentUsageService {
 
     private CurrentUsage validateDataUpdateCurrentUsage(UpdateCurrentUsageRequest request) throws ValidateFiledException {
         Optional<CurrentUsage> currentUsageOptional = currentUsageRepository.findCurrentUsageById(request.getIdCurrentUsage());
-        if (!currentUsageOptional.isPresent()) {
+        if (currentUsageOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Current Usage by id!");
         }
         if (StringUtils.isBlank(request.getName())) {

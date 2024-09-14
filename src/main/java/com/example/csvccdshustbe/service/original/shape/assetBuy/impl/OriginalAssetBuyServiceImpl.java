@@ -25,13 +25,13 @@ public class OriginalAssetBuyServiceImpl implements OriginalAssetBuyService {
     }
 
     @Override
-    public Map<String, Object> findOriginalAssetBuyId(Integer idOriginalAssetBuy) throws IllegalAccessException {
+    public ShapeOriginalAssetBuyDetailsDto findOriginalAssetBuyId(Integer idOriginalAssetBuy) throws IllegalAccessException {
         Optional<ShapeOriginalAssetBuyDetailsDto> assetBuyDetailsDto =
                 shapeOriginalAssetByRepository.findOriginalAssetBuyDetailsDtoById(idOriginalAssetBuy);
-        if (!assetBuyDetailsDto.isPresent()) {
+        if (assetBuyDetailsDto.isEmpty()) {
             throw new NotFoundException("Don't exits original asset buy!");
         }
-        return ValueUtil.convertObjectToMap(assetBuyDetailsDto.get());
+        return assetBuyDetailsDto.get();
     }
 
 

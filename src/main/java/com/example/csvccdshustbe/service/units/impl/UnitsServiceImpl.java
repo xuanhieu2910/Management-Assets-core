@@ -77,7 +77,7 @@ public class UnitsServiceImpl implements UnitsService {
     @Override
     public void deleteUnitsByIdUnits(Integer idUnit) {
         Optional<Units> unitsOptional = unitsRepository.findUnitById(idUnit);
-        if (!unitsOptional.isPresent()){
+        if (unitsOptional.isEmpty()){
             throw new NotFoundException("Don't exits Type use by id type use!");
         }
         unitsRepository.delete(unitsOptional.get());
@@ -86,7 +86,7 @@ public class UnitsServiceImpl implements UnitsService {
     @Override
     public Units findUnitsByIdUnitAndStatus(Integer idUnit, Integer status) {
         Optional<Units> units = unitsRepository.findUnitByIdUnitAndStatus(idUnit,  status);
-        if (!units.isPresent()){
+        if (units.isEmpty()){
             throw new NotFoundException("Don't exits units!");
         }
         return units.get();
@@ -116,7 +116,7 @@ public class UnitsServiceImpl implements UnitsService {
     }
     private Units validateDataUpdateUnit(UpdateUnitsRequest request) throws ValidateFiledException{
         Optional<Units> unitsOptional = unitsRepository.findUnitById(request.getIdUnit());
-        if (!unitsOptional.isPresent()) {
+        if (unitsOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Unit by id!");
         }
         if (StringUtils.isBlank(request.getName())) {

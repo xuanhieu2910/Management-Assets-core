@@ -24,13 +24,13 @@ public class OriginalAssetEvaluateServiceImpl implements OriginalAssetEvaluateSe
     }
 
     @Override
-    public Map<String, Object> findOriginalEvaluateById(Integer idInstance) throws IllegalAccessException {
+    public ShapeOriginalAssetEvaluateDetailsDto findOriginalEvaluateById(Integer idInstance) throws IllegalAccessException {
         Optional<ShapeOriginalAssetEvaluateDetailsDto> detailsDto =
                 shapeOriginalAssetEvaluateRepository.findShapeOriginalAssetEvaluateDetailsDtoBuyId(idInstance);
-        if (!detailsDto.isPresent()) {
+        if (detailsDto.isEmpty()) {
             throw new NotFoundException("Don't exits original shape asset evaluate");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

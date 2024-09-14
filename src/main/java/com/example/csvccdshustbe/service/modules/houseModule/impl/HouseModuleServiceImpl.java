@@ -29,12 +29,12 @@ public class HouseModuleServiceImpl implements HouseModuleService {
     }
 
     @Override
-    public Map<String, Object> findHouseModuleDetailsByIdHouseModule(Integer houseModule) throws IllegalAccessException {
+    public HouseModuleDetailsDto findHouseModuleDetailsByIdHouseModule(Integer houseModule) throws IllegalAccessException {
         Optional<HouseModuleDetailsDto> module = houseModuleRepository.findHouseModuleDetailsDtoByIdHouseModule(houseModule);
-        if (!module.isPresent()){
+        if (module.isEmpty()){
             throw new NotFoundException("Don't exits house modules!");
         }
-        return ValueUtil.convertObjectToMap(module.get());
+        return module.get();
     }
 
     @Override

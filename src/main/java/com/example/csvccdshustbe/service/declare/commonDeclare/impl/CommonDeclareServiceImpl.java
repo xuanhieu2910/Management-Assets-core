@@ -25,12 +25,12 @@ public class CommonDeclareServiceImpl implements CommonDeclareService {
     }
 
     @Override
-    public Map<String, Object> findCommonDeclareDetailsDtoById(Integer idInstance) throws IllegalAccessException {
+    public CommonDeclareDetailsDto findCommonDeclareDetailsDtoById(Integer idInstance) throws IllegalAccessException {
         Optional<CommonDeclareDetailsDto> detailsDto = commonDeclareRepository.findCommonDeclareDetailDtoById(idInstance);
-        if (!detailsDto.isPresent()){
+        if (detailsDto.isEmpty()){
             throw new NotFoundException("Don't exits common declare details!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

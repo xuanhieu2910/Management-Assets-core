@@ -24,13 +24,13 @@ public class OriginalAssetInvestServiceImpl implements OriginalAssetInvestServic
     }
 
     @Override
-    public Map<String, Object> findOriginalAssetInvestById(Integer idInstance) throws IllegalAccessException {
+    public ShapeOriginalAssetInvestDetailsDto findOriginalAssetInvestById(Integer idInstance) throws IllegalAccessException {
         Optional<ShapeOriginalAssetInvestDetailsDto> detailsDto =
                 shapeOriginalAssetInvestRepository.findOriginalAssetInvestDetailsDtoById(idInstance);
-        if (!detailsDto.isPresent()) {
+        if (detailsDto.isEmpty()) {
             throw new NotFoundException("Don't exits original asset invest!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

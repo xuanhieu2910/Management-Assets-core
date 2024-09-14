@@ -25,13 +25,13 @@ public class NoOriginalAssetTransferLandServiceImpl implements NoOriginalAssetTr
     }
 
     @Override
-    public Map<String, Object> findNoOriginalAssetTransferLandById(Integer idInstance) throws IllegalAccessException {
+    public NoShapeOriginalAssetTransferLandDetailsDto findNoOriginalAssetTransferLandById(Integer idInstance) throws IllegalAccessException {
         Optional<NoShapeOriginalAssetTransferLandDetailsDto> detailsDto =
                 noShapeOriginalAssetTransferLandRepository.findNoShapeOriginalAssetTransferLandDetailsDtoById(idInstance);
-        if (!detailsDto.isPresent()) {
+        if (detailsDto.isEmpty()) {
             throw new NotFoundException("Don't exits no shape original asset transfer!");
         }
-        return ValueUtil.convertObjectToMap(detailsDto.get());
+        return detailsDto.get();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.original.shape.assetConnectWoActor;
 
+import com.example.csvccdshustbe.dto.original.shape.ShapeOriginalAssetConnectWoActorDetailsDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetConnectWoActor;
 
@@ -9,7 +10,7 @@ public interface OriginalAssetConnectWoActorService {
 
     ShapeOriginalAssetConnectWoActor save(ShapeOriginalAssetConnectWoActor connectWoActor);
 
-    Map<String, Object> findOriginalConnectWoActorById(Integer idInstance) throws IllegalAccessException;
+    ShapeOriginalAssetConnectWoActorDetailsDto findOriginalConnectWoActorById(Integer idInstance) throws IllegalAccessException;
 
     void deleteShapeOriginalAssetConnectWoById(Integer idInstance);
 
