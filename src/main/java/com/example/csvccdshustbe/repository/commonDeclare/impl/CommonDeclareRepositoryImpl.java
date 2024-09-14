@@ -7,6 +7,8 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -46,6 +48,8 @@ public class CommonDeclareRepositoryImpl implements CommonDeclareRepositoryCusto
         return Optional.empty();
     }
 
+    @Modifying
+    @Transactional
     @Override
     public void deleteCommonDeclareById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();

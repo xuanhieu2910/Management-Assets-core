@@ -31,7 +31,7 @@ public class AssetModulesServiceImpl implements AssetModulesService {
     @Override
     public List<BluePrintAssetModulesDto> findBluePrintAssetModulesDtoByIdAsset(Integer idAsset) {
         List<BluePrintAssetModulesDto> assetModulesDtos = assetModulesRepository.findBluePrintAssetModulesDtoByIdAsset(idAsset);
-        if (!CollectionUtils.isEmpty(assetModulesDtos)) {
+        if (CollectionUtils.isEmpty(assetModulesDtos)) {
             throw new NotFoundException("Don't exits asset modules by id asset!");
         }
         return assetModulesDtos;

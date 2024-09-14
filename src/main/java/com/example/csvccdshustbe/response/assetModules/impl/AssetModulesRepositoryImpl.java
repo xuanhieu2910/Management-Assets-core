@@ -82,6 +82,8 @@ public class AssetModulesRepositoryImpl implements AssetModulesRepositoryCustom 
         sb.append(" delete from asset_modules assetModules " +
                 "where assetModules.id_instance = :idInstance and assetModules.id_module = :idModule ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idInstance", idInstance);
+        query.setParameter("idModule", idModule);
         query.executeUpdate();
     }
 }

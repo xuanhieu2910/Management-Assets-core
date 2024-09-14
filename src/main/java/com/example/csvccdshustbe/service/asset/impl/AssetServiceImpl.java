@@ -234,7 +234,7 @@ public class AssetServiceImpl implements AssetService {
                 if (ValueUtil.getStringByObject(dataAsset.get(Constants.KEY_TYPE_MODULE)).
                         equals(bluePrintAssetModulesDto.getTypeModules())) {
                     typeModules = bluePrintAssetModulesDto.getTypeModules();
-                    idInstance = bluePrintAssetModulesDto.getIdModules();
+                    idInstance = bluePrintAssetModulesDto.getIdInstance();
                     IModules iModulesDetails = modulesServiceFactory.
                             findDataModulesByTypeModulesAndIdInstance(typeModules,idInstance);
                     ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
