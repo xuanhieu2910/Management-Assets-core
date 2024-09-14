@@ -34,12 +34,10 @@ public class AssetController {
         try{
             assetService.createAsset(createAssetRequest);
             return ApiResponseDto.createdWithMessage("Create asset success!", HttpStatus.OK);
-        } catch (ValidateFiledException e ){
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (JsonProcessingException e) {
+        } catch (ValidateFiledException | JsonProcessingException e ){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
 
@@ -48,12 +46,10 @@ public class AssetController {
         try {
             assetService.updateAsset(updateAssetRequest);
             return ApiResponseDto.createdWithMessage("Update asset success!", HttpStatus.OK);
-        }catch (ValidateFiledException e){
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (JsonProcessingException e) {
+        }catch (ValidateFiledException | JsonProcessingException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
 

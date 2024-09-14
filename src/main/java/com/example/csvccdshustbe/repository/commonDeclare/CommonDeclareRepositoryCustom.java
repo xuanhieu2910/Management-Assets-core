@@ -11,5 +11,5 @@ public interface CommonDeclareRepositoryCustom {
 
     void deleteCommonDeclareById(Integer idInstance);
 
-    Optional<CommonDeclare> findCommonDeclareById(Integer idInstance);
+    Optional<CommonDeclare> findCommonDeclareByIdCommonDeclare(Integer idInstance);
 }

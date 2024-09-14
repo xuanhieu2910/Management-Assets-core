@@ -114,23 +114,25 @@ public class DeclareServiceFactory {
         return assetDeclareService.findBluePrintAssetDeclareByIdAsset(idAsset);
     }
 
-    public void deleteAssetDeclare(String typeDeclare, Integer idInstance, Integer idDeclare) throws ValidateFiledException {
-        EnumDeclareFactory enumDeclareFactory = Enum.valueOf(EnumDeclareFactory.class, typeDeclare);
+    public void deleteAssetDeclare(BluePrintDeclareDto bluePrintDeclareDto, Asset asset) throws ValidateFiledException {
+        EnumDeclareFactory enumDeclareFactory = Enum.valueOf(EnumDeclareFactory.class, bluePrintDeclareDto.getTypeDeclare());
         switch (enumDeclareFactory){
             case HouseDeclare -> {
-                houseDeclareService.deleteHouseDeclareById(idInstance);
+                houseDeclareService.deleteHouseDeclareById(bluePrintDeclareDto.getIdInstance());
             }
             case GroundDeclare -> {
-                groundDeclareService.deleteGroundDeclareById(idInstance);
+                groundDeclareService.deleteGroundDeclareById(bluePrintDeclareDto.getIdInstance());
             }
             case CommonDeclare -> {
-                commonDeclareService.deleteCommonDeclareById(idInstance);
+                commonDeclareService.deleteCommonDeclareById(bluePrintDeclareDto.getIdInstance());
+                assetCurrentUsageService.deleteAssetCurrentUsageServiceByIdAsset(asset.getIdAsset());
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type declare!");
             }
         }
-        assetDeclareService.deleteAssetDeclareByIdInstanceAndIdDeclare(idInstance, idDeclare);
+        assetDeclareService.deleteAssetDeclareByIdInstanceAndIdDeclare(bluePrintDeclareDto.getIdInstance(),
+                bluePrintDeclareDto.getIdDeclare());
     }
 
     public IDeclare findIDeclareByTypeDeclareAndIdInstance(String typeDeclare, Integer idInstance) throws ValidateFiledException {
@@ -151,7 +153,8 @@ public class DeclareServiceFactory {
         }
     }
 
-    public <T> IDeclare update(String typeDeclare, T dataDeclare) throws ValidateFiledException {
+    public <T> IDeclare update(Map<String,Object> declareAsset, T dataDeclare) throws ValidateFiledException {
+        String typeDeclare = ValueUtil.getStringByObject(declareAsset.get(Constants.KEY_TYPE_DECLARE));
         EnumDeclareFactory enumDeclareFactory = Enum.valueOf(EnumDeclareFactory.class, typeDeclare);
         switch (enumDeclareFactory){
             case HouseDeclare -> {
@@ -161,10 +164,59 @@ public class DeclareServiceFactory {
                 return groundDeclareService.save((GroundDeclare) dataDeclare);
             }
             case CommonDeclare -> {
+                editAssetCurrentUsage(declareAsset);
                 return commonDeclareService.save((CommonDeclare) dataDeclare);
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type declare!");
+            }
+        }
+    }
+
+    private void editAssetCurrentUsage(Map<String, Object> declareAsset) {
+        List<Map<String, Object>> assetCurrentUsageData = (List<Map<String, Object>>) declareAsset.get("currentUsage");
+        List<AssetCurrentUsage> assetCurrentUsages =
+                assetCurrentUsageService.findByIdAsset(ValueUtil.getIntegerByObject(declareAsset.get("idAsset")));
+        deleteAssetCurrentUsage(assetCurrentUsages, assetCurrentUsageData);
+        createNewAssetCurrentUsage(assetCurrentUsages, assetCurrentUsageData);
+    }
+
+    private void createNewAssetCurrentUsage(List<AssetCurrentUsage> assetCurrentUsages,
+                                            List<Map<String, Object>> assetCurrentUsageData) {
+        for (Map<String, Object> cud  : assetCurrentUsageData){
+            boolean isCheckExits = false;
+            for (AssetCurrentUsage usage : assetCurrentUsages){
+                if (ValueUtil.getIntegerByObject(cud.get("idCurrentUsage")).equals(usage.getIdCurrentUsage())){
+                    isCheckExits = true;
+                    break;
+                }
+            }
+            if (!isCheckExits) {
+                createNewAssetCurrent(cud);
+            }
+        }
+    }
+
+    private void createNewAssetCurrent(Map<String, Object> cud) {
+        AssetCurrentUsage assetCurrentUsage = new AssetCurrentUsage();
+        assetCurrentUsage.setIdAsset(ValueUtil.getIntegerByObject(cud.get("idAsset")));
+        assetCurrentUsage.setIdCurrentUsage(ValueUtil.getIntegerByObject(cud.get("idCurrentUsage")));
+        assetCurrentUsage.setTimeCreated(String.valueOf(new Date().getTime()));
+        assetCurrentUsageService.save(assetCurrentUsage);
+    }
+
+    private void deleteAssetCurrentUsage(List<AssetCurrentUsage> assetCurrentUsages,
+                                         List<Map<String, Object>> assetCurrentUsageData) {
+        for (AssetCurrentUsage usage : assetCurrentUsages){
+            boolean isCheckExits = false;
+            for (Map<String, Object> cud : assetCurrentUsageData){
+                if (usage.getIdCurrentUsage().equals(ValueUtil.getIntegerByObject(cud.get("idCurrentUsage")))){
+                    isCheckExits = true;
+                    break;
+                }
+            }
+            if (!isCheckExits) {
+                assetCurrentUsageService.deleteAssetCurrentUsage(usage);
             }
         }
     }

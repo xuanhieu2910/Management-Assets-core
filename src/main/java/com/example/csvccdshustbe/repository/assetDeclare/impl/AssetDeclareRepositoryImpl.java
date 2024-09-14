@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -42,12 +44,16 @@ public class AssetDeclareRepositoryImpl implements AssetDeclareRepositoryCustom 
         return Optional.empty();
     }
 
+
+    @Modifying
+    @Transactional
     @Override
     public void deleteAssetDeclareByIdInstanceAndIdDeclare(Integer idInstance, Integer idDeclare) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from asset_declare assetDeclare " +
-                "where assetDeclare.id_instance = :idInstance " +
-                "and assetDeclare.id_declare = :idDeclare ");
+        sb.append("delete " +
+                "from asset_declare " +
+                "where asset_declare.id_instance = :idInstance " +
+                "  and asset_declare.id_declare = :idDeclare  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idInstance", idInstance);
         query.setParameter("idDeclare", idDeclare);

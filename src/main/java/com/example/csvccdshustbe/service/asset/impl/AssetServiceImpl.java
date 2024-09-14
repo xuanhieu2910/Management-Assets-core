@@ -137,20 +137,23 @@ public class AssetServiceImpl implements AssetService {
         log.info("Start update declare data asset by code asset " + asset.getCodeAsset());
         Map<String,Object> declareDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_DECLARE_ASSET);
         BluePrintDeclareDto bluePrintDeclareDto = declareServiceFactory.findBluePrintAssetDeclareByIdAsset(asset.getIdAsset());
-        deleteAssetDeclare(bluePrintDeclareDto, declareDataAsset);
+        deleteAssetDeclare(bluePrintDeclareDto, declareDataAsset, asset);
         createNewAssetDeclare(bluePrintDeclareDto, declareDataAsset, asset);
-        updateAssetDeclare(bluePrintDeclareDto, declareDataAsset);
+        updateAssetDeclare(bluePrintDeclareDto, declareDataAsset, asset);
     }
 
-    private void updateAssetDeclare(BluePrintDeclareDto bluePrintDeclareDto, Map<String, Object> declareDataAsset) throws ValidateFiledException {
+    private void updateAssetDeclare(BluePrintDeclareDto bluePrintDeclareDto,
+                                    Map<String, Object> declareDataAsset,
+                                    Asset asset) throws ValidateFiledException {
         if (bluePrintDeclareDto.getTypeDeclare().equals(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)))){
+            declareDataAsset.put("idAsset", asset.getIdAsset());
             String typeDeclare = bluePrintDeclareDto.getTypeDeclare();
             Integer idInstance = bluePrintDeclareDto.getIdInstance();
             IDeclare iDeclareDetails = declareServiceFactory.findIDeclareByTypeDeclareAndIdInstance(typeDeclare, idInstance);
             DeclareFactory declareFactory = (DeclareFactory) ProxyInitDataAssetUtil.
-                    proxyInitOriginalDataAsset(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)));
+                    proxyInitDeclareDataAsset(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)));
             IDeclare iDeclare = declareFactory.updateDeclare(declareDataAsset,iDeclareDetails);
-            declareServiceFactory.update(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)), iDeclare);
+            declareServiceFactory.update(declareDataAsset, iDeclare);
             log.info("Finish update original factory " + declareFactory.getClass());
         }
     }
@@ -167,10 +170,10 @@ public class AssetServiceImpl implements AssetService {
         }
     }
 
-    private void deleteAssetDeclare(BluePrintDeclareDto bluePrintDeclareDto, Map<String, Object> declareDataAsset) throws ValidateFiledException {
-        if (!bluePrintDeclareDto.getIdDeclare().equals(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)))) {
-            declareServiceFactory.deleteAssetDeclare(bluePrintDeclareDto.getTypeDeclare(), bluePrintDeclareDto.getIdInstance(),
-                    bluePrintDeclareDto.getIdDeclare());
+    private void deleteAssetDeclare(BluePrintDeclareDto bluePrintDeclareDto,
+                                    Map<String, Object> declareDataAsset, Asset asset) throws ValidateFiledException {
+        if (!bluePrintDeclareDto.getTypeDeclare().equals(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)))) {
+            declareServiceFactory.deleteAssetDeclare(bluePrintDeclareDto,asset);
         }
     }
 
@@ -300,8 +303,79 @@ public class AssetServiceImpl implements AssetService {
             throw new NotFoundException("Don't exits asset by code!");
         }
         updateAttributeAsset(commonDataAsset, asset.get());
+        updateOriginalOfFormation(asset.get(), commonDataAsset);
         log.info("Update finished common data asset by code asset = " + asset.get().getCodeAsset());
         return asset.get();
+    }
+
+    private void updateOriginalOfFormation(Asset asset, Map<String, Object> commonDataAsset) {
+        List<AssetOriginalOfFormation> originalOfFormations =
+                assetOriginalOfFormationService.findOriginalOfFormationByIdAsset(asset.getIdAsset());
+        List<Map<String,Object>> assetOriginalOfFormationData = (List<Map<String, Object>>) commonDataAsset.get("originOfFormation");
+        deleteAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData, asset);
+        createAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData, asset);
+        updateAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData);
+    }
+
+    private void updateAssetOriginalOfFormation(List<AssetOriginalOfFormation> originalOfFormations,
+                                                List<Map<String, Object>> assetOriginalOfFormationData) {
+        for (Map<String, Object> dataOriginalOfFormation : assetOriginalOfFormationData) {
+            for (AssetOriginalOfFormation original : originalOfFormations) {
+                if (ValueUtil.getIntegerByObject(dataOriginalOfFormation.get("idOriginOfFormation")).
+                        equals(original.getIdOriginalOfFormation())) {
+                    original.setValue(ValueUtil.getStringByObject(dataOriginalOfFormation.get("value")));
+                    original.setTimeModified(String.valueOf(new Date().getTime()));
+                    assetOriginalOfFormationService.save(original);
+                }
+            }
+        }
+    }
+
+    private void createAssetOriginalOfFormation(List<AssetOriginalOfFormation> originalOfFormations,
+                                                List<Map<String, Object>> assetOriginalOfFormationData,
+                                                Asset asset) {
+        for (Map<String, Object> dataOriginalOfFormation : assetOriginalOfFormationData) {
+            boolean isCheckExits = false;
+            for (AssetOriginalOfFormation original : originalOfFormations) {
+                if (ValueUtil.getIntegerByObject(dataOriginalOfFormation.get("idOriginOfFormation")).
+                        equals(original.getIdOriginalOfFormation())) {
+                    isCheckExits = true;
+                    break;
+                }
+            }
+            if (!isCheckExits){
+                createNewAssetOriginalOfFormation(dataOriginalOfFormation,asset);
+            }
+        }
+    }
+
+    private void createNewAssetOriginalOfFormation(Map<String, Object> dataOriginalOfFormation, Asset asset) {
+        AssetOriginalOfFormation originalOfFormation = new AssetOriginalOfFormation();
+        originalOfFormation.setIdOriginalOfFormation(ValueUtil.getIntegerByObject(dataOriginalOfFormation.get("idOriginOfFormation")));
+        originalOfFormation.setIdAsset(asset.getIdAsset());
+        String timeCurrent = String.valueOf(new Date().getTime());
+        originalOfFormation.setTimeCreated(timeCurrent);
+        originalOfFormation.setTimeModified(timeCurrent);
+        originalOfFormation.setValue(ValueUtil.getStringByObject(dataOriginalOfFormation.get("value")));
+        assetOriginalOfFormationService.save(originalOfFormation);
+    }
+
+    private void deleteAssetOriginalOfFormation(List<AssetOriginalOfFormation> originalOfFormations,
+                                                List<Map<String, Object>> assetOriginalOfFormationData,
+                                                Asset asset) {
+        for (AssetOriginalOfFormation original : originalOfFormations){
+            boolean isCheckExits = false;
+            for (Map<String, Object> dataOriginalOfFormation: assetOriginalOfFormationData){
+                if (original.getIdOriginalOfFormation().
+                        equals(ValueUtil.getIntegerByObject(dataOriginalOfFormation.get("idOriginOfFormation")))) {
+                    isCheckExits = true;
+                    break;
+                }
+            }
+            if (!isCheckExits){
+                assetOriginalOfFormationService.deleteAssetOriginalOfFormation(original);
+            }
+        }
     }
 
     private void updateAttributeAsset(Map<String, Object> commonDataAsset, Asset asset) {
@@ -395,7 +469,7 @@ public class AssetServiceImpl implements AssetService {
     private void setOriginalOfFormation(AssetBluePrintDto assetBluePrintDto) {
         assetBluePrintDto.
                 setOriginOfFormation(assetOriginalOfFormationService.
-                        findOriginalOfFormationByIdAsset(assetBluePrintDto.getIdAsset()));
+                        findOriginalOfFormationDtoByIdAsset(assetBluePrintDto.getIdAsset()));
     }
 
     private void setParentAssetCategory(AssetBluePrintDto assetBluePrintDto){

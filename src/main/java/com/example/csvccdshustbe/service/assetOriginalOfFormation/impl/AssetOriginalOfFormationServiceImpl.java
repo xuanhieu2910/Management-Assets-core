@@ -26,7 +26,17 @@ public class AssetOriginalOfFormationServiceImpl implements AssetOriginalOfForma
     }
 
     @Override
-    public List<AssetOriginalOfFormDto> findOriginalOfFormationByIdAsset(Integer idAsset) {
+    public List<AssetOriginalOfFormDto> findOriginalOfFormationDtoByIdAsset(Integer idAsset) {
+        return originalOfFormationRepository.findOriginalOfFormationDtoByIdAsset(idAsset);
+    }
+
+    @Override
+    public List<AssetOriginalOfFormation> findOriginalOfFormationByIdAsset(Integer idAsset) {
         return originalOfFormationRepository.findOriginalOfFormationByIdAsset(idAsset);
+    }
+
+    @Override
+    public void deleteAssetOriginalOfFormation(AssetOriginalOfFormation original) {
+        originalOfFormationRepository.delete(original);
     }
 }

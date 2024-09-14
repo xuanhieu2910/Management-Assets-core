@@ -10,5 +10,8 @@ public interface AssetOriginalOfFormationService {
     AssetOriginalOfFormation save(AssetOriginalOfFormation assetOriginalOfFormation);
 
     List<AssetOriginalOfFormation> saveAll(List<AssetOriginalOfFormation> assetOriginalOfFormation);
-    List<AssetOriginalOfFormDto> findOriginalOfFormationByIdAsset(Integer idAsset);
+    List<AssetOriginalOfFormDto> findOriginalOfFormationDtoByIdAsset(Integer idAsset);
+    List<AssetOriginalOfFormation> findOriginalOfFormationByIdAsset(Integer idAsset);
+
+    void deleteAssetOriginalOfFormation(AssetOriginalOfFormation original);
 }

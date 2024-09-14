@@ -8,7 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -53,21 +53,25 @@ public class CommonDeclareRepositoryImpl implements CommonDeclareRepositoryCusto
     @Override
     public void deleteCommonDeclareById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from common_declare commonDeclare " +
-                "where commonDeclare.id_other_declare = :idCommonDeclare ");
+        sb.append("delete " +
+                "from common_declare " +
+                "where common_declare.id_other_declare = :idOtherDeclare ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("idCommonDeclare", idInstance);
+        query.setParameter("idOtherDeclare", idInstance);
         query.executeUpdate();
     }
 
     @Override
-    public Optional<CommonDeclare> findCommonDeclareById(Integer idInstance) {
+    public Optional<CommonDeclare> findCommonDeclareByIdCommonDeclare(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select commonDeclare.id_other_declare, commonDeclare.id_asset,    " +
-                "          commonDeclare.specification, commonDeclare.id_type_declare_asset,    " +
-                "          commonDeclare.time_created, commonDeclare.time_modified " +
-                "from common_declare commonDeclare    " +
-                "where commonDeclare.id_other_declare = :idOtherDeclare ");
+        sb.append("select common_declare.id_other_declare,  " +
+                "       common_declare.id_asset,  " +
+                "       common_declare.specification,  " +
+                "       common_declare.id_type_declare_asset,  " +
+                "       common_declare.time_created,  " +
+                "       common_declare.time_modified  " +
+                "from common_declare  " +
+                "where common_declare.id_other_declare = :idOtherDeclare  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idOtherDeclare", idInstance);
         List<Object[]> result = query.getResultList();

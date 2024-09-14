@@ -40,7 +40,7 @@ public class CommonDeclareServiceImpl implements CommonDeclareService {
 
     @Override
     public CommonDeclare findCommonDeclareById(Integer idInstance) {
-        Optional<CommonDeclare> commonDeclare = commonDeclareRepository.findCommonDeclareById(idInstance);
+        Optional<CommonDeclare> commonDeclare = commonDeclareRepository.findCommonDeclareByIdCommonDeclare(idInstance);
         if (commonDeclare.isEmpty()){
             throw new NotFoundException("Don't exits find common declare!");
         }
