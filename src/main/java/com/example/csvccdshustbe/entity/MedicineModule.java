@@ -32,7 +32,5 @@ public class MedicineModule implements IModules{
     @Column(name = "own_name_circulation_number")
     private String ownNameCirculationNumber;
     @Column(name = "own_address_circulation_number")
-    private String ownAddressCirculationNumber;
-    @Column(name = "spare_parts_attack")
-    private String sparePartsAttack;
+    private String ownAddressCirculationNumber;;
 }

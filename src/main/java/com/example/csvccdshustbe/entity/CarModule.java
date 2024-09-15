@@ -65,4 +65,6 @@ public class CarModule implements IModules{
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+    @Column(name = "spare_parts_attack")
+    private String sparePartsAttack;
 }

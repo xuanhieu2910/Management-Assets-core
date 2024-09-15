@@ -31,4 +31,6 @@ public class MachineModule implements IModules{
     private Integer idUser;
     @Column(name = "id_type_use")
     private Integer idTypeUse;
+    @Column(name = "spare_parts_attack")
+    private String sparePartsAttack;
 }

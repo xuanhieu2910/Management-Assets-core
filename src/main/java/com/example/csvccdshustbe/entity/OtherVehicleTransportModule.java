@@ -61,4 +61,6 @@ public class OtherVehicleTransportModule implements IModules{
     private String timeModified;
     @Column(name = "id_position_name")
     private Integer idPositionName;
+    @Column(name = "spare_parts_attack")
+    private String sparePartsAttack;
 }
