@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.dto.declare;
 
 
+import com.example.csvccdshustbe.dto.assetCurrentUsage.AssetCurrentUsageDetailsDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,4 +24,6 @@ public class CommonDeclareDetailsDto {
     private String timeModified;
     @JsonProperty("name_type_declare")
     private String nameTypeDeclare;
+    @JsonProperty("current_usage")
+    private AssetCurrentUsageDetailsDto assetCurrentUsageDetailsDto;
 }

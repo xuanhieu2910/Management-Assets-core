@@ -4,12 +4,10 @@ import com.example.csvccdshustbe.dto.declare.CommonDeclareDetailsDto;
 import com.example.csvccdshustbe.entity.CommonDeclare;
 import com.example.csvccdshustbe.repository.commonDeclare.CommonDeclareRepository;
 import com.example.csvccdshustbe.service.declare.commonDeclare.CommonDeclareService;
-import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Service

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.assetCurrentUsage;
 
+import com.example.csvccdshustbe.dto.assetCurrentUsage.AssetCurrentUsageDetailsDto;
 import com.example.csvccdshustbe.entity.AssetCurrentUsage;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface AssetCurrentUsageService {
     void deleteAssetCurrentUsage(AssetCurrentUsage usage);
 
     void save(AssetCurrentUsage assetCurrentUsage);
+
+    AssetCurrentUsageDetailsDto findAssetCurrentUsageDetailsByIdAsset(Integer idAsset);
 }

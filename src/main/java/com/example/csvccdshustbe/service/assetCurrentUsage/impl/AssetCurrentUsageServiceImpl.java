@@ -1,13 +1,16 @@
 package com.example.csvccdshustbe.service.assetCurrentUsage.impl;
 
+import com.example.csvccdshustbe.dto.assetCurrentUsage.AssetCurrentUsageDetailsDto;
 import com.example.csvccdshustbe.entity.AssetCurrentUsage;
 import com.example.csvccdshustbe.repository.assetCurrentUsage.AssetCurrentUsageRepository;
 import com.example.csvccdshustbe.service.assetCurrentUsage.AssetCurrentUsageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.webjars.NotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AssetCurrentUsageServiceImpl implements AssetCurrentUsageService {
@@ -38,5 +41,15 @@ public class AssetCurrentUsageServiceImpl implements AssetCurrentUsageService {
     @Override
     public void save(AssetCurrentUsage assetCurrentUsage) {
         assetCurrentUsageRepository.save(assetCurrentUsage);
+    }
+
+    @Override
+    public AssetCurrentUsageDetailsDto findAssetCurrentUsageDetailsByIdAsset(Integer idAsset) {
+        Optional<AssetCurrentUsageDetailsDto> detailsDto =
+                assetCurrentUsageRepository.findAssetCurrentUsageDetailsDtoByIdAsset(idAsset);
+        if(detailsDto.isEmpty()){
+            throw new NotFoundException("Don't asset current usage by id asset!");
+        }
+        return detailsDto.get();
     }
 }

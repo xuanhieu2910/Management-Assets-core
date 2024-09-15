@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.declare;
 
 
 import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
+import com.example.csvccdshustbe.dto.declare.CommonDeclareDetailsDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.EnumDeclareFactory;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -102,7 +103,9 @@ public class DeclareServiceFactory {
                 return groundDeclareService.findGroundDeclareDetailsDtoById(idInstance);
             }
             case CommonDeclare -> {
-                return commonDeclareService.findCommonDeclareDetailsDtoById(idInstance);
+                CommonDeclareDetailsDto res = commonDeclareService.findCommonDeclareDetailsDtoById(idInstance);
+                res.setAssetCurrentUsageDetailsDto(assetCurrentUsageService.findAssetCurrentUsageDetailsByIdAsset(res.getIdAsset()));
+                return res;
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type declare!");
