@@ -99,6 +99,7 @@ public class Constants {
      * Constant Department
      * */
     public static final Integer DEPARTMENT_ACTIVE_STATUS = 1;
+    public static final Integer DEPARTMENT_UN_ACTIVE_STATUS = -1;
     /*----------------------------------------------------*/
     /**
      * Constant Asset Category

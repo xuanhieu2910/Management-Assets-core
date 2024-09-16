@@ -34,6 +34,8 @@ import java.util.stream.Collectors;
 public class LocationServiceImpl implements LocationService {
     @Autowired
     LocationRepository locationRepository;
+
+    @Autowired
     DepartmentRepository departmentRepository;
 
     @Override
@@ -157,10 +159,13 @@ public class LocationServiceImpl implements LocationService {
         return location;
     }
     @Override
-    public void deleteLocationByIdLocation(Integer idLocation) {
+    public void deleteLocationByIdLocation(Integer idLocation) throws ValidateFiledException {
         Optional<Location> locationOptional = locationRepository.findLocationById(idLocation);
         if (locationOptional.isEmpty()){
             throw new NotFoundException("Don't exits location by id!");
+        }
+        if (locationRepository.isCheckExitsAssetByIdLocation(idLocation)){
+            throw new ValidateFiledException("Exits asset by id location, can't delete location!");
         }
         locationRepository.delete(locationOptional.get());
     }

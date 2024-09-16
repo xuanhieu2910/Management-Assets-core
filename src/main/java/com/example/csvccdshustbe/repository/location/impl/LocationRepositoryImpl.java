@@ -273,4 +273,16 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
         }
         return Optional.empty();
     }
+
+    @Override
+    public boolean isCheckExitsAssetByIdLocation(Integer idLocation) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select asset.id_asset " +
+                "from location lo  " +
+                "    inner join asset asset on lo.id_location = asset.id_location " +
+                "where lo.id_location = :idLocation ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idLocation", idLocation);
+        return !CollectionUtils.isEmpty(query.getResultList());
+    }
 }

@@ -26,5 +26,6 @@ public interface DepartmentRepositoryCustom {
 
     boolean checkExitsDepartmentByNameOrCodeOrShortName(String name, String code, String shortName);
 
+    boolean isExitsAssetByIdDepartment(Integer idDepartment);
 
 }

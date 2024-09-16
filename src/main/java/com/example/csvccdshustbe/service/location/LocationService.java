@@ -15,7 +15,7 @@ public interface LocationService {
 
     void updateLocation(UpdateLocationRequest request) throws ValidateFiledException;
 
-    void deleteLocationByIdLocation(Integer idLocation);
+    void deleteLocationByIdLocation(Integer idLocation) throws ValidateFiledException;
 
     Location findLocationByIdLocationAndIdDepartmentAndVisible(Integer idLocation,
                                                                Integer idDepartment,

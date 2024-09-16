@@ -3,10 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
-import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
+import com.example.csvccdshustbe.request.department.*;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentVisibleResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -95,11 +92,22 @@ public class DepartmentController {
         try {
             departmentService.deleteDepartmentByIdDepartment(idDepartment);
             return ApiResponseDto.createdWithMessage("Delete department success!", HttpStatus.OK);
-        } catch (NotFoundException e){
+        } catch (NotFoundException | ValidateFiledException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
 
+    @PostMapping
+    public ResponseEntity<?> updateStatusDepartment(@RequestBody UpdateStatusDepartmentRequest request){
+        try {
+            departmentService.updateStatusDepartment(request);
+            return ApiResponseDto.createdWithMessage("Update status department", HttpStatus.OK);
+        } catch (NotFoundException | ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

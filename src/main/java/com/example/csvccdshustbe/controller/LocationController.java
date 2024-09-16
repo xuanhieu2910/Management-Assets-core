@@ -72,7 +72,7 @@ public class LocationController {
         try {
             locationService.deleteLocationByIdLocation(idLocation);
             return ApiResponseDto.createdWithMessage("Delete Location success!", HttpStatus.OK);
-        } catch (NotFoundException e){
+        } catch (NotFoundException | ValidateFiledException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);

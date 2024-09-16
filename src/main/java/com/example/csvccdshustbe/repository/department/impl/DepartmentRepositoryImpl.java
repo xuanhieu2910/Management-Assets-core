@@ -292,6 +292,18 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
         return CollectionUtils.isEmpty(result);
     }
 
+    @Override
+    public boolean isExitsAssetByIdDepartment(Integer idDepartment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select asset.id_asset " +
+                "from department de " +
+                "    inner join asset asset on de.id_department = asset.id_department " +
+                "where de.id_department = :idDepartment ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idDepartment", idDepartment);
+        return !CollectionUtils.isEmpty(query.getResultList());
+    }
+
     private void setParameterFindAllDepartment(FindAllDepartmentRequest request, Query query) {
         if (StringUtils.isNotBlank(request.getKeyword())){
           query.setParameter("keyword", request.getKeyword());

@@ -4,14 +4,14 @@ import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibl
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.repository.department.DepartmentRepository;
-import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
-import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
+import com.example.csvccdshustbe.request.department.*;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentSResponse;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentVisibleResponse;
+import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -33,6 +33,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Autowired
     DepartmentRepository departmentRepository;
 
+
+
     @Override
     public Page<FindAllDepartmentVisibleResponse> findAllDepartmentVisibleByCodeAndVisible(
             FindAllDepartmentVisibleRequest request) {
@@ -50,6 +52,19 @@ public class DepartmentServiceImpl implements DepartmentService {
             throw new NotFoundException("Don't exits department by id and status");
         }
         return departmentOptional.get();
+    }
+
+    @Override
+    public void updateStatusDepartment(UpdateStatusDepartmentRequest request) throws ValidateFiledException {
+        Optional<Department> departmentOptional = departmentRepository.findDepartmentById(request.getIdDepartment());
+        if (departmentOptional.isEmpty()){
+            throw new NotFoundException("Don't exits department by id!");
+        }
+        if (!request.getStatus().equals(Constants.DEPARTMENT_ACTIVE_STATUS) ||
+                !request.getStatus().equals(Constants.DEPARTMENT_UN_ACTIVE_STATUS)) {
+            throw new ValidateFiledException("Don't exits status department!");
+        }
+        departmentOptional.get().setStatus(request.getStatus());
     }
 
     @Override
@@ -73,10 +88,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void deleteDepartmentByIdDepartment(Integer idDepartment) {
+    public void deleteDepartmentByIdDepartment(Integer idDepartment) throws ValidateFiledException {
         Optional<Department> departmentOptional = departmentRepository.findDepartmentById(idDepartment);
         if (departmentOptional.isEmpty()){
             throw new NotFoundException("Don't exits department by id department!");
+        }
+        if (departmentRepository.isExitsAssetByIdDepartment(idDepartment)){
+            throw new ValidateFiledException("Exits asset, can't delete department!");
         }
         departmentRepository.delete(departmentOptional.get());
     }

@@ -26,4 +26,5 @@ public interface LocationRepositoryCustom {
                                                                          Integer idDepartment,
                                                                          Integer visible);
 
+    boolean isCheckExitsAssetByIdLocation (Integer idLocation);
 }
