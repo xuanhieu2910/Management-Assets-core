@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.documentAttack.CreateDocumentAttackRequest;
 import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackRequest;
 import com.example.csvccdshustbe.request.documentAttack.UpdateDocumentAttackRequest;
+import com.example.csvccdshustbe.request.documentAttack.UpdateStatusDocumentAttackRequest;
 import com.example.csvccdshustbe.response.documentAttack.FindAllDocumentAttackResponse;
 import org.springframework.data.domain.Page;
 
@@ -17,7 +18,9 @@ public interface DocumentAttackService {
     void createDocumentAttack(CreateDocumentAttackRequest request) throws ValidateFiledException;
     void updateDocumentAttack(UpdateDocumentAttackRequest request) throws ValidateFiledException;
 
-    void deleteDocumentAttackByIdDA(Integer idDocumentAttack);
+    void deleteDocumentAttackByIdDA(Integer idDocumentAttack) throws ValidateFiledException;
 
     DocumentAttack findDocumentAttackByIdDocumentAndStatus(Integer idDocumentAttack, Integer status);
+
+    void updateStatusDocumentAttack(UpdateStatusDocumentAttackRequest request) throws ValidateFiledException;
 }

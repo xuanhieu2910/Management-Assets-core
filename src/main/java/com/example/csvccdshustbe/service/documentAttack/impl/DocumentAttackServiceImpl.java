@@ -1,16 +1,18 @@
 package com.example.csvccdshustbe.service.documentAttack.impl;
 
-import com.example.csvccdshustbe.entity.*;
+import com.example.csvccdshustbe.entity.Department;
+import com.example.csvccdshustbe.entity.DocumentAttack;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.department.DepartmentRepository;
 import com.example.csvccdshustbe.repository.documentAttack.DocumentAttackRepository;
 import com.example.csvccdshustbe.request.documentAttack.CreateDocumentAttackRequest;
 import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackRequest;
 import com.example.csvccdshustbe.request.documentAttack.UpdateDocumentAttackRequest;
+import com.example.csvccdshustbe.request.documentAttack.UpdateStatusDocumentAttackRequest;
 import com.example.csvccdshustbe.response.documentAttack.FindAllDocumentAttackResponse;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,10 +123,13 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
         return documentAttack;
     }
     @Override
-    public void deleteDocumentAttackByIdDA(Integer idDocumentAttack) {
+    public void deleteDocumentAttackByIdDA(Integer idDocumentAttack) throws NotFoundException, ValidateFiledException {
         Optional<DocumentAttack> documentAttackOptional = documentAttackRepository.findDocumentAttackById(idDocumentAttack);
         if (documentAttackOptional.isEmpty()){
             throw new NotFoundException("Don't exits  document attack by id !");
+        }
+        if (documentAttackRepository.isExitsAssetByIdDocumentAttack(idDocumentAttack)){
+            throw new ValidateFiledException("Exits asset by id document, can't delete document attack!");
         }
         documentAttackRepository.delete(documentAttackOptional.get());
     }
@@ -137,5 +142,19 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
             throw new NotFoundException("Don't exits document attack!");
         }
         return documentAttackOptional.get();
+    }
+
+    @Override
+    public void updateStatusDocumentAttack(UpdateStatusDocumentAttackRequest request) throws ValidateFiledException {
+        Optional<DocumentAttack> documentAttack = documentAttackRepository.findDocumentAttackById(request.getIdDocumentAttack());
+        if (documentAttack.isEmpty()) {
+            throw new NotFoundException("Don't exits document attack!");
+        }
+        if (request.getStatus().equals(Constants.DOCUMENT_ATTACK_ACTIVE_STATUS) &&
+            request.getStatus().equals(Constants.DOCUMENT_ATTACK_UN_ACTIVE_STATUS)) {
+            throw new ValidateFiledException("Validate data update document attack!");
+        }
+        documentAttack.get().setStatus(request.getStatus());
+        documentAttackRepository.save(documentAttack.get());
     }
 }

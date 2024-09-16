@@ -15,4 +15,6 @@ public interface DocumentAttackRepositoryCustom {
     Optional<DocumentAttack> findDocumentAttackById(Integer idDocumentAttack);
 
     Optional<DocumentAttack> findDocumentAttackByIdDocumentAndStatus(Integer idDocumentAttack, Integer status);
+
+    boolean isExitsAssetByIdDocumentAttack(Integer idDocumentAttack);
 }

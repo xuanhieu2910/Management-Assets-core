@@ -10,6 +10,7 @@ import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.request.documentAttack.CreateDocumentAttackRequest;
 import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackRequest;
 import com.example.csvccdshustbe.request.documentAttack.UpdateDocumentAttackRequest;
+import com.example.csvccdshustbe.request.documentAttack.UpdateStatusDocumentAttackRequest;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
 import com.example.csvccdshustbe.utility.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -76,11 +77,23 @@ public class DocumentAttackController {
 
 
     @DeleteMapping
-    public ResponseEntity<?> deleteDocumentAttackByIdDA(@RequestParam("id-documentattack") Integer idDepartment){
+    public ResponseEntity<?> deleteDocumentAttackByIdDA(@RequestParam("id-document-attack") Integer idDepartment){
         try {
             documentAttackService.deleteDocumentAttackByIdDA(idDepartment);
             return ApiResponseDto.createdWithMessage("Delete document attack  success!", HttpStatus.OK);
-        } catch (NotFoundException e){
+        } catch (NotFoundException | ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/update-status")
+    public ResponseEntity<?> updateStatusDocumentAttack(@RequestBody UpdateStatusDocumentAttackRequest request){
+        try {
+            documentAttackService.updateStatusDocumentAttack(request);
+            return ApiResponseDto.createdWithMessage("Delete document attack  success!", HttpStatus.OK);
+        } catch (NotFoundException | ValidateFiledException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);

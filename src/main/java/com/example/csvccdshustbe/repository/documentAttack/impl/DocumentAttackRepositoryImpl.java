@@ -172,4 +172,16 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
         }
         return Optional.empty();
     }
+
+    @Override
+    public boolean isExitsAssetByIdDocumentAttack(Integer idDocumentAttack) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select asset.id_asset " +
+                "from document_attack doc " +
+                "    inner join asset asset on doc.id_document_attack = asset.id_document_attack " +
+                "where doc.id_document_attack = :idDocumentAttack ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idDocumentAttack", idDocumentAttack);
+        return !CollectionUtils.isEmpty(query.getResultList());
+    }
 }

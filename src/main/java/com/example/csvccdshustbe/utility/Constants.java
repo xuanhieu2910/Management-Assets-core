@@ -94,6 +94,7 @@ public class Constants {
      * Constant Level Type Asset User
      * */
     public static final Integer DOCUMENT_ATTACK_ACTIVE_STATUS = 1;
+    public static final Integer DOCUMENT_ATTACK_UN_ACTIVE_STATUS = -1;
 
     /*----------------------------------------------------*/
     /**
