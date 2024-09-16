@@ -87,7 +87,7 @@ public class AssetCategoriesController {
         try {
             assetCategoriesService.deleteAssetCategoryByIdAssetCategory(idCurrentUsage);
             return ApiResponseDto.createdWithMessage("Delete asset category success!", HttpStatus.OK);
-        } catch (NotFoundException e){
+        } catch (NotFoundException | ValidateFiledException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);

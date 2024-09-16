@@ -113,10 +113,13 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         return assetCategories;
     }
     @Override
-    public void deleteAssetCategoryByIdAssetCategory(Integer idAssetCategory) {
+    public void deleteAssetCategoryByIdAssetCategory(Integer idAssetCategory) throws ValidateFiledException {
         Optional<AssetCategories> assetCategoriesOptional = assetCategoriesRepository.findAssetCategoryById(idAssetCategory);
         if (assetCategoriesOptional.isEmpty()) {
             throw new NotFoundException("Don't exits Asset category by id by id!");
+        }
+        if (assetCategoriesRepository.isCheckExitsAssetByIdAssetCategory(idAssetCategory)) {
+            throw new ValidateFiledException("Validate data");
         }
         assetCategoriesRepository.delete(assetCategoriesOptional.get());
     }

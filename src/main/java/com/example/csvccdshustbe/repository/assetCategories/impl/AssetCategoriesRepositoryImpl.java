@@ -311,8 +311,13 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     @Override
     public boolean isCheckExitsAssetByIdAssetCategory(Integer idAssetCategory) {
         StringBuilder sb = new StringBuilder();
-//        sb.append(" ")
-        return false;
+        sb.append(" select asset.id_asset " +
+                "from asset_categories assetCategor " +
+                "    inner join asset asset on asset.id_asset_category = assetCategor.id_asset_category " +
+                "where assetCategor.id_asset_category = :idAssetCategory ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idAssetCategory", idAssetCategory);
+        return !CollectionUtils.isEmpty(query.getResultList());
     }
 
     @Override

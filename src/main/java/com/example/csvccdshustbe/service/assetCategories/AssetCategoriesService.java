@@ -27,7 +27,7 @@ public interface AssetCategoriesService {
     void createAssetCategory(CreateAssetCategoryRequest request) throws ValidateFiledException;
     void updateAssetCategory(UpdateAssetCategoryRequest request) throws ValidateFiledException;
 
-    void deleteAssetCategoryByIdAssetCategory(Integer idAssetCategory);
+    void deleteAssetCategoryByIdAssetCategory(Integer idAssetCategory) throws ValidateFiledException;
 
     BluePrintParentAssetCategoryDto findBluePrintParentAssetCategoryDtoById(Integer idParentAssetCategory);
 
