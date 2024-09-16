@@ -32,7 +32,7 @@ public class HouseModuleFactory implements ModuleFactory {
     public IModules updateModule(Map<String, Object> mapModuleUpdate, IModules iModules) {
         HouseModule houseModule = (HouseModule) iModules;
         houseModule.setIsManageGround(ValueUtil.getIntegerByObject(mapModuleUpdate.get("isManageGround")));
-        if (ValueUtil.getIntegerByObject(mapModuleUpdate.get("isManageHouse")).equals(Constants.HOUSE_MODULES_IS_MANAGE_HOUSE)) {
+        if (houseModule.getIsManageGround().equals(Constants.HOUSE_MODULES_IS_MANAGE_HOUSE)) {
             houseModule.setIdInstance(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idInstance")));
         }
         houseModule.setProvinceCode(ValueUtil.getStringByObject(mapModuleUpdate.get("provinceCode")));
