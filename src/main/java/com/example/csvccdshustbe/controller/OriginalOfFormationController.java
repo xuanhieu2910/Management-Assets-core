@@ -3,9 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
-import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
-import com.example.csvccdshustbe.request.originalOfFormation.CreateOriginalOfFormationReuqest;
+import com.example.csvccdshustbe.request.originalOfFormation.CreateOriginalOfFormationRequest;
 import com.example.csvccdshustbe.request.originalOfFormation.FindAllOriginalOfFormationRequest;
 import com.example.csvccdshustbe.request.originalOfFormation.UpdateOriginalOfFormationRequest;
 import com.example.csvccdshustbe.service.originalOfFormation.OriginalOfFormationService;
@@ -49,7 +47,7 @@ public class OriginalOfFormationController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<?> createOriginalOfFormationService(@RequestBody CreateOriginalOfFormationReuqest request){
+    public ResponseEntity<?> createOriginalOfFormationService(@RequestBody CreateOriginalOfFormationRequest request){
         try {
             originalOfFormationService.createOriginalOfFormationService(request);
             return ApiResponseDto.createdWithMessage("Create new original of formation success!", HttpStatus.OK);

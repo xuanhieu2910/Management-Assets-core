@@ -1,13 +1,10 @@
 package com.example.csvccdshustbe.service.originalOfFormation.impl;
 
-import com.example.csvccdshustbe.dto.originalOfFormation.AssetOriginalOfFormDto;
 import com.example.csvccdshustbe.dto.originalOfFormation.FindAllOriginalOfFormationDto;
-import com.example.csvccdshustbe.entity.Department;
-import com.example.csvccdshustbe.entity.MedicineType;
 import com.example.csvccdshustbe.entity.OriginalOfFormation;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.originalOfFormation.OriginalOfFormationRepository;
-import com.example.csvccdshustbe.request.originalOfFormation.CreateOriginalOfFormationReuqest;
+import com.example.csvccdshustbe.request.originalOfFormation.CreateOriginalOfFormationRequest;
 import com.example.csvccdshustbe.request.originalOfFormation.FindAllOriginalOfFormationRequest;
 import com.example.csvccdshustbe.request.originalOfFormation.UpdateOriginalOfFormationRequest;
 import com.example.csvccdshustbe.response.originalOfFormation.FindAllOriginalOfFormationResponse;
@@ -58,12 +55,12 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
     }
 
     @Override
-    public  void createOriginalOfFormationService(CreateOriginalOfFormationReuqest request) throws ValidateFiledException {
+    public  void createOriginalOfFormationService(CreateOriginalOfFormationRequest request) throws ValidateFiledException {
         validateDataCreateOriginalOfFormation(request);
         originalOfFormationRepository.save(contructOriginalOfFormation(request));
     }
 
-    private void validateDataCreateOriginalOfFormation(CreateOriginalOfFormationReuqest request) throws ValidateFiledException{
+    private void validateDataCreateOriginalOfFormation(CreateOriginalOfFormationRequest request) throws ValidateFiledException{
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
@@ -91,7 +88,7 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
         }
     }
 
-    private OriginalOfFormation contructOriginalOfFormation(CreateOriginalOfFormationReuqest request){
+    private OriginalOfFormation contructOriginalOfFormation(CreateOriginalOfFormationRequest request){
         OriginalOfFormation originalOfFormation=new OriginalOfFormation();
         originalOfFormation.setName(request.getName().trim());
 
