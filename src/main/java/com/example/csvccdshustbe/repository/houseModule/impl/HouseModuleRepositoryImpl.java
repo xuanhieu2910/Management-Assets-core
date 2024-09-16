@@ -100,6 +100,7 @@ public class HouseModuleRepositoryImpl implements HouseModuleRepositoryCustom {
                 module.setAcreage(ValueUtil.getDoubleByObject(obj[8]));
                 module.setPublishYear(ValueUtil.getStringByObject(obj[9]));
                 module.setIdInstance(ValueUtil.getIntegerByObject(obj[10]));
+                return Optional.of(module);
             }
         }
         return Optional.empty();
