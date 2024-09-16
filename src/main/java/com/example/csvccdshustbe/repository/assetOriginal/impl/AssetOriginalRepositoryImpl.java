@@ -50,9 +50,10 @@ public class AssetOriginalRepositoryImpl implements AssetOriginalRepositoryCusto
     @Override
     public void deleteAssetOriginalByIdOriginalAndIdInstance(Integer idOriginal, Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from asset_original aor " +
-                "where aor.id_original = :idOriginal  " +
-                "and aor.id_instance = :idInstance ");
+        sb.append("delete " +
+                "from asset_original  " +
+                "where asset_original.id_original = :idOriginal " +
+                "  and asset_original.id_instance = :idInstance  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idOriginal", idOriginal);
         query.setParameter("idInstance", idInstance);
