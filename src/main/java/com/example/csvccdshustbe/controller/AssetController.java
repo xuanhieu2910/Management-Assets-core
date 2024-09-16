@@ -86,7 +86,7 @@ public class AssetController {
     @DeleteMapping
     public ResponseEntity<?> deleteAsset(@RequestParam("code-asset") String codeAsset){
         try {
-
+            assetService.deleteAssetByCodeAsset(codeAsset);
             return ApiResponseDto.createdWithMessage("Delete asset success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);

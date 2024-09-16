@@ -10,4 +10,6 @@ public interface AssetOriginalOfFormationRepositoryCustom {
 
     List<AssetOriginalOfFormDto> findOriginalOfFormationDtoByIdAsset(Integer idAsset);
     List<AssetOriginalOfFormation> findOriginalOfFormationByIdAsset(Integer idAsset);
+
+    void deleteByIdAsset(Integer idAsset);
 }

@@ -22,4 +22,5 @@ public interface AssetService {
 
     void updateAsset(HashMap<String, Object> updateAssetRequest) throws JsonProcessingException, ValidateFiledException, IllegalAccessException;
 
+    void deleteAssetByCodeAsset(String codeAsset) throws ValidateFiledException;
 }

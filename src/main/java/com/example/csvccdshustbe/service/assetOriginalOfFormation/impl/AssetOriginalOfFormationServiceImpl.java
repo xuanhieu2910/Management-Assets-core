@@ -13,30 +13,35 @@ import java.util.List;
 public class AssetOriginalOfFormationServiceImpl implements AssetOriginalOfFormationService {
 
     @Autowired
-    AssetOriginalOfFormationRepository originalOfFormationRepository;
+    AssetOriginalOfFormationRepository assetOriginalOfFormationRepository;
 
     @Override
     public AssetOriginalOfFormation save(AssetOriginalOfFormation assetOriginalOfFormation) {
-        return originalOfFormationRepository.save(assetOriginalOfFormation);
+        return assetOriginalOfFormationRepository.save(assetOriginalOfFormation);
     }
 
     @Override
     public List<AssetOriginalOfFormation> saveAll(List<AssetOriginalOfFormation> assetOriginalOfFormation) {
-        return originalOfFormationRepository.saveAll(assetOriginalOfFormation);
+        return assetOriginalOfFormationRepository.saveAll(assetOriginalOfFormation);
     }
 
     @Override
     public List<AssetOriginalOfFormDto> findOriginalOfFormationDtoByIdAsset(Integer idAsset) {
-        return originalOfFormationRepository.findOriginalOfFormationDtoByIdAsset(idAsset);
+        return assetOriginalOfFormationRepository.findOriginalOfFormationDtoByIdAsset(idAsset);
     }
 
     @Override
     public List<AssetOriginalOfFormation> findOriginalOfFormationByIdAsset(Integer idAsset) {
-        return originalOfFormationRepository.findOriginalOfFormationByIdAsset(idAsset);
+        return assetOriginalOfFormationRepository.findOriginalOfFormationByIdAsset(idAsset);
     }
 
     @Override
     public void deleteAssetOriginalOfFormation(AssetOriginalOfFormation original) {
-        originalOfFormationRepository.delete(original);
+        assetOriginalOfFormationRepository.delete(original);
+    }
+
+    @Override
+    public void deleteByIdAsset(Integer idAsset) {
+        assetOriginalOfFormationRepository.deleteByIdAsset(idAsset);
     }
 }

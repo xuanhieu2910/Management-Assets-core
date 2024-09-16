@@ -24,11 +24,13 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -176,6 +178,19 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             }
         }
         return Optional.empty();
+    }
+
+
+    @Modifying
+    @Transactional
+    @Override
+    public void deleteByIdAsset(Integer idAsset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from asset " +
+                "where asset.id_asset = :idAsset ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idAsset", idAsset);
+        query.executeUpdate();
     }
 
 

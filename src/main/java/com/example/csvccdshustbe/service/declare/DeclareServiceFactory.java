@@ -117,7 +117,7 @@ public class DeclareServiceFactory {
         return assetDeclareService.findBluePrintAssetDeclareByIdAsset(idAsset);
     }
 
-    public void deleteAssetDeclare(BluePrintDeclareDto bluePrintDeclareDto, Asset asset) throws ValidateFiledException {
+    public void deleteAssetDeclare(BluePrintDeclareDto bluePrintDeclareDto, Integer idAsset) throws ValidateFiledException {
         EnumDeclareFactory enumDeclareFactory = Enum.valueOf(EnumDeclareFactory.class, bluePrintDeclareDto.getTypeDeclare());
         switch (enumDeclareFactory){
             case HouseDeclare -> {
@@ -128,7 +128,7 @@ public class DeclareServiceFactory {
             }
             case CommonDeclare -> {
                 commonDeclareService.deleteCommonDeclareById(bluePrintDeclareDto.getIdInstance());
-                assetCurrentUsageService.deleteAssetCurrentUsageServiceByIdAsset(asset.getIdAsset());
+                assetCurrentUsageService.deleteAssetCurrentUsageServiceByIdAsset(idAsset);
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type declare!");

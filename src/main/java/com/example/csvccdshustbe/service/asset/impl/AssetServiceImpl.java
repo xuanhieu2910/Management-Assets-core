@@ -126,6 +126,47 @@ public class AssetServiceImpl implements AssetService {
         updateDataAsset(dataCreateAssetRequest);
     }
 
+    @Override
+    public void deleteAssetByCodeAsset(String codeAsset) throws ValidateFiledException {
+        Optional<AssetBluePrintDto> assetBluePrintDto = assetRepository.findDetailAssetByCodeAsset(codeAsset);
+        if (assetBluePrintDto.isEmpty()) {
+            throw new NotFoundException("Don't exits asset by code!");
+        }
+        deleteCommonAsset(assetBluePrintDto.get());
+        deleteModuleAsset(assetBluePrintDto.get());
+        deleteOriginalAsset(assetBluePrintDto.get());
+        deleteDeclareAsset(assetBluePrintDto.get());
+    }
+
+    private void deleteDeclareAsset(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException {
+        declareServiceFactory.deleteAssetDeclare(assetBluePrintDto.getDeclare().getBluePrintDeclare(),
+                assetBluePrintDto.getIdAsset());
+    }
+
+    private void deleteOriginalAsset(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException {
+        String typeModule = assetBluePrintDto.getOriginal().getBluePrintAssetOriginalDto().getTypeOriginal();
+        Integer idOriginal = assetBluePrintDto.getOriginal().getBluePrintAssetOriginalDto().getIdOriginal();
+        Integer idInstance = assetBluePrintDto.getOriginal().getBluePrintAssetOriginalDto().getIdInstance();
+        originalServiceFactory.deleteAssetOriginal(typeModule, idOriginal, idInstance);
+    }
+
+    private void deleteModuleAsset(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException {
+        String typeModule;
+        Integer idModule;
+        Integer idInstance;
+        for (AssetModulesDto modulesDto : assetBluePrintDto.getModules()) {
+            typeModule = modulesDto.getBluePrintAssetModules().getTypeModules();
+            idModule = modulesDto.getBluePrintAssetModules().getIdModules();
+            idInstance = modulesDto.getBluePrintAssetModules().getIdInstance();
+            modulesServiceFactory.deleteModulesByTypeModulesAndIdInstance(typeModule, idInstance, idModule);
+        }
+    }
+
+    private void deleteCommonAsset(AssetBluePrintDto assetBluePrintDto) {
+        assetRepository.deleteByIdAsset(assetBluePrintDto.getIdAsset());
+        assetOriginalOfFormationService.deleteByIdAsset(assetBluePrintDto.getIdAsset());
+    }
+
     private void updateDataAsset(Map<String, Object> dataUpdateAssetRequest) throws ValidateFiledException, IllegalAccessException {
         Asset asset = updateCommonDataAsset(dataUpdateAssetRequest);
         updateModulesDataAsset(dataUpdateAssetRequest, asset);
@@ -173,7 +214,7 @@ public class AssetServiceImpl implements AssetService {
     private void deleteAssetDeclare(BluePrintDeclareDto bluePrintDeclareDto,
                                     Map<String, Object> declareDataAsset, Asset asset) throws ValidateFiledException {
         if (!bluePrintDeclareDto.getTypeDeclare().equals(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)))) {
-            declareServiceFactory.deleteAssetDeclare(bluePrintDeclareDto,asset);
+            declareServiceFactory.deleteAssetDeclare(bluePrintDeclareDto,asset.getIdAsset());
         }
     }
 

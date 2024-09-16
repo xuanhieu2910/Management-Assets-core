@@ -7,6 +7,8 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -68,5 +70,17 @@ public class AssetOriginalOfFormationRepositoryImpl implements AssetOriginalOfFo
             }
         }
         return originalOfFormations;
+    }
+
+    @Modifying
+    @Transactional
+    @Override
+    public void deleteByIdAsset(Integer idAsset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete from asset_original_of_formation " +
+                "where asset_original_of_formation.id_asset = :idAsset ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idAsset", idAsset);
+        query.executeUpdate();
     }
 }

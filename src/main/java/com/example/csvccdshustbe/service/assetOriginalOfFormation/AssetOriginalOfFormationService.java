@@ -14,4 +14,6 @@ public interface AssetOriginalOfFormationService {
     List<AssetOriginalOfFormation> findOriginalOfFormationByIdAsset(Integer idAsset);
 
     void deleteAssetOriginalOfFormation(AssetOriginalOfFormation original);
+
+    void deleteByIdAsset(Integer idAsset);
 }

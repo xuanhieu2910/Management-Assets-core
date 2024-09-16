@@ -16,4 +16,6 @@ public interface AssetRepositoryCustom {
     Optional<AssetBluePrintDto> findDetailAssetByCodeAsset(String codeAsset);
 
     Optional<Asset> findAssetByCodeAsset(String codeAsset);
+
+    void deleteByIdAsset(Integer idAsset);
 }
