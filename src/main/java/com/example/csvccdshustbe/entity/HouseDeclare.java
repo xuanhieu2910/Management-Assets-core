@@ -19,7 +19,7 @@ public class HouseDeclare implements IDeclare{
     private Integer idHouseDeclare;
     @Column(name = "id_asset")
     private Integer idAsset;
-    @Column(name = "work_place")
+    @Column(name = "workplace")
     private Double workplace;
     @Column(name = "hdsn_no_bussiness")
     private Double hdsnNoBussiness;
