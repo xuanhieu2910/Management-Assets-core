@@ -11,8 +11,10 @@ import com.example.csvccdshustbe.repository.location.LocationRepository;
 import com.example.csvccdshustbe.request.Location.CreateLocationRequest;
 import com.example.csvccdshustbe.request.Location.FindAllLocationRequest;
 import com.example.csvccdshustbe.request.Location.UpdateLocationRequest;
+import com.example.csvccdshustbe.request.Location.UpdateVisibleLocationRequest;
 import com.example.csvccdshustbe.response.location.FindAllLocationResponse;
 import com.example.csvccdshustbe.service.location.LocationService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.ObjectUtils;
@@ -179,5 +181,19 @@ public class LocationServiceImpl implements LocationService {
             throw new NotFoundException("Don't exits location!");
         }
         return location.get();
+    }
+
+    @Override
+    public void updateVisibleLocation(UpdateVisibleLocationRequest request) throws ValidateFiledException {
+        Optional<Location> location = locationRepository.findLocationById(request.getIdLocation());
+        if (location.isEmpty()){
+            throw new NotFoundException("Don't exits location!");
+        }
+        if (!request.getVisible().equals(Constants.LOCATION_ACTIVE_STATUS)
+                && !request.getVisible().equals(Constants.LOCATION_UN_ACTIVE_STATUS)) {
+            throw new ValidateFiledException("Don't exits status location!");
+        }
+        location.get().setVisible(request.getVisible());
+        locationRepository.save(location.get());
     }
 }

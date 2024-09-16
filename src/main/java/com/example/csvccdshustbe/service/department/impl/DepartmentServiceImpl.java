@@ -60,11 +60,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         if (departmentOptional.isEmpty()){
             throw new NotFoundException("Don't exits department by id!");
         }
-        if (!request.getStatus().equals(Constants.DEPARTMENT_ACTIVE_STATUS) ||
+        if (!request.getStatus().equals(Constants.DEPARTMENT_ACTIVE_STATUS) &&
                 !request.getStatus().equals(Constants.DEPARTMENT_UN_ACTIVE_STATUS)) {
             throw new ValidateFiledException("Don't exits status department!");
         }
         departmentOptional.get().setStatus(request.getStatus());
+        departmentRepository.save(departmentOptional.get());
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.Location.CreateLocationRequest;
 import com.example.csvccdshustbe.request.Location.FindAllLocationRequest;
 import com.example.csvccdshustbe.request.Location.UpdateLocationRequest;
+import com.example.csvccdshustbe.request.Location.UpdateVisibleLocationRequest;
 import com.example.csvccdshustbe.response.location.FindAllLocationResponse;
 import org.springframework.data.domain.Page;
 
@@ -20,4 +21,6 @@ public interface LocationService {
     Location findLocationByIdLocationAndIdDepartmentAndVisible(Integer idLocation,
                                                                Integer idDepartment,
                                                                Integer visible);
+
+    void updateVisibleLocation(UpdateVisibleLocationRequest request) throws ValidateFiledException;
 }

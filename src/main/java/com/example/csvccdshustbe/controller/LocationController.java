@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.Location.CreateLocationRequest;
 import com.example.csvccdshustbe.request.Location.FindAllLocationRequest;
 import com.example.csvccdshustbe.request.Location.UpdateLocationRequest;
+import com.example.csvccdshustbe.request.Location.UpdateVisibleLocationRequest;
 import com.example.csvccdshustbe.service.location.LocationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -79,5 +80,16 @@ public class LocationController {
         }
     }
 
+    @PostMapping("/update-status")
+    public ResponseEntity<?> updateVisibleLocation(@RequestBody UpdateVisibleLocationRequest request){
+        try {
+            locationService.updateVisibleLocation(request);
+            return ApiResponseDto.createdWithMessage("Update status location success!", HttpStatus.OK);
+        } catch (NotFoundException | ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 
 }
