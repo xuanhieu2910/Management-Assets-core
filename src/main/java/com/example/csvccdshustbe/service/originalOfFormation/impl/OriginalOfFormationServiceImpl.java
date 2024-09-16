@@ -64,7 +64,7 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        Optional<OriginalOfFormation> originalOfFormation=originalOfFormationRepository.findOriginalOfFormationByName(request.getName());
+        Optional<OriginalOfFormation> originalOfFormation = originalOfFormationRepository.findOriginalOfFormationByName(request.getName());
 
 
         if (originalOfFormation.isPresent()) {
@@ -160,12 +160,14 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
     }
 
     @Override
-    public void deleteOriginalOfFormationServiceById(Integer idOriginalOfFormation){
+    public void deleteOriginalOfFormationServiceById(Integer idOriginalOfFormation) throws ValidateFiledException {
         Optional<OriginalOfFormation> originalOfFormation= originalOfFormationRepository.findOriginalOfFormationById(idOriginalOfFormation);
         if (originalOfFormation.isEmpty()) {
             throw new NotFoundException("Don't exits original Of Formation by id!");
         }
+        if (originalOfFormationRepository.isCheckAssetByIdOriginalOfFormation(idOriginalOfFormation)) {
+            throw new ValidateFiledException("Validate data");
+        }
         originalOfFormationRepository.delete(originalOfFormation.get());
-
     }
 }

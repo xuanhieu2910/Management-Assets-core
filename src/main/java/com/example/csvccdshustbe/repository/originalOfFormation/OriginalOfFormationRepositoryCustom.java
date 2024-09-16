@@ -19,4 +19,6 @@ public interface OriginalOfFormationRepositoryCustom {
     Optional<OriginalOfFormation> findOriginalOfFormationById(Integer idOriginalOfFormation);
 
     boolean checkExitsOriginalOfFormationByNameOrShortNameOrCodeName(String name,String codeName,String shortName);
+
+    boolean isCheckAssetByIdOriginalOfFormation(Integer idOriginalOfFormation);
 }

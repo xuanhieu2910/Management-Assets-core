@@ -73,7 +73,7 @@ public class OriginalOfFormationController {
 
 
     @DeleteMapping
-    public ResponseEntity<?> deleteOriginalOfFormationServiceById(@RequestParam("id-originalofformation") Integer idDepartment){
+    public ResponseEntity<?> deleteOriginalOfFormationServiceById(@RequestParam("id-original-of-formation") Integer idDepartment){
         try {
             originalOfFormationService.deleteOriginalOfFormationServiceById(idDepartment);
             return ApiResponseDto.createdWithMessage("Delete original of formation success!", HttpStatus.OK);

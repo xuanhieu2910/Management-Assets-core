@@ -258,4 +258,17 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
         List<Object[]> result = query.getResultList();
         return CollectionUtils.isEmpty(result);
     }
+
+    @Override
+    public boolean isCheckAssetByIdOriginalOfFormation(Integer idOriginalOfFormation) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select asset.id_asset " +
+                "from original_of_formation oof  " +
+                "    inner join asset_original_of_formation aoof on oof.id_original_of_formation = aoof.id_original_of_formation " +
+                "    inner join asset asset on aoof.id_asset = asset.id_asset " +
+                "where oof.id_original_of_formation = :idOriginalOfFormation ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idOriginalOfFormation", idOriginalOfFormation);
+        return !CollectionUtils.isEmpty(query.getResultList());
+    }
 }

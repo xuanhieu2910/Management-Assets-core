@@ -15,5 +15,5 @@ public interface OriginalOfFormationService {
 
     void updateOriginalOfFormationService(UpdateOriginalOfFormationRequest request) throws ValidateFiledException;
 
-    void deleteOriginalOfFormationServiceById(Integer idOriginalOfFormation);
+    void deleteOriginalOfFormationServiceById(Integer idOriginalOfFormation) throws ValidateFiledException;
 }
