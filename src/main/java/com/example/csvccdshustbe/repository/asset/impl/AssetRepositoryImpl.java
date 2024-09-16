@@ -19,6 +19,8 @@ import com.example.csvccdshustbe.dto.unit.BluePrintUnitDto;
 import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.repository.asset.AssetRepositoryCustom;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
+import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
+import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -191,6 +193,55 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAsset", idAsset);
         query.executeUpdate();
+    }
+
+    @Override
+    public Page<FindAllGroundAssetResponse> findAllGroundAsset(Pageable pageable, FindAllGroundAssetRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select asset.id_asset, asset.code_asset, asset.name " +
+                "from asset asset " +
+                "    inner join ground_module groundModule on asset.id_asset = groundModule.asset_id " +
+                "where 1 = 1 ");
+        setConditionFindAllGroundAsset(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllGroundAsset(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllGroundAssetResponse> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                FindAllGroundAssetResponse response = new FindAllGroundAssetResponse();
+                response.setIdGroundAsset(ValueUtil.getIntegerByObject(obj[0]));
+                response.setCodeGroundAsset(ValueUtil.getStringByObject(obj[1]));
+                response.setNameGroundAsset(ValueUtil.getStringByObject(obj[2]));
+                responses.add(response);
+            }
+        }
+        return new PageImpl<>(responses, pageable, countFindAllGroundAsset(request));
+    }
+
+    private long countFindAllGroundAsset(FindAllGroundAssetRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) " +
+                "from asset asset " +
+                "    inner join ground_module groundModule on asset.id_asset = groundModule.asset_id " +
+                "where 1 = 1 ");
+        setConditionFindAllGroundAsset(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllGroundAsset(request, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindAllGroundAsset(FindAllGroundAssetRequest request, Query query) {
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            query.setParameter("keyword", request.getKeyword());
+        }
+    }
+
+    private void setConditionFindAllGroundAsset(FindAllGroundAssetRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            sb.append("   and (asset.name REGEXP  :keyword ) ");
+        }
     }
 
 

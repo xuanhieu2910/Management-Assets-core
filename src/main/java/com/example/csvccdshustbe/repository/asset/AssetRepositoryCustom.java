@@ -4,6 +4,8 @@ import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
+import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
+import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,4 +20,6 @@ public interface AssetRepositoryCustom {
     Optional<Asset> findAssetByCodeAsset(String codeAsset);
 
     void deleteByIdAsset(Integer idAsset);
+
+    Page<FindAllGroundAssetResponse> findAllGroundAsset(Pageable pageable, FindAllGroundAssetRequest request);
 }

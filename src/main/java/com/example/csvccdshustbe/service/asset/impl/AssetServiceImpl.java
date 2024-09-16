@@ -14,7 +14,9 @@ import com.example.csvccdshustbe.factory.module.ModuleFactory;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
+import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.response.asset.FindAllAssetResponse;
+import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
 import com.example.csvccdshustbe.response.asset.FindDetailsAssetResponse;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
@@ -40,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.support.PageableUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -136,6 +139,12 @@ public class AssetServiceImpl implements AssetService {
         deleteModuleAsset(assetBluePrintDto.get());
         deleteOriginalAsset(assetBluePrintDto.get());
         deleteDeclareAsset(assetBluePrintDto.get());
+    }
+
+    @Override
+    public Page<FindAllGroundAssetResponse> findAllGroundAsset(FindAllGroundAssetRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        return  assetRepository.findAllGroundAsset(pageable, request);
     }
 
     private void deleteDeclareAsset(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException {

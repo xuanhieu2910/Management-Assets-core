@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
+import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.protobuf.Api;
@@ -94,4 +95,22 @@ public class AssetController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+
+    @GetMapping("/ground-asset/find-all")
+    public ResponseEntity<?> findAllAssetGround(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllGroundAssetRequest request){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllGroundAsset(request),
+                    "Find all ground asset success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 }
