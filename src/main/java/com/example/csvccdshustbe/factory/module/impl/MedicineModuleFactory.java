@@ -21,7 +21,6 @@ public class MedicineModuleFactory implements ModuleFactory {
         medicineModule.setNumberBatchOfGoods(ValueUtil.getStringByObject(mapModuleCreate.get("numberBatchOfGoods")));
         medicineModule.setOwnNameCirculationNumber(ValueUtil.getStringByObject(mapModuleCreate.get("ownNameCirculationNumber")));
         medicineModule.setOwnAddressCirculationNumber(ValueUtil.getStringByObject(mapModuleCreate.get("ownAddressCirculationNumber")));
-        medicineModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleCreate.get("sparePartsAttack")));
         return medicineModule;
     }
 
@@ -36,7 +35,6 @@ public class MedicineModuleFactory implements ModuleFactory {
         medicineModule.setNumberBatchOfGoods(ValueUtil.getStringByObject(mapModuleUpdate.get("numberBatchOfGoods")));
         medicineModule.setOwnNameCirculationNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("ownNameCirculationNumber")));
         medicineModule.setOwnAddressCirculationNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("ownAddressCirculationNumber")));
-        medicineModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
         return medicineModule;
     }
 }

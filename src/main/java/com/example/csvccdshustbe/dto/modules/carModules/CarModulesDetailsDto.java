@@ -53,8 +53,8 @@ public class CarModulesDetailsDto {
     private String source;
     @JsonProperty("color")
     private String color;
-    @JsonProperty("id_user")
-    private Integer idUser;
+    @JsonProperty("code_user")
+    private String codeUser;
     @JsonProperty("id_type_use")
     private Integer idTypeUse;
     @JsonProperty("time_created")
@@ -69,4 +69,6 @@ public class CarModulesDetailsDto {
     private String fullName;
     @JsonProperty("name_type_use")
     private String nameTypeUse;
+    @JsonProperty("spare_part_attack")
+    private String sparePartsAttack;
 }

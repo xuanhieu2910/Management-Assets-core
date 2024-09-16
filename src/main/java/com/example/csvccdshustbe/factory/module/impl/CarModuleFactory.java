@@ -35,6 +35,7 @@ public class CarModuleFactory implements ModuleFactory {
         carModule.setColor(ValueUtil.getStringByObject(mapModuleCreate.get("color")));
         carModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleCreate.get("idUser")));
         carModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleCreate.get("idTypeUse")));
+        carModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleCreate.get("sparePartsAttack")));
         String timeCurrent = String.valueOf(new Date().getTime());
         carModule.setTimeCreated(timeCurrent);
         carModule.setTimeModified(timeCurrent);
@@ -65,6 +66,7 @@ public class CarModuleFactory implements ModuleFactory {
         carModule.setColor(ValueUtil.getStringByObject(mapModuleUpdate.get("color")));
         carModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idUser")));
         carModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
+        carModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
         String timeCurrent = String.valueOf(new Date().getTime());
         carModule.setTimeModified(timeCurrent);
         return carModule;

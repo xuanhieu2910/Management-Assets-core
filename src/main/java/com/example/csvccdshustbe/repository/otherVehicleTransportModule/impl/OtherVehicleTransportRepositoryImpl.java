@@ -22,22 +22,23 @@ public class OtherVehicleTransportRepositoryImpl implements OtherVehicleTranspor
     public Optional<OtherVehicleTransportModuleDetailsDto> findOtherVehicleTransportDetailsDtoById
             (Integer idOtherVehicleTransport) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select otherVehicle.id_other_vehicle_transport_module, otherVehicle.id_asset,    " +
-                "        otherVehicle.license_plate, otherVehicle.label, otherVehicle.load_capacity,    " +
-                "        otherVehicle.number_seats, otherVehicle.capacity, otherVehicle.cylinder_capacity,    " +
-                "        otherVehicle.clutch_number, otherVehicle.vehicle_identification_number,    " +
-                "        otherVehicle.machine_number, otherVehicle.publish_year, otherVehicle.id_country_producer,    " +
-                "        otherVehicle.license_certificate_register, otherVehicle.publish_date_license,    " +
-                "        otherVehicle.company_register, otherVehicle.source, otherVehicle.color,    " +
-                "        otherVehicle.id_user, otherVehicle.id_type_use, otherVehicle.time_created,    " +
-                "        otherVehicle.time_modified, otherVehicle.id_position_name,  " +
-                "        co.name nameCountryProducer, us.user_name, us.full_name, ty.name nameTypeUse, po.name namePosition  " +
-                "from other_vehicle_transport_module otherVehicle  " +
-                "    left join country_producer co on otherVehicle.id_country_producer = co.id_country_producer  " +
-                "    left join csvc_user us on otherVehicle.id_user = us.id_user  " +
-                "    left join type_use ty on otherVehicle.id_type_use = ty.id_type_use  " +
-                "    left join position_name po on otherVehicle.id_position_name = po.id_position_name  " +
-                "where otherVehicle.id_other_vehicle_transport_module = :idOtherVehicle ");
+        sb.append("select otherVehicle.id_other_vehicle_transport_module, otherVehicle.id_asset,      " +
+                "        otherVehicle.license_plate, otherVehicle.label, otherVehicle.load_capacity,      " +
+                "        otherVehicle.number_seats, otherVehicle.capacity, otherVehicle.cylinder_capacity,      " +
+                "        otherVehicle.clutch_number, otherVehicle.vehicle_identification_number,      " +
+                "        otherVehicle.machine_number, otherVehicle.publish_year, otherVehicle.id_country_producer,      " +
+                "        otherVehicle.license_certificate_register, otherVehicle.publish_date_license,      " +
+                "        otherVehicle.company_register, otherVehicle.source, otherVehicle.color,      " +
+                "        us.code_user, otherVehicle.id_type_use, otherVehicle.time_created,      " +
+                "        otherVehicle.time_modified, otherVehicle.id_position_name,    " +
+                "        co.name nameCountryProducer, us.user_name, us.full_name, ty.name nameTypeUse, po.name namePosition,  " +
+                "        otherVehicle.spare_parts_attack " +
+                "from other_vehicle_transport_module otherVehicle    " +
+                "    left join country_producer co on otherVehicle.id_country_producer = co.id_country_producer    " +
+                "    left join csvc_user us on otherVehicle.id_user = us.id_user    " +
+                "    left join type_use ty on otherVehicle.id_type_use = ty.id_type_use    " +
+                "    left join position_name po on otherVehicle.id_position_name = po.id_position_name    " +
+                "where otherVehicle.id_other_vehicle_transport_module = :idOtherVehicle  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idOtherVehicle", idOtherVehicleTransport);
         List<Object[]> result = query.getResultList();
@@ -62,7 +63,7 @@ public class OtherVehicleTransportRepositoryImpl implements OtherVehicleTranspor
                 module.setCompanyRegister(ValueUtil.getStringByObject(obj[15]));
                 module.setSource(ValueUtil.getStringByObject(obj[16]));
                 module.setColor(ValueUtil.getStringByObject(obj[17]));
-                module.setIdUser(ValueUtil.getIntegerByObject(obj[18]));
+                module.setCodeUser(ValueUtil.getStringByObject(obj[18]));
                 module.setIdTypeUse(ValueUtil.getIntegerByObject(obj[19]));
                 module.setTimeCreated(ValueUtil.getStringByObject(obj[20]));
                 module.setTimeModified(ValueUtil.getStringByObject(obj[21]));
@@ -72,6 +73,7 @@ public class OtherVehicleTransportRepositoryImpl implements OtherVehicleTranspor
                 module.setFullName(ValueUtil.getStringByObject(obj[25]));
                 module.setNameTypeUse(ValueUtil.getStringByObject(obj[26]));
                 module.setPositionName(ValueUtil.getStringByObject(obj[27]));
+                module.setSparePartsAttack(ValueUtil.getStringByObject(obj[28]));
                 return Optional.of(module);
             }
         }
@@ -99,7 +101,7 @@ public class OtherVehicleTransportRepositoryImpl implements OtherVehicleTranspor
                 "       oth.machine_number, oth.publish_year, oth.id_country_producer, " +
                 "       oth.license_certificate_register, oth.publish_date_license, oth.company_register, " +
                 "       oth.source, oth.color, oth.id_user, oth.id_type_use, " +
-                "       oth.time_created, oth.time_modified, oth.id_position_name " +
+                "       oth.time_created, oth.time_modified, oth.id_position_name, oth.spare_parts_attack " +
                 "from other_vehicle_transport_module oth  " +
                 "where oth.id_other_vehicle_transport_module = :idOtherVehicle ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -131,6 +133,7 @@ public class OtherVehicleTransportRepositoryImpl implements OtherVehicleTranspor
                 module.setTimeCreated(ValueUtil.getStringByObject(obj[20]));
                 module.setTimeModified(ValueUtil.getStringByObject(obj[21]));
                 module.setIdPositionName(ValueUtil.getIntegerByObject(obj[22]));
+                module.setSparePartsAttack(ValueUtil.getStringByObject(obj[23]));
                 return Optional.of(module);
             }
         }

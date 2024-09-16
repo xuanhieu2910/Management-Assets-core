@@ -44,8 +44,8 @@ public class OtherVehicleTransportModuleDetailsDto {
     private String source;
     @JsonProperty("color")
     private String color;
-    @JsonProperty("id_user")
-    private Integer idUser;
+    @JsonProperty("code_user")
+    private String codeUser;
     @JsonProperty("id_type_use")
     private Integer idTypeUse;
     @JsonProperty("time_created")
@@ -64,4 +64,6 @@ public class OtherVehicleTransportModuleDetailsDto {
     private String nameTypeUse;
     @JsonProperty("position_name")
     private String positionName;
+    @JsonProperty("spare_parts_attack")
+    private String sparePartsAttack;
 }

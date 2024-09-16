@@ -33,6 +33,4 @@ public class MedicineModuleDetailsDto {
     private String ownNameCirculationNumber;
     @JsonProperty("own_address_circulation_number")
     private String ownAddressCirculationNumber;
-    @JsonProperty("spare_parts_attack")
-    private String sparePartsAttack;
 }

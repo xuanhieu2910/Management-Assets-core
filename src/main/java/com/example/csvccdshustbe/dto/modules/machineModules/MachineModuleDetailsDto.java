@@ -24,8 +24,8 @@ public class MachineModuleDetailsDto {
     private String publishDate;
     @JsonProperty("id_country_producer")
     private Integer idCountryProducer;
-    @JsonProperty("id_user")
-    private Integer idUser;
+    @JsonProperty("code_user")
+    private String codeUser;
     @JsonProperty("id_type_use")
     private Integer idTypeUse;
     @JsonProperty("name_country_producer")
@@ -36,5 +36,6 @@ public class MachineModuleDetailsDto {
     private String fullName;
     @JsonProperty("name_type_use")
     private String nameTypeUse;
-
+    @JsonProperty("spare_parts_attack")
+    private String sparePartsAttack;
 }

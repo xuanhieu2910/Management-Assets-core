@@ -20,6 +20,7 @@ public class MachineModuleFactory implements ModuleFactory {
         machineModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleCreate.get("idCountryProducer")));
         machineModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleCreate.get("idUser")));
         machineModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleCreate.get("idTypeUse")));
+        machineModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleCreate.get("sparePartsAttack")));
         return machineModule;
     }
 
@@ -33,6 +34,7 @@ public class MachineModuleFactory implements ModuleFactory {
         machineModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idCountryProducer")));
         machineModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idUser")));
         machineModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
+        machineModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
         return machineModule;
     }
 }

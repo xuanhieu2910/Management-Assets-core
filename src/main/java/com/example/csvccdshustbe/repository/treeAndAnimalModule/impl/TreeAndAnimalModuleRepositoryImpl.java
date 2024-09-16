@@ -22,13 +22,14 @@ public class TreeAndAnimalModuleRepositoryImpl implements TreeAndAnimalModuleRep
     @Override
     public Optional<TreeAndAnimalModulesDetailsDto> findAnimalTreeModulesDetailsDtoById(Integer idAnimalTree) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select animalTree.id_animal_tree_module, animalTree.id_asset,       " +
-                "   animalTree.publish_date, animalTree.id_type_use,       " +
-                "   animalTree.id_country_producer,   " +
-                "   co.name nameCountryProducer, ty.name nameTypeUse   " +
-                "from animal_tree_module animalTree      " +
-                "    left join country_producer co on animalTree.id_country_producer = co.id_country_producer   " +
-                "    left join type_use ty on animalTree.id_type_use = ty.id_type_use   " +
+        sb.append("select animalTree.id_animal_tree_module, animalTree.id_asset,  " +
+                "        animalTree.publish_date, animalTree.id_type_use,  " +
+                "        animalTree.id_country_producer,  " +
+                "        co.name nameCountryProducer, ty.name nameTypeUse,  " +
+                "        animalTree.spare_parts_attack  " +
+                "from animal_tree_module animalTree  " +
+                "        left join country_producer co on animalTree.id_country_producer = co.id_country_producer  " +
+                "        left join type_use ty on animalTree.id_type_use = ty.id_type_use  " +
                 "where animalTree.id_animal_tree_module = :idAnimalTreeModule  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAnimalTreeModule", idAnimalTree);
@@ -43,6 +44,7 @@ public class TreeAndAnimalModuleRepositoryImpl implements TreeAndAnimalModuleRep
                 animalTreeModule.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[4]));
                 animalTreeModule.setNameCountryProducer(ValueUtil.getStringByObject(obj[5]));
                 animalTreeModule.setNameTypeUse(ValueUtil.getStringByObject(obj[6]));
+                animalTreeModule.setSparePartsAttack(ValueUtil.getStringByObject(obj[7]));
                 return Optional.of(animalTreeModule);
             }
         }
@@ -67,7 +69,7 @@ public class TreeAndAnimalModuleRepositoryImpl implements TreeAndAnimalModuleRep
         StringBuilder sb = new StringBuilder();
         sb.append(" select ani.id_animal_tree_module, ani.id_asset, " +
                 "       ani.publish_date, ani.id_type_use, " +
-                "       ani.id_country_producer " +
+                "       ani.id_country_producer, ani.spare_parts_attack " +
                 "from animal_tree_module ani  " +
                 "where ani.id_animal_tree_module = :idAnimalAndTree ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -81,6 +83,7 @@ public class TreeAndAnimalModuleRepositoryImpl implements TreeAndAnimalModuleRep
                 animalTreeModule.setPublishDate(ValueUtil.getStringByObject(obj[2]));
                 animalTreeModule.setIdTypeUse(ValueUtil.getIntegerByObject(obj[3]));
                 animalTreeModule.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[4]));
+                animalTreeModule.setSparePartsAttack(ValueUtil.getStringByObject(obj[5]));
                 return Optional.of(animalTreeModule);
             }
         }

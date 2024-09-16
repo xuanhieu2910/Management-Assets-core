@@ -21,6 +21,7 @@ public class OtherAssetModuleFactory implements ModuleFactory {
         otherAssetModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleCreate.get("idCountryProducer")));
         otherAssetModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleCreate.get("idUser")));
         otherAssetModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleCreate.get("idTypeUse")));
+        otherAssetModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleCreate.get("sparePartsAttack")));
         return otherAssetModule;
     }
 
@@ -34,6 +35,7 @@ public class OtherAssetModuleFactory implements ModuleFactory {
         otherAssetModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idCountryProducer")));
         otherAssetModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idUser")));
         otherAssetModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
+        otherAssetModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
         return otherAssetModule;
     }
 }

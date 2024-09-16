@@ -23,4 +23,6 @@ public class TreeAndAnimalModulesDetailsDto {
     private String nameCountryProducer;
     @JsonProperty("name_type_use")
     private String nameTypeUse;
+    @JsonProperty("spare_part_attack")
+    private String sparePartsAttack;
 }

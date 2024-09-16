@@ -29,7 +29,7 @@ public class MedicineModuleRepositoryImpl implements MedicineModuleRepositoryCus
                 "       medicineModule.id_medicine_group, medicineModule.publish_date, medicineModule.expiry_date,  " +
                 "       medicineModule.circulation_number, medicineModule.number_batch_of_goods,  " +
                 "       medicineModule.own_name_circulation_number, medicineModule.own_address_circulation_number,  " +
-                "       medicineModule.spare_parts_attack, medicineType.name nameMedicineType, medicineGroup.name nameMedicineGroup " +
+                "       medicineType.name nameMedicineType, medicineGroup.name nameMedicineGroup " +
                 "from medicine_module medicineModule " +
                 "    left join medicine_type medicineType on medicineModule.id_medicine_type = medicineType.id_medicine_type " +
                 "    left join medicine_group medicineGroup on medicineModule.id_medicine_group = medicineGroup.id_medicine_group " +
@@ -50,7 +50,6 @@ public class MedicineModuleRepositoryImpl implements MedicineModuleRepositoryCus
                 medicineModule.setNumberBatchOfGoods(ValueUtil.getStringByObject(obj[7]));
                 medicineModule.setOwnNameCirculationNumber(ValueUtil.getStringByObject(obj[8]));
                 medicineModule.setOwnAddressCirculationNumber(ValueUtil.getStringByObject(obj[9]));
-                medicineModule.setSparePartsAttack(ValueUtil.getStringByObject(obj[10]));
                 return Optional.of(medicineModule);
             }
         }
@@ -60,14 +59,14 @@ public class MedicineModuleRepositoryImpl implements MedicineModuleRepositoryCus
     private void setMedicineGroup(MedicineModuleDetailsDto medicineModule, Object[] obj) {
         MedicineGroupDetailsDto medicineGroupDetailsDto = new MedicineGroupDetailsDto();
         medicineGroupDetailsDto.setIdMedicineGroup(ValueUtil.getIntegerByObject(obj[3]));
-        medicineGroupDetailsDto.setName(ValueUtil.getStringByObject(obj[12]));
+        medicineGroupDetailsDto.setName(ValueUtil.getStringByObject(obj[11]));
         medicineModule.setMedicineGroupDetailsDto(medicineGroupDetailsDto);
     }
 
     private void setMedicineType(MedicineModuleDetailsDto medicineModule, Object[] obj) {
         MedicineTypeDetailsDto medicineTypeDetailsDto = new MedicineTypeDetailsDto();
         medicineTypeDetailsDto.setIdMedicineType(ValueUtil.getIntegerByObject(obj[2]));
-        medicineTypeDetailsDto.setName(ValueUtil.getStringByObject(obj[11]));
+        medicineTypeDetailsDto.setName(ValueUtil.getStringByObject(obj[10]));
         medicineModule.setMedicineTypeDetailsDto(medicineTypeDetailsDto);
     }
 
@@ -89,8 +88,7 @@ public class MedicineModuleRepositoryImpl implements MedicineModuleRepositoryCus
         sb.append(" select me.id_medicine_module, me.id_asset, me.id_medicine_type, " +
                 "       me.id_medicine_group, me.publish_date, me.expiry_date, " +
                 "       me.circulation_number, me.number_batch_of_goods,  " +
-                "       me.own_name_circulation_number, me.own_address_circulation_number, " +
-                "       me.spare_parts_attack " +
+                "       me.own_name_circulation_number, me.own_address_circulation_number " +
                 "from medicine_module me  " +
                 "where me.id_medicine_module = :idMedicine ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -109,7 +107,6 @@ public class MedicineModuleRepositoryImpl implements MedicineModuleRepositoryCus
                 medicineModule.setNumberBatchOfGoods(ValueUtil.getStringByObject(obj[7]));
                 medicineModule.setOwnNameCirculationNumber(ValueUtil.getStringByObject(obj[8]));
                 medicineModule.setOwnAddressCirculationNumber(ValueUtil.getStringByObject(obj[9]));
-                medicineModule.setSparePartsAttack(ValueUtil.getStringByObject(obj[10]));
                 return Optional.of(medicineModule);
             }
         }

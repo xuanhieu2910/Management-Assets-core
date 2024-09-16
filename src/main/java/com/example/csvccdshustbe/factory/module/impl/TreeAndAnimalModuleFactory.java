@@ -17,6 +17,7 @@ public class TreeAndAnimalModuleFactory implements ModuleFactory {
         animalTreeModule.setPublishDate(ValueUtil.getStringByObject(mapModuleCreate.get("publishDate")));
         animalTreeModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleCreate.get("idTypeUse")));
         animalTreeModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleCreate.get("idCountryProducer")));
+        animalTreeModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleCreate.get("sparePartsAttack")));
         return animalTreeModule;
     }
 
@@ -26,6 +27,7 @@ public class TreeAndAnimalModuleFactory implements ModuleFactory {
         animalTreeModule.setPublishDate(ValueUtil.getStringByObject(mapModuleUpdate.get("publishDate")));
         animalTreeModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
         animalTreeModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idCountryProducer")));
+        animalTreeModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
         return animalTreeModule;
     }
 }

@@ -22,15 +22,15 @@ public class OtherAssetModuleRepositoryImpl implements OtherAssetModuleRepositor
     @Override
     public Optional<OtherAssetModulesDetailsDto> findOtherAssetModuleDetailsDtoByIdOtherAssetModule(Integer idOtherAssetModule) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select otherAssetModules.id_other_asset_module, otherAssetModules.id_asset, otherAssetModules.label,  " +
-                "        otherAssetModules.model, otherAssetModules.serial, otherAssetModules.publish_date,  " +
-                "        otherAssetModules.id_country_producer, otherAssetModules.id_user, otherAssetModules.id_type_use, " +
-                "        co.name nameCountryProducer, us.user_name, us.full_name, ty.name nameTypeUse " +
-                "from other_asset_module otherAssetModules  " +
-                "    left join country_producer co on otherAssetModules.id_country_producer = co.id_country_producer " +
-                "    left join csvc_user us on otherAssetModules.id_user = us.id_user " +
-                "    left join type_use ty on otherAssetModules.id_type_use = ty.id_type_use " +
-                "where otherAssetModules.id_other_asset_module = :idOtherAssetModule ");
+        sb.append("select otherAssetModules.id_other_asset_module, otherAssetModules.id_asset, otherAssetModules.label,      " +
+                "         otherAssetModules.model, otherAssetModules.serial, otherAssetModules.publish_date,      " +
+                "         otherAssetModules.id_country_producer, us.code_user, otherAssetModules.id_type_use,     " +
+                "         co.name nameCountryProducer, us.user_name, us.full_name, ty.name nameTypeUse, otherAssetModules.spare_parts_attack  " +
+                "    from other_asset_module otherAssetModules      " +
+                "left join country_producer co on otherAssetModules.id_country_producer = co.id_country_producer     " +
+                "left join csvc_user us on otherAssetModules.id_user = us.id_user     " +
+                "left join type_use ty on otherAssetModules.id_type_use = ty.id_type_use     " +
+                "where otherAssetModules.id_other_asset_module = :idOtherAssetModule  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idOtherAssetModule", idOtherAssetModule);
         List<Object[]> result = query.getResultList();
@@ -44,12 +44,13 @@ public class OtherAssetModuleRepositoryImpl implements OtherAssetModuleRepositor
                 assetModule.setSerial(ValueUtil.getStringByObject(obj[4]));
                 assetModule.setPublishDate(ValueUtil.getStringByObject(obj[5]));
                 assetModule.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[6]));
-                assetModule.setIdUser(ValueUtil.getIntegerByObject(obj[7]));
+                assetModule.setCodeUser(ValueUtil.getStringByObject(obj[7]));
                 assetModule.setIdTypeUse(ValueUtil.getIntegerByObject(obj[8]));
                 assetModule.setNameCountryProducer(ValueUtil.getStringByObject(obj[9]));
                 assetModule.setUserName(ValueUtil.getStringByObject(obj[10]));
                 assetModule.setFullName(ValueUtil.getStringByObject(obj[11]));
                 assetModule.setNameTypeUse(ValueUtil.getStringByObject(obj[12]));
+                assetModule.setSparePartsAttack(ValueUtil.getStringByObject(obj[13]));
                 return Optional.of(assetModule);
             }
         }
@@ -73,7 +74,7 @@ public class OtherAssetModuleRepositoryImpl implements OtherAssetModuleRepositor
         StringBuilder sb = new StringBuilder();
         sb.append(" select oth.id_other_asset_module, oth.id_asset, oth.label, " +
                 "       oth.model, oth.serial, oth.publish_date, oth.id_country_producer, " +
-                "       oth.id_user, oth.id_type_use  " +
+                "       oth.id_user, oth.id_type_use, oth.spare_parts_attack  " +
                 "from other_asset_module oth  " +
                 "where oth.id_other_asset_module = :idOtherAssetModule ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -91,6 +92,7 @@ public class OtherAssetModuleRepositoryImpl implements OtherAssetModuleRepositor
               assetModule.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[6]));
               assetModule.setIdUser(ValueUtil.getIntegerByObject(obj[7]));
               assetModule.setIdTypeUse(ValueUtil.getIntegerByObject(obj[8]));
+              assetModule.setSparePartsAttack(ValueUtil.getStringByObject(obj[9]));
               return Optional.of(assetModule);
           }
         }

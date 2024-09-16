@@ -35,6 +35,7 @@ public class OtherVehicleTransportModuleFactory implements ModuleFactory {
         module.setTimeCreated(timeCurrent);
         module.setTimeModified(timeCurrent);
         module.setIdPositionName(ValueUtil.getIntegerByObject(mapModuleCreate.get("idPositionName")));
+        module.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleCreate.get("sparePartsAttack")));
         return module;
     }
 
@@ -62,6 +63,7 @@ public class OtherVehicleTransportModuleFactory implements ModuleFactory {
         String timeCurrent = String.valueOf(new Date().getTime());
         module.setTimeModified(timeCurrent);
         module.setIdPositionName(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idPositionName")));
+        module.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
         return module;
     }
 }
