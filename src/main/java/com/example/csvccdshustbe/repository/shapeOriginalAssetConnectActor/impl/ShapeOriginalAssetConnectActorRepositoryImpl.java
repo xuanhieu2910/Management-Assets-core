@@ -47,8 +47,8 @@ public class ShapeOriginalAssetConnectActorRepositoryImpl implements ShapeOrigin
     @Override
     public void deleteShapeOriginalAssetConnectActorById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from s_original_asset_connect_actor sactor " +
-                "where sactor.id_s_original_asset_connect_actor = :idsactor ");
+        sb.append(" delete from s_original_asset_connect_actor  " +
+                "where s_original_asset_connect_actor.id_s_original_asset_connect_actor = :idsactor ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.executeUpdate();
     }

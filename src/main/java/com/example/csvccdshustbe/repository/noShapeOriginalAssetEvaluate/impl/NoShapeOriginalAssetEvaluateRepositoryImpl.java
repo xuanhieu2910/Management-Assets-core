@@ -52,8 +52,8 @@ public class NoShapeOriginalAssetEvaluateRepositoryImpl implements NoShapeOrigin
     @Override
     public void deleteNoShapeOriginalAssetEvaluateById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from ns_original_asset_evaluate nsEva " +
-                "where nsEva.id_ns_original_asset_evaluate = :idNsEva ");
+        sb.append(" delete from ns_original_asset_evaluate  " +
+                "where ns_original_asset_evaluate.id_ns_original_asset_evaluate = :idNsEva ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.executeUpdate();
     }

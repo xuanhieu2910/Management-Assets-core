@@ -57,8 +57,8 @@ public class GroundModuleRepositoryImpl implements GroundModuleRepositoryCustom 
     @Override
     public void deleteGroundModuleByIdGroundModule(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from ground_module groundModule " +
-                "where groundModule.id_ground_module = :idGroundModule ");
+        sb.append(" delete from ground_module " +
+                "where ground_module.id_ground_module = :idGroundModule ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idGroundModule", idInstance);
         query.executeUpdate();

@@ -54,8 +54,8 @@ public class NoShapeOriginalAssetGifRepositoryImpl implements NoShapeOriginalAss
     @Override
     public void deleteNoShapeOriginalAssetGiftById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from ns_original_asset_gift nsGift " +
-                "where nsGift.id_ns_original_asset_gift = :idnsGift ");
+        sb.append(" delete from ns_original_asset_gift  " +
+                "where ns_original_asset_gift.id_ns_original_asset_gift = :idnsGift ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idnsGift", idInstance);
         query.executeUpdate();

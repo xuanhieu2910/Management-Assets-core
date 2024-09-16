@@ -53,8 +53,8 @@ public class ShapeOriginalAssetTransferRepositoryImpl implements ShapeOriginalAs
     @Override
     public void deleteShapeOriginalAssetTransferById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from s_original_asset_transfer stransfer " +
-                "where stransfer.id_s_original_asset_transfer = :idstransfer ");
+        sb.append(" delete from s_original_asset_transfer  " +
+                "where s_original_asset_transfer.id_s_original_asset_transfer = :idstransfer ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idstransfer", idInstance);
         query.executeUpdate();

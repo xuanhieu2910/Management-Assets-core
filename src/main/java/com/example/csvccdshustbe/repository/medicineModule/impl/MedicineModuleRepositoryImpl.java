@@ -75,8 +75,8 @@ public class MedicineModuleRepositoryImpl implements MedicineModuleRepositoryCus
     @Override
     public void deleteMedicineModuleById(Integer idMedicineModule) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from medicine_module medicineModule " +
-                "where medicineModule.id_medicine_module = :idMedicineModule ");
+        sb.append("delete from medicine_module " +
+                "where medicine_module.id_medicine_module = :idMedicineModule  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idMedicineModule", idMedicineModule);
         query.executeUpdate();

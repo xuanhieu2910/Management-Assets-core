@@ -51,8 +51,8 @@ public class ShapeOriginalAssetInvestRepositoryImpl implements ShapeOriginalAsse
     @Override
     public void deleteShapeOriginalAssetInvestById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from s_original_asset_invest sinvest " +
-                "where sinvest.id_s_original_asset_invest = :idsInvest ");
+        sb.append(" delete from s_original_asset_invest   " +
+                "where s_original_asset_invest.id_s_original_asset_invest = :idsInvest ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsInvest", idInstance);
         query.executeUpdate();

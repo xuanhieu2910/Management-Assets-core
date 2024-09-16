@@ -84,8 +84,8 @@ public class CarModuleRepositoryImpl implements CarModuleRepositoryCustom {
     @Override
     public void deleteCarModuleByIdCarModule(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from car_module carModule " +
-                "where carModule.id_car_module = :idCarModule ");
+        sb.append(" delete from car_module " +
+                " where car_module.id_car_module = :idCarModule ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idCarModule", idInstance);
         query.executeUpdate();

@@ -54,8 +54,8 @@ public class NoShapeOriginalAssetTransferRepositoryImpl implements NoShapeOrigin
     @Override
     public void deleteNoShapeOriginalAssetTransferById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from ns_original_asset_transfer nsTransfer " +
-                "where nsTransfer.id_ns_original_asset_transfer = :idnsTransfer ");
+        sb.append(" delete from ns_original_asset_transfer  " +
+                "where ns_original_asset_transfer.id_ns_original_asset_transfer = :idnsTransfer ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idnsTransfer", idInstance);
         query.executeUpdate();

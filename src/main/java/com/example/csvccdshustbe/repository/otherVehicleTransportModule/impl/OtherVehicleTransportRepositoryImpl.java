@@ -85,8 +85,8 @@ public class OtherVehicleTransportRepositoryImpl implements OtherVehicleTranspor
     @Override
     public void deleteOtherVehicleTransportById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from other_vehicle_transport_module ot  " +
-                "where ot.id_other_vehicle_transport_module = :idOt ");
+        sb.append(" delete from other_vehicle_transport_module   " +
+                "where other_vehicle_transport_module.id_other_vehicle_transport_module = :idOt ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idOt", idInstance);
         query.executeUpdate();

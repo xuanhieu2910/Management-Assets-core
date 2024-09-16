@@ -65,8 +65,8 @@ public class HouseDeclareRepositoryImpl implements HouseDeclareRepositoryCustom 
     @Override
     public void deleteHouseDeclareById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from house_declare houseDeclare " +
-                "where houseDeclare.id_house_declare = :idHouseDeclare ");
+        sb.append(" delete from house_declare " +
+                "where house_declare.id_house_declare = :idHouseDeclare ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idHouseDeclare", idInstance);
         query.executeUpdate();

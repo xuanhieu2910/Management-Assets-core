@@ -67,8 +67,8 @@ public class HouseModuleRepositoryImpl implements HouseModuleRepositoryCustom {
     @Override
     public void deleteHouseModuleByIdHouseModule(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from house_module houseModule " +
-                "where houseModule.id_house_module = :idHouseModule ");
+        sb.append(" delete from house_module  " +
+                "where house_module.id_house_module = :idHouseModule ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idHouseModule", idInstance);
         query.executeUpdate();

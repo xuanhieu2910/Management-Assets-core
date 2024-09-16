@@ -59,8 +59,8 @@ public class NoShapeOriginalAssetBuyRepositoryImpl implements NoShapeOriginalAss
     @Override
     public void deleteNoShapeOriginalAssetBuyById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from ns_original_asset_buy nsBuy " +
-                "where nsBuy.id_ns_original_asset_buy = :idnsBuy ");
+        sb.append(" delete from ns_original_asset_buy  " +
+                "where ns_original_asset_buy.id_ns_original_asset_buy = :idnsBuy ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idnsBuy", idInstance);
         query.executeUpdate();

@@ -52,8 +52,8 @@ public class NoShapeOriginalAssetTransferLandRepositoryImpl implements NoShapeOr
     @Override
     public void deleteNoShapeOriginalAssetTransferLandById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from ns_original_asset_transfer_land nsTransferLand " +
-                "where nsTransferLand.id_ns_original_asset_transfer_land = :idNsTransferLand ");
+        sb.append(" delete from ns_original_asset_transfer_land  " +
+                "where ns_original_asset_transfer_land.id_ns_original_asset_transfer_land = :idNsTransferLand ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idNsTransferLand", idInstance);
         query.executeUpdate();

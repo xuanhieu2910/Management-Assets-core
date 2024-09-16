@@ -52,8 +52,8 @@ public class NoShapeOriginalAssetUseLandRepositoryImpl implements NoShapeOrigina
     @Override
     public void deleteNoShapeOriginalAssetUseLandById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from ns_original_asset_use_land nsUseLand " +
-                "where nsUseLand.id_ns_original_asset_use_land = :idnsUseLand ");
+        sb.append(" delete from ns_original_asset_use_land   " +
+                "where ns_original_asset_use_land.id_ns_original_asset_use_land = :idnsUseLand ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idnsUseLand", idInstance);
         query.executeUpdate();

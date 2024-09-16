@@ -57,8 +57,8 @@ public class TreeAndAnimalModuleRepositoryImpl implements TreeAndAnimalModuleRep
     @Override
     public void deleteTreeAndAnimalModuleById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from animal_tree_module animalAndTree " +
-                "where animalAndTree.id_animal_tree_module = :idAnimalAndTree ");
+        sb.append(" delete from animal_tree_module   " +
+                "where animal_tree_module.id_animal_tree_module = :idAnimalAndTree ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAnimalAndTree", idInstance);
         query.executeUpdate();

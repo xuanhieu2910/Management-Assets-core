@@ -52,8 +52,8 @@ public class ShapeOriginalAssetEvaluateRepositoryImpl implements ShapeOriginalAs
     @Override
     public void deleteOriginalAssetEvaluateById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from s_original_asset_evaluate sEva " +
-                "where sEva.id_s_original_asset_evaluate = :idsEva ");
+        sb.append(" delete from s_original_asset_evaluate  " +
+                "where s_original_asset_evaluate.id_s_original_asset_evaluate = :idsEva ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsEva", idInstance);
         query.executeUpdate();

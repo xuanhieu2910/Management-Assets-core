@@ -60,8 +60,8 @@ public class ArchitectureModuleRepositoryImpl implements ArchitectureModuleRepos
     @Override
     public void deleteArchitectureModuleByIdArchitecture(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from architecture_module ar " +
-                "where ar.id_architecture_module = :idAr");
+        sb.append("delete from architecture_module " +
+                "where architecture_module.id_architecture_module = :idAr ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAr", idInstance);
         query.executeUpdate();

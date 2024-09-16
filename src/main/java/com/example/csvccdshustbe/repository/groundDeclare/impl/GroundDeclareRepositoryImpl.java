@@ -84,8 +84,8 @@ public class GroundDeclareRepositoryImpl implements GroundDeclareRepositoryCusto
     @Override
     public void deleteGroundDeclareById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from ground_declare groundModule " +
-                "where groundModule.id_ground_declare = :idGroundDeclare ");
+        sb.append(" delete from ground_declare " +
+                " where ground_declare.id_ground_declare = :idGroundDeclare ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idGroundDeclare", idInstance);
         query.executeUpdate();

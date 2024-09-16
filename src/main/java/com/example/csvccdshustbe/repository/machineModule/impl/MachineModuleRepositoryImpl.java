@@ -64,8 +64,8 @@ public class MachineModuleRepositoryImpl implements MachineModuleRepositoryCusto
     @Override
     public void deleteMachineModuleByIdMachineModule(Integer idMachineModule) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from machine_module machineModule " +
-                "where machineModule.id_machine_module = :idMachineModule ");
+        sb.append(" delete from machine_module  " +
+                "where machine_module.id_machine_module = :idMachineModule ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idMachineModule", idMachineModule);
         query.executeUpdate();

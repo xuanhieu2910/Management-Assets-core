@@ -55,8 +55,8 @@ public class ShapeOriginalAssetGiftRepositoryImpl implements ShapeOriginalAssetG
     @Override
     public void deleteShapeOriginalAssetGiftById(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from s_original_asset_gift sGift " +
-                "where sGift.id_s_original_asset_gift = :idSGift ");
+        sb.append(" delete from s_original_asset_gift   " +
+                "where s_original_asset_gift.id_s_original_asset_gift = :idSGift ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idSGift", idInstance);
         query.executeUpdate();

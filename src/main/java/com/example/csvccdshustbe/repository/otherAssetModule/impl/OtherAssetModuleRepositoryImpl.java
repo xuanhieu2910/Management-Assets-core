@@ -62,8 +62,8 @@ public class OtherAssetModuleRepositoryImpl implements OtherAssetModuleRepositor
     @Override
     public void deleteOtherAssetModuleByIdOtherAsset(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" delete from other_asset_module ot " +
-                "where ot.id_other_asset_module = :idOtherAsset ");
+        sb.append(" delete from other_asset_module   " +
+                "where other_asset_module.id_other_asset_module = :idOtherAsset ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idOtherAsset", idInstance);
         query.executeUpdate();
