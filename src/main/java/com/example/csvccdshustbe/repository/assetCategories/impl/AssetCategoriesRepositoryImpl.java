@@ -260,7 +260,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     public Optional<BluePrintParentAssetCategoryDto> findBluePrintAssetCategoryDtoById(Integer idAssetCategory) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select assetCategory.code_name, assetCategory.id_asset_category, " +
-                "       assetCategory.name nameAsset " +
+                "       assetCategory.name nameAsset, assetCategory.parent " +
                 "from asset_categories assetCategory " +
                 "where assetCategory.id_asset_category = :idAssetCategory ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -269,9 +269,10 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         if (!CollectionUtils.isEmpty(result)) {
             for (Object[] obj: result){
                 BluePrintParentAssetCategoryDto dto = new BluePrintParentAssetCategoryDto();
-                dto.setCodeParentAssetCategory(ValueUtil.getStringByObject(obj[0]));
-                dto.setIdParentAssetCategory(ValueUtil.getIntegerByObject(obj[1]));
-                dto.setNameParentAssetCategory(ValueUtil.getStringByObject(obj[2]));
+                dto.setCodeAssetCategory(ValueUtil.getStringByObject(obj[0]));
+                dto.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[1]));
+                dto.setNameAssetCategory(ValueUtil.getStringByObject(obj[2]));
+                dto.setIdParent(ValueUtil.getIntegerByObject(obj[3]));
                 return Optional.of(dto);
             }
         }
@@ -305,6 +306,13 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public boolean isCheckExitsAssetByIdAssetCategory(Integer idAssetCategory) {
+        StringBuilder sb = new StringBuilder();
+//        sb.append(" ")
+        return false;
     }
 
     @Override

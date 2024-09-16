@@ -7,7 +7,8 @@ import lombok.Setter;
 @Setter
 public class BluePrintParentAssetCategoryDto {
 
-    private String codeParentAssetCategory;
-    private Integer idParentAssetCategory;
-    private String nameParentAssetCategory;
+    private String codeAssetCategory;
+    private Integer idAssetCategory;
+    private String nameAssetCategory;
+    private Integer idParent;
 }

@@ -16,20 +16,16 @@ import java.util.Optional;
 public interface AssetCategoriesRepositoryCustom {
 
     List<FindAllAssetCategoriesPickedDto> findAllAssetCategoriesIsPickedAndVisible();
-
     Page<FindAllAssetCategoriesByCodeAndVisibleDto>
     findAllAssetCategoriesByCodeAndVisible(Pageable pageable, FindAllAssetCategoriesRequest request);
     Optional<AssetCategories> findAssetCategoriesVisibleByCodeName(String codeName);
     Optional<AssetCategories> findAssetCategoriesByVisibleAndIdAssetCategory(Integer idAssetCategory, Integer visible);
-
     boolean checkAssetCategoriesByParentIdAndName(Integer parentId, String name);
-
     Optional<AssetCategories> findAssetCategoryParentByParentId(Integer parentId);
     Optional<AssetCategories> findAssetCategoryById(Integer idAssetCategory);
     boolean checkExitsAssetCategoriesByNameOrShortName(String name, String shortName);
-
     Optional<BluePrintParentAssetCategoryDto> findBluePrintAssetCategoryDtoById(Integer idAssetCategory);
-
     Optional<FindAssetCategoryDetailsResponse> findAssetCategoryDetailsPickedResponseByCode(String code);
+    boolean isCheckExitsAssetByIdAssetCategory(Integer idAssetCategory);
 
 }

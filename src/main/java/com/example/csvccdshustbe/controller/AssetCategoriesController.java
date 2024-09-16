@@ -47,8 +47,10 @@ public class AssetCategoriesController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllAssetCategoriesRequest findAllAssetCategoriesRequest){
         try {
-            Page<FindAllAssetCategoriesResponse> responses = assetCategoriesService.findAllAssetCategoriesByCodeNameAndVisible(findAllAssetCategoriesRequest);
-            return ApiResponseDto.createdWithState(responses, "Find all asset categories by code success!", HttpStatus.OK);
+            Page<FindAllAssetCategoriesResponse> responses =
+                    assetCategoriesService.findAllAssetCategoriesByCodeNameAndVisible(findAllAssetCategoriesRequest);
+            return ApiResponseDto.createdWithState(responses, "Find all asset categories by code success!",
+                    HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -81,7 +83,7 @@ public class AssetCategoriesController {
 
 
     @DeleteMapping
-    public ResponseEntity<?> deleteAssetCategoryByIdAssetCategory(@RequestParam("id-assetcategory") Integer idCurrentUsage){
+    public ResponseEntity<?> deleteAssetCategoryByIdAssetCategory(@RequestParam("id-asset-category") Integer idCurrentUsage){
         try {
             assetCategoriesService.deleteAssetCategoryByIdAssetCategory(idCurrentUsage);
             return ApiResponseDto.createdWithMessage("Delete asset category success!", HttpStatus.OK);

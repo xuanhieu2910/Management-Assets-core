@@ -412,9 +412,10 @@ public class AssetServiceImpl implements AssetService {
 
     private FindDetailsAssetResponse convertToFindDetailsAssetResponse(AssetBluePrintDto assetBluePrintDto) {
         FindDetailsAssetResponse response = new FindDetailsAssetResponse();
-        response.setCodeParentAssetCategory(assetBluePrintDto.getBluePrintParentAssetCategoryDto().getCodeParentAssetCategory());
-        response.setIdParentAssetCategory(assetBluePrintDto.getBluePrintParentAssetCategoryDto().getIdParentAssetCategory());
-        response.setNameParentAssetCategory(assetBluePrintDto.getBluePrintParentAssetCategoryDto().getNameParentAssetCategory());
+        response.setCodeAssetCategory(assetBluePrintDto.getBluePrintParentAssetCategoryDto().getCodeAssetCategory());
+        response.setIdPAssetCategory(assetBluePrintDto.getBluePrintParentAssetCategoryDto().getIdAssetCategory());
+        response.setNameAssetCategory(assetBluePrintDto.getBluePrintParentAssetCategoryDto().getNameAssetCategory());
+        response.setIdParent(assetBluePrintDto.getBluePrintParentAssetCategoryDto().getIdParent());
         response.setCommon(setCommonDetailsAssetResponse(assetBluePrintDto));
         response.setModules(assetBluePrintDto.getModules());
         response.setOriginal(assetBluePrintDto.getOriginal());

@@ -14,12 +14,14 @@ import java.util.List;
 @Setter
 public class FindDetailsAssetResponse {
 
-    @JsonProperty("code_parent_asset_category")
-    private String codeParentAssetCategory;
-    @JsonProperty("id_parent_asset_category")
-    private Integer idParentAssetCategory;
-    @JsonProperty("name_parent_asset_category")
-    private String nameParentAssetCategory;
+    @JsonProperty("code_asset_category")
+    private String codeAssetCategory;
+    @JsonProperty("id_asset_category")
+    private Integer idPAssetCategory;
+    @JsonProperty("name_asset_category")
+    private String nameAssetCategory;
+    @JsonProperty("id_parent")
+    private Integer idParent;
     @JsonProperty("common")
     private CommonAssetDto common;
     @JsonProperty("modules")
