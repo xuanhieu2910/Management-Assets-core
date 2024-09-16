@@ -20,7 +20,7 @@ public class HouseDeclareFactory implements DeclareFactory {
         declare.setHdsnBussiness(ValueUtil.getDoubleByObject(mapDeclareRequest.get("hdsnBussiness")));
         declare.setHdsnRent(ValueUtil.getDoubleByObject(mapDeclareRequest.get("hdsnRent")));
         declare.setHdsnBonds(ValueUtil.getDoubleByObject(mapDeclareRequest.get("hdsnBonds")));
-        declare.setLivePlace(ValueUtil.getDoubleByObject(mapDeclareRequest.get("LivePlace")));
+        declare.setLivePlace(ValueUtil.getDoubleByObject(mapDeclareRequest.get("livePlace")));
         declare.setBlankPlace(ValueUtil.getDoubleByObject(mapDeclareRequest.get("blankPlace")));
         declare.setEncroachedPlace(ValueUtil.getDoubleByObject(mapDeclareRequest.get("encroachedPlace")));
         declare.setSyntheticUse(ValueUtil.getDoubleByObject(mapDeclareRequest.get("syntheticUse")));
@@ -41,7 +41,7 @@ public class HouseDeclareFactory implements DeclareFactory {
         declare.setHdsnBussiness(ValueUtil.getDoubleByObject(declareDataAsset.get("hdsnBussiness")));
         declare.setHdsnRent(ValueUtil.getDoubleByObject(declareDataAsset.get("hdsnRent")));
         declare.setHdsnBonds(ValueUtil.getDoubleByObject(declareDataAsset.get("hdsnBonds")));
-        declare.setLivePlace(ValueUtil.getDoubleByObject(declareDataAsset.get("LivePlace")));
+        declare.setLivePlace(ValueUtil.getDoubleByObject(declareDataAsset.get("livePlace")));
         declare.setBlankPlace(ValueUtil.getDoubleByObject(declareDataAsset.get("blankPlace")));
         declare.setEncroachedPlace(ValueUtil.getDoubleByObject(declareDataAsset.get("encroachedPlace")));
         declare.setSyntheticUse(ValueUtil.getDoubleByObject(declareDataAsset.get("syntheticUse")));

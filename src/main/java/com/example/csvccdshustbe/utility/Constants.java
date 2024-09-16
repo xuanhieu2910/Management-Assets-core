@@ -43,6 +43,7 @@ public class Constants {
      * Constant Projects
      * */
     public static final Integer PROJECTS_IS_VISIBLE = 1;
+    public static final Integer PROJECTS_UN_IS_VISIBLE = -1;
 
     /*----------------------------------------------------*/
 

@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.projects.CreateProjectsRequest;
 import com.example.csvccdshustbe.request.projects.FindAllProjectsRequest;
 import com.example.csvccdshustbe.request.projects.UpdateProjectsRequest;
+import com.example.csvccdshustbe.request.projects.UpdateStatusProjectRequest;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -74,7 +75,19 @@ public class ProjectsController {
         try {
             projectsService.deleteProjectByIdProject(idProject);
             return ApiResponseDto.createdWithMessage("Delete project success!", HttpStatus.OK);
-        } catch (NotFoundException e){
+        } catch (NotFoundException | ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/update-status")
+    public ResponseEntity<?> updateStatusProject(@RequestBody UpdateStatusProjectRequest request){
+        try {
+            projectsService.updateStatusProject(request);
+            return ApiResponseDto.createdWithMessage("Update status project success!", HttpStatus.OK);
+        } catch (NotFoundException | ValidateFiledException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);

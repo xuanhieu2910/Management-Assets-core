@@ -251,4 +251,16 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
         return CollectionUtils.isEmpty(result);
     }
 
+    @Override
+    public boolean isExitsAssetByIdProject(Integer idProject) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select asset.id_projects " +
+                "from projects pro  " +
+                "    inner join asset asset on pro.id_project = asset.id_projects " +
+                "where pro.id_project = :idProject ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProject", idProject);
+        return !CollectionUtils.isEmpty(query.getResultList());
+    }
+
 }

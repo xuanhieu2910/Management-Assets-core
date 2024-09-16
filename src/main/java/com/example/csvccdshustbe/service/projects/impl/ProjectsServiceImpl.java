@@ -2,16 +2,16 @@ package com.example.csvccdshustbe.service.projects.impl;
 
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
 import com.example.csvccdshustbe.entity.Projects;
-
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.projects.ProjectsRepository;
 import com.example.csvccdshustbe.request.projects.CreateProjectsRequest;
 import com.example.csvccdshustbe.request.projects.FindAllProjectsRequest;
 import com.example.csvccdshustbe.request.projects.UpdateProjectsRequest;
+import com.example.csvccdshustbe.request.projects.UpdateStatusProjectRequest;
 import com.example.csvccdshustbe.response.projects.FindAllProjectsResponse;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,10 +73,13 @@ public class ProjectsServiceImpl implements ProjectsService {
 
 
     @Override
-    public void deleteProjectByIdProject(Integer idProject) {
+    public void deleteProjectByIdProject(Integer idProject) throws ValidateFiledException {
         Optional<Projects> projectsOptional = projectsRepository.findProjectById(idProject);
         if (projectsOptional.isEmpty()){
             throw new NotFoundException("Don't exits Project by id!");
+        }
+        if (projectsRepository.isExitsAssetByIdProject(idProject)){
+            throw new ValidateFiledException("Exits asset by project id, can't delete project");
         }
         projectsRepository.delete(projectsOptional.get());
     }
@@ -88,6 +91,20 @@ public class ProjectsServiceImpl implements ProjectsService {
             throw new NotFoundException("Don't exits projects by id!");
         }
         return projects.get();
+    }
+
+    @Override
+    public void updateStatusProject(UpdateStatusProjectRequest request) throws ValidateFiledException {
+        Optional<Projects> projects = projectsRepository.findProjectById(request.getIdProject());
+        if (projects.isEmpty()){
+            throw new NotFoundException("Don't exits projects by id!");
+        }
+        if (!request.getStatus().equals(Constants.PROJECTS_IS_VISIBLE)
+                && request.getStatus().equals(Constants.PROJECTS_UN_IS_VISIBLE)){
+            throw new ValidateFiledException("Don't exits status in project!");
+        }
+        projects.get().setVisible(request.getStatus());
+        projectsRepository.save(projects.get());
     }
 
     private void validateDataCreateProjects(CreateProjectsRequest request) throws ValidateFiledException{

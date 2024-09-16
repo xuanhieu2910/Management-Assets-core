@@ -22,4 +22,6 @@ public interface ProjectsRepositoryCustom {
 
     boolean checkExitsProjectByNameOrCodeOrShortName(String name, String shortName);
 
+    boolean isExitsAssetByIdProject(Integer idProject);
+
 }
