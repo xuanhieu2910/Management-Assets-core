@@ -70,7 +70,7 @@ public class PositionNameController {
 
 
     @DeleteMapping
-    public ResponseEntity<?> deletePositionNameByIdPositionName(@RequestParam("id-positionname") Integer idPositionName){
+    public ResponseEntity<?> deletePositionNameByIdPositionName(@RequestParam("id-position-name") Integer idPositionName){
         try {
             positionNameService.deletePositionNameByIdPositionName(idPositionName);
             return ApiResponseDto.createdWithMessage("Delete position name success!", HttpStatus.OK);

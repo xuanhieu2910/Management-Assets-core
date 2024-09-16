@@ -114,7 +114,15 @@ public class PositionNameServiceImpl implements PositionNameService {
         return positionName;
     }
     @Override
-    public void deletePositionNameByIdPositionName(Integer idPositionName) {
-
+    public void deletePositionNameByIdPositionName(Integer idPositionName) throws ValidateFiledException {
+        Optional<PositionName> positionNameOptional =
+                positionNameRepository.findPositionNameById(idPositionName);
+        if (positionNameOptional.isEmpty()) {
+            throw new NotFoundException("Don't exits Position by id!");
+        }
+        if (positionNameRepository.isCheckExitsAssetByIdPositionName(idPositionName)){
+            throw new ValidateFiledException("Validate data!");
+        }
+        positionNameRepository.delete(positionNameOptional.get());
     }
 }

@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface PositionNameRepositoryCustom {
     Page<FindAllPositionNameDto> findAllPositionNameStatus(Pageable pageable, FindAllPositionNameRequest request);
     Optional<PositionName> findPositionNameByName(String name);
-
     Optional<PositionName> findPositionNameById(Integer idPositionName);
+    boolean isCheckExitsAssetByIdPositionName(Integer idPositionName);
 
 }

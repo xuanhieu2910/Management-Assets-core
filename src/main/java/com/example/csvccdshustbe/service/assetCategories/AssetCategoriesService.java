@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
 import com.example.csvccdshustbe.request.assetCategories.UpdateAssetCategoryRequest;
+import com.example.csvccdshustbe.request.assetCategories.UpdateStatusAssetCategory;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
@@ -32,4 +33,6 @@ public interface AssetCategoriesService {
     BluePrintParentAssetCategoryDto findBluePrintParentAssetCategoryDtoById(Integer idParentAssetCategory);
 
     FindAssetCategoryDetailsResponse findAssetCategoryDetailsResponseByCode(String codeAssetCategory);
+
+    void updateStatusAssetCategory(UpdateStatusAssetCategory statusAssetCategory) throws ValidateFiledException;
 }

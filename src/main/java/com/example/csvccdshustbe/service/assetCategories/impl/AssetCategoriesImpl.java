@@ -9,6 +9,7 @@ import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepos
 import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
 import com.example.csvccdshustbe.request.assetCategories.UpdateAssetCategoryRequest;
+import com.example.csvccdshustbe.request.assetCategories.UpdateStatusAssetCategory;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
@@ -140,6 +141,21 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             throw new NotFoundException("Don't exits asset category by code!");
         }
         return response.get();
+    }
+
+    @Override
+    public void updateStatusAssetCategory(UpdateStatusAssetCategory statusAssetCategory) throws ValidateFiledException {
+        Optional<AssetCategories> assetCategoriesOptional =
+                assetCategoriesRepository.findAssetCategoryById(statusAssetCategory.getIdAssetCategory());
+        if (assetCategoriesOptional.isEmpty()){
+            throw new NotFoundException("Don't exits asset category!");
+        }
+        if(!statusAssetCategory.getStatus().equals(Constants.ASSET_CATEGORY_IS_VISIBLE) &&
+            !statusAssetCategory.getStatus().equals(Constants.ASSET_CATEGORY_UN_VISIBLE)) {
+            throw new ValidateFiledException("Validate data!");
+        }
+        assetCategoriesOptional.get().setVisible(statusAssetCategory.getStatus());
+        assetCategoriesRepository.save(assetCategoriesOptional.get());
     }
 
     private AssetCategories createAssetCategoryRequest(CreateAssetCategoryRequest request) {

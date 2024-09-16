@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
 import com.example.csvccdshustbe.request.assetCategories.UpdateAssetCategoryRequest;
+import com.example.csvccdshustbe.request.assetCategories.UpdateStatusAssetCategory;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
@@ -107,4 +108,15 @@ public class AssetCategoriesController {
         }
     }
 
+    @PostMapping("/update-status")
+    public ResponseEntity<?> updateStatusAssetCategory(@RequestBody UpdateStatusAssetCategory statusAssetCategory) {
+        try {
+            assetCategoriesService.updateStatusAssetCategory(statusAssetCategory);
+            return ApiResponseDto.createdWithMessage("Update status asset category success!", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

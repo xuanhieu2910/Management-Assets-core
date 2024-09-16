@@ -13,5 +13,5 @@ public interface PositionNameService {
 
     void  updatePositionName(UpdatePositionNameRequest request) throws ValidateFiledException;
 
-    void deletePositionNameByIdPositionName(Integer idPositionName);
+    void deletePositionNameByIdPositionName(Integer idPositionName) throws ValidateFiledException;
 }

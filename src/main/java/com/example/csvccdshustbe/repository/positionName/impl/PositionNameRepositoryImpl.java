@@ -122,4 +122,17 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
         }
         return Optional.empty();
     }
+
+    @Override
+    public boolean isCheckExitsAssetByIdPositionName(Integer idPositionName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select asset.id_asset " +
+                "from position_name pos " +
+                "    inner join other_vehicle_transport_module ovtm on pos.id_position_name = ovtm.id_position_name " +
+                "    inner join asset asset on ovtm.id_asset = asset.id_asset " +
+                "where pos.id_position_name = :idPositionName ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idPositionName", idPositionName);
+        return !CollectionUtils.isEmpty(query.getResultList());
+    }
 }
