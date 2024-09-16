@@ -44,12 +44,9 @@ public class AssetCurrentUsageServiceImpl implements AssetCurrentUsageService {
     }
 
     @Override
-    public AssetCurrentUsageDetailsDto findAssetCurrentUsageDetailsByIdAsset(Integer idAsset) {
-        Optional<AssetCurrentUsageDetailsDto> detailsDto =
+    public List<AssetCurrentUsageDetailsDto> findAssetCurrentUsageDetailsByIdAsset(Integer idAsset) {
+        List<AssetCurrentUsageDetailsDto> detailsDto =
                 assetCurrentUsageRepository.findAssetCurrentUsageDetailsDtoByIdAsset(idAsset);
-        if(detailsDto.isEmpty()){
-            throw new NotFoundException("Don't asset current usage by id asset!");
-        }
-        return detailsDto.get();
+        return detailsDto;
     }
 }

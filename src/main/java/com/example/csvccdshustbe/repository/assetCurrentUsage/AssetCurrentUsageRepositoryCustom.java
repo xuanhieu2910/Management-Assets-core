@@ -11,5 +11,5 @@ public interface AssetCurrentUsageRepositoryCustom {
 
     List<AssetCurrentUsage> findByIdAsset(Integer idAsset);
 
-    Optional<AssetCurrentUsageDetailsDto> findAssetCurrentUsageDetailsDtoByIdAsset(Integer idAsset);
+    List<AssetCurrentUsageDetailsDto> findAssetCurrentUsageDetailsDtoByIdAsset(Integer idAsset);
 }

@@ -60,7 +60,7 @@ public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageReposit
     }
 
     @Override
-    public Optional<AssetCurrentUsageDetailsDto> findAssetCurrentUsageDetailsDtoByIdAsset(Integer idAsset) {
+    public List<AssetCurrentUsageDetailsDto> findAssetCurrentUsageDetailsDtoByIdAsset(Integer idAsset) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select cu.id_current_usage, cu.code, cu.name " +
                 "from asset_current_usage acu " +
@@ -70,15 +70,16 @@ public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageReposit
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAsset", idAsset);
         List<Object[]> result = query.getResultList();
+        List<AssetCurrentUsageDetailsDto> usageDetailsDtos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
             for (Object [] obj : result) {
                 AssetCurrentUsageDetailsDto res = new AssetCurrentUsageDetailsDto();
                 res.setIdCurrentUsage(ValueUtil.getIntegerByObject(obj[0]));
                 res.setCode(ValueUtil.getStringByObject(obj[1]));
                 res.setName(ValueUtil.getStringByObject(obj[2]));
-                return Optional.of(res);
+                usageDetailsDtos.add(res);
             }
         }
-        return Optional.empty();
+        return usageDetailsDtos;
     }
 }

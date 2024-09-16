@@ -17,5 +17,5 @@ public interface AssetCurrentUsageService {
 
     void save(AssetCurrentUsage assetCurrentUsage);
 
-    AssetCurrentUsageDetailsDto findAssetCurrentUsageDetailsByIdAsset(Integer idAsset);
+    List<AssetCurrentUsageDetailsDto> findAssetCurrentUsageDetailsByIdAsset(Integer idAsset);
 }

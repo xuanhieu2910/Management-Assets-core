@@ -83,5 +83,15 @@ public class AssetController {
         }
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteAsset(@RequestParam("code-asset") String codeAsset){
+        try {
 
+            return ApiResponseDto.createdWithMessage("Delete asset success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }
