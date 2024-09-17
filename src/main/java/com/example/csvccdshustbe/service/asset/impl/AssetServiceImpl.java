@@ -47,6 +47,7 @@ import org.springframework.data.jpa.support.PageableUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
 import java.util.*;
@@ -138,16 +139,26 @@ public class AssetServiceImpl implements AssetService {
         if (assetBluePrintDto.isEmpty()) {
             throw new NotFoundException("Don't exits asset by code!");
         }
+        deleteAsseDepreciation(assetBluePrintDto.get());
         deleteCommonAsset(assetBluePrintDto.get());
         deleteModuleAsset(assetBluePrintDto.get());
         deleteOriginalAsset(assetBluePrintDto.get());
         deleteDeclareAsset(assetBluePrintDto.get());
     }
 
+    private void deleteAsseDepreciation(AssetBluePrintDto assetBluePrintDto) {
+        assetDepreciationService.deleteAssetDepreciationByIdAsset(assetBluePrintDto.getIdAsset());
+    }
+
     @Override
     public Page<FindAllGroundAssetResponse> findAllGroundAsset(FindAllGroundAssetRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         return  assetRepository.findAllGroundAsset(pageable, request);
+    }
+
+    @Override
+    public void uploadFile(MultipartFile multipartFile) {
+
     }
 
     private void deleteDeclareAsset(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException {

@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
 import java.util.HashMap;
@@ -113,4 +114,14 @@ public class AssetController {
         }
     }
 
+
+    @PostMapping("/upload-file")
+    public ResponseEntity<?> uploadFiles(@RequestParam("file")MultipartFile multipartFile){
+        try {
+            assetService.uploadFile(multipartFile);
+            return ApiResponseDto.createdWithMessage("Upload file success!", HttpStatus.OK);
+        }catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
