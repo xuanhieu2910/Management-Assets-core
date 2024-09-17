@@ -165,8 +165,6 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         Optional<Department> department = departmentRepository.findDepartmentByName(request.getName());
         if (department.isPresent()){
-            throw new ValidateFiledException("Exits department by name department!");
-        } else {
             if (StringUtils.isNotBlank(request.getShortName())) {
                 if (request.getShortName().equals(department.get().getShortName())) {
                     throw new ValidateFiledException("Exits department by short name");
@@ -177,6 +175,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     throw new ValidateFiledException("Exits department by code name");
                 }
             }
+            throw new ValidateFiledException("Exits department by name department!");
         }
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<Department> departmentOptional = departmentRepository.findDepartmentByIdParent(request.getParentId());

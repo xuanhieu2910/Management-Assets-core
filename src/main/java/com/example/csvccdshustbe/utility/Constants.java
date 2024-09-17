@@ -130,6 +130,7 @@ public class Constants {
      * Constant Asset blue print
      * */
     public static final String KEY_COMMON = "common";
+    public static final String KEY_DEPRECIATION = "depreciation";
     public static final String KEY_MODULE = "modules";
     public static final String KEY_ORIGINAL_ASSET = "original";
     public static final String KEY_DECLARE_ASSET = "declare";

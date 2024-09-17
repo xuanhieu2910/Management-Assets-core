@@ -6,4 +6,6 @@ public interface AssetDepreciationService {
 
     AssetDepreciation findAssetDepreciationById(Integer idAssetDepreciation);
     void deleteAssetDepreciationByIdAsset (Integer idAsset);
+
+    AssetDepreciation save(AssetDepreciation depreciation);
 }

@@ -30,5 +30,10 @@ public class AssetDepreciationServiceImpl implements AssetDepreciationService {
         assetDepreciationRepository.deleteAssetDepreciationByIdAsset(idAsset);
     }
 
+    @Override
+    public AssetDepreciation save(AssetDepreciation depreciation) {
+        return assetDepreciationRepository.save(depreciation);
+    }
+
 
 }
