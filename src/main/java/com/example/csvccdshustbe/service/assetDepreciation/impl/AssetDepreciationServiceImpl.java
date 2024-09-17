@@ -26,6 +26,16 @@ public class AssetDepreciationServiceImpl implements AssetDepreciationService {
     }
 
     @Override
+    public AssetDepreciation findAssetDepreciationByIdAsset(Integer idAsset) {
+        Optional<AssetDepreciation> assetDepreciation =
+                assetDepreciationRepository.findAssetDepreciationByIdAsset(idAsset);
+        if (assetDepreciation.isEmpty()){
+            throw new NotFoundException("Don't exits asset depreciation by id asset");
+        }
+        return null;
+    }
+
+    @Override
     public void deleteAssetDepreciationByIdAsset(Integer idAsset) {
         assetDepreciationRepository.deleteAssetDepreciationByIdAsset(idAsset);
     }

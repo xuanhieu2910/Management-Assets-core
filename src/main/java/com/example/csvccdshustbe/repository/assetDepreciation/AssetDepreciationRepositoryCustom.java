@@ -8,4 +8,5 @@ public interface AssetDepreciationRepositoryCustom {
     Optional<AssetDepreciation> findAssetDepreciationById(Integer idAssetDepreciation);
     void deleteAssetDepreciationByIdAsset(Integer idAsset);
 
+    Optional<AssetDepreciation> findAssetDepreciationByIdAsset(Integer idAsset);
 }

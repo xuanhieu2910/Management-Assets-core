@@ -20,6 +20,7 @@ import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
 import com.example.csvccdshustbe.response.asset.FindDetailsAssetResponse;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
+import com.example.csvccdshustbe.service.assetDepreciation.AssetDepreciationService;
 import com.example.csvccdshustbe.service.assetOriginalOfFormation.AssetOriginalOfFormationService;
 import com.example.csvccdshustbe.service.declare.DeclareServiceFactory;
 import com.example.csvccdshustbe.service.department.DepartmentService;
@@ -83,6 +84,8 @@ public class AssetServiceImpl implements AssetService {
     CsvcUserService csvcUserService;
     @Autowired
     OriginalOfFormationService originalOfFormationService;
+    @Autowired
+    AssetDepreciationService assetDepreciationService;
 
 
 
@@ -178,9 +181,38 @@ public class AssetServiceImpl implements AssetService {
 
     private void updateDataAsset(Map<String, Object> dataUpdateAssetRequest) throws ValidateFiledException, IllegalAccessException {
         Asset asset = updateCommonDataAsset(dataUpdateAssetRequest);
+        updateAssetDepreciation(dataUpdateAssetRequest, asset);
         updateModulesDataAsset(dataUpdateAssetRequest, asset);
         updateOriginalDataAsset(dataUpdateAssetRequest, asset);
         updateDeclareDataAsset(dataUpdateAssetRequest, asset);
+    }
+
+    private void updateAssetDepreciation(Map<String, Object> dataUpdateAssetRequest, Asset asset) {
+        log.info("Storing depreciation data asset");
+        Map<String, Object> depreciationAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_DEPRECIATION);
+        AssetDepreciation assetDepreciation = assetDepreciationService.findAssetDepreciationByIdAsset(asset.getIdAsset());
+        updateDataAssetDepreciation(assetDepreciation, depreciationAsset);
+        assetDepreciationService.save(assetDepreciation);
+    }
+
+    private void updateDataAssetDepreciation(AssetDepreciation assetDepreciation, Map<String, Object> depreciationAsset) {
+        assetDepreciation.setTimeStartedDepreciation(ValueUtil.getStringByObject(depreciationAsset.get("timeStartedDepreciation")));
+        assetDepreciation.setAmountMonthsDepreciation(ValueUtil.getIntegerByObject(depreciationAsset.get("amountMonthsDepreciation")));
+        assetDepreciation.setValueDepreciation(ValueUtil.getStringByObject(depreciationAsset.get("valueDepreciation")));
+        assetDepreciation.setTypeDepreciation(ValueUtil.getIntegerByObject(depreciationAsset.get("typeDepreciation")));
+        assetDepreciation.setValueTypeDepreciation(ValueUtil.getStringByObject(depreciationAsset.get("valueTypeDepreciation")));
+        assetDepreciation.setAmountRestMonthsDepreciation(ValueUtil.getIntegerByObject(depreciationAsset.get("amountRestMonthsDepreciation")));
+        assetDepreciation.setCumulative(ValueUtil.getStringByObject(depreciationAsset.get("cumulative")));
+        assetDepreciation.setRestValue(ValueUtil.getStringByObject(depreciationAsset.get("restValue")));
+        assetDepreciation.setTimeStartedWearTear(ValueUtil.getStringByObject(depreciationAsset.get("timeStartedWearTear")));
+        assetDepreciation.setTimeEndWearTear(ValueUtil.getStringByObject(depreciationAsset.get("timeEndWearTear")));
+        assetDepreciation.setTypeCalculate(ValueUtil.getIntegerByObject(depreciationAsset.get("typeCalculate")));
+        assetDepreciation.setTimeBuy(ValueUtil.getStringByObject(depreciationAsset.get("timeBuy")));
+        assetDepreciation.setTimeStartedUsed(ValueUtil.getStringByObject(depreciationAsset.get("timeStartedUsed")));
+        assetDepreciation.setTimeStartedIncrease(ValueUtil.getStringByObject(depreciationAsset.get("timeStartedIncrease")));
+        assetDepreciation.setTimeYearTracking(ValueUtil.getStringByObject(depreciationAsset.get("timeYearTracking")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetDepreciation.setTimeModified(timeCurrent);
     }
 
     private void updateDeclareDataAsset(Map<String, Object> dataUpdateAssetRequest, Asset asset) throws ValidateFiledException {
@@ -587,9 +619,42 @@ public class AssetServiceImpl implements AssetService {
     private void storeNewAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
         log.info("Init store asset");
         Asset asset = storeCommonData(createAssetRequest);
+        storeDepreciation(createAssetRequest, asset);
         storeModulesDataAsset(createAssetRequest, asset);
         storeOriginalDataAsset(createAssetRequest, asset);
         storeDeclareDataAsset(createAssetRequest, asset);
+    }
+
+    private void storeDepreciation(Map<String, Object> createAssetRequest, Asset asset) {
+        log.info("Storing depreciation data asset");
+        Map<String, Object> depreciationAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_DEPRECIATION);
+        AssetDepreciation depreciation = contructionDataAssetDepreciation(depreciationAsset, asset.getIdAsset());
+        assetDepreciationService.save(depreciation);
+        log.info("Stored success depreciation data asset");
+    }
+
+    private AssetDepreciation contructionDataAssetDepreciation(Map<String, Object> depreciationAsset, Integer idAsset) {
+        AssetDepreciation assetDepreciation = new AssetDepreciation();
+        assetDepreciation.setIdAsset(idAsset);
+        assetDepreciation.setTimeStartedDepreciation(ValueUtil.getStringByObject(depreciationAsset.get("timeStartedDepreciation")));
+        assetDepreciation.setAmountMonthsDepreciation(ValueUtil.getIntegerByObject(depreciationAsset.get("amountMonthsDepreciation")));
+        assetDepreciation.setValueDepreciation(ValueUtil.getStringByObject(depreciationAsset.get("valueDepreciation")));
+        assetDepreciation.setTypeDepreciation(ValueUtil.getIntegerByObject(depreciationAsset.get("typeDepreciation")));
+        assetDepreciation.setValueTypeDepreciation(ValueUtil.getStringByObject(depreciationAsset.get("valueTypeDepreciation")));
+        assetDepreciation.setAmountRestMonthsDepreciation(ValueUtil.getIntegerByObject(depreciationAsset.get("amountRestMonthsDepreciation")));
+        assetDepreciation.setCumulative(ValueUtil.getStringByObject(depreciationAsset.get("cumulative")));
+        assetDepreciation.setRestValue(ValueUtil.getStringByObject(depreciationAsset.get("restValue")));
+        assetDepreciation.setTimeStartedWearTear(ValueUtil.getStringByObject(depreciationAsset.get("timeStartedWearTear")));
+        assetDepreciation.setTimeEndWearTear(ValueUtil.getStringByObject(depreciationAsset.get("timeEndWearTear")));
+        assetDepreciation.setTypeCalculate(ValueUtil.getIntegerByObject(depreciationAsset.get("typeCalculate")));
+        assetDepreciation.setTimeBuy(ValueUtil.getStringByObject(depreciationAsset.get("timeBuy")));
+        assetDepreciation.setTimeStartedUsed(ValueUtil.getStringByObject(depreciationAsset.get("timeStartedUsed")));
+        assetDepreciation.setTimeStartedIncrease(ValueUtil.getStringByObject(depreciationAsset.get("timeStartedIncrease")));
+        assetDepreciation.setTimeYearTracking(ValueUtil.getStringByObject(depreciationAsset.get("timeYearTracking")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetDepreciation.setTimeCreated(timeCurrent);
+        assetDepreciation.setTimeModified(timeCurrent);
+        return assetDepreciation;
     }
 
     private void storeDeclareDataAsset(Map<String, Object> createAssetRequest, Asset asset) throws ValidateFiledException {
