@@ -21,4 +21,5 @@ public class FindAllDepartmentSDto {
     private Integer depth;
     private String path;
     private Integer status;
+    private String nameParent;
 }
