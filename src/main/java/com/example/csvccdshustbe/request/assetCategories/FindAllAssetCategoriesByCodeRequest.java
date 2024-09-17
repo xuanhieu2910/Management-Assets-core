@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllAssetCategoriesRequest extends RequestPageBase {
+public class FindAllAssetCategoriesByCodeRequest extends RequestPageBase {
 
     @NotNull
     @JsonProperty(namespace = "codeName", required = true)

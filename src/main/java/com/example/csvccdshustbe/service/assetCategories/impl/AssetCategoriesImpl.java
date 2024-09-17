@@ -3,12 +3,14 @@ package com.example.csvccdshustbe.service.assetCategories.impl;
 import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategoryDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
+import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoryDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepository;
 import com.example.csvccdshustbe.request.assetCategories.*;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
+import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesVisibleResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.utility.Constants;
@@ -39,8 +41,8 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     }
 
     @Override
-    public Page<FindAllAssetCategoriesResponse> findAllAssetCategoriesByCodeNameAndVisible(
-            FindAllAssetCategoriesRequest request) {
+    public Page<FindAllAssetCategoriesVisibleResponse> findAllAssetCategoriesByCodeNameAndVisible(
+            FindAllAssetCategoriesByCodeRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllAssetCategoriesByCodeAndVisibleDto> categories =
                 assetCategoriesRepository.findAllAssetCategoriesByCodeAndVisible(pageable, request);
@@ -49,7 +51,10 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
 
     @Override
     public Page<FindAllAssetCategoriesResponse> findAllAssetCategories(FindAllDocumentAssetCategoriesRequest request) {
-        return null;
+            Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+            Page<FindAllAssetCategoryDto> categories =
+                    assetCategoriesRepository.findAllAssetCategories(pageable, request);
+            return new PageImpl<>(convertToFindAllAssetCategoriesBy(categories.get().collect(Collectors.toList())), pageable, categories.getTotalElements());
     }
 
     @Override
@@ -192,10 +197,30 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         }
     }
 
-    private List<FindAllAssetCategoriesResponse> convertToFindAllAssetCategoriesByCodeAndVisible
+    private List<FindAllAssetCategoriesVisibleResponse> convertToFindAllAssetCategoriesByCodeAndVisible
             (List<FindAllAssetCategoriesByCodeAndVisibleDto> collect) {
-        List<FindAllAssetCategoriesResponse> responses = new ArrayList<>();
+        List<FindAllAssetCategoriesVisibleResponse> responses = new ArrayList<>();
         for (FindAllAssetCategoriesByCodeAndVisibleDto categorie : collect){
+            FindAllAssetCategoriesVisibleResponse response = new FindAllAssetCategoriesVisibleResponse();
+            response.setIdAssetCategory(categorie.getIdAssetCategory());
+            response.setName(categorie.getName());
+            response.setCodeName(categorie.getCodeName());
+            response.setDepth(categorie.getDepth());
+            response.setPath(categorie.getPath());
+            response.setParent(categorie.getParent());
+            response.setValueWearTear(categorie.getValueWearTear());
+            response.setYearUsedWearTear(categorie.getYearUsedWearTear());
+            response.setMinimumTimeDepreciation(categorie.getMinimumTimeDepreciation());
+            response.setMaximumTimeDepreciation(categorie.getMaximumTimeDepreciation());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    private List<FindAllAssetCategoriesResponse> convertToFindAllAssetCategoriesBy
+            (List<FindAllAssetCategoryDto> collect) {
+        List<FindAllAssetCategoriesResponse> responses = new ArrayList<>();
+        for (FindAllAssetCategoryDto categorie : collect){
             FindAllAssetCategoriesResponse response = new FindAllAssetCategoriesResponse();
             response.setIdAssetCategory(categorie.getIdAssetCategory());
             response.setName(categorie.getName());
@@ -203,6 +228,11 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             response.setDepth(categorie.getDepth());
             response.setPath(categorie.getPath());
             response.setParent(categorie.getParent());
+            response.setIsPicked(categorie.getIsPick());
+            response.setValueWearTear(categorie.getValueWearTear());
+            response.setYearUsedWearTear(categorie.getYearUsedWearTear());
+            response.setMinimumTimeDepreciation(categorie.getMinimumTimeDepreciation());
+            response.setMaximumTimeDepreciation(categorie.getMaximumTimeDepreciation());
             responses.add(response);
         }
         return responses;

@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.assetCategories.*;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
+import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesVisibleResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import org.springframework.data.domain.Page;
 
@@ -16,7 +17,7 @@ public interface AssetCategoriesService {
 
     List<FindAllAssetCategoriesPickedResponse> findAllAssetCategoriesIsPicked();
 
-    Page<FindAllAssetCategoriesResponse> findAllAssetCategoriesByCodeNameAndVisible(FindAllAssetCategoriesRequest request);
+    Page<FindAllAssetCategoriesVisibleResponse> findAllAssetCategoriesByCodeNameAndVisible(FindAllAssetCategoriesByCodeRequest request);
     Page<FindAllAssetCategoriesResponse> findAllAssetCategories(FindAllDocumentAssetCategoriesRequest request);
 
     AssetCategories findAssetCategoriesVisibleByCodeName(String codeName) throws Exception;
