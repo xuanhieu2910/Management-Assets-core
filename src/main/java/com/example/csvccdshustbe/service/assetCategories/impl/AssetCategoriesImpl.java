@@ -118,6 +118,10 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
 //        assetCategories.setSortOrder(null);
         String timeModified = String.valueOf(new Date().getTime());
         assetCategories.setTimeModified(timeModified);
+        assetCategories.setValueWearTear(request.getValueWearTear());
+        assetCategories.setYearUsedWearTear(request.getYearUsedWearTear());
+        assetCategories.setMinimumTimeDepreciation(request.getMinimumTimeDepreciation());
+        assetCategories.setMaximumTimeDepreciation(request.getMaximumTimeDepreciation());
         return assetCategories;
     }
     @Override
@@ -179,6 +183,10 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         String timeCurrent = String.valueOf(new Date().getTime());
         categories.setTimeCreated(timeCurrent);
         categories.setTimeModified(timeCurrent);
+        categories.setValueWearTear(request.getValueWearTear());
+        categories.setYearUsedWearTear(request.getYearUsedWearTear());
+        categories.setMinimumTimeDepreciation(request.getMinimumTimeDepreciation());
+        categories.setMaximumTimeDepreciation(request.getMaximumTimeDepreciation());
         return categories;
     }
 

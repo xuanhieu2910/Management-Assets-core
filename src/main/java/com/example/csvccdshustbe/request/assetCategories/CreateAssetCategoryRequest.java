@@ -18,4 +18,8 @@ public class CreateAssetCategoryRequest {
     private Integer visible;
     private String pathImage;
     private Integer isPick;
+    private String valueWearTear;
+    private String yearUsedWearTear;
+    private String minimumTimeDepreciation;
+    private String maximumTimeDepreciation;
 }

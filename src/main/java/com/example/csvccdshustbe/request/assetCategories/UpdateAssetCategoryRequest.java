@@ -18,5 +18,9 @@ public class UpdateAssetCategoryRequest {
     private Integer parentId;
     private Integer visible;
     private String pathImage;
+    private String valueWearTear;
+    private String yearUsedWearTear;
+    private String minimumTimeDepreciation;
+    private String maximumTimeDepreciation;
 
 }
