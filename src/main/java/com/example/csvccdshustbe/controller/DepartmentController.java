@@ -99,7 +99,7 @@ public class DepartmentController {
         }
     }
 
-    @PostMapping("/update-status")
+    @PutMapping("/update-status")
     public ResponseEntity<?> updateStatusDepartment(@RequestBody UpdateStatusDepartmentRequest request){
         try {
             departmentService.updateStatusDepartment(request);
