@@ -4,10 +4,7 @@ import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
 import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategoryDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
-import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
-import com.example.csvccdshustbe.request.assetCategories.UpdateAssetCategoryRequest;
-import com.example.csvccdshustbe.request.assetCategories.UpdateStatusAssetCategory;
+import com.example.csvccdshustbe.request.assetCategories.*;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
@@ -20,6 +17,7 @@ public interface AssetCategoriesService {
     List<FindAllAssetCategoriesPickedResponse> findAllAssetCategoriesIsPicked();
 
     Page<FindAllAssetCategoriesResponse> findAllAssetCategoriesByCodeNameAndVisible(FindAllAssetCategoriesRequest request);
+    Page<FindAllAssetCategoriesResponse> findAllAssetCategories(FindAllDocumentAssetCategoriesRequest request);
 
     AssetCategories findAssetCategoriesVisibleByCodeName(String codeName) throws Exception;
 

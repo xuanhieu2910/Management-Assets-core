@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPicke
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepositoryCustom;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
+import com.example.csvccdshustbe.request.assetCategories.FindAllDocumentAssetCategoriesRequest;
 import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -141,6 +142,70 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
             }
         }
         return new PageImpl<>(dtos, pageable, countFindAllAssetCategoriesByCodeAndVisible(request));
+    }
+
+    @Override
+    public Page<FindAllAssetCategoriesByCodeAndVisibleDto> findAllAssetCategories(Pageable pageable, FindAllDocumentAssetCategoriesRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH RECURSIVE cte_asset_categories as (  " +
+                "    select assetCategires.id_asset_category,assetCategires.name,  " +
+                "           assetCategires.code_name, assetCategires.short_name,  " +
+                "           assetCategires.description, assetCategires.parent,  " +
+                "           assetCategires.sort_order, assetCategires.asset_count,  " +
+                "           assetCategires.visible, assetCategires.time_created,  " +
+                "           assetCategires.time_modified, assetCategires.is_pick,  " +
+                "           1 as depth,  " +
+                "           CAST(assetCategires.id_asset_category as NCHAR ) as path  " +
+                "    from asset_categories assetCategires  " +
+                "    where assetCategires.code_name = :codeName  " +
+                "    and assetCategires.visible = :visible  " +
+                "    union all  " +
+                "    select assetCategires.id_asset_category,assetCategires.name,  " +
+                "           assetCategires.code_name, assetCategires.short_name,  " +
+                "           assetCategires.description, assetCategires.parent,  " +
+                "           assetCategires.sort_order, assetCategires.asset_count,  " +
+                "           assetCategires.visible, assetCategires.time_created,  " +
+                "           assetCategires.time_modified, assetCategires.is_pick,  " +
+                "           cte.depth + 1 as depth,  " +
+                "           concat_ws('/',cte.path,CAST(assetCategires.id_asset_category as NCHAR)) as path  " +
+                "    from asset_categories assetCategires  " +
+                "             INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category  " +
+                "    )  " +
+                "select cte.id_asset_category, cte.name,  " +
+                "       cte.code_name, cte.short_name, cte.description,  " +
+                "       cte.parent, cte.sort_order, cte.asset_count,  " +
+                "       cte.visible, cte.time_created, cte.time_modified,  " +
+                "       cte.is_pick, cte.depth, cte.path  " +
+                "from cte_asset_categories cte  " +
+                "where 1 = 1 ");
+//        setConditionFindAllAssetCategoriesByCodeAndVisible(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+//        setParameterFindAllAssetCategoriesByCodeAndVisible(request,query);
+        PageUtils.buildQuery(pageable, query);
+        List<FindAllAssetCategoriesByCodeAndVisibleDto> dtos = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                FindAllAssetCategoriesByCodeAndVisibleDto dto = new FindAllAssetCategoriesByCodeAndVisibleDto();
+                dto.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                dto.setCodeName(ValueUtil.getStringByObject(obj[2]));
+                dto.setShortName(ValueUtil.getStringByObject(obj[3]));
+                dto.setDescription(ValueUtil.getStringByObject(obj[4]));
+                dto.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                dto.setSortOrder(ValueUtil.getStringByObject(obj[6]));
+                dto.setAssetCount(ValueUtil.getIntegerByObject(obj[7]));
+                dto.setVisible(ValueUtil.getIntegerByObject(obj[8]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[9]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[10]));
+                dto.setIsPick(ValueUtil.getIntegerByObject(obj[11]));
+                dto.setDepth(ValueUtil.getIntegerByObject(obj[12]));
+                dto.setPath(ValueUtil.getStringByObject(obj[13]));
+                dtos.add(dto);
+            }
+        }
+//        return new PageImpl<>(dtos, pageable, countFindAllAssetCategoriesByCodeAndVisible());
+        return null;
     }
 
     @Override

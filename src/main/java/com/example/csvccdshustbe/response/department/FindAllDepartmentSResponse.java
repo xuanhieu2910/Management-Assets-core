@@ -32,4 +32,6 @@ public class FindAllDepartmentSResponse {
     private String path;
     @JsonProperty("name_parent")
     private String nameParent;
+    @JsonProperty("status")
+    private Integer status;
 }

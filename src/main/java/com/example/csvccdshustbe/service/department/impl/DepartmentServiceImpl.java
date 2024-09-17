@@ -201,6 +201,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             response.setTimeModified(DateUtil.formatToPattern(timeModified, DateUtil.DDMMYYYY));
             response.setDepth(dto.getDepth());
             response.setPath(dto.getPath());
+            response.setStatus(dto.getStatus());
             responses.add(response);
         }
         return responses;

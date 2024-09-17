@@ -6,10 +6,7 @@ import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPicke
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepository;
-import com.example.csvccdshustbe.request.assetCategories.CreateAssetCategoryRequest;
-import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesRequest;
-import com.example.csvccdshustbe.request.assetCategories.UpdateAssetCategoryRequest;
-import com.example.csvccdshustbe.request.assetCategories.UpdateStatusAssetCategory;
+import com.example.csvccdshustbe.request.assetCategories.*;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
@@ -48,6 +45,11 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         Page<FindAllAssetCategoriesByCodeAndVisibleDto> categories =
                 assetCategoriesRepository.findAllAssetCategoriesByCodeAndVisible(pageable, request);
         return new PageImpl<>(convertToFindAllAssetCategoriesByCodeAndVisible(categories.get().collect(Collectors.toList())), pageable, categories.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllAssetCategoriesResponse> findAllAssetCategories(FindAllDocumentAssetCategoriesRequest request) {
+        return null;
     }
 
     @Override
