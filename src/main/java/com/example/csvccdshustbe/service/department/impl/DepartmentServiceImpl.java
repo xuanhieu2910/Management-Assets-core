@@ -202,6 +202,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             response.setDepth(dto.getDepth());
             response.setPath(dto.getPath());
             response.setStatus(dto.getStatus());
+            response.setNameParent(dto.getNameParent());
             responses.add(response);
         }
         return responses;
