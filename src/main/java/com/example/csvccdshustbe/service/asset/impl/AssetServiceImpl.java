@@ -8,6 +8,8 @@ import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
 import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
 import com.example.csvccdshustbe.entity.*;
+import com.example.csvccdshustbe.exception.FileExcelException;
+import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.factory.declare.DeclareFactory;
 import com.example.csvccdshustbe.factory.module.ModuleFactory;
@@ -31,6 +33,7 @@ import com.example.csvccdshustbe.service.original.OriginalServiceFactory;
 import com.example.csvccdshustbe.service.originalOfFormation.OriginalOfFormationService;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
 import com.example.csvccdshustbe.service.units.UnitsService;
+import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,6 +53,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -87,7 +91,8 @@ public class AssetServiceImpl implements AssetService {
     OriginalOfFormationService originalOfFormationService;
     @Autowired
     AssetDepreciationService assetDepreciationService;
-
+    @Autowired
+    FilesStorageService filesStorageService;
 
 
 
@@ -157,8 +162,13 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public void uploadFile(MultipartFile multipartFile) {
+    public String uploadFile(MultipartFile file) throws IOException, FileException {
+        return filesStorageService.saveAndReturnPathAsset(file, FileUtil.FOLDER_ASSET);
+    }
 
+    @Override
+    public void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException {
+        filesStorageService.deleteByPathFile(pathFile);
     }
 
     private void deleteDeclareAsset(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException {

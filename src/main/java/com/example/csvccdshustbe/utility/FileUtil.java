@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.utility;
 
 import com.example.csvccdshustbe.exception.FileExcelException;
+import com.example.csvccdshustbe.exception.FileException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -20,10 +21,15 @@ public class FileUtil {
     public static final String FOLDER_NAME_PARENT = "resources";
     public static final String FOLDER_NAME_IMAGE = "upload_image";
     public static final String FOLDER_NAME_FILE = "upload_file";
+    public static final String FOLDER_ASSET = "asset";
     public static final String FOLDER_NAME_REPORT ="report";
     public static final String SEPARATOR = "/";
     public static String pathReturn = "";
     private static final StringBuilder builder = new StringBuilder();
+    /**
+     * Constant File
+     * */
+    public static final String[] FILE_ASSET = {"png", "jpg", "pdf", "xls","xlsm","xlsx", "docx", "doc"};
 
 
     // Save file if success then return file path, else return null
@@ -230,7 +236,17 @@ public class FileUtil {
         }
         return isCheck;
     }
-
+    public static void validateFileUploadAsset(MultipartFile file) throws FileException {
+        if (file.isEmpty()){
+            throw new FileException("File is empty!");
+        }
+        if( Arrays.stream(FILE_ASSET).noneMatch(x->x.equals(FilenameUtils.getExtension(file.getOriginalFilename())))){
+            throw new FileException("Validate extension file!");
+        }
+        if (checkSizeFile(file)){
+            throw new FileException("Validate size file!");
+        };
+    }
 
 
     public static boolean checkSizeFile(MultipartFile file) {
@@ -245,15 +261,15 @@ public class FileUtil {
         return sizeFileMb <= Double.parseDouble(PropertiesUtil.getProperty("max-size-upload-image").substring(0, 2));
     }
 
-    public static void checkFileImages(MultipartFile file) throws FileExcelException {
+    public static void checkFileAsset(MultipartFile file) throws FileException {
         if (file.isEmpty()){
-            throw new FileExcelException("File is empty!");
+            throw new FileException("File is empty!");
         }
-        if( Arrays.stream(ExcelUtil.FILE_IMAGES).noneMatch(x->x.equals(FilenameUtils.getExtension(file.getOriginalFilename()).toUpperCase()))){
-            throw new FileExcelException("Validate extension file!");
+        if( Arrays.stream(FILE_ASSET).noneMatch(x->x.equals(FilenameUtils.getExtension(file.getOriginalFilename()).toLowerCase()))){
+            throw new FileException("Validate extension file!");
         }
         if (!FileUtil.checkSizeFileImage(file)){
-            throw new FileExcelException("Validate sizefile!");
+            throw new FileException("Validate size file!");
         };
     }
 

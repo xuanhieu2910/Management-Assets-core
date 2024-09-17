@@ -1,5 +1,7 @@
 package com.example.csvccdshustbe.service.asset;
 
+import com.example.csvccdshustbe.exception.FileExcelException;
+import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
@@ -10,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,5 +32,7 @@ public interface AssetService {
 
     Page<FindAllGroundAssetResponse> findAllGroundAsset(FindAllGroundAssetRequest request);
 
-    void uploadFile(MultipartFile multipartFile);
+    String uploadFile(MultipartFile multipartFile) throws FileException, IOException, FileExcelException;
+
+    void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException;
 }

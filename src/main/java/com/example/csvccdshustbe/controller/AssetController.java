@@ -118,9 +118,19 @@ public class AssetController {
     @PostMapping("/upload-file")
     public ResponseEntity<?> uploadFiles(@RequestParam("file")MultipartFile multipartFile){
         try {
-            assetService.uploadFile(multipartFile);
-            return ApiResponseDto.createdWithMessage("Upload file success!", HttpStatus.OK);
-        }catch (Exception e){
+            return ApiResponseDto.createdWithState(assetService.uploadFile(multipartFile),
+                    "Upload file success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/delete-file")
+    public ResponseEntity<?> deleteFiles(@RequestParam("path-file") String pathFile){
+        try {
+            assetService.deleteFile(pathFile);
+            return ApiResponseDto.createdWithMessage("Delete file success!", HttpStatus.OK);
+        } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
