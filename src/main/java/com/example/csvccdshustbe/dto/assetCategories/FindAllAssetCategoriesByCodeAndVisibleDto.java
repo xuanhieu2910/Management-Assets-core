@@ -23,4 +23,8 @@ public class FindAllAssetCategoriesByCodeAndVisibleDto {
     private Integer isPick;
     private Integer depth;
     private String path;
+    private String valueWearTear;
+    private String yearUsedWearTear;
+    private String minimumTimeDepreciation;
+    private String maximumTimeDepreciation;
 }

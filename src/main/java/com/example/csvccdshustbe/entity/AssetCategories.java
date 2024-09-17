@@ -40,5 +40,12 @@ public class AssetCategories {
     private String pathImage;
     @Column(name = "is_pick")
     private Integer isPick;
-
+    @Column(name = "value_wear_tear")
+    private String valueWearTear;
+    @Column(name = "year_used_wear_tear")
+    private String yearUsedWearTear;
+    @Column(name = "minium_time_depreciation")
+    private String minimumTimeDepreciation;
+    @Column(name = "maximim_time_depreciation")
+    private String maximumTimeDepreciation;
 }
