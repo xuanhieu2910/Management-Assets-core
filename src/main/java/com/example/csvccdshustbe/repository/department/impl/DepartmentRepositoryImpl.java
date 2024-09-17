@@ -336,6 +336,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
         if (StringUtils.isNotBlank(request.getShortName())){
             sb.append(" and (cte.short_name REGEXP :shortName ) ");
         }
+        sb.append(" order by cte.path ");
     }
 
     private void setConditionFindAllDepartmentByCodeAndVisible(FindAllDepartmentVisibleRequest request, StringBuilder sb) {
