@@ -26,4 +26,6 @@ public class FindAllMedicineTypeResponse {
     private String nameParent;
     @JsonProperty("visible")
     private Integer visible;
+    @JsonProperty("short_name")
+    private String shortName;
 }

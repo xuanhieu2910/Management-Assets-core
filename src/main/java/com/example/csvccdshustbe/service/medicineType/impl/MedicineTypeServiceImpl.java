@@ -77,6 +77,7 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
             response.setPath(dto.getPath());
             response.setNameParent(dto.getNameParent());
             response.setVisible(dto.getVisible());
+            response.setShortName(dto.getShortName());
             responses.add(response);
         }
         return responses;
