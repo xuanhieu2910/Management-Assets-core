@@ -178,12 +178,13 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        if (!medicineTypeOptional.get().getName().equals(request.getName()) ||
-                !medicineTypeOptional.get().getCode().equals(request.getCode()) ||
-                !medicineTypeOptional.get().getShortName().equals(request.getShortName())) {
-            if (medicineTypeRepository.checkExitsMedicineTypeByNameOrCodeOrShortName(request.getName(),
-                    request.getCode(), request.getShortName())) {
-                throw new ValidateFiledException("Exits medicine type by name or code or short name!");
+        if (StringUtils.isNotBlank(request.getName()) && StringUtils.isNotBlank(request.getShortName())) {
+            if (!medicineTypeOptional.get().getName().equals(request.getName()) ||
+                    !medicineTypeOptional.get().getCode().equals(request.getCode())) {
+                if (medicineTypeRepository.checkExitsMedicineTypeByNameOrCodeOrShortName(request.getName(),
+                        request.getCode(), request.getShortName())) {
+                    throw new ValidateFiledException("Exits medicine type by name or code or short name!");
+                }
             }
         }
         return medicineTypeOptional.get();
