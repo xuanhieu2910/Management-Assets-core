@@ -110,7 +110,7 @@ public class ProjectsServiceImpl implements ProjectsService {
             throw new NotFoundException("Don't exits projects by id!");
         }
         if (!request.getStatus().equals(Constants.PROJECTS_IS_VISIBLE)
-                && request.getStatus().equals(Constants.PROJECTS_UN_IS_VISIBLE)){
+                && !request.getStatus().equals(Constants.PROJECTS_UN_IS_VISIBLE)){
             throw new ValidateFiledException("Don't exits status in project!");
         }
         projects.get().setVisible(request.getStatus());
