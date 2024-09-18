@@ -27,4 +27,5 @@ public class FindAllAssetCategoryDto {
     private String yearUsedWearTear;
     private String minimumTimeDepreciation;
     private String maximumTimeDepreciation;
+    private String nameParent;
 }
