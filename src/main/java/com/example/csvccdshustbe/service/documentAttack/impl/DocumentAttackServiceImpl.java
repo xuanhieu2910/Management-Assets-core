@@ -68,12 +68,12 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
         }
         Optional<DocumentAttack> documentAttackOptional = documentAttackRepository.findDocumentAttackByName(request.getName());
         if (documentAttackOptional.isPresent()) {
-            throw new ValidateFiledException("Exits Document Attack by name Document Attack!");
-        }
-        if (StringUtils.isNotBlank(request.getCode())) {
-            if (request.getCode().equals(documentAttackOptional.get().getCode())) {
-                throw new ValidateFiledException("Exits Document Attack by code name");
+            if (StringUtils.isNotBlank(request.getCode())) {
+                if (request.getCode().equals(documentAttackOptional.get().getCode())) {
+                    throw new ValidateFiledException("Exits Document Attack by code name");
+                }
             }
+            throw new ValidateFiledException("Exits Document Attack by name Document Attack!");
         }
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
 

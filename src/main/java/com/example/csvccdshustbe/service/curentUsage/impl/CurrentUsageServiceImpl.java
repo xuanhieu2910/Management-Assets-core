@@ -71,12 +71,12 @@ public class CurrentUsageServiceImpl implements CurrentUsageService {
         }
         Optional<CurrentUsage> currentUsage = currentUsageRepository.findCurrentUsageByName(request.getName());
         if (currentUsage.isPresent()){
-            throw new ValidateFiledException("Exits Current Usage by name!");
-        }
-        if (StringUtils.isNotBlank(request.getCode())) {
-            if (request.getCode().equals(currentUsage.get().getCode())){
-                throw new ValidateFiledException("Exits Current Usage by code");
+            if (StringUtils.isNotBlank(request.getCode())) {
+                if (request.getCode().equals(currentUsage.get().getCode())){
+                    throw new ValidateFiledException("Exits Current Usage by code");
+                }
             }
+            throw new ValidateFiledException("Exits Current Usage by name!");
         }
     }
     private CurrentUsage contructCurrentUsage(CreateCurrentUsageRequest request){
