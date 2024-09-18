@@ -9,6 +9,7 @@ import com.example.csvccdshustbe.response.asset.FindAllAssetResponse;
 import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
 import com.example.csvccdshustbe.response.asset.FindDetailsAssetResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,4 +36,6 @@ public interface AssetService {
     String uploadFile(MultipartFile multipartFile) throws FileException, IOException, FileExcelException;
 
     void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException;
+
+    Resource downloadFileTemplateImportAsset();
 }

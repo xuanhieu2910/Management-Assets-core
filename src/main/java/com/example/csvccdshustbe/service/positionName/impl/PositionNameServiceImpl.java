@@ -73,6 +73,7 @@ public class PositionNameServiceImpl implements PositionNameService {
             res.setName(allPositionNameDto.getName());
             res.setTimeCreated(DateUtil.formatToPattern(DateUtil.formatDatePattern(allPositionNameDto.getTimeCreated(),DateUtil.DDMMYYYY), DateUtil.DDMMYYYY));
             res.setTimeModified(DateUtil.formatToPattern(DateUtil.formatDatePattern(allPositionNameDto.getTimeModified(),DateUtil.DDMMYYYY), DateUtil.DDMMYYYY));
+            res.setStatus(allPositionNameDto.getStatus());
             responses.add(res);
         }
         return responses;
