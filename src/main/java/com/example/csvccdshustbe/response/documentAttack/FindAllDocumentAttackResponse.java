@@ -18,8 +18,8 @@ public class FindAllDocumentAttackResponse {
     private String nameDepartment;
     @JsonProperty("date_determination_document")
     private String dateDeterminationDocument;
-    @JsonProperty("visible")
-    private Integer visible;
+    @JsonProperty("status")
+    private Integer status;
     @JsonProperty("code")
     private String code;
     @JsonProperty("id_department")
