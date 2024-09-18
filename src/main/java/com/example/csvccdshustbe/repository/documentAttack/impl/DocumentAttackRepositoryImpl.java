@@ -1,9 +1,10 @@
 package com.example.csvccdshustbe.repository.documentAttack.impl;
 
+import com.example.csvccdshustbe.dto.documentAttack.FindAllDocumentAttackDto;
 import com.example.csvccdshustbe.entity.DocumentAttack;
-import com.example.csvccdshustbe.entity.LevelTypeAsset;
 import com.example.csvccdshustbe.repository.documentAttack.DocumentAttackRepositoryCustom;
 import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackRequest;
+import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackVisibleRequest;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -18,13 +19,15 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCustom {
     @PersistenceContext
     EntityManager entityManager;
     @Override
-    public Page<DocumentAttack> findAllDocumentAttackActiveResponse(FindAllDocumentAttackRequest request, Pageable pageable){
+    public Page<DocumentAttack> findAllDocumentAttackVisibleResponse(
+            FindAllDocumentAttackVisibleRequest request, Pageable pageable){
         StringBuilder sb = new StringBuilder();
         sb.append("select document_attack.id_document_attack, " +
                 "document_attack.name, document_attack.code, document_attack.id_department, " +
@@ -32,9 +35,9 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
                 " document_attack.time_created, document_attack.time_modified " +
                 "from document_attack " +
                 "where 1=1 and document_attack.status = :status ");
-        setConditionFindAllDocumentAttackActive(request, sb);
+        setConditionFindAllDocumentAttackVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
-        setParameterFindAllDocumentAttackActive(request, query);
+        setParameterFindAllDocumentAttackVisible(request, query);
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
         List<DocumentAttack> documentAttacks = new ArrayList<>();
@@ -55,28 +58,95 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
         return new PageImpl<>(documentAttacks, pageable, countFindAllDocumentAttackActive(request));
     }
 
-    private long countFindAllDocumentAttackActive(FindAllDocumentAttackRequest request){
+    @Override
+    public Page<FindAllDocumentAttackDto>
+    findAllDocumentAttackResponse(FindAllDocumentAttackRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select  document_attack.id_document_attack,   " +
+                "        document_attack.name, document_attack.code, document_attack.id_department,   " +
+                "        document_attack.date_determination_document, document_attack.status,   " +
+                "        document_attack.time_created, document_attack.time_modified, " +
+                "        de.name nameDepartment " +
+                "from document_attack    " +
+                "    left join department de on document_attack.id_department = de.id_department " +
+                "where 1 = 1  ");
+        setConditionFindAllDocumentAttack(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllDocumentAttack(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllDocumentAttackDto> documentAttacks = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(result)) {
+            for(Object[] obj :result) {
+                FindAllDocumentAttackDto documentAttack=new FindAllDocumentAttackDto();
+                documentAttack.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[0]));
+                documentAttack.setName(ValueUtil.getStringByObject(obj[1]));
+                documentAttack.setCode(ValueUtil.getStringByObject(obj[2]));
+                documentAttack.setIdDepartment(ValueUtil.getIntegerByObject(obj[3]));
+                documentAttack.setDateDeterminationDocument(ValueUtil.getStringByObject(obj[4]));
+                documentAttack.setStatus(ValueUtil.getIntegerByObject(obj[5]));
+                documentAttack.setTimeCreated((ValueUtil.getStringByObject(obj[6])));
+                documentAttack.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                documentAttack.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
+                documentAttacks.add(documentAttack);
+            }
+        }
+        return new PageImpl<>(documentAttacks, pageable, countFindAllDocumentAttack(request));
+    }
+
+    private long countFindAllDocumentAttackActive(FindAllDocumentAttackVisibleRequest request){
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) " +
                 "from document_attack " +
                 "where 1 = 1 " +
                 "  and document_attack.status = :status ");
-        setConditionFindAllDocumentAttackActive(request, sb);
+        setConditionFindAllDocumentAttackVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
-        setParameterFindAllDocumentAttackActive(request, query);
+        setParameterFindAllDocumentAttackVisible(request, query);
         return ValueUtil.getLongByObject(query.getSingleResult());
     }
 
-    private void setParameterFindAllDocumentAttackActive(FindAllDocumentAttackRequest request, Query query) {
+    private long countFindAllDocumentAttack(FindAllDocumentAttackRequest request){
+        StringBuilder sb = new StringBuilder();
+        sb.append("select  count(0) count " +
+                "from document_attack " +
+                "    left join department de on document_attack.id_department = de.id_department " +
+                "where 1 = 1  ");
+        setConditionFindAllDocumentAttack(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllDocumentAttack(request, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+
+    private void setParameterFindAllDocumentAttackVisible(FindAllDocumentAttackVisibleRequest request, Query query) {
         query.setParameter("status", Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
         }
     }
 
-    private void setConditionFindAllDocumentAttackActive(FindAllDocumentAttackRequest request, StringBuilder sb) {
+    private void setParameterFindAllDocumentAttack(FindAllDocumentAttackRequest request, Query query) {
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            query.setParameter("keyword", request.getKeyword());
+        }
+        if (Objects.isNull(request.getStatus())){
+            query.setParameter("status", request.getStatus());
+        }
+    }
+
+    private void setConditionFindAllDocumentAttackVisible(FindAllDocumentAttackVisibleRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())){
             sb.append(" and (document_attack.name REGEXP :keyword ) ");
+        }
+    }
+
+    private void setConditionFindAllDocumentAttack(FindAllDocumentAttackRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            sb.append(" and (document_attack.name REGEXP :keyword ) ");
+        }
+        if (!Objects.isNull(request.getStatus())){
+            sb.append(" and document_attack.status = :status ");
         }
     }
 

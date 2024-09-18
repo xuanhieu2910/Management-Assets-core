@@ -1,15 +1,14 @@
 package com.example.csvccdshustbe.service.documentAttack.impl;
 
+import com.example.csvccdshustbe.dto.documentAttack.FindAllDocumentAttackDto;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.DocumentAttack;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.department.DepartmentRepository;
 import com.example.csvccdshustbe.repository.documentAttack.DocumentAttackRepository;
-import com.example.csvccdshustbe.request.documentAttack.CreateDocumentAttackRequest;
-import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackRequest;
-import com.example.csvccdshustbe.request.documentAttack.UpdateDocumentAttackRequest;
-import com.example.csvccdshustbe.request.documentAttack.UpdateStatusDocumentAttackRequest;
+import com.example.csvccdshustbe.request.documentAttack.*;
 import com.example.csvccdshustbe.response.documentAttack.FindAllDocumentAttackResponse;
+import com.example.csvccdshustbe.response.documentAttack.FindAllDocumentAttackVisibleResponse;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -38,19 +37,44 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
     DepartmentRepository departmentRepository;
 
     @Override
-    public Page<FindAllDocumentAttackResponse> findAllDocumentAttackActiveResponse(FindAllDocumentAttackRequest request){
+    public Page<FindAllDocumentAttackVisibleResponse>
+    findAllDocumentAttackVisibleResponse(FindAllDocumentAttackVisibleRequest request){
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-        Page<DocumentAttack> documentAttacks = documentAttackRepository.findAllDocumentAttackActiveResponse(request, pageable);
-        return new PageImpl<>(convertToFindAllDocumentAttack(documentAttacks.get().collect(Collectors.toList())),
+        Page<DocumentAttack> documentAttacks = documentAttackRepository.findAllDocumentAttackVisibleResponse(request, pageable);
+        return new PageImpl<>(convertToFindAllDocumentAttackVisible(documentAttacks.get().collect(Collectors.toList())),
                     pageable, documentAttacks.getTotalElements());
     }
 
-    private List<FindAllDocumentAttackResponse> convertToFindAllDocumentAttack(List<DocumentAttack> allDocumentAttackByStatus) {
-        List<FindAllDocumentAttackResponse> responses = new ArrayList<>();
+    @Override
+    public Page<FindAllDocumentAttackResponse> findAllDocumentAttackResponse(FindAllDocumentAttackRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<FindAllDocumentAttackDto> documentAttacks = documentAttackRepository.findAllDocumentAttackResponse(request, pageable);
+        return new PageImpl<>(convertToFindAllDocumentAttack(documentAttacks.get().collect(Collectors.toList())),
+                pageable, documentAttacks.getTotalElements());
+    }
+
+    private List<FindAllDocumentAttackVisibleResponse> convertToFindAllDocumentAttackVisible(List<DocumentAttack> allDocumentAttackByStatus) {
+        List<FindAllDocumentAttackVisibleResponse> responses = new ArrayList<>();
         for (DocumentAttack documentAttack : allDocumentAttackByStatus){
+            FindAllDocumentAttackVisibleResponse response = new FindAllDocumentAttackVisibleResponse();
+            response.setIdDocumentAttack(documentAttack.getIdDocumentAttack());
+            response.setName(documentAttack.getName());
+            response.setCode(documentAttack.getCode());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    private List<FindAllDocumentAttackResponse> convertToFindAllDocumentAttack(List<FindAllDocumentAttackDto> allDocumentAttackByStatus) {
+        List<FindAllDocumentAttackResponse> responses = new ArrayList<>();
+        for (FindAllDocumentAttackDto documentAttack : allDocumentAttackByStatus){
             FindAllDocumentAttackResponse response = new FindAllDocumentAttackResponse();
             response.setIdDocumentAttack(documentAttack.getIdDocumentAttack());
             response.setName(documentAttack.getName());
+            response.setCode(documentAttack.getCode());
+            response.setNameDepartment(documentAttack.getNameDepartment());
+            response.setDateDeterminationDocument(documentAttack.getDateDeterminationDocument());
+            response.setVisible(documentAttack.getStatus());
             responses.add(response);
         }
         return responses;

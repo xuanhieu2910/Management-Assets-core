@@ -2,18 +2,17 @@ package com.example.csvccdshustbe.service.documentAttack;
 
 import com.example.csvccdshustbe.entity.DocumentAttack;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.documentAttack.CreateDocumentAttackRequest;
-import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackRequest;
-import com.example.csvccdshustbe.request.documentAttack.UpdateDocumentAttackRequest;
-import com.example.csvccdshustbe.request.documentAttack.UpdateStatusDocumentAttackRequest;
+import com.example.csvccdshustbe.request.documentAttack.*;
 import com.example.csvccdshustbe.response.documentAttack.FindAllDocumentAttackResponse;
+import com.example.csvccdshustbe.response.documentAttack.FindAllDocumentAttackVisibleResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface DocumentAttackService {
 
-    Page<FindAllDocumentAttackResponse> findAllDocumentAttackActiveResponse(FindAllDocumentAttackRequest  request);
+    Page<FindAllDocumentAttackVisibleResponse> findAllDocumentAttackVisibleResponse(FindAllDocumentAttackVisibleRequest request);
+    Page<FindAllDocumentAttackResponse> findAllDocumentAttackResponse(FindAllDocumentAttackRequest request);
 
     void createDocumentAttack(CreateDocumentAttackRequest request) throws ValidateFiledException;
     void updateDocumentAttack(UpdateDocumentAttackRequest request) throws ValidateFiledException;

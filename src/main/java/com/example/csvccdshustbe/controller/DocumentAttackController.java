@@ -3,10 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.documentAttack.CreateDocumentAttackRequest;
-import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackRequest;
-import com.example.csvccdshustbe.request.documentAttack.UpdateDocumentAttackRequest;
-import com.example.csvccdshustbe.request.documentAttack.UpdateStatusDocumentAttackRequest;
+import com.example.csvccdshustbe.request.documentAttack.*;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -30,6 +27,21 @@ public class DocumentAttackController {
     DocumentAttackService documentAttackService;
 
 
+    @GetMapping("/find-all-visible")
+    public ResponseEntity<?> findAll(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllDocumentAttackVisibleRequest findAllDocumentAttackRequest){
+        try {
+            return ApiResponseDto.createdWithState(
+                    documentAttackService.findAllDocumentAttackVisibleResponse(findAllDocumentAttackRequest),
+                    "Find all Document Attack success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
     @GetMapping("/find-all")
     public ResponseEntity<?> findAll(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
@@ -38,12 +50,13 @@ public class DocumentAttackController {
     }) FindAllDocumentAttackRequest findAllDocumentAttackRequest){
         try {
             return ApiResponseDto.createdWithState(
-                    documentAttackService.findAllDocumentAttackActiveResponse(findAllDocumentAttackRequest),
+                    documentAttackService.findAllDocumentAttackResponse(findAllDocumentAttackRequest),
                     "Find all Document Attack success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
 
     @PostMapping("/create")
     public ResponseEntity<?> createDocumentAttack(@RequestBody CreateDocumentAttackRequest request){
