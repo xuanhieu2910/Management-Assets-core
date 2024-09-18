@@ -124,7 +124,7 @@ public class Constants {
      * Constant Location
      * */
     public static final Integer LOCATION_ACTIVE_STATUS = 1;
-    public static final Integer LOCATION_UN_ACTIVE_STATUS = 1;
+    public static final Integer LOCATION_UN_ACTIVE_STATUS = -1;
     /*----------------------------------------------------*/
     /**
      * Constant Asset blue print
