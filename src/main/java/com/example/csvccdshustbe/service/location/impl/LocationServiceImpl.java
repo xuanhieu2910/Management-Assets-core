@@ -83,6 +83,7 @@ public class LocationServiceImpl implements LocationService {
             res.setIdDepartment(allLocationDto.getIdDepartment());
             res.setNameParent(allLocationDto.getNameParent());
             res.setVisible(allLocationDto.getVisible());
+            res.setNameDepartment(allLocationDto.getNameDepartment());
             responses.add(res);
         }
         return responses;

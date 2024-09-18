@@ -19,4 +19,5 @@ public class FindAllLocationDto {
     private Integer depth;
     private String path;
     private String nameParent;
+    private String nameDepartment;
 }

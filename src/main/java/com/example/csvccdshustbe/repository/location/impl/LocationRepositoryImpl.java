@@ -113,9 +113,10 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 "           cte.short_name, cte.id_department, cte.parent,        " +
                 "           cte.visible,         " +
                 "           cte.time_created, cte.time_modified,        " +
-                "           cte.depth, cte.path, cte.nameParent   " +
+                "           cte.depth, cte.path, cte.nameParent, " +
+                "           de.name nameDepartment  " +
                 "from cte_location cte   " +
-                "      inner join department de on cte.id_department = de.id_department       " +
+                "      left join department de on cte.id_department = de.id_department       " +
                 "where 1 = 1 ");
         setConditionFindAllLocation(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -137,6 +138,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 dto.setDepth(ValueUtil.getIntegerByObject(obj[8]));
                 dto.setPath(ValueUtil.getStringByObject(obj[9]));
                 dto.setNameParent(ValueUtil.getStringByObject(obj[10]));
+                dto.setNameDepartment(ValueUtil.getStringByObject(obj[11]));
                 findAllLocationDtos.add(dto);
             }
         }
