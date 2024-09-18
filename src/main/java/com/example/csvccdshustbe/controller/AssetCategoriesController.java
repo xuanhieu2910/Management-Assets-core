@@ -124,7 +124,7 @@ public class AssetCategoriesController {
         }
     }
 
-    @PostMapping("/update-status")
+    @PutMapping("/update-status")
     public ResponseEntity<?> updateStatusAssetCategory(@RequestBody UpdateStatusAssetCategory statusAssetCategory) {
         try {
             assetCategoriesService.updateStatusAssetCategory(statusAssetCategory);

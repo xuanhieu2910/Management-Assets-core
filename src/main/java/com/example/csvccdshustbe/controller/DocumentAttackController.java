@@ -88,7 +88,7 @@ public class DocumentAttackController {
         }
     }
 
-    @PostMapping("/update-status")
+    @PutMapping("/update-status")
     public ResponseEntity<?> updateStatusDocumentAttack(@RequestBody UpdateStatusDocumentAttackRequest request){
         try {
             documentAttackService.updateStatusDocumentAttack(request);

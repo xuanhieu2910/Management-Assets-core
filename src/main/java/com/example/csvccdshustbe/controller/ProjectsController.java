@@ -99,7 +99,7 @@ public class ProjectsController {
         }
     }
 
-    @PostMapping("/update-status")
+    @PutMapping("/update-status")
     public ResponseEntity<?> updateStatusProject(@RequestBody UpdateStatusProjectRequest request){
         try {
             projectsService.updateStatusProject(request);

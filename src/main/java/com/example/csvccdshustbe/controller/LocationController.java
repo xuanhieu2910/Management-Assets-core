@@ -97,7 +97,7 @@ public class LocationController {
         }
     }
 
-    @PostMapping("/update-status")
+    @PutMapping("/update-status")
     public ResponseEntity<?> updateVisibleLocation(@RequestBody UpdateVisibleLocationRequest request){
         try {
             locationService.updateVisibleLocation(request);
