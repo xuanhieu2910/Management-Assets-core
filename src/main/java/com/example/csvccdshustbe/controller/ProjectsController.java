@@ -35,7 +35,7 @@ public class ProjectsController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllProjectsRequest request) {
         try {
-            return ApiResponseDto.createdWithState(projectsService.findAllProjectsResponseByName(request),
+            return ApiResponseDto.createdWithState(projectsService.findAllProjectsVisibleResponse(request),
                     "Find all projects success!", HttpStatus.OK);
         } catch (NotFoundException e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -51,7 +51,7 @@ public class ProjectsController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllProjectsRequest request) {
         try {
-            return ApiResponseDto.createdWithState(projectsService.findAllProjectsResponseByName(request),
+            return ApiResponseDto.createdWithState(projectsService.findAllProjectsResponse(request),
                     "Find all projects success!", HttpStatus.OK);
         } catch (NotFoundException e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
