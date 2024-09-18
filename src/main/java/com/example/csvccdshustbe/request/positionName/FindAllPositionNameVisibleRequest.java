@@ -8,7 +8,5 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllPositionNameRequest extends RequestPageBase {
-
-    private Integer status;
+public class FindAllPositionNameVisibleRequest extends RequestPageBase {
 }

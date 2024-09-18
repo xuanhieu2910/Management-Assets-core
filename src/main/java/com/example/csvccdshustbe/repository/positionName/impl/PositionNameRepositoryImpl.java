@@ -4,6 +4,8 @@ import com.example.csvccdshustbe.dto.positionName.FindAllPositionNameDto;
 import com.example.csvccdshustbe.entity.PositionName;
 import com.example.csvccdshustbe.repository.positionName.PositionNameRepositoryCustom;
 import com.example.csvccdshustbe.request.positionName.FindAllPositionNameRequest;
+import com.example.csvccdshustbe.request.positionName.FindAllPositionNameVisibleRequest;
+import com.example.csvccdshustbe.response.positionName.FindAllPositionNameVisibleResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -18,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom {
@@ -25,13 +28,41 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
     EntityManager entityManager;
 
     @Override
-    public Page<FindAllPositionNameDto> findAllPositionNameStatus(Pageable pageable, FindAllPositionNameRequest request) {
+    public Page<FindAllPositionNameDto> findAllPositionNameStatus(Pageable pageable,
+                                                                  FindAllPositionNameVisibleRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append("select pn.id_position_name, pn.name, pn.status, " +
                 "pn.time_created, pn.time_modified " +
                 "from position_name pn " +
                 "where 1=1 and pn.status = :status ");
-        setConditionFindAllPositonName(request, sb);
+        setConditionFindAllPositionNameByStatus(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllPositionNameByStatus(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllPositionNameDto> findAllPositionNameDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                FindAllPositionNameDto dto = new FindAllPositionNameDto();
+                dto.setIdPositionName(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                dto.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                findAllPositionNameDtos.add(dto);
+            }
+        }
+        return new PageImpl<>(findAllPositionNameDtos, pageable, countFindAllPositionNameStatus(request));
+    }
+
+    @Override
+    public Page<FindAllPositionNameDto> findAllPositionName(Pageable pageable, FindAllPositionNameRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select pn.id_position_name, pn.name, pn.status, " +
+                "pn.time_created, pn.time_modified " +
+                "from position_name pn " +
+                "where 1 = 1  ");
+        setConditionFindAllPositionName(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllPositionName(request, query);
         PageUtils.buildQuery(pageable, query);
@@ -48,9 +79,10 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
                 findAllPositionNameDtos.add(dto);
             }
         }
-        return new PageImpl<>(findAllPositionNameDtos, pageable, countFindAllPosistionNameStatus(request));
+        return new PageImpl<>(findAllPositionNameDtos, pageable, countFindAllPositionName(request));
     }
-    private long countFindAllPosistionNameStatus(FindAllPositionNameRequest request) {
+
+    private long countFindAllPositionNameStatus(FindAllPositionNameVisibleRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" WITH RECURSIVE cte_position as (      " +
                         "select pn.id_position_name, pn.name, pn.status, " +
@@ -59,20 +91,55 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
                 "   select count(cte.id_position_name) count   " +
                 "   from cte_position cte      " +
                 "   where 1 = 1 and cte.status = :status  ");
-        setConditionFindAllPositonName(request, sb);
+        setConditionFindAllPositionNameByStatus(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllPositionNameByStatus(request, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private long countFindAllPositionName(FindAllPositionNameRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH RECURSIVE cte_position as (      " +
+                "select pn.id_position_name, pn.name, pn.status, " +
+                "pn.time_created, pn.time_modified " +
+                "from position_name pn)   " +
+                "   select count(cte.id_position_name) count   " +
+                "   from cte_position cte      " +
+                "   where 1 = 1 ");
+        setConditionFindAllPositionName(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllPositionName(request, query);
         return ValueUtil.getLongByObject(query.getSingleResult());
     }
-    private void setParameterFindAllPositionName(FindAllPositionNameRequest request, Query query) {
+
+
+    private void setParameterFindAllPositionNameByStatus(FindAllPositionNameVisibleRequest request, Query query) {
         query.setParameter("status", Constants.POSITION_NAME_ACTIVE_STATUS);
         if (StringUtils.isNotBlank(request.getKeyword())) {
             query.setParameter("keyword", request.getKeyword());
         }
     }
-    private void setConditionFindAllPositonName(FindAllPositionNameRequest request, StringBuilder sb) {
+
+    private void setParameterFindAllPositionName(FindAllPositionNameRequest request, Query query) {
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            query.setParameter("keyword", request.getKeyword());
+        }
+        if (!Objects.isNull(request.getStatus())){
+            query.setParameter("status", request.getStatus());
+        }
+    }
+    private void setConditionFindAllPositionNameByStatus(FindAllPositionNameVisibleRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())) {
             sb.append(" and (cte.name REGEXP :keyword) ");
+        }
+    }
+
+    private void setConditionFindAllPositionName(FindAllPositionNameRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            sb.append(" and (cte.name REGEXP :keyword) ");
+        }
+        if (!Objects.isNull(request.getStatus())){
+            sb.append(" and cte.status = :status ");
         }
     }
     @Override

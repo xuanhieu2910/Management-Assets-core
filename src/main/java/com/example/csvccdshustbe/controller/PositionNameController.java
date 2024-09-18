@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.positionName.CreatePositionNameRequest;
 import com.example.csvccdshustbe.request.positionName.FindAllPositionNameRequest;
+import com.example.csvccdshustbe.request.positionName.FindAllPositionNameVisibleRequest;
 import com.example.csvccdshustbe.request.positionName.UpdatePositionNameRequest;
 import com.example.csvccdshustbe.service.positionName.PositionNameService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +28,23 @@ public class PositionNameController {
     @Autowired
     PositionNameService positionNameService;
 
+    @GetMapping("/find-all-visible")
+    public ResponseEntity<?> findAllPosition(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllPositionNameVisibleRequest request) {
+        try {
+            return ApiResponseDto.createdWithState(positionNameService.findAllPositionNameVisibleResponse(request),
+                    "Find all position name success!", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
     @GetMapping("/find-all")
     public ResponseEntity<?> findAllPosition(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
@@ -34,7 +52,7 @@ public class PositionNameController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllPositionNameRequest request) {
         try {
-            return ApiResponseDto.createdWithState(positionNameService.findAllPositionNameResponseByName(request),
+            return ApiResponseDto.createdWithState(positionNameService.findAllPositionNameResponse(request),
                     "Find all position name success!", HttpStatus.OK);
         } catch (NotFoundException e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
