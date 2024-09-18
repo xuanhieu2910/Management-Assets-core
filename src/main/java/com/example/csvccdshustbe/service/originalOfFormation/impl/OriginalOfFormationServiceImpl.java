@@ -4,11 +4,11 @@ import com.example.csvccdshustbe.dto.originalOfFormation.FindAllOriginalOfFormat
 import com.example.csvccdshustbe.entity.OriginalOfFormation;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.originalOfFormation.OriginalOfFormationRepository;
-import com.example.csvccdshustbe.request.originalOfFormation.CreateOriginalOfFormationRequest;
-import com.example.csvccdshustbe.request.originalOfFormation.FindAllOriginalOfFormationRequest;
-import com.example.csvccdshustbe.request.originalOfFormation.UpdateOriginalOfFormationRequest;
+import com.example.csvccdshustbe.request.originalOfFormation.*;
 import com.example.csvccdshustbe.response.originalOfFormation.FindAllOriginalOfFormationResponse;
+import com.example.csvccdshustbe.response.originalOfFormation.FindAllOriginalOfFormationVisibleResponse;
 import com.example.csvccdshustbe.service.originalOfFormation.OriginalOfFormationService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,16 +33,24 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
 
 
     @Override
-    public Page<FindAllOriginalOfFormationResponse> findAllOriginalOfFormation(FindAllOriginalOfFormationRequest request) {
+    public Page<FindAllOriginalOfFormationVisibleResponse> findAllOriginalOfFormationVisible(FindAllOriginalOfFormationVisibleRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllOriginalOfFormationDto> dtos = originalOfFormationRepository.findAllOriginalOfFormationVisible(pageable, request);
+        return new PageImpl<>(convertToFindAllOriginalOfFormationVisible(dtos.get().collect(Collectors.toList())), pageable, dtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllOriginalOfFormationResponse> findAllOriginalOfFormation(FindAllOriginalOfFormationRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<FindAllOriginalOfFormationDto> dtos = originalOfFormationRepository.findAllOriginalOfFormation(pageable, request);
         return new PageImpl<>(convertToFindAllOriginalOfFormation(dtos.get().collect(Collectors.toList())), pageable, dtos.getTotalElements());
     }
 
-    private List<FindAllOriginalOfFormationResponse> convertToFindAllOriginalOfFormation(List<FindAllOriginalOfFormationDto> dtos) {
-        List<FindAllOriginalOfFormationResponse> responses = new ArrayList<>();
+    private List<FindAllOriginalOfFormationVisibleResponse>
+    convertToFindAllOriginalOfFormationVisible(List<FindAllOriginalOfFormationDto> dtos) {
+        List<FindAllOriginalOfFormationVisibleResponse> responses = new ArrayList<>();
         for (FindAllOriginalOfFormationDto originalOfFormationDto: dtos){
-            FindAllOriginalOfFormationResponse response = new FindAllOriginalOfFormationResponse();
+            FindAllOriginalOfFormationVisibleResponse response = new FindAllOriginalOfFormationVisibleResponse();
             response.setIdOriginalOfFormation(originalOfFormationDto.getIdOriginalOfFormation());
             response.setName(originalOfFormationDto.getName());
             response.setParent(originalOfFormationDto.getParent());
@@ -53,6 +61,24 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
         }
         return responses;
     }
+
+    private List<FindAllOriginalOfFormationResponse>  convertToFindAllOriginalOfFormation(List<FindAllOriginalOfFormationDto> dtos) {
+        List<FindAllOriginalOfFormationResponse> responses = new ArrayList<>();
+        for (FindAllOriginalOfFormationDto originalOfFormationDto: dtos){
+            FindAllOriginalOfFormationResponse response = new FindAllOriginalOfFormationResponse();
+            response.setIdOriginalOfFormation(originalOfFormationDto.getIdOriginalOfFormation());
+            response.setName(originalOfFormationDto.getName());
+            response.setParent(originalOfFormationDto.getParent());
+            response.setVisible(originalOfFormationDto.getVisible());
+            response.setDepth(originalOfFormationDto.getDepth());
+            response.setPath(originalOfFormationDto.getPath());
+            response.setShortName(originalOfFormationDto.getShortName());
+            response.setNameParent(originalOfFormationDto.getNameParent());
+            responses.add(response);
+        }
+        return responses;
+    }
+
 
     @Override
     public  void createOriginalOfFormationService(CreateOriginalOfFormationRequest request) throws ValidateFiledException {
@@ -169,5 +195,20 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
             throw new ValidateFiledException("Validate data");
         }
         originalOfFormationRepository.delete(originalOfFormation.get());
+    }
+
+    @Override
+    public void updateStatusOriginalOfFormation(UpdateStatusOriginalOfFormationRequest request) throws ValidateFiledException {
+        Optional<OriginalOfFormation> originalOfFormation =
+                originalOfFormationRepository.findOriginalOfFormationById(request.getIdOriginalOfFormation());
+        if (originalOfFormation.isEmpty()) {
+            throw new NotFoundException("Don't exits original Of Formation by id!");
+        }
+        if (!request.getStatus().equals(Constants.ORIGINAL_OF_FORMATION_VISIBLE) &&
+            !request.getIdOriginalOfFormation().equals(Constants.ORIGINAL_OF_FORMATION_UN_VISIBLE)){
+            throw new ValidateFiledException("Don't exits status in original of formation");
+        }
+        originalOfFormation.get().setVisible(request.getStatus());
+        originalOfFormationRepository.save(originalOfFormation.get());
     }
 }

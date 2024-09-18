@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.repository.originalOfFormation;
 import com.example.csvccdshustbe.dto.originalOfFormation.FindAllOriginalOfFormationDto;
 import com.example.csvccdshustbe.entity.OriginalOfFormation;
 import com.example.csvccdshustbe.request.originalOfFormation.FindAllOriginalOfFormationRequest;
+import com.example.csvccdshustbe.request.originalOfFormation.FindAllOriginalOfFormationVisibleRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -10,7 +11,8 @@ import java.util.Optional;
 
 public interface OriginalOfFormationRepositoryCustom {
 
-    Page<FindAllOriginalOfFormationDto> findAllOriginalOfFormationVisible(Pageable pageable, FindAllOriginalOfFormationRequest request);
+    Page<FindAllOriginalOfFormationDto> findAllOriginalOfFormationVisible(Pageable pageable, FindAllOriginalOfFormationVisibleRequest request);
+    Page<FindAllOriginalOfFormationDto> findAllOriginalOfFormation(Pageable pageable, FindAllOriginalOfFormationRequest request);
 
     Optional<OriginalOfFormation> findOriginalOfFormationByName(String name);
 

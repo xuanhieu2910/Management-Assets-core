@@ -3,9 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.originalOfFormation.CreateOriginalOfFormationRequest;
-import com.example.csvccdshustbe.request.originalOfFormation.FindAllOriginalOfFormationRequest;
-import com.example.csvccdshustbe.request.originalOfFormation.UpdateOriginalOfFormationRequest;
+import com.example.csvccdshustbe.request.originalOfFormation.*;
 import com.example.csvccdshustbe.service.originalOfFormation.OriginalOfFormationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -28,7 +26,24 @@ public class OriginalOfFormationController {
     @Autowired
     OriginalOfFormationService originalOfFormationService;
 
-    @GetMapping
+    @GetMapping("/find-all-visible")
+    public ResponseEntity<?> findAllOriginalOfFormationVisible(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllOriginalOfFormationVisibleRequest request){
+        try {
+            return ApiResponseDto.createdWithState(originalOfFormationService.findAllOriginalOfFormationVisible(request),
+                    "Find all original of formation success", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+
+    }
+
+    @GetMapping("/find-all")
     public ResponseEntity<?> findAllOriginalOfFormation(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
@@ -44,7 +59,6 @@ public class OriginalOfFormationController {
         }
 
     }
-
 
     @PostMapping("/create")
     public ResponseEntity<?> createOriginalOfFormationService(@RequestBody CreateOriginalOfFormationRequest request){
@@ -80,6 +94,18 @@ public class OriginalOfFormationController {
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PutMapping("/update-status")
+    public ResponseEntity<?> updateStatusOriginalOfFormation(@RequestBody UpdateStatusOriginalOfFormationRequest request){
+        try {
+            originalOfFormationService.updateStatusOriginalOfFormation(request);
+            return ApiResponseDto.createdWithMessage("Update status original of formaiton success!", HttpStatus.OK);
+        } catch (NotFoundException | ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

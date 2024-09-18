@@ -51,6 +51,7 @@ public class Constants {
      * Constant Original Of Formation
      * */
     public static final Integer ORIGINAL_OF_FORMATION_VISIBLE = 1;
+    public static final Integer ORIGINAL_OF_FORMATION_UN_VISIBLE = -1;
 
     /**
      * Constant Medicine Type

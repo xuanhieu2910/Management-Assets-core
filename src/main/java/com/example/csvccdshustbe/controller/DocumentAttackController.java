@@ -2,17 +2,12 @@ package com.example.csvccdshustbe.controller;
 
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
-import com.example.csvccdshustbe.entity.DocumentAttack;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.department.CreateDepartmentRequest;
-import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
-import com.example.csvccdshustbe.request.department.UpdateDepartmentRequest;
 import com.example.csvccdshustbe.request.documentAttack.CreateDocumentAttackRequest;
 import com.example.csvccdshustbe.request.documentAttack.FindAllDocumentAttackRequest;
 import com.example.csvccdshustbe.request.documentAttack.UpdateDocumentAttackRequest;
 import com.example.csvccdshustbe.request.documentAttack.UpdateStatusDocumentAttackRequest;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
-import com.example.csvccdshustbe.utility.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;

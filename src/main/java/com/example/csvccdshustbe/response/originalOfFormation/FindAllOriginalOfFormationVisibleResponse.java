@@ -5,10 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllOriginalOfFormationResponse {
+public class FindAllOriginalOfFormationVisibleResponse {
 
     @JsonProperty("id_original_of_formation")
     private Integer idOriginalOfFormation;
@@ -22,8 +23,4 @@ public class FindAllOriginalOfFormationResponse {
     private Integer depth;
     @JsonProperty("path")
     private String path;
-    @JsonProperty("short_name")
-    private String shortName;
-    @JsonProperty("name_parent")
-    private String nameParent;
 }
