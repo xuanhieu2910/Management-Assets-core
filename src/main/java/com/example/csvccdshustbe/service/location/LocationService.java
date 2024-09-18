@@ -2,16 +2,15 @@ package com.example.csvccdshustbe.service.location;
 
 import com.example.csvccdshustbe.entity.Location;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.Location.CreateLocationRequest;
-import com.example.csvccdshustbe.request.Location.FindAllLocationRequest;
-import com.example.csvccdshustbe.request.Location.UpdateLocationRequest;
-import com.example.csvccdshustbe.request.Location.UpdateVisibleLocationRequest;
+import com.example.csvccdshustbe.request.Location.*;
 import com.example.csvccdshustbe.response.location.FindAllLocationResponse;
+import com.example.csvccdshustbe.response.location.FindAllLocationVisibleResponse;
 import org.springframework.data.domain.Page;
 
 public interface LocationService {
 
-    Page<FindAllLocationResponse> findAllLocationResponseByName(FindAllLocationRequest request);
+    Page<FindAllLocationVisibleResponse> findAllLocationVisibleResponse(FindAllLocationVisibleRequest request);
+    Page<FindAllLocationResponse> findAllLocationResponse(FindAllLocationRequest request);
     void createLocation(CreateLocationRequest request) throws ValidateFiledException;
 
     void updateLocation(UpdateLocationRequest request) throws ValidateFiledException;

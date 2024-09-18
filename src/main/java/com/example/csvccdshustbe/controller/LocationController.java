@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.Location.CreateLocationRequest;
 import com.example.csvccdshustbe.request.Location.FindAllLocationRequest;
+import com.example.csvccdshustbe.request.Location.FindAllLocationVisibleRequest;
 import com.example.csvccdshustbe.request.Location.UpdateLocationRequest;
 import com.example.csvccdshustbe.request.Location.UpdateVisibleLocationRequest;
 import com.example.csvccdshustbe.service.location.LocationService;
@@ -25,14 +26,30 @@ import org.webjars.NotFoundException;
 public class LocationController {
     @Autowired
     LocationService locationService;
-    @GetMapping("/find-all")
+    @GetMapping("/find-all-visible")
             public ResponseEntity<?> findAllLocationVisible(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllLocationVisibleRequest request){
+        try{
+            return ApiResponseDto.createdWithState(locationService.findAllLocationVisibleResponse(request),
+                    "Find all location success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/find-all")
+    public ResponseEntity<?> findAllLocationVisible(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllLocationRequest request){
         try{
-            return ApiResponseDto.createdWithState(locationService.findAllLocationResponseByName(request),
+            return ApiResponseDto.createdWithState(locationService.findAllLocationResponse(request),
                     "Find all location success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);

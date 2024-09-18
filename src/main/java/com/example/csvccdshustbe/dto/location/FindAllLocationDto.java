@@ -18,4 +18,5 @@ public class FindAllLocationDto {
     private String timeModified;
     private Integer depth;
     private String path;
+    private String nameParent;
 }

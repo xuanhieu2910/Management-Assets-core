@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllLocationResponse {
+public class FindAllLocationVisibleResponse {
     @JsonProperty("id_location")
     private Integer idLocation;
     @JsonProperty("name")
@@ -23,8 +23,5 @@ public class FindAllLocationResponse {
     private Integer depth;
     @JsonProperty("path")
     private String path;
-    @JsonProperty("name_parent")
-    private String nameParent;
-    @JsonProperty("visible")
-    private Integer visible;
+
 }

@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 
 import com.example.csvccdshustbe.entity.Location;
 import com.example.csvccdshustbe.request.Location.FindAllLocationRequest;
+import com.example.csvccdshustbe.request.Location.FindAllLocationVisibleRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,7 +13,8 @@ import java.util.Optional;
 
 public interface LocationRepositoryCustom {
 
-    Page<FindAllLocationDto> findAllLocationVisible( Pageable pageable,FindAllLocationRequest request);
+    Page<FindAllLocationDto> findAllLocationVisible(Pageable pageable, FindAllLocationVisibleRequest request);
+    Page<FindAllLocationDto> findAllLocation(Pageable pageable, FindAllLocationRequest request);
 
     Optional<Location> findLocationByName(String name);
 

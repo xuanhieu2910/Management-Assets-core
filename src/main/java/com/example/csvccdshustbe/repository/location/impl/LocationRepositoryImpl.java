@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 import com.example.csvccdshustbe.entity.Location;
 import com.example.csvccdshustbe.repository.location.LocationRepositoryCustom;
 import com.example.csvccdshustbe.request.Location.FindAllLocationRequest;
+import com.example.csvccdshustbe.request.Location.FindAllLocationVisibleRequest;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -18,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class LocationRepositoryImpl implements LocationRepositoryCustom {
@@ -27,7 +29,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
 
 
     @Override
-    public Page<FindAllLocationDto> findAllLocationVisible( Pageable pageable,FindAllLocationRequest request) {
+    public Page<FindAllLocationDto> findAllLocationVisible(Pageable pageable, FindAllLocationVisibleRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append("WITH RECURSIVE cte_location as (     " +
                 "      select location.id_location, location.name,  " +
@@ -83,8 +85,66 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
         return new PageImpl<>(findAllLocationDtos, pageable, countFindAllLocationVisible(request));
     }
 
+    @Override
+    public Page<FindAllLocationDto> findAllLocation(Pageable pageable, FindAllLocationRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("WITH RECURSIVE cte_location as (           " +
+                "        select location.id_location, location.name,        " +
+                "               location.short_name, location.id_department,        " +
+                "               location.parent, location.visible,        " +
+                "               location.time_created, location.time_modified,        " +
+                "               1 as depth,           " +
+                "               CAST(location.id_location as NCHAR ) as path ,   " +
+                "               case when location.parent is not null then location.name end nameParent   " +
+                "        from location        " +
+                "        where location.parent is null        " +
+                "        union all           " +
+                "        select location.id_location, location.name,        " +
+                "               location.short_name, location.id_department,        " +
+                "               location.parent, location.visible,        " +
+                "               location.time_created, location.time_modified,        " +
+                "               cte.depth + 1 as depth,           " +
+                "               concat_ws('/',cte.path,CAST(location.id_location as NCHAR)) as path,   " +
+                "               cte.name nameParent   " +
+                "        from location        " +
+                "                 INNER JOIN cte_location cte ON location.parent = cte.id_location        " +
+                "        )           " +
+                "    select cte.id_location, cte.name,        " +
+                "           cte.short_name, cte.id_department, cte.parent,        " +
+                "           cte.visible,         " +
+                "           cte.time_created, cte.time_modified,        " +
+                "           cte.depth, cte.path, cte.nameParent   " +
+                "from cte_location cte   " +
+                "      inner join department de on cte.id_department = de.id_department       " +
+                "where 1 = 1 ");
+        setConditionFindAllLocation(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllLocation(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllLocationDto> findAllLocationDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                FindAllLocationDto dto = new FindAllLocationDto();
+                dto.setIdLocation(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                dto.setShortName(ValueUtil.getStringByObject(obj[2]));
+                dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[3]));
+                dto.setParent(ValueUtil.getIntegerByObject(obj[4]));
+                dto.setVisible(ValueUtil.getIntegerByObject(obj[5]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                dto.setDepth(ValueUtil.getIntegerByObject(obj[8]));
+                dto.setPath(ValueUtil.getStringByObject(obj[9]));
+                dto.setNameParent(ValueUtil.getStringByObject(obj[10]));
+                findAllLocationDtos.add(dto);
+            }
+        }
+        return new PageImpl<>(findAllLocationDtos, pageable, countFindAllLocation(request));
+    }
 
-    private void setParameterFindAllLocationVisible(FindAllLocationRequest request, Query query) {
+
+    private void setParameterFindAllLocationVisible(FindAllLocationVisibleRequest request, Query query) {
         query.setParameter("idDepartment", request.getIdDepartment());
         query.setParameter("visible", Constants.LOCATION_ACTIVE_STATUS);
         if (StringUtils.isNotBlank(request.getKeyword())){
@@ -92,14 +152,33 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
         }
     }
 
-    private void setConditionFindAllLocationVisible(FindAllLocationRequest request, StringBuilder sb) {
+    private void setParameterFindAllLocation(FindAllLocationRequest request, Query query) {
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            query.setParameter("keyword", request.getKeyword());
+        }
+        if (!Objects.isNull(request.getStatus())) {
+            query.setParameter("visible", request.getStatus());
+        }
+    }
+
+    private void setConditionFindAllLocationVisible(FindAllLocationVisibleRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())) {
             sb.append(" and (cte.name REGEXP  :keyword )  ");
         }
         sb.append(" ORDER BY path ");
     }
 
-    private long countFindAllLocationVisible(FindAllLocationRequest request){
+    private void setConditionFindAllLocation(FindAllLocationRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            sb.append(" and (cte.name REGEXP  :keyword )  ");
+        }
+        if (!Objects.isNull(request.getStatus())) {
+            sb.append(" and cte.visible = :visible ");
+        }
+        sb.append(" ORDER BY path ");
+    }
+
+    private long countFindAllLocationVisible(FindAllLocationVisibleRequest request){
         StringBuilder sb = new StringBuilder();
         sb.append("WITH RECURSIVE cte_location as (      " +
                 "      select location.id_location, location.name,   " +
@@ -129,6 +208,39 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
         setConditionFindAllLocationVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllLocationVisible(request, query);
+        return  ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private long countFindAllLocation(FindAllLocationRequest request){
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH RECURSIVE cte_location as (           " +
+                "        select location.id_location, location.name,        " +
+                "               location.short_name, location.id_department,        " +
+                "               location.parent, location.visible,        " +
+                "               location.time_created, location.time_modified,        " +
+                "               1 as depth,           " +
+                "               CAST(location.id_location as NCHAR ) as path ,   " +
+                "               case when location.parent is not null then location.name end nameParent   " +
+                "        from location        " +
+                "        where location.parent is null        " +
+                "        union all           " +
+                "        select location.id_location, location.name,        " +
+                "               location.short_name, location.id_department,        " +
+                "               location.parent, location.visible,        " +
+                "               location.time_created, location.time_modified,        " +
+                "               cte.depth + 1 as depth,           " +
+                "               concat_ws('/',cte.path,CAST(location.id_location as NCHAR)) as path,   " +
+                "               cte.name nameParent   " +
+                "        from location        " +
+                "                 INNER JOIN cte_location cte ON location.parent = cte.id_location        " +
+                "        )           " +
+                "    select count(0) count   " +
+                "from cte_location cte   " +
+                "      inner join department de on cte.id_department = de.id_department       " +
+                "where 1 = 1  ");
+        setConditionFindAllLocation(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllLocation(request, query);
         return  ValueUtil.getLongByObject(query.getSingleResult());
     }
 

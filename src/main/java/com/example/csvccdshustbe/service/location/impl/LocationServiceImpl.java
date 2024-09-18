@@ -8,11 +8,9 @@ import com.example.csvccdshustbe.entity.Projects;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.department.DepartmentRepository;
 import com.example.csvccdshustbe.repository.location.LocationRepository;
-import com.example.csvccdshustbe.request.Location.CreateLocationRequest;
-import com.example.csvccdshustbe.request.Location.FindAllLocationRequest;
-import com.example.csvccdshustbe.request.Location.UpdateLocationRequest;
-import com.example.csvccdshustbe.request.Location.UpdateVisibleLocationRequest;
+import com.example.csvccdshustbe.request.Location.*;
 import com.example.csvccdshustbe.response.location.FindAllLocationResponse;
+import com.example.csvccdshustbe.response.location.FindAllLocationVisibleResponse;
 import com.example.csvccdshustbe.service.location.LocationService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -41,16 +39,25 @@ public class LocationServiceImpl implements LocationService {
     DepartmentRepository departmentRepository;
 
     @Override
-    public Page<FindAllLocationResponse> findAllLocationResponseByName(FindAllLocationRequest request) {
+    public Page<FindAllLocationVisibleResponse> findAllLocationVisibleResponse(FindAllLocationVisibleRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllLocationDto> dtos = locationRepository.findAllLocationVisible(pageable, request);
+        return new PageImpl<>(convertToFindAllLocationsVisibleResponse(dtos.get().collect(Collectors.toList())),
+                pageable, dtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllLocationResponse> findAllLocationResponse(FindAllLocationRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<FindAllLocationDto> dtos = locationRepository.findAllLocation(pageable, request);
         return new PageImpl<>(convertToFindAllLocationsResponse(dtos.get().collect(Collectors.toList())),
                 pageable, dtos.getTotalElements());
     }
-    private List<FindAllLocationResponse> convertToFindAllLocationsResponse(List<FindAllLocationDto> collect) {
-        List<FindAllLocationResponse> responses = new ArrayList<>();
+
+    private List<FindAllLocationVisibleResponse> convertToFindAllLocationsVisibleResponse(List<FindAllLocationDto> collect) {
+        List<FindAllLocationVisibleResponse> responses = new ArrayList<>();
         for (FindAllLocationDto allLocationDto: collect){
-            FindAllLocationResponse res = new FindAllLocationResponse();
+            FindAllLocationVisibleResponse res = new FindAllLocationVisibleResponse();
             res.setIdLocation(allLocationDto.getIdLocation());
             res.setName(allLocationDto.getName());
             res.setShortName(allLocationDto.getShortName());
@@ -62,6 +69,25 @@ public class LocationServiceImpl implements LocationService {
         }
         return responses;
     }
+
+    private List<FindAllLocationResponse> convertToFindAllLocationsResponse(List<FindAllLocationDto> collect) {
+        List<FindAllLocationResponse> responses = new ArrayList<>();
+        for (FindAllLocationDto allLocationDto: collect){
+            FindAllLocationResponse res = new FindAllLocationResponse();
+            res.setIdLocation(allLocationDto.getIdLocation());
+            res.setName(allLocationDto.getName());
+            res.setShortName(allLocationDto.getShortName());
+            res.setParent(allLocationDto.getParent());
+            res.setDepth(allLocationDto.getDepth());
+            res.setPath(allLocationDto.getPath());
+            res.setIdDepartment(allLocationDto.getIdDepartment());
+            res.setNameParent(allLocationDto.getNameParent());
+            res.setVisible(allLocationDto.getVisible());
+            responses.add(res);
+        }
+        return responses;
+    }
+
 
     @Override
     public void createLocation(CreateLocationRequest request) throws ValidateFiledException {
