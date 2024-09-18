@@ -102,14 +102,13 @@ public class LocationServiceImpl implements LocationService {
 //        ValueUtil.validateNumberOrCharacter(request.getName());
         Optional<Location> locationOptional = locationRepository.findLocationByName(request.getName());
         if (locationOptional.isPresent()){
+            if (StringUtils.isNotBlank(request.getShortName())) {
+                if (request.getShortName().equals(locationOptional.get().getShortName())){
+                    throw new ValidateFiledException("Exits location by short name");
+                }
+            }
             throw new ValidateFiledException("Exits location by name of !");
         }
-        if (StringUtils.isNotBlank(request.getShortName())) {
-            if (request.getShortName().equals(locationOptional.get().getShortName())){
-                throw new ValidateFiledException("Exits location by short name");
-            }
-        }
-
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<Location> location = locationRepository.findLocationByIdParent(request.getParentId());
             if (location.isEmpty()){

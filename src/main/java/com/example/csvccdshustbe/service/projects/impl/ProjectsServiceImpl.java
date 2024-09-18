@@ -123,12 +123,12 @@ public class ProjectsServiceImpl implements ProjectsService {
         }
         Optional<Projects> projectsOptional = projectsRepository.findProjectByName(request.getName());
         if (projectsOptional.isPresent()){
-            throw new ValidateFiledException("Exits Project by name of Project!");
-        }
-        if (StringUtils.isNotBlank(request.getShortName())) {
-            if (request.getShortName().equals(projectsOptional.get().getShortName())){
-                throw new ValidateFiledException("Exits Project by short name");
+            if (StringUtils.isNotBlank(request.getShortName())) {
+                if (request.getShortName().equals(projectsOptional.get().getShortName())){
+                    throw new ValidateFiledException("Exits Project by short name");
+                }
             }
+            throw new ValidateFiledException("Exits Project by name of Project!");
         }
 
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
