@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.dto.asset;
 
 import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
 import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategoryDto;
+import com.example.csvccdshustbe.dto.assetDepreciation.AssetDepreciationDto;
 import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
 import com.example.csvccdshustbe.dto.department.BluePrintDepartmentDefaultDto;
 import com.example.csvccdshustbe.dto.department.BluePrintDepartmentDto;
@@ -13,6 +14,7 @@ import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.dto.originalOfFormation.AssetOriginalOfFormDto;
 import com.example.csvccdshustbe.dto.projects.BluePrintProjectsDto;
 import com.example.csvccdshustbe.dto.unit.BluePrintUnitDto;
+import com.example.csvccdshustbe.entity.AssetDepreciation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,4 +46,5 @@ public class AssetBluePrintDto {
     private AssetOriginalDto original;
     private AssetDeclareDto declare;
     private Integer idInstance;
+    private AssetDepreciationDto assetDepreciationDto;
 }

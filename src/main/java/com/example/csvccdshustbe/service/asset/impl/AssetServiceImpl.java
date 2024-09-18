@@ -529,6 +529,7 @@ public class AssetServiceImpl implements AssetService {
         response.setModules(assetBluePrintDto.getModules());
         response.setOriginal(assetBluePrintDto.getOriginal());
         response.setDeclare(assetBluePrintDto.getDeclare());
+        response.setAssetDepreciationDto(assetBluePrintDto.getAssetDepreciationDto());
         return response;
     }
 

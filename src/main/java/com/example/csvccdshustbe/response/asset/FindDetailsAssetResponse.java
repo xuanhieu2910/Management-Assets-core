@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.response.asset;
 
 import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
+import com.example.csvccdshustbe.dto.assetDepreciation.AssetDepreciationDto;
 import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
 import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
@@ -30,4 +31,6 @@ public class FindDetailsAssetResponse {
     private AssetOriginalDto original;
     @JsonProperty("declare")
     private AssetDeclareDto declare;
+    @JsonProperty("asset_depreciation")
+    private AssetDepreciationDto assetDepreciationDto;
 }

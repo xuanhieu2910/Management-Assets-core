@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.repository.asset.impl;
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
+import com.example.csvccdshustbe.dto.assetDepreciation.AssetDepreciationDto;
 import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
 import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
 import com.example.csvccdshustbe.dto.department.BluePrintDepartmentDefaultDto;
@@ -91,35 +92,43 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Optional<AssetBluePrintDto> findDetailAssetByCodeAsset(String codeAsset) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset, asset.name, asset.code_asset, assetCategory.id_asset_category idAssetCategory,         " +
-                "          assetCategory.name nameAssetCategory, de.code codeDepartment, de.id_department idDepartment, de.name nameDepartment,         " +
-                "          documentAttack.id_document_attack idDocumentAttack, documentAttack.name nameDocumentAttack,         " +
-                "          location.id_location idLocation, location.name nameLocation, unit.id_unit idUnit, unit.name nameUnit,         " +
-                "          project.id_project idProject, project.name nameProject, asset.purpose, asset.notes, asset.description, asset.file_attack,         " +
-                "          departmentDefault.id_department idDepartmentDefault, departmentDefault.name nameDepartmentDefault,         " +
-                "          levelTypeAsset.id_level_type_asset idLevelTypeAsset, levelTypeAsset.name nameLevelTypeAsset,         " +
-                "          modules.hard_code typeModules, modules.id_module, modules.name nameModules,         " +
-                "          assetModules.id_instance idInstanceModule,         " +
-                "          original.hard_code_dev typeOriginal, original.id_original, original.name nameOriginal,         " +
-                "          assetOriginal.id_instance idInstanceOriginal,         " +
-                "          decl.hard_code typeDeclare, decl.id_declare, decl.name nameDeclare,         " +
-                "          assetDeclare.id_instance inInstanceDeclare,   " +
-                "          asset.id_instance assetIdInstance   " +
-                "from asset asset   " +
-                "       inner join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category         " +
-                "       inner join department de on asset.id_department = de.id_department         " +
-                "       inner join document_attack documentAttack on asset.id_document_attack = documentAttack.id_document_attack         " +
-                "       inner join location location on asset.id_location = location.id_location         " +
-                "       inner join units unit on asset.id_unit = unit.id_unit         " +
-                "       inner join projects project on asset.id_projects = project.id_project         " +
-                "       left join department departmentDefault on asset.id_department_default = departmentDefault.id_department         " +
-                "       left join level_type_asset levelTypeAsset on asset.id_level_type_asset = levelTypeAsset.id_level_type_asset         " +
-                "       inner join asset_modules assetModules on asset.id_asset = assetModules.id_asset         " +
-                "       inner join modules modules on assetModules.id_module = modules.id_module         " +
-                "       inner join asset_original assetOriginal on asset.id_asset = assetOriginal.id_asset         " +
-                "       inner join original original on assetOriginal.id_original = original.id_original         " +
-                "       inner join asset_declare assetDeclare on asset.id_asset = assetDeclare.id_asset         " +
-                "       inner join `declare` decl on assetDeclare.id_declare = decl.id_declare         " +
+        sb.append("select asset.id_asset, asset.name, asset.code_asset, assetCategory.id_asset_category idAssetCategory,           " +
+                "           assetCategory.name nameAssetCategory, de.code codeDepartment, de.id_department idDepartment, de.name nameDepartment,           " +
+                "           documentAttack.id_document_attack idDocumentAttack, documentAttack.name nameDocumentAttack,           " +
+                "           location.id_location idLocation, location.name nameLocation, unit.id_unit idUnit, unit.name nameUnit,           " +
+                "           project.id_project idProject, project.name nameProject, asset.purpose, asset.notes, asset.description, asset.file_attack,           " +
+                "           departmentDefault.id_department idDepartmentDefault, departmentDefault.name nameDepartmentDefault,           " +
+                "           levelTypeAsset.id_level_type_asset idLevelTypeAsset, levelTypeAsset.name nameLevelTypeAsset,           " +
+                "           modules.hard_code typeModules, modules.id_module, modules.name nameModules,           " +
+                "           assetModules.id_instance idInstanceModule,           " +
+                "           original.hard_code_dev typeOriginal, original.id_original, original.name nameOriginal,           " +
+                "           assetOriginal.id_instance idInstanceOriginal,           " +
+                "           decl.hard_code typeDeclare, decl.id_declare, decl.name nameDeclare,           " +
+                "           assetDeclare.id_instance inInstanceDeclare,     " +
+                "           asset.id_instance assetIdInstance, assetDepreciation.id_asset_depreciation, " +
+                "           assetDepreciation.time_started_depreciation, assetDepreciation.amount_months_depreciation,  " +
+                "           assetDepreciation.value_depreciation, assetDepreciation.type_depreciation,  " +
+                "           assetDepreciation.value_type_depreciation, assetDepreciation.amount_rest_months_depreciation,  " +
+                "           assetDepreciation.cumulative, assetDepreciation.rest_value, assetDepreciation.time_started_wear_tear,  " +
+                "           assetDepreciation.time_end_wear_tear, assetDepreciation.type_calculate, assetDepreciation.time_buy,  " +
+                "           assetDepreciation.time_started_used, assetDepreciation.time_started_increase,  " +
+                "           assetDepreciation.time_year_tracking, assetDepreciation.time_created, assetDepreciation.time_modified " +
+                "from asset asset     " +
+                "        inner join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category           " +
+                "        inner join department de on asset.id_department = de.id_department           " +
+                "        inner join document_attack documentAttack on asset.id_document_attack = documentAttack.id_document_attack           " +
+                "        inner join location location on asset.id_location = location.id_location           " +
+                "        inner join units unit on asset.id_unit = unit.id_unit           " +
+                "        inner join projects project on asset.id_projects = project.id_project           " +
+                "        left join department departmentDefault on asset.id_department_default = departmentDefault.id_department           " +
+                "        left join level_type_asset levelTypeAsset on asset.id_level_type_asset = levelTypeAsset.id_level_type_asset           " +
+                "        inner join asset_modules assetModules on asset.id_asset = assetModules.id_asset           " +
+                "        inner join modules modules on assetModules.id_module = modules.id_module           " +
+                "        inner join asset_original assetOriginal on asset.id_asset = assetOriginal.id_asset           " +
+                "        inner join original original on assetOriginal.id_original = original.id_original           " +
+                "        inner join asset_declare assetDeclare on asset.id_asset = assetDeclare.id_asset           " +
+                "        inner join `declare` decl on assetDeclare.id_declare = decl.id_declare  " +
+                "        inner join asset_depreciation assetDepreciation on asset.id_asset = assetDepreciation.id_asset " +
                 "where asset.code_asset = :codeAsset ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("codeAsset", codeAsset);
@@ -128,12 +137,36 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (!CollectionUtils.isEmpty(result)) {
             Object[] obj = result.get(0);
             setCommonBluePrintAsset(dto, obj);
+            setAssetDepreciation(dto, obj);
             setModulesBluePrintAsset(dto, result);
             setOriginalBluePrintAsset(dto, obj);
             setDeclareBluePrintAsset(dto, obj);
             return Optional.of(dto);
         }
         return Optional.empty();
+    }
+
+    private void setAssetDepreciation(AssetBluePrintDto dto, Object[] obj) {
+        AssetDepreciationDto assetDepreciationDto = new AssetDepreciationDto();
+        assetDepreciationDto.setIdAssetDepreciation(ValueUtil.getIntegerByObject(obj[37]));
+        assetDepreciationDto.setTimeStartedDepreciation(ValueUtil.getStringByObject(obj[38]));
+        assetDepreciationDto.setAmountMonthsDepreciation(ValueUtil.getIntegerByObject(obj[39]));
+        assetDepreciationDto.setValueDepreciation(ValueUtil.getStringByObject(obj[40]));
+        assetDepreciationDto.setTypeDepreciation(ValueUtil.getIntegerByObject(obj[41]));
+        assetDepreciationDto.setValueTypeDepreciation(ValueUtil.getStringByObject(obj[42]));
+        assetDepreciationDto.setAmountRestMonthsDepreciation(ValueUtil.getIntegerByObject(obj[43]));
+        assetDepreciationDto.setCumulative(ValueUtil.getStringByObject(obj[44]));
+        assetDepreciationDto.setRestValue(ValueUtil.getStringByObject(obj[45]));
+        assetDepreciationDto.setTimeStartedWearTear(ValueUtil.getStringByObject(obj[46]));
+        assetDepreciationDto.setTimeEndWearTear(ValueUtil.getStringByObject(obj[47]));
+        assetDepreciationDto.setTypeCalculate(ValueUtil.getIntegerByObject(obj[48]));
+        assetDepreciationDto.setTimeBuy(ValueUtil.getStringByObject(obj[49]));
+        assetDepreciationDto.setTimeStartedUsed(ValueUtil.getStringByObject(obj[50]));
+        assetDepreciationDto.setTimeStartedIncrease(ValueUtil.getStringByObject(obj[51]));
+        assetDepreciationDto.setTimeYearTracking(ValueUtil.getStringByObject(obj[52]));
+        assetDepreciationDto.setTimeCreated(ValueUtil.getStringByObject(obj[53]));
+        assetDepreciationDto.setTimeModified(ValueUtil.getStringByObject(obj[54]));
+        dto.setAssetDepreciationDto(assetDepreciationDto);
     }
 
     @Override
