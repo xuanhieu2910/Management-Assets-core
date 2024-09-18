@@ -1,10 +1,7 @@
 package com.example.csvccdshustbe.service.positionName;
 
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.positionName.CreatePositionNameRequest;
-import com.example.csvccdshustbe.request.positionName.FindAllPositionNameRequest;
-import com.example.csvccdshustbe.request.positionName.FindAllPositionNameVisibleRequest;
-import com.example.csvccdshustbe.request.positionName.UpdatePositionNameRequest;
+import com.example.csvccdshustbe.request.positionName.*;
 import com.example.csvccdshustbe.response.positionName.FindAllPositionNameResponse;
 import com.example.csvccdshustbe.response.positionName.FindAllPositionNameVisibleResponse;
 import org.springframework.data.domain.Page;
@@ -17,4 +14,6 @@ public interface PositionNameService {
     void  updatePositionName(UpdatePositionNameRequest request) throws ValidateFiledException;
 
     void deletePositionNameByIdPositionName(Integer idPositionName) throws ValidateFiledException;
+
+    void updateStatusPositionName(UpdateStatusPositionNameRequest request) throws ValidateFiledException;
 }

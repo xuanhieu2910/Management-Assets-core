@@ -120,6 +120,7 @@ public class Constants {
      * Constant Position
      * */
     public static final Integer POSITION_NAME_ACTIVE_STATUS = 1;
+    public static final Integer POSITION_NAME_UN_ACTIVE_STATUS = -1;
 
     /*----------------------------------------------------*/
     /**

@@ -5,14 +5,12 @@ import com.example.csvccdshustbe.entity.PositionName;
 import com.example.csvccdshustbe.entity.Projects;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.positionName.PositionNameRepository;
-import com.example.csvccdshustbe.request.positionName.CreatePositionNameRequest;
-import com.example.csvccdshustbe.request.positionName.FindAllPositionNameRequest;
-import com.example.csvccdshustbe.request.positionName.FindAllPositionNameVisibleRequest;
-import com.example.csvccdshustbe.request.positionName.UpdatePositionNameRequest;
+import com.example.csvccdshustbe.request.positionName.*;
 import com.example.csvccdshustbe.request.projects.UpdateProjectsRequest;
 import com.example.csvccdshustbe.response.positionName.FindAllPositionNameResponse;
 import com.example.csvccdshustbe.response.positionName.FindAllPositionNameVisibleResponse;
 import com.example.csvccdshustbe.service.positionName.PositionNameService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -151,5 +149,20 @@ public class PositionNameServiceImpl implements PositionNameService {
             throw new ValidateFiledException("Validate data!");
         }
         positionNameRepository.delete(positionNameOptional.get());
+    }
+
+    @Override
+    public void updateStatusPositionName(UpdateStatusPositionNameRequest request) throws ValidateFiledException {
+        Optional<PositionName> positionNameOptional =
+                positionNameRepository.findPositionNameById(request.getIdPositionName());
+        if (positionNameOptional.isEmpty()) {
+            throw new NotFoundException("Don't exits Position by id!");
+        }
+        if (!request.getStatus().equals(Constants.POSITION_NAME_ACTIVE_STATUS) &&
+             !request.getStatus().equals(Constants.POSITION_NAME_UN_ACTIVE_STATUS)) {
+            throw new ValidateFiledException("Don't exits status position name");
+        }
+        positionNameOptional.get().setStatus(request.getStatus());
+        positionNameRepository.save(positionNameOptional.get());
     }
 }
