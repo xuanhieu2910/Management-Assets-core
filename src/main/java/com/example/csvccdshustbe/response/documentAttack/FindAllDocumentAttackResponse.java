@@ -22,4 +22,6 @@ public class FindAllDocumentAttackResponse {
     private Integer visible;
     @JsonProperty("code")
     private String code;
+    @JsonProperty("id_department")
+    private Integer idDepartment;
 }

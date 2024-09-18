@@ -75,6 +75,7 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
             response.setNameDepartment(documentAttack.getNameDepartment());
             response.setDateDeterminationDocument(documentAttack.getDateDeterminationDocument());
             response.setVisible(documentAttack.getStatus());
+            response.setIdDepartment(documentAttack.getIdDepartment());
             responses.add(response);
         }
         return responses;
