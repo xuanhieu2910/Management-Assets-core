@@ -207,7 +207,7 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
             throw new NotFoundException("Don't exits original Of Formation by id!");
         }
         if (!request.getVisible().equals(Constants.ORIGINAL_OF_FORMATION_VISIBLE) &&
-            !request.getIdOriginalOfFormation().equals(Constants.ORIGINAL_OF_FORMATION_UN_VISIBLE)){
+            !request.getVisible().equals(Constants.ORIGINAL_OF_FORMATION_UN_VISIBLE)){
             throw new ValidateFiledException("Don't exits status in original of formation");
         }
         originalOfFormation.get().setVisible(request.getVisible());
