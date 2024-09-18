@@ -85,17 +85,17 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
         }
         Optional<MedicineType> medicineType = medicineTypeRepository.findMedicineTypeByName(request.getName());
         if (medicineType.isPresent()) {
+            if (StringUtils.isNotBlank(request.getShortName())) {
+                if (request.getShortName().equals(medicineType.get().getShortName())) {
+                    throw new ValidateFiledException("Exits medicine type by short name");
+                }
+            }
+            if (StringUtils.isNotBlank(request.getCode())) {
+                if (request.getCode().equals(medicineType.get().getCode())) {
+                    throw new ValidateFiledException("Exits medicine type by code name");
+                }
+            }
             throw new ValidateFiledException("Exits medicine type by name medicine type!");
-        }
-        if (StringUtils.isNotBlank(request.getShortName())) {
-            if (request.getShortName().equals(medicineType.get().getShortName())) {
-                throw new ValidateFiledException("Exits medicine type by short name");
-            }
-        }
-        if (StringUtils.isNotBlank(request.getCode())) {
-            if (request.getCode().equals(medicineType.get().getCode())) {
-                throw new ValidateFiledException("Exits medicine type by code name");
-            }
         }
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<MedicineType> medicineTypeOptional = medicineTypeRepository.findMedicineTypeByIdParent(request.getParentId());
