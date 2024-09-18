@@ -96,17 +96,17 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
 
 
         if (originalOfFormation.isPresent()) {
+            if (StringUtils.isNotBlank(request.getShortName())) {
+                if (request.getShortName().equals(originalOfFormation.get().getShortName())) {
+                    throw new ValidateFiledException("Exits original Of Formation by short name");
+                }
+            }
+            if (StringUtils.isNotBlank(request.getCodeName())) {
+                if (request.getCodeName().equals(originalOfFormation.get().getCodeName())) {
+                    throw new ValidateFiledException("Exits original Of Formation by code name");
+                }
+            }
             throw new ValidateFiledException("Exits original Of Formation by name medicine type!");
-        }
-        if (StringUtils.isNotBlank(request.getShortName())) {
-            if (request.getShortName().equals(originalOfFormation.get().getShortName())) {
-                throw new ValidateFiledException("Exits original Of Formation by short name");
-            }
-        }
-        if (StringUtils.isNotBlank(request.getCodeName())) {
-            if (request.getCodeName().equals(originalOfFormation.get().getCodeName())) {
-                throw new ValidateFiledException("Exits original Of Formation by code name");
-            }
         }
         if (ObjectUtils.isNotEmpty(request.getParentId())) {
             Optional<OriginalOfFormation> originalOfFormationOptional = originalOfFormationRepository.findOriginalOfFormationByIdParent(request.getParentId());
