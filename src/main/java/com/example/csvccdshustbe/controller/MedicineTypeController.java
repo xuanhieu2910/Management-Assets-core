@@ -3,10 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.medicineType.CreateMedicineTypeRequest;
-import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
-import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeVisibleRequest;
-import com.example.csvccdshustbe.request.medicineType.UpdateMedicineTypeRequest;
+import com.example.csvccdshustbe.request.medicineType.*;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -99,4 +96,17 @@ public class MedicineTypeController {
         }
     }
 
+
+    @PutMapping("/update-status")
+    public ResponseEntity<?> updateStatusMedicine(@RequestBody UpdateMedicineStatusRequest request){
+        try {
+            medicineTypeService.updateStatusMedicine(request);
+            return ApiResponseDto.createdWithMessage("Update status success!", HttpStatus.OK);
+        } catch (NotFoundException | ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }

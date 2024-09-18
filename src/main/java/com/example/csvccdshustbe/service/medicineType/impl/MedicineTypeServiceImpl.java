@@ -5,13 +5,11 @@ import com.example.csvccdshustbe.entity.MedicineType;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.medicineType.MedicineTypeRepository;
 
-import com.example.csvccdshustbe.request.medicineType.CreateMedicineTypeRequest;
-import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
-import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeVisibleRequest;
-import com.example.csvccdshustbe.request.medicineType.UpdateMedicineTypeRequest;
+import com.example.csvccdshustbe.request.medicineType.*;
 import com.example.csvccdshustbe.response.medicineType.FindAllMedicineTypeResponse;
 import com.example.csvccdshustbe.response.medicineType.FindAllMedicineTypeVisibleResponse;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -105,6 +103,20 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
             throw new NotFoundException("Don't exits Medicine Type by id!");
         }
         medicineTypeRepository.delete(medicineTypeOptional.get());
+    }
+
+    @Override
+    public void updateStatusMedicine(UpdateMedicineStatusRequest request) throws ValidateFiledException {
+        Optional<MedicineType> medicineTypeOptional = medicineTypeRepository.findMedicineTypeById(request.getIdMedicineType());
+        if (medicineTypeOptional.isEmpty()) {
+            throw new NotFoundException("Don't exits Medicine Type by id!");
+        }
+        if (!request.getVisible().equals(Constants.MEDICINE_TYPE_IS_VISIBLE) &&
+                !request.getVisible().equals(Constants.MEDICINE_TYPE_UN_IS_VISIBLE)){
+            throw new ValidateFiledException("Don't exits status medicine type!");
+        }
+        medicineTypeOptional.get().setVisible(request.getVisible());
+        medicineTypeRepository.save(medicineTypeOptional.get());
     }
 
     private void validateDataCreateMedicineType(CreateMedicineTypeRequest request) throws ValidateFiledException {
