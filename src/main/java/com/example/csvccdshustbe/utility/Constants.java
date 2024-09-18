@@ -56,7 +56,7 @@ public class Constants {
      * Constant Medicine Type
      * */
     public static final Integer MEDICINE_TYPE_IS_VISIBLE = 1;
-    public static final Integer MEDICINE_TYPE_UN_IS_VISIBLE = 1;
+    public static final Integer MEDICINE_TYPE_UN_IS_VISIBLE = -1;
 
     /*----------------------------------------------------*/
 
