@@ -26,4 +26,8 @@ public class FindAllOriginalOfFormationResponse {
     private String shortName;
     @JsonProperty("name_parent")
     private String nameParent;
+    @JsonProperty("code_name")
+    private String codeName;
+    @JsonProperty("description")
+    private String description;
 }

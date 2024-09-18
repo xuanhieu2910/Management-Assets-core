@@ -74,6 +74,8 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
             response.setPath(originalOfFormationDto.getPath());
             response.setShortName(originalOfFormationDto.getShortName());
             response.setNameParent(originalOfFormationDto.getNameParent());
+            response.setDescription(originalOfFormationDto.getDescription());
+            response.setCodeName(originalOfFormationDto.getCodeName());
             responses.add(response);
         }
         return responses;
