@@ -130,7 +130,7 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
         }
-        if (Objects.isNull(request.getStatus())){
+        if (!Objects.isNull(request.getStatus())){
             query.setParameter("status", request.getStatus());
         }
     }
