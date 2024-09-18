@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.medicineType.CreateMedicineTypeRequest;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
+import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeVisibleRequest;
 import com.example.csvccdshustbe.request.medicineType.UpdateMedicineTypeRequest;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +27,22 @@ public class MedicineTypeController {
 
     @Autowired
     MedicineTypeService medicineTypeService;
+
+    @GetMapping("/find-all-visible")
+    public ResponseEntity<?> findAllTypeMedicineVisible(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllMedicineTypeVisibleRequest request){
+        try{
+            return ApiResponseDto.createdWithState(medicineTypeService.findAllMedicineTypeVisibleResponse(request),
+                    "Find all medicine type success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 
     @GetMapping("/find-all")
     public ResponseEntity<?> findAllTypeMedicineVisible(@And({

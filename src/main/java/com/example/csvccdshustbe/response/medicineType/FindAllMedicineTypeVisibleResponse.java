@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllMedicineTypeResponse {
+public class FindAllMedicineTypeVisibleResponse {
 
     @JsonProperty("id_medicine_type")
     private Integer idMedicineType;
@@ -22,8 +22,4 @@ public class FindAllMedicineTypeResponse {
     private Integer depth;
     @JsonProperty("path")
     private String path;
-    @JsonProperty("name_parent")
-    private String nameParent;
-    @JsonProperty("visible")
-    private Integer visible;
 }

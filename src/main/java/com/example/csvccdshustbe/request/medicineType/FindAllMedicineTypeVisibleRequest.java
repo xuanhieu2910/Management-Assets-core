@@ -8,8 +8,5 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllMedicineTypeRequest extends RequestPageBase {
-
-    private Integer status;
-
+public class FindAllMedicineTypeVisibleRequest extends RequestPageBase {
 }

@@ -7,8 +7,10 @@ import com.example.csvccdshustbe.repository.medicineType.MedicineTypeRepository;
 
 import com.example.csvccdshustbe.request.medicineType.CreateMedicineTypeRequest;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
+import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeVisibleRequest;
 import com.example.csvccdshustbe.request.medicineType.UpdateMedicineTypeRequest;
 import com.example.csvccdshustbe.response.medicineType.FindAllMedicineTypeResponse;
+import com.example.csvccdshustbe.response.medicineType.FindAllMedicineTypeVisibleResponse;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import com.example.csvccdshustbe.utility.PageUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -33,11 +35,34 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
     MedicineTypeRepository medicineTypeRepository;
 
     @Override
-    public Page<FindAllMedicineTypeResponse> findAllMedicineTypeResponse(FindAllMedicineTypeRequest request) {
+    public Page<FindAllMedicineTypeVisibleResponse> findAllMedicineTypeVisibleResponse(FindAllMedicineTypeVisibleRequest request){
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllMedicineTypeDto> findAllMedicineTypeDtos = medicineTypeRepository.findAllMedicineTypeVisible(request, pageable);
+        return new PageImpl<>(convertToFindAllMedicineTypeVisibleResponse(findAllMedicineTypeDtos.get().collect(Collectors.toList())),
+                pageable, findAllMedicineTypeDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllMedicineTypeResponse> findAllMedicineTypeResponse(FindAllMedicineTypeRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<FindAllMedicineTypeDto> findAllMedicineTypeDtos = medicineTypeRepository.findAllMedicineType(request, pageable);
         return new PageImpl<>(convertToFindAllMedicineTypeResponse(findAllMedicineTypeDtos.get().collect(Collectors.toList())),
                 pageable, findAllMedicineTypeDtos.getTotalElements());
+    }
+
+    private List<FindAllMedicineTypeVisibleResponse> convertToFindAllMedicineTypeVisibleResponse(List<FindAllMedicineTypeDto> collect) {
+        List<FindAllMedicineTypeVisibleResponse> responses = new ArrayList<>();
+        for (FindAllMedicineTypeDto dto : collect) {
+            FindAllMedicineTypeVisibleResponse response = new FindAllMedicineTypeVisibleResponse();
+            response.setIdMedicineType(dto.getIdMedicineType());
+            response.setName(dto.getName());
+            response.setCode(dto.getCode());
+            response.setParent(dto.getParent());
+            response.setDepth(dto.getDepth());
+            response.setPath(dto.getPath());
+            responses.add(response);
+        }
+        return responses;
     }
 
     private List<FindAllMedicineTypeResponse> convertToFindAllMedicineTypeResponse(List<FindAllMedicineTypeDto> collect) {
@@ -50,6 +75,8 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
             response.setParent(dto.getParent());
             response.setDepth(dto.getDepth());
             response.setPath(dto.getPath());
+            response.setNameParent(dto.getNameParent());
+            response.setVisible(dto.getVisible());
             responses.add(response);
         }
         return responses;

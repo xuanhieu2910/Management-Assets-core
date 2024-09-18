@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.modules.medicineModules.FindAllMedicineType
 import com.example.csvccdshustbe.entity.MedicineType;
 import com.example.csvccdshustbe.repository.medicineType.MedicineTypeRepositoryCustom;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
+import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeVisibleRequest;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -18,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class MedicineTypeRepositoryImpl implements MedicineTypeRepositoryCustom {
@@ -27,7 +29,7 @@ public class MedicineTypeRepositoryImpl implements MedicineTypeRepositoryCustom 
     EntityManager entityManager;
 
     @Override
-    public Page<FindAllMedicineTypeDto> findAllMedicineTypeVisible(FindAllMedicineTypeRequest request, Pageable pageable) {
+    public Page<FindAllMedicineTypeDto> findAllMedicineTypeVisible(FindAllMedicineTypeVisibleRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" WITH RECURSIVE cte_medicine_type as (    " +
                 "       select medicineType.id_medicine_type, medicineType.name, " +
@@ -82,20 +84,98 @@ public class MedicineTypeRepositoryImpl implements MedicineTypeRepositoryCustom 
         return new PageImpl<>(findAllMedicineTypeDtos, pageable, countFindAllMedicineTypeVisible(request));
     }
 
-    private void setParameterFindAllMedicineTypeVisible(FindAllMedicineTypeRequest request, Query query) {
+    @Override
+    public Page<FindAllMedicineTypeDto> findAllMedicineType(FindAllMedicineTypeRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH RECURSIVE cte_medicine_type as (          " +
+                "        select medicineType.id_medicine_type, medicineType.name,       " +
+                "               medicineType.short_name, medicineType.code,       " +
+                "               medicineType.parent, medicineType.visible, medicineType.notes,       " +
+                "               medicineType.time_created, medicineType.time_modified,       " +
+                "               1 as depth,          " +
+                "               CAST(medicineType.id_medicine_type as NCHAR ) as path,   " +
+                "               case when medicineType.parent is not null then medicineType.name end nameParent   " +
+                "        from medicine_type medicineType       " +
+                "        where medicineType.parent is null       " +
+                "        union all          " +
+                "        select medicineType.id_medicine_type, medicineType.name,       " +
+                "               medicineType.short_name, medicineType.code,       " +
+                "               medicineType.parent, medicineType.visible, medicineType.notes,       " +
+                "               medicineType.time_created, medicineType.time_modified,       " +
+                "               cte.depth + 1 as depth,          " +
+                "               concat_ws('/',cte.path,CAST(medicineType.id_medicine_type as NCHAR)) as path,   " +
+                "               cte.name nameParent   " +
+                "        from medicine_type medicineType       " +
+                "                 INNER JOIN cte_medicine_type cte ON medicineType.parent = cte.id_medicine_type       " +
+                "        )          " +
+                "    select cte.id_medicine_type, cte.name,       " +
+                "           cte.short_name, cte.code, cte.parent,       " +
+                "           cte.visible, cte.notes,       " +
+                "           cte.time_created, cte.time_modified,       " +
+                "           cte.depth, cte.path, cte.nameParent   " +
+                "from cte_medicine_type cte   " +
+                "where 1 = 1    ");
+        setConditionFindAllMedicineType(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllMedicineType(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllMedicineTypeDto> findAllMedicineTypeDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                FindAllMedicineTypeDto dto = new FindAllMedicineTypeDto();
+                dto.setIdMedicineType(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                dto.setShortName(ValueUtil.getStringByObject(obj[2]));
+                dto.setCode(ValueUtil.getStringByObject(obj[3]));
+                dto.setParent(ValueUtil.getIntegerByObject(obj[4]));
+                dto.setVisible(ValueUtil.getIntegerByObject(obj[5]));
+                dto.setNotes(ValueUtil.getStringByObject(obj[6]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[7]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[8]));
+                dto.setDepth(ValueUtil.getIntegerByObject(obj[9]));
+                dto.setPath(ValueUtil.getStringByObject(obj[10]));
+                dto.setNameParent(ValueUtil.getStringByObject(obj[11]));
+                findAllMedicineTypeDtos.add(dto);
+            }
+        }
+        return new PageImpl<>(findAllMedicineTypeDtos, pageable, countFindAllMedicineType(request));
+    }
+
+    private void setParameterFindAllMedicineTypeVisible(FindAllMedicineTypeVisibleRequest request, Query query) {
         query.setParameter("visible", Constants.MEDICINE_TYPE_IS_VISIBLE);
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
         }
     }
 
-    private void setConditionFindAllMedicineTypeVisible(FindAllMedicineTypeRequest request, StringBuilder sb) {
-        if (StringUtils.isNotBlank(request.getKeyword())) {
-            sb.append(" and (cte.name REGEXP  :keyword )  ");
+    private void setParameterFindAllMedicineType(FindAllMedicineTypeRequest request, Query query) {
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            query.setParameter("keyword", request.getKeyword());
+        }
+        if (!Objects.isNull(request.getStatus())){
+            query.setParameter("visible", request.getStatus());
         }
     }
 
-    private long countFindAllMedicineTypeVisible(FindAllMedicineTypeRequest request){
+    private void setConditionFindAllMedicineTypeVisible(FindAllMedicineTypeVisibleRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            sb.append(" and (cte.name REGEXP  :keyword )  ");
+        }
+        sb.append(" ORDER BY path ");
+    }
+
+    private void setConditionFindAllMedicineType(FindAllMedicineTypeRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            sb.append(" and (cte.name REGEXP  :keyword )  ");
+        }
+        if (!Objects.isNull(request.getStatus())) {
+            sb.append(" and cte.visible = :visible ");
+        }
+        sb.append(" ORDER BY path ");
+    }
+
+    private long countFindAllMedicineTypeVisible(FindAllMedicineTypeVisibleRequest request){
         StringBuilder sb = new StringBuilder();
         sb.append(" WITH RECURSIVE cte_medicine_type as (  " +
                 "       select medicineType.id_medicine_type, medicineType.name,  " +
@@ -123,6 +203,39 @@ public class MedicineTypeRepositoryImpl implements MedicineTypeRepositoryCustom 
         setConditionFindAllMedicineTypeVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllMedicineTypeVisible(request, query);
+        return  ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+
+    private long countFindAllMedicineType(FindAllMedicineTypeRequest request){
+        StringBuilder sb = new StringBuilder();
+        sb.append("  WITH RECURSIVE cte_medicine_type as (          " +
+                "        select medicineType.id_medicine_type, medicineType.name,       " +
+                "               medicineType.short_name, medicineType.code,       " +
+                "               medicineType.parent, medicineType.visible, medicineType.notes,       " +
+                "               medicineType.time_created, medicineType.time_modified,       " +
+                "               1 as depth,          " +
+                "               CAST(medicineType.id_medicine_type as NCHAR ) as path,    " +
+                "               case when medicineType.parent is not null then medicineType.name end nameParent    " +
+                "        from medicine_type medicineType       " +
+                "        where medicineType.parent is null       " +
+                "        union all          " +
+                "        select medicineType.id_medicine_type, medicineType.name,       " +
+                "               medicineType.short_name, medicineType.code,       " +
+                "               medicineType.parent, medicineType.visible, medicineType.notes,       " +
+                "               medicineType.time_created, medicineType.time_modified,       " +
+                "               cte.depth + 1 as depth,          " +
+                "               concat_ws('/',cte.path,CAST(medicineType.id_medicine_type as NCHAR)) as path,    " +
+                "               cte.name nameParent " +
+                "        from medicine_type medicineType       " +
+                "                 INNER JOIN cte_medicine_type cte ON medicineType.parent = cte.id_medicine_type       " +
+                "        )          " +
+                "    select count(0) count    " +
+                "from cte_medicine_type cte    " +
+                "where 1 = 1     ");
+        setConditionFindAllMedicineType(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllMedicineType(request, query);
         return  ValueUtil.getLongByObject(query.getSingleResult());
     }
 
