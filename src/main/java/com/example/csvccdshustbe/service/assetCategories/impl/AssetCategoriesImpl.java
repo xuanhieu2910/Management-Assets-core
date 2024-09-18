@@ -243,6 +243,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             response.setMaximumTimeDepreciation(categorie.getMaximumTimeDepreciation());
             response.setNameParent(categorie.getNameParent());
             response.setVisible(categorie.getVisible());
+            response.setShortName(categorie.getShortName());
             responses.add(response);
         }
         return responses;
