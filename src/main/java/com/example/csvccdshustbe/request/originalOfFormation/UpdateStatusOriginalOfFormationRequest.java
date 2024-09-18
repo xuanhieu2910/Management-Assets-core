@@ -12,5 +12,5 @@ public class UpdateStatusOriginalOfFormationRequest {
     @NotNull
     private Integer idOriginalOfFormation;
     @NotNull
-    private Integer status;
+    private Integer visible;
 }
