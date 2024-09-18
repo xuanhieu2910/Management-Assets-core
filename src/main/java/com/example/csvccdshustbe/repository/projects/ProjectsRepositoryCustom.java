@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface ProjectsRepositoryCustom {
 
     Page<FindAllProjectsDto> findAllProjectVisible(Pageable pageable, FindAllProjectsRequest request);
+    Page<FindAllProjectsDto> findAllProject(Pageable pageable, FindAllProjectsRequest request);
     Optional<Projects> findProjectByName(String name);
 
     Optional<Projects> findProjectByIdParent(Integer idParent);

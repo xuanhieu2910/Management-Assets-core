@@ -1,7 +1,6 @@
 package com.example.csvccdshustbe.repository.projects.impl;
 
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
-import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Projects;
 import com.example.csvccdshustbe.repository.projects.ProjectsRepositoryCustom;
 import com.example.csvccdshustbe.request.projects.FindAllProjectsRequest;
@@ -19,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
@@ -30,27 +30,30 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
     @Override
     public Page<FindAllProjectsDto> findAllProjectVisible(Pageable pageable, FindAllProjectsRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_projects as ( " +
-                "    select projects.id_project, projects.name, projects.short_name, " +
-                "           projects.parent, projects.time_created, projects.time_modified, " +
-                "           projects.visible, " +
-                "           1 as depth, " +
-                "           CAST(projects.id_project as NCHAR ) as path " +
-                "    from projects projects " +
-                "    where projects.parent is null " +
-                "    union all " +
-                "    select projects.id_project, projects.name, projects.short_name, " +
-                "           projects.parent, projects.time_created, projects.time_modified, " +
-                "           projects.visible, " +
-                "           cte.depth + 1 as depth, " +
-                "           concat_ws('/',cte.path,CAST(projects.id_project as NCHAR)) as path " +
-                "    from projects projects " +
-                "             INNER JOIN cte_projects cte ON projects.parent = cte.id_project " +
-                "    ) " +
-                "select cte.id_project, cte.name, cte.short_name, " +
-                "       cte.parent, cte.time_created, cte.time_modified, " +
-                "       cte.visible, cte.depth, cte.path " +
-                "from cte_projects cte " +
+        sb.append("WITH RECURSIVE cte_projects as (       " +
+                "        select projects.id_project, projects.name, projects.short_name,       " +
+                "               projects.parent, projects.time_created, projects.time_modified,       " +
+                "               projects.visible,       " +
+                "               1 as depth,       " +
+                "               CAST(projects.id_project as NCHAR ) as path ,   " +
+                "               case when projects.parent is not null then projects.name end nameParent   " +
+                "        from projects projects       " +
+                "        where projects.parent is null       " +
+                "        union all       " +
+                "        select projects.id_project, projects.name, projects.short_name,       " +
+                "               projects.parent, projects.time_created, projects.time_modified,       " +
+                "               projects.visible,       " +
+                "               cte.depth + 1 as depth,       " +
+                "               concat_ws('/',cte.path,CAST(projects.id_project as NCHAR)) as path ,   " +
+                "               cte.name nameParent   " +
+                "        from projects projects       " +
+                "                 INNER JOIN cte_projects cte ON projects.parent = cte.id_project       " +
+                "        )       " +
+                "select cte.id_project, cte.name, cte.short_name,   " +
+                "           cte.parent, cte.time_created, cte.time_modified,       " +
+                "           cte.visible, cte.depth, cte.path ,   " +
+                "           cte.nameParent   " +
+                "from cte_projects cte   " +
                 "where 1 = 1 and cte.visible = :visible ");
         setConditionFindAllProjectVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -70,16 +73,78 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
                 dto.setVisible(ValueUtil.getIntegerByObject(obj[6]));
                 dto.setDepth(ValueUtil.getIntegerByObject(obj[7]));
                 dto.setPath(ValueUtil.getStringByObject(obj[8]));
+                dto.setNameParent(ValueUtil.getStringByObject(obj[9]));
                 findAllProjectsDtos.add(dto);
             }
         }
         return new PageImpl<>(findAllProjectsDtos, pageable, countFindAllProjectVisible(request));
     }
 
+    @Override
+    public Page<FindAllProjectsDto> findAllProject(Pageable pageable, FindAllProjectsRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("WITH RECURSIVE cte_projects as (      " +
+                "      select projects.id_project, projects.name, projects.short_name,      " +
+                "             projects.parent, projects.time_created, projects.time_modified,      " +
+                "             projects.visible,      " +
+                "             1 as depth,      " +
+                "             CAST(projects.id_project as NCHAR ) as path,   " +
+                "             case when projects.parent is not null then projects.name end nameParent   " +
+                "      from projects projects      " +
+                "      where projects.parent is null      " +
+                "      union all      " +
+                "      select projects.id_project, projects.name, projects.short_name,      " +
+                "             projects.parent, projects.time_created, projects.time_modified,      " +
+                "             projects.visible,      " +
+                "             cte.depth + 1 as depth,      " +
+                "             concat_ws('/',cte.path,CAST(projects.id_project as NCHAR)) as path,   " +
+                "             cte.name nameParent   " +
+                "      from projects projects      " +
+                "               INNER JOIN cte_projects cte ON projects.parent = cte.id_project      " +
+                "      )      " +
+                "  select cte.id_project, cte.name, cte.short_name,      " +
+                "         cte.parent, cte.time_created, cte.time_modified,      " +
+                "         cte.visible, cte.depth, cte.path, cte.nameParent   " +
+                "from cte_projects cte   " +
+                "where 1 = 1 ");
+        setConditionFindAllProject(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllProject(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllProjectsDto> findAllProjectsDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                FindAllProjectsDto dto = new FindAllProjectsDto();
+                dto.setIdProject(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                dto.setShortName(ValueUtil.getStringByObject(obj[2]));
+                dto.setParent(ValueUtil.getIntegerByObject(obj[3]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                dto.setVisible(ValueUtil.getIntegerByObject(obj[6]));
+                dto.setDepth(ValueUtil.getIntegerByObject(obj[7]));
+                dto.setPath(ValueUtil.getStringByObject(obj[8]));
+                dto.setNameParent(ValueUtil.getStringByObject(obj[9]));
+                findAllProjectsDtos.add(dto);
+            }
+        }
+        return new PageImpl<>(findAllProjectsDtos, pageable, countFindAllProject(request));
+    }
+
     private void setParameterFindAllProjectVisible(FindAllProjectsRequest request, Query query) {
         query.setParameter("visible", Constants.PROJECTS_IS_VISIBLE);
         if (StringUtils.isNotBlank(request.getKeyword())) {
             query.setParameter("keyword", request.getKeyword());
+        }
+    }
+
+    private void setParameterFindAllProject(FindAllProjectsRequest request, Query query) {
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            query.setParameter("keyword", request.getKeyword());
+        }
+        if (!Objects.isNull(request.getVisible())) {
+            query.setParameter("visible", request.getVisible());
         }
     }
 
@@ -90,31 +155,74 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
         sb.append(" ORDER BY path ");
     }
 
+    private void setConditionFindAllProject(FindAllProjectsRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            sb.append(" and (cte.name REGEXP :keyword ) ");
+        }
+        if (!Objects.isNull(request.getVisible())) {
+            sb.append(" and cte.visible = :visible  ");
+        }
+        sb.append(" ORDER BY path ");
+    }
+
+
     private long countFindAllProjectVisible(FindAllProjectsRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_projects as (      " +
-                "       select projects.id_project, projects.name, projects.short_name,      " +
-                "              projects.parent, projects.time_created, projects.time_modified,      " +
-                "              projects.visible,      " +
-                "              1 as depth,      " +
-                "              CAST(projects.id_project as NCHAR ) as path      " +
-                "       from projects projects      " +
-                "       where projects.parent is null      " +
-                "       union all      " +
-                "       select projects.id_project, projects.name, projects.short_name,      " +
-                "              projects.parent, projects.time_created, projects.time_modified,      " +
-                "              projects.visible,      " +
-                "              cte.depth + 1 as depth,      " +
-                "              concat_ws('/',cte.path,CAST(projects.id_project as NCHAR)) as path      " +
-                "       from projects projects      " +
-                "                INNER JOIN cte_projects cte ON projects.parent = cte.id_project      " +
-                "       )      " +
-                "   select count(cte.id_project) count   " +
-                "   from cte_projects cte      " +
-                "   where 1 = 1 and cte.visible = :visible  ");
+        sb.append(" WITH RECURSIVE cte_projects as (       " +
+                "        select projects.id_project, projects.name, projects.short_name,       " +
+                "               projects.parent, projects.time_created, projects.time_modified,       " +
+                "               projects.visible,       " +
+                "               1 as depth,       " +
+                "               CAST(projects.id_project as NCHAR ) as path ,   " +
+                "               case when projects.parent is not null then projects.name end nameParent   " +
+                "        from projects projects       " +
+                "        where projects.parent is null       " +
+                "        union all       " +
+                "        select projects.id_project, projects.name, projects.short_name,       " +
+                "               projects.parent, projects.time_created, projects.time_modified,       " +
+                "               projects.visible,       " +
+                "               cte.depth + 1 as depth,       " +
+                "               concat_ws('/',cte.path,CAST(projects.id_project as NCHAR)) as path ,   " +
+                "               cte.name nameParent   " +
+                "        from projects projects       " +
+                "                 INNER JOIN cte_projects cte ON projects.parent = cte.id_project       " +
+                "        )       " +
+                "select count(0) count   " +
+                "from cte_projects cte   " +
+                "where 1 = 1 and cte.visible = :visible ");
         setConditionFindAllProjectVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllProjectVisible(request, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private long countFindAllProject(FindAllProjectsRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("WITH RECURSIVE cte_projects as (      " +
+                "      select projects.id_project, projects.name, projects.short_name,      " +
+                "             projects.parent, projects.time_created, projects.time_modified,      " +
+                "             projects.visible,      " +
+                "             1 as depth,      " +
+                "             CAST(projects.id_project as NCHAR ) as path,   " +
+                "             case when projects.parent is not null then projects.name end nameParent   " +
+                "      from projects projects      " +
+                "      where projects.parent is null      " +
+                "      union all      " +
+                "      select projects.id_project, projects.name, projects.short_name,      " +
+                "             projects.parent, projects.time_created, projects.time_modified,      " +
+                "             projects.visible,      " +
+                "             cte.depth + 1 as depth,      " +
+                "             concat_ws('/',cte.path,CAST(projects.id_project as NCHAR)) as path,   " +
+                "             cte.name nameParent   " +
+                "      from projects projects      " +
+                "               INNER JOIN cte_projects cte ON projects.parent = cte.id_project      " +
+                "      )      " +
+                "  select count(0) count " +
+                "from cte_projects cte   " +
+                "where 1 = 1  ");
+        setConditionFindAllProject(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllProject(request, query);
         return ValueUtil.getLongByObject(query.getSingleResult());
     }
 

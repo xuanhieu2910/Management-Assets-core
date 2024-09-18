@@ -10,7 +10,8 @@ import org.springframework.data.domain.Page;
 
 public interface ProjectsService {
 
-    Page<FindAllProjectsResponse> findAllProjectsResponseByName(FindAllProjectsRequest request);
+    Page<FindAllProjectsResponse> findAllProjectsVisibleResponse(FindAllProjectsRequest request);
+    Page<FindAllProjectsResponse> findAllProjectsResponse(FindAllProjectsRequest request);
     void createProject(CreateProjectsRequest request) throws ValidateFiledException;
 
     void updateProject(UpdateProjectsRequest request) throws ValidateFiledException;

@@ -35,9 +35,17 @@ public class ProjectsServiceImpl implements ProjectsService {
     ProjectsRepository projectsRepository;
 
     @Override
-    public Page<FindAllProjectsResponse> findAllProjectsResponseByName(FindAllProjectsRequest request) {
+    public Page<FindAllProjectsResponse> findAllProjectsVisibleResponse(FindAllProjectsRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllProjectsDto> dtos = projectsRepository.findAllProjectVisible(pageable, request);
+        return new PageImpl<>(convertToFindAllProjectsResponse(dtos.get().collect(Collectors.toList())),
+                pageable, dtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllProjectsResponse> findAllProjectsResponse(FindAllProjectsRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<FindAllProjectsDto> dtos = projectsRepository.findAllProject(pageable, request);
         return new PageImpl<>(convertToFindAllProjectsResponse(dtos.get().collect(Collectors.toList())),
                 pageable, dtos.getTotalElements());
     }
@@ -52,6 +60,8 @@ public class ProjectsServiceImpl implements ProjectsService {
             res.setParent(allProjectsDto.getParent());
             res.setDepth(allProjectsDto.getDepth());
             res.setPath(allProjectsDto.getPath());
+            res.setNameParent(allProjectsDto.getNameParent());
+            res.setVisible(allProjectsDto.getVisible());
             responses.add(res);
         }
         return responses;

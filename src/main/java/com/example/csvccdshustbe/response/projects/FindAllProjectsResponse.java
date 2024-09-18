@@ -23,4 +23,8 @@ public class FindAllProjectsResponse {
     private Integer depth;
     @JsonProperty("path")
     private String path;
+    @JsonProperty("nameParent")
+    private String nameParent;
+    @JsonProperty("visible")
+    private Integer visible;
 }
