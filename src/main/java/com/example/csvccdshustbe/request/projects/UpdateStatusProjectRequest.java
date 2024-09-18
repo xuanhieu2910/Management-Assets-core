@@ -13,5 +13,5 @@ public class UpdateStatusProjectRequest {
     @NotNull
     private Integer idProject;
     @NotNull
-    private Integer status;
+    private Integer visible;
 }
