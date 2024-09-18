@@ -46,6 +46,6 @@ public class AssetCategories {
     private String yearUsedWearTear;
     @Column(name = "minium_time_depreciation")
     private String minimumTimeDepreciation;
-    @Column(name = "maximim_time_depreciation")
+    @Column(name = "maximum_time_depreciation")
     private String maximumTimeDepreciation;
 }

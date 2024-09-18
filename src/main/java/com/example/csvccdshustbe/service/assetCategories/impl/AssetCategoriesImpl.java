@@ -122,6 +122,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         assetCategories.setYearUsedWearTear(request.getYearUsedWearTear());
         assetCategories.setMinimumTimeDepreciation(request.getMinimumTimeDepreciation());
         assetCategories.setMaximumTimeDepreciation(request.getMaximumTimeDepreciation());
+        assetCategories.setIsPick(request.getIsPick());
         return assetCategories;
     }
     @Override

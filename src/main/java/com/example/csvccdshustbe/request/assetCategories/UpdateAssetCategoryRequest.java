@@ -22,5 +22,5 @@ public class UpdateAssetCategoryRequest {
     private String yearUsedWearTear;
     private String minimumTimeDepreciation;
     private String maximumTimeDepreciation;
-
+    private Integer isPick;
 }
