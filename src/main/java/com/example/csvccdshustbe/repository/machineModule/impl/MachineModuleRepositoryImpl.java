@@ -48,7 +48,7 @@ public class MachineModuleRepositoryImpl implements MachineModuleRepositoryCusto
                 machineModule.setCodeUser(ValueUtil.getStringByObject(obj[7]));
                 machineModule.setIdTypeUse(ValueUtil.getIntegerByObject(obj[8]));
                 machineModule.setNameCountryProducer(ValueUtil.getStringByObject(obj[9]));
-                machineModule.setNameUser(ValueUtil.getStringByObject(obj[10]));
+                machineModule.setUserName(ValueUtil.getStringByObject(obj[10]));
                 machineModule.setFullName(ValueUtil.getStringByObject(obj[11]));
                 machineModule.setNameTypeUse(ValueUtil.getStringByObject(obj[12]));
                 machineModule.setSparePartsAttack(ValueUtil.getStringByObject(obj[13]));

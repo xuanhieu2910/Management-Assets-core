@@ -30,8 +30,8 @@ public class MachineModuleDetailsDto {
     private Integer idTypeUse;
     @JsonProperty("name_country_producer")
     private String nameCountryProducer;
-    @JsonProperty("name_user")
-    private String nameUser;
+    @JsonProperty("user_name")
+    private String userName;
     @JsonProperty("full_name")
     private String fullName;
     @JsonProperty("name_type_use")
