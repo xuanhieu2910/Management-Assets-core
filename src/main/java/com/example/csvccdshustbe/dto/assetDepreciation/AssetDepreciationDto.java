@@ -48,5 +48,13 @@ public class AssetDepreciationDto {
     private String timeCreated;
     @JsonProperty("time_modified")
     private String timeModified;
+    @JsonProperty("value_wear_tear")
+    private String valueWearTear;
+    @JsonProperty("year_used_wear_tear")
+    private String yearUsedWearTear;
+    @JsonProperty("minimum_time_depreciation")
+    private String minimumTimeDepreciation;
+    @JsonProperty("maximum_time_depreciation")
+    private String maximumTimeDepreciation;
 
 }

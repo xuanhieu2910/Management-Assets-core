@@ -139,7 +139,7 @@ public class AssetController {
     }
 
     @GetMapping("/download-file-template-import-asset")
-    public ResponseEntity<?> downloadFileTemplateImportAsset(HttpServletRequest request){
+    public ResponseEntity<?> downloadFileTemplateImportAsset(){
         try {
             Resource resource = assetService.downloadFileTemplateImportAsset();
             return ResponseEntity.ok()

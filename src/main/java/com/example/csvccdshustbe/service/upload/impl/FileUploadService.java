@@ -12,13 +12,15 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 @Log4j2
 @Service
@@ -34,6 +36,7 @@ public class FileUploadService implements FilesStorageService {
     private static final String CREATE_FOLDER = "mkdir";
     private static final String CREATE_FILE_UNIX = "touch";
     private static final String CREATE_FILE_WIN = "copy con";
+    private static final String FILE_TEMPLATE_UP_ASSET = "Template_upload_asset";
 
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
@@ -50,6 +53,12 @@ public class FileUploadService implements FilesStorageService {
                 PropertiesUtil.getProperty("hust.csvc.static.location.upload"));
         executeDeleteCommand(pathFile);
 
+    }
+
+    @Override
+    public Resource downloadFile(String fileUpLoad) {
+
+        return null;
     }
 
     public static void executeDeleteCommand(String command) throws InterruptedException, IOException {
@@ -175,5 +184,72 @@ public class FileUploadService implements FilesStorageService {
         String todayFolder = DateUtil.getTodayFolder();
         return  SEPARATOR + folderName + SEPARATOR + todayFolder;
     }
+    public static void main(String[] args) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Products");
 
+
+
+        // Dữ liệu cho các loại sản phẩm (dropdown chính)
+        String[] categories = {"Electronics", "Furniture"};
+        String[] electronicsProducts = {"A1","A2","A3","A4","A5","A6"};
+        String[] furnitureProducts = {"B1","B2","B3"};
+
+        // Tạo dữ liệu cho cột ẩn dùng làm dữ liệu nguồn cho dropdown phụ thuộc
+        Sheet hiddenSheet = workbook.createSheet("HiddenData");
+        createHiddenData(hiddenSheet, electronicsProducts, furnitureProducts);
+
+        // Tạo dropdown chính (Loại Sản Phẩm)
+        DataValidationHelper dvHelper = sheet.getDataValidationHelper();
+        DataValidationConstraint categoryConstraint = dvHelper.createExplicitListConstraint(categories);
+        CellRangeAddressList categoryAddressList = new CellRangeAddressList(1, 1, 0, 0); // Cell A2
+        DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+        sheet.addValidationData(categoryValidation);
+
+        // Tạo dropdown phụ thuộc (Sản Phẩm)
+        String formula = "INDIRECT($A2)"; // Sử dụng INDIRECT để lấy giá trị phụ thuộc vào A2
+        DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(1, 1, 1, 1); // Cell B2
+        DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        sheet.addValidationData(productValidation);
+
+//         Ẩn sheet chứa dữ liệu ẩn
+        workbook.setSheetHidden(workbook.getSheetIndex("HiddenData"), true);
+
+        // Lưu file Excel
+        try (FileOutputStream fileOut = new FileOutputStream("C:\\Users\\hieux\\Desktop\\Projects\\DependentDropdownExample.xlsx")) {
+            workbook.write(fileOut);
+        }
+        workbook.close();
+    }
+
+    // Hàm tạo dữ liệu ẩn cho các danh sách dropdown phụ thuộc
+    private static void createHiddenData(Sheet hiddenSheet, String[] electronicsProducts, String[] furnitureProducts) {
+        // Ghi dữ liệu vào sheet ẩn
+        Row categoryRow = hiddenSheet.createRow(0);
+        categoryRow.createCell(0).setCellValue("Electronics");
+        categoryRow.createCell(1).setCellValue("Furniture");
+
+        int tmpEl = 1;
+        int tmpFur = 1;
+        for (int i = 0; i < electronicsProducts.length; i++) {
+            Row rowDataElec = hiddenSheet.createRow(tmpEl);
+            rowDataElec.createCell(0).setCellValue(electronicsProducts[i]);
+            ++tmpEl;
+        }
+        for (int i = 0; i < furnitureProducts.length; i++) {
+            Row rowDataElec = hiddenSheet.getRow(tmpFur);
+            rowDataElec.createCell(1).setCellValue(furnitureProducts[i]);
+            ++tmpFur;
+        }
+
+        // Tạo các range tên để sử dụng với INDIRECT
+        Name electronicsRange = hiddenSheet.getWorkbook().createName();
+        electronicsRange.setNameName("Electronics");
+        electronicsRange.setRefersToFormula("HiddenData!$A$2:$A$" + tmpEl);
+
+        Name furnitureRange = hiddenSheet.getWorkbook().createName();
+        furnitureRange.setNameName("Furniture");
+        furnitureRange.setRefersToFormula("HiddenData!$B$2:$B$" + tmpFur);
+    }
 }
