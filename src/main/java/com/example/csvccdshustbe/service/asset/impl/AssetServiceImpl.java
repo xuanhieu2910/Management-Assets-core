@@ -214,7 +214,7 @@ public class AssetServiceImpl implements AssetService {
         Map<String, Object> depreciationAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_DEPRECIATION);
         AssetDepreciation assetDepreciation = assetDepreciationService.findAssetDepreciationByIdAsset(asset.getIdAsset());
         updateDataAssetDepreciation(assetDepreciation, depreciationAsset);
-        assetDepreciationService.save(assetDepreciation);
+            assetDepreciationService.save(assetDepreciation);
     }
 
     private void updateDataAssetDepreciation(AssetDepreciation assetDepreciation, Map<String, Object> depreciationAsset) {

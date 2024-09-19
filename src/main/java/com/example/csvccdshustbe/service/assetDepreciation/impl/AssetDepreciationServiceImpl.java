@@ -32,7 +32,7 @@ public class AssetDepreciationServiceImpl implements AssetDepreciationService {
         if (assetDepreciation.isEmpty()){
             throw new NotFoundException("Don't exits asset depreciation by id asset");
         }
-        return null;
+        return assetDepreciation.get();
     }
 
     @Override
