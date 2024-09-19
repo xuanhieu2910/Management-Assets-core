@@ -37,5 +37,5 @@ public interface AssetService {
 
     void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException;
 
-    Resource downloadFileTemplateImportAsset();
+    Resource downloadFileTemplateImportAsset() throws IOException;
 }

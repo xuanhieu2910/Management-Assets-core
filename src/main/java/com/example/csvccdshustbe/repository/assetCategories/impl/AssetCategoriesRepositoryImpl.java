@@ -471,7 +471,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     }
 
     @Override
-    public List<Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>>> findAllAssetCategoriesByVisible() {
+    public Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> findAllAssetCategoriesByVisibleToDownload() {
         StringBuilder sb = new StringBuilder();
         sb.append(" WITH RECURSIVE cte_asset_categories as (       " +
                 "      select assetCategires.id_asset_category,assetCategires.name,       " +
@@ -501,10 +501,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "               INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category       " +
                 "      )       " +
                 "select cte.id_asset_category, cte.name,  " +
-                "         cte.code_name, cte.short_name, cte.description,       " +
-                "         cte.parent, cte.sort_order, cte.asset_count,       " +
-                "         cte.visible, cte.time_created, cte.time_modified,       " +
-                "         cte.is_pick, cte.depth, cte.path,    " +
+                "         cte.code_name, cte.is_pick,  " +
                 "         cte.value_wear_tear, cte.year_used_wear_tear,     " +
                 "         cte.minimum_time_depreciation, cte.maximum_time_depreciation    " +
                 "from cte_asset_categories cte  " +
@@ -515,16 +512,45 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
         List<Object[]> result = query.getResultList();
-        List<Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>>> responses = new ArrayList<>();
         Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory = new HashMap<>();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj: result){
-                if (ValueUtil.getIntegerByObject(obj[11]).equals(Constants.ASSET_CATEGORY_IS_PICK)){
-
+                Integer idAssetCategory = ValueUtil.getIntegerByObject(obj[0]);
+                String nameAssetCategory = ValueUtil.getStringByObject(obj[1]);
+                String key = String.join(".", String.valueOf(idAssetCategory), nameAssetCategory);
+                if (ValueUtil.getIntegerByObject(obj[3]) != null && ValueUtil.getIntegerByObject(obj[3]).equals(Constants.ASSET_CATEGORY_IS_PICK)){
+                    if (mapAssetCategory.containsKey(key)){
+                        mapAssetCategory.get(key).add(contructionData(obj));
+                    } else {
+                        List<FindAllAssetCategoriesByCodeAndVisibleDto> dtos = new ArrayList<>();
+                        dtos.add(contructionData(obj));
+                        mapAssetCategory.put(key, dtos);
+                    }
+                } else {
+                    if (mapAssetCategory.containsKey(key)){
+                        mapAssetCategory.get(key).add(contructionData(obj));
+                    } else {
+                        List<FindAllAssetCategoriesByCodeAndVisibleDto> dtos = new ArrayList<>();
+                        dtos.add(contructionData(obj));
+                        mapAssetCategory.put(key, dtos);
+                    }
                 }
             }
         }
-        return null;
+        return mapAssetCategory;
+    }
+
+    private FindAllAssetCategoriesByCodeAndVisibleDto contructionData(Object[] obj) {
+        FindAllAssetCategoriesByCodeAndVisibleDto categories = new FindAllAssetCategoriesByCodeAndVisibleDto();
+        categories.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[0]));
+        categories.setName(ValueUtil.getStringByObject(obj[1]));
+        categories.setCodeName(ValueUtil.getStringByObject(obj[2]));
+        categories.setIsPick(ValueUtil.getIntegerByObject(obj[3]));
+        categories.setValueWearTear(ValueUtil.getStringByObject(obj[4]));
+        categories.setYearUsedWearTear(ValueUtil.getStringByObject(obj[5]));
+        categories.setMinimumTimeDepreciation(ValueUtil.getStringByObject(obj[6]));
+        categories.setMaximumTimeDepreciation(ValueUtil.getStringByObject(obj[7]));
+        return categories;
     }
 
     @Override

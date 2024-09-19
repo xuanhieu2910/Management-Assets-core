@@ -29,6 +29,6 @@ public interface AssetCategoriesRepositoryCustom {
     Optional<BluePrintParentAssetCategoryDto> findBluePrintAssetCategoryDtoById(Integer idAssetCategory);
     Optional<FindAssetCategoryDetailsResponse> findAssetCategoryDetailsPickedResponseByCode(String code);
     boolean isCheckExitsAssetByIdAssetCategory(Integer idAssetCategory);
-    List<Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>>> findAllAssetCategoriesByVisible();
+    Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> findAllAssetCategoriesByVisibleToDownload();
 
 }

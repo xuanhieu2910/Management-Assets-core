@@ -170,6 +170,11 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         assetCategoriesRepository.save(assetCategoriesOptional.get());
     }
 
+    @Override
+    public Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> findAllAssetCategoriesVisibleResponseToDownload() {
+        return assetCategoriesRepository.findAllAssetCategoriesByVisibleToDownload();
+    }
+
     private AssetCategories createAssetCategoryRequest(CreateAssetCategoryRequest request) {
         AssetCategories categories = new AssetCategories();
         categories.setName(request.getName());

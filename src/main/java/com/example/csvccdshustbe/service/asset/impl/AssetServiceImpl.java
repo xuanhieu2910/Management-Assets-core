@@ -782,7 +782,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Resource downloadFileTemplateImportAsset() {
+    public Resource downloadFileTemplateImportAsset() throws IOException {
         return filesStorageService.downLoadFileImportAsset();
     }
 

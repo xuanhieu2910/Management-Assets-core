@@ -1,9 +1,8 @@
 package com.example.csvccdshustbe.service.upload.impl;
 
+import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
-import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesVisibleResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.utility.DateUtil;
@@ -16,15 +15,18 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Log4j2
 @Service
@@ -41,6 +43,8 @@ public class FileUploadService implements FilesStorageService {
     private static final String CREATE_FILE_UNIX = "touch";
     private static final String CREATE_FILE_WIN = "copy con";
     private static final String FILE_TEMPLATE_UP_ASSET = "Template_upload_asset";
+
+    private static final Integer INDEX_START_FILLED_DATA = 1;
 
     @Autowired
     AssetCategoriesService assetCategoriesService;
@@ -196,7 +200,7 @@ public class FileUploadService implements FilesStorageService {
         // Dữ liệu cho các loại sản phẩm (dropdown chính)
         String[] categories = {"Electronics", "Furniture"};
         String[] electronicsProducts = {"A1","A2","A3","A4","A5","A6"};
-        String[] furnitureProducts = {"B1","B2","B3"};
+        String[] furnitureProducts = {"B1","B2","B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10"};
 
         // Tạo dữ liệu cho cột ẩn dùng làm dữ liệu nguồn cho dropdown phụ thuộc
         Sheet hiddenSheet = workbook.createSheet("HiddenData");
@@ -217,7 +221,7 @@ public class FileUploadService implements FilesStorageService {
         sheet.addValidationData(productValidation);
 
 //         Ẩn sheet chứa dữ liệu ẩn
-        workbook.setSheetHidden(workbook.getSheetIndex("HiddenData"), true);
+//        workbook.setSheetHidden(workbook.getSheetIndex("HiddenData"), true);
 
         // Lưu file Excel
         try (FileOutputStream fileOut = new FileOutputStream("C:\\Users\\hieux\\Desktop\\Projects\\DependentDropdownExample.xlsx")) {
@@ -229,9 +233,9 @@ public class FileUploadService implements FilesStorageService {
     // Hàm tạo dữ liệu ẩn cho các danh sách dropdown phụ thuộc
     private static void createHiddenData(Sheet hiddenSheet, String[] electronicsProducts, String[] furnitureProducts) {
         // Ghi dữ liệu vào sheet ẩn
-        Row categoryRow = hiddenSheet.createRow(0);
-        categoryRow.createCell(0).setCellValue("Electronics");
-        categoryRow.createCell(1).setCellValue("Furniture");
+//        Row categoryRow = hiddenSheet.createRow(0);
+//        categoryRow.createCell(0).setCellValue("Electronics");
+//        categoryRow.createCell(1).setCellValue("Furniture");
 
         int tmpEl = 1;
         int tmpFur = 1;
@@ -241,8 +245,15 @@ public class FileUploadService implements FilesStorageService {
             ++tmpEl;
         }
         for (int i = 0; i < furnitureProducts.length; i++) {
-            Row rowDataElec = hiddenSheet.getRow(tmpFur);
+            Row rowDataElec;
+            if (hiddenSheet.getRow(tmpFur) == null) {
+                rowDataElec = hiddenSheet.createRow(tmpFur);
+            } else {
+                rowDataElec = hiddenSheet.getRow(tmpFur);
+            }
             rowDataElec.createCell(1).setCellValue(furnitureProducts[i]);
+            CellReference cellReference = new CellReference(rowDataElec.getCell(1));
+            System.out.println(cellReference.formatAsString());
             ++tmpFur;
         }
 
@@ -257,9 +268,18 @@ public class FileUploadService implements FilesStorageService {
     }
 
     @Override
-    public Resource downLoadFileImportAsset(){
-        List<FindAllAssetCategoriesPickedResponse> a1 = assetCategoriesService.findAllAssetCategoriesIsPicked();
-//        List<FindAllAssetCategoriesVisibleResponse> a2 = assetCategoriesService.findAllAssetCategoriesByCodeNameAndVisible()
+    public Resource downLoadFileImportAsset() throws IOException {
+        Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory =
+                assetCategoriesService.findAllAssetCategoriesVisibleResponseToDownload();
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Import-asset");
+        createAssetCategories(workbook.createSheet("Asset-categories"), mapAssetCategory);
+        try (FileOutputStream fileOut = new FileOutputStream("C:\\Users\\hieux\\Desktop\\Projects\\DependentDropdownExample.xlsx")) {
+            workbook.write(fileOut);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        workbook.close();
         //Common
         //Modules
         //Original
@@ -276,5 +296,30 @@ public class FileUploadService implements FilesStorageService {
         return null;
     }
 
-
+    private void createAssetCategories(Sheet sheetAssetCategories, Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory) {
+        Iterator<String> keywords = mapAssetCategory.keySet().iterator();
+        int index = 0;
+        while (keywords.hasNext()){
+            filledDataAssetCategory(sheetAssetCategories,mapAssetCategory.get(keywords.next()), index, keywords.next());
+        }
+    }
+    private void filledDataAssetCategory(Sheet sheetAssetCategories,
+                                         List<FindAllAssetCategoriesByCodeAndVisibleDto> dtos,
+                                         int index, String keywords) {
+        Row row = null;
+        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
+            if (sheetAssetCategories.getRow(i) == null) {
+                row = sheetAssetCategories.createRow(i);
+            } else {
+                row = sheetAssetCategories.getRow(i);
+            }
+            row.createCell(index).
+                    setCellValue(String.join(".", String.valueOf(dtos.get(i).getIdAssetCategory()), dtos.get(i).getName()));
+        }
+        CellReference cellReference = new CellReference(row.getCell(index));
+        String prefix = cellReference.formatAsString().substring(0,0);
+        Name electronicsRange = sheetAssetCategories.getWorkbook().createName();
+        electronicsRange.setNameName(keywords);
+        electronicsRange.setRefersToFormula("Asset-categories!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1) + ":$"+ prefix + "$" + dtos.size());
+    }
 }

@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.assetCategories;
 
 import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
 import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategoryDto;
+import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.assetCategories.*;
@@ -12,6 +13,7 @@ import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetai
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AssetCategoriesService {
 
@@ -34,4 +36,6 @@ public interface AssetCategoriesService {
     FindAssetCategoryDetailsResponse findAssetCategoryDetailsResponseByCode(String codeAssetCategory);
 
     void updateStatusAssetCategory(UpdateStatusAssetCategory statusAssetCategory) throws ValidateFiledException;
+
+    Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> findAllAssetCategoriesVisibleResponseToDownload();
 }
