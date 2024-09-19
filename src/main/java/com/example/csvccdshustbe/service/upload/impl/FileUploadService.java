@@ -1,8 +1,10 @@
 package com.example.csvccdshustbe.service.upload.impl;
 
-import com.example.csvccdshustbe.exception.FileExcelException;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesPickedResponse;
+import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesVisibleResponse;
+import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.FileUtil;
@@ -14,13 +16,15 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.List;
 
 @Log4j2
 @Service
@@ -38,6 +42,11 @@ public class FileUploadService implements FilesStorageService {
     private static final String CREATE_FILE_WIN = "copy con";
     private static final String FILE_TEMPLATE_UP_ASSET = "Template_upload_asset";
 
+    @Autowired
+    AssetCategoriesService assetCategoriesService;
+
+
+
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
         FileUtil.checkFileAsset(uploadedFile);
@@ -53,12 +62,6 @@ public class FileUploadService implements FilesStorageService {
                 PropertiesUtil.getProperty("hust.csvc.static.location.upload"));
         executeDeleteCommand(pathFile);
 
-    }
-
-    @Override
-    public Resource downloadFile(String fileUpLoad) {
-
-        return null;
     }
 
     public static void executeDeleteCommand(String command) throws InterruptedException, IOException {
@@ -252,4 +255,26 @@ public class FileUploadService implements FilesStorageService {
         furnitureRange.setNameName("Furniture");
         furnitureRange.setRefersToFormula("HiddenData!$B$2:$B$" + tmpFur);
     }
+
+    @Override
+    public Resource downLoadFileImportAsset(){
+        List<FindAllAssetCategoriesPickedResponse> a1 = assetCategoriesService.findAllAssetCategoriesIsPicked();
+//        List<FindAllAssetCategoriesVisibleResponse> a2 = assetCategoriesService.findAllAssetCategoriesByCodeNameAndVisible()
+        //Common
+        //Modules
+        //Original
+        //Declare
+
+        //Lấy danh mục tài san picked
+        //Lay danh sach tai san theo picked
+        //Lay danh sach department
+        //Lay danh sach location theo department
+        //Lay danh sach don vi theo picked
+        // Document
+        // Project
+        //
+        return null;
+    }
+
+
 }
