@@ -415,7 +415,7 @@ public class AssetServiceImpl implements AssetService {
     private void updateOriginalOfFormation(Asset asset, Map<String, Object> commonDataAsset) {
         List<AssetOriginalOfFormation> originalOfFormations =
                 assetOriginalOfFormationService.findOriginalOfFormationByIdAsset(asset.getIdAsset());
-        List<Map<String,Object>> assetOriginalOfFormationData = (List<Map<String, Object>>) commonDataAsset.get("originOfFormation");
+        List<Map<String,Object>> assetOriginalOfFormationData = (List<Map<String, Object>>) commonDataAsset.get(Constants.KEY_ASSET_ORIGINAL_OF_FORMATION);
         deleteAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData, asset);
         createAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData, asset);
         updateAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData);
