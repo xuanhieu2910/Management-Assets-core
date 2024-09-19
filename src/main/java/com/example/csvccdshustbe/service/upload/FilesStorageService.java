@@ -14,5 +14,5 @@ public interface FilesStorageService { ;
 
      void deleteByPathFile(String pathFile)
              throws ValidateFiledException, IOException, InterruptedException;
-     Resource downloadFile(String fileUpLoad);
+     Resource downLoadFileImportAsset();
 }

@@ -172,11 +172,6 @@ public class AssetServiceImpl implements AssetService {
         filesStorageService.deleteByPathFile(pathFile);
     }
 
-    @Override
-    public Resource downloadFileTemplateImportAsset() {
-        return null;
-    }
-
     private void deleteDeclareAsset(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException {
         declareServiceFactory.deleteAssetDeclare(assetBluePrintDto.getDeclare().getBluePrintDeclare(),
                 assetBluePrintDto.getIdAsset());
@@ -785,4 +780,10 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdUserModified(csvcUser.getIdUser());
         return asset;
     }
+
+    @Override
+    public Resource downloadFileTemplateImportAsset() {
+        return filesStorageService.downLoadFileImportAsset();
+    }
+
 }

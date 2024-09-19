@@ -9,7 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public interface AssetCategoriesRepositoryCustom {
 
@@ -27,5 +29,6 @@ public interface AssetCategoriesRepositoryCustom {
     Optional<BluePrintParentAssetCategoryDto> findBluePrintAssetCategoryDtoById(Integer idAssetCategory);
     Optional<FindAssetCategoryDetailsResponse> findAssetCategoryDetailsPickedResponseByCode(String code);
     boolean isCheckExitsAssetByIdAssetCategory(Integer idAssetCategory);
+    List<Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>>> findAllAssetCategoriesByVisible();
 
 }
