@@ -46,6 +46,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public List<FindAllDepartmentByCodeAndVisibleDto> findAllDepartmentVisibleByCodeAndVisible() {
+        return departmentRepository.findAllDepartmentByCodeAndVisible();
+    }
+
+    @Override
     public Department findDepartmentByIdDepartmentAndStatus(Integer idDepartment, Integer status) {
         Optional<Department> departmentOptional = departmentRepository.findDepartmentByIdDepartmentAndStatus(idDepartment, status);
         if (departmentOptional.isEmpty()){

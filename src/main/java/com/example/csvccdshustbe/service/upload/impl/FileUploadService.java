@@ -1,9 +1,11 @@
 package com.example.csvccdshustbe.service.upload.impl;
 
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
+import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.FileUtil;
@@ -48,7 +50,8 @@ public class FileUploadService implements FilesStorageService {
 
     @Autowired
     AssetCategoriesService assetCategoriesService;
-
+    @Autowired
+    DepartmentService departmentService;
 
 
     @Override
@@ -196,12 +199,17 @@ public class FileUploadService implements FilesStorageService {
     public Resource downLoadFileImportAsset() throws IOException {
         String fileExcel = "C:\\Users\\hieux\\Desktop\\Projects\\src\\main\\resources\\static\\Template_import_asset.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
+
         Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory =
                 assetCategoriesService.findAllAssetCategoriesVisibleResponseToDownload();
+
+        List<FindAllDepartmentByCodeAndVisibleDto> dataDepartment = departmentService.findAllDepartmentVisibleByCodeAndVisible();
+
         Workbook workbook = new XSSFWorkbook(file);
-        Sheet sheet = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY);
-        createAssetCategories(workbook, mapAssetCategory);
-        try (FileOutputStream fileOut = new FileOutputStream("C:\\Users\\hieux\\Desktop\\Projects\\Template_import_asset.xlsx")) {
+        createAssetCategoriesImport(workbook, mapAssetCategory);
+        createAssetDepartmentImport(workbook, dataDepartment);
+        String filePathOutput = "C:\\Users\\hieux\\Desktop\\Projects\\Template_import_asset.xlsx";
+        try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -223,7 +231,10 @@ public class FileUploadService implements FilesStorageService {
         return null;
     }
 
-    private void createAssetCategories(Workbook workbook, Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory) {
+    private void createAssetDepartmentImport(Workbook workbook, List<FindAllDepartmentByCodeAndVisibleDto> dataDepartment) {
+    }
+
+    private void createAssetCategoriesImport(Workbook workbook, Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory) {
         Sheet sheetAssetCategories = workbook.createSheet(NAME_SHEET_DATA_ASSET_CATEGORY);
         Iterator<String> keywords = mapAssetCategory.keySet().iterator();
         int index = 0;

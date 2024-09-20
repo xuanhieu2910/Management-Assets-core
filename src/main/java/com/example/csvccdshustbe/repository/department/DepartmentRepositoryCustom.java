@@ -8,11 +8,13 @@ import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface DepartmentRepositoryCustom {
     Page<FindAllDepartmentByCodeAndVisibleDto>
     findAllDepartmentByCodeAndVisible(Pageable pageable, FindAllDepartmentVisibleRequest request);
+  List<FindAllDepartmentByCodeAndVisibleDto> findAllDepartmentByCodeAndVisible();
 
     Page<FindAllDepartmentSDto> findAllDepartment(Pageable pageable, FindAllDepartmentRequest request);
 
