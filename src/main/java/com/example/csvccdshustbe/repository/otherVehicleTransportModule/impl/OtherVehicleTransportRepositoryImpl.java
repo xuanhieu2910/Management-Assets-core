@@ -4,13 +4,13 @@ import com.example.csvccdshustbe.dto.modules.otherVehicleTransportModules.OtherV
 import com.example.csvccdshustbe.entity.OtherVehicleTransportModule;
 import com.example.csvccdshustbe.repository.otherVehicleTransportModule.OtherVehicleTransportRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
 
