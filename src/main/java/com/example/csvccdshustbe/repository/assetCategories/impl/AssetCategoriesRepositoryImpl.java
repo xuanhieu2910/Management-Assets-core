@@ -513,27 +513,22 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
         List<Object[]> result = query.getResultList();
         Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory = new HashMap<>();
+        String key = null;
+        Integer idAssetCategory ;
+        String nameAssetCategory ;
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj: result){
-                Integer idAssetCategory = ValueUtil.getIntegerByObject(obj[0]);
-                String nameAssetCategory = ValueUtil.getStringByObject(obj[1]);
-                String key = String.join(".", String.valueOf(idAssetCategory), nameAssetCategory);
+                idAssetCategory = ValueUtil.getIntegerByObject(obj[0]);
+                nameAssetCategory = ValueUtil.getStringByObject(obj[1]);
                 if (ValueUtil.getIntegerByObject(obj[3]) != null && ValueUtil.getIntegerByObject(obj[3]).equals(Constants.ASSET_CATEGORY_IS_PICK)){
-                    if (mapAssetCategory.containsKey(key)){
-                        mapAssetCategory.get(key).add(contructionData(obj));
-                    } else {
-                        List<FindAllAssetCategoriesByCodeAndVisibleDto> dtos = new ArrayList<>();
-                        dtos.add(contructionData(obj));
-                        mapAssetCategory.put(key, dtos);
-                    }
+                    key = "Stt" + idAssetCategory + "_" + nameAssetCategory.replace(" ","").replace(",","");
+                    List<FindAllAssetCategoriesByCodeAndVisibleDto> dtos = new ArrayList<>();
+                    dtos.add(contructionData(obj));
+                    mapAssetCategory.put(key, dtos);
                 } else {
-                    if (mapAssetCategory.containsKey(key)){
-                        mapAssetCategory.get(key).add(contructionData(obj));
-                    } else {
-                        List<FindAllAssetCategoriesByCodeAndVisibleDto> dtos = new ArrayList<>();
-                        dtos.add(contructionData(obj));
-                        mapAssetCategory.put(key, dtos);
-                    }
+                    mapAssetCategory.containsKey(key);
+                    mapAssetCategory.get(key).add(contructionData(obj));
+
                 }
             }
         }

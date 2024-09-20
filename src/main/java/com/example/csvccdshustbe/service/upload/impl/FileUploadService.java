@@ -272,8 +272,8 @@ public class FileUploadService implements FilesStorageService {
         Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory =
                 assetCategoriesService.findAllAssetCategoriesVisibleResponseToDownload();
         Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Import-asset");
-        createAssetCategories(workbook.createSheet("Asset-categories"), mapAssetCategory);
+        Sheet sheet = workbook.createSheet("ImportAsset");
+        createAssetCategories(workbook.createSheet("AssetCategories"), mapAssetCategory);
         try (FileOutputStream fileOut = new FileOutputStream("C:\\Users\\hieux\\Desktop\\Projects\\DependentDropdownExample.xlsx")) {
             workbook.write(fileOut);
         } catch (IOException e) {
@@ -300,7 +300,9 @@ public class FileUploadService implements FilesStorageService {
         Iterator<String> keywords = mapAssetCategory.keySet().iterator();
         int index = 0;
         while (keywords.hasNext()){
-            filledDataAssetCategory(sheetAssetCategories,mapAssetCategory.get(keywords.next()), index, keywords.next());
+            String keyword = keywords.next();
+            filledDataAssetCategory(sheetAssetCategories,mapAssetCategory.get(keyword), index, keyword);
+            ++index;
         }
     }
     private void filledDataAssetCategory(Sheet sheetAssetCategories,
@@ -313,13 +315,16 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheetAssetCategories.getRow(i);
             }
-            row.createCell(index).
-                    setCellValue(String.join(".", String.valueOf(dtos.get(i).getIdAssetCategory()), dtos.get(i).getName()));
+            String valueCell = dtos.get(i).getIdAssetCategory() + "." + dtos.get(i).getName();
+            row.createCell(index).setCellValue(valueCell);
+
         }
-        CellReference cellReference = new CellReference(row.getCell(index));
-        String prefix = cellReference.formatAsString().substring(0,0);
-        Name electronicsRange = sheetAssetCategories.getWorkbook().createName();
-        electronicsRange.setNameName(keywords);
-        electronicsRange.setRefersToFormula("Asset-categories!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1) + ":$"+ prefix + "$" + dtos.size());
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(index));
+            String prefix = cellReference.formatAsString().substring(0, 1);
+            Name electronicsRange = sheetAssetCategories.getWorkbook().createName();
+            electronicsRange.setNameName(keywords);
+            electronicsRange.setRefersToFormula("AssetCategories!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1) + ":$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1 + dtos.size()));
+        }
     }
 }

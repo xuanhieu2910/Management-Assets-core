@@ -181,28 +181,30 @@ public class DeclareServiceFactory {
         List<AssetCurrentUsage> assetCurrentUsages =
                 assetCurrentUsageService.findByIdAsset(ValueUtil.getIntegerByObject(declareAsset.get("idAsset")));
         deleteAssetCurrentUsage(assetCurrentUsages, assetCurrentUsageData);
-        createNewAssetCurrentUsage(assetCurrentUsages, assetCurrentUsageData);
+        createNewAssetCurrentUsage(assetCurrentUsages, assetCurrentUsageData, ValueUtil.getIntegerByObject(declareAsset.get("idAsset")));
     }
 
     private void createNewAssetCurrentUsage(List<AssetCurrentUsage> assetCurrentUsages,
-                                            List<Map<String, Object>> assetCurrentUsageData) {
+                                            List<Map<String, Object>> assetCurrentUsageData,
+                                            Integer idAsset) {
         for (Map<String, Object> cud  : assetCurrentUsageData){
             boolean isCheckExits = false;
             for (AssetCurrentUsage usage : assetCurrentUsages){
                 if (ValueUtil.getIntegerByObject(cud.get("idCurrentUsage")).equals(usage.getIdCurrentUsage())){
                     isCheckExits = true;
                     break;
+
                 }
             }
             if (!isCheckExits) {
-                createNewAssetCurrent(cud);
+                createNewAssetCurrent(cud,idAsset);
             }
         }
     }
 
-    private void createNewAssetCurrent(Map<String, Object> cud) {
+    private void createNewAssetCurrent(Map<String, Object> cud, Integer idAsset) {
         AssetCurrentUsage assetCurrentUsage = new AssetCurrentUsage();
-        assetCurrentUsage.setIdAsset(ValueUtil.getIntegerByObject(cud.get("idAsset")));
+        assetCurrentUsage.setIdAsset(idAsset);
         assetCurrentUsage.setIdCurrentUsage(ValueUtil.getIntegerByObject(cud.get("idCurrentUsage")));
         assetCurrentUsage.setTimeCreated(String.valueOf(new Date().getTime()));
         assetCurrentUsageService.save(assetCurrentUsage);
@@ -218,6 +220,7 @@ public class DeclareServiceFactory {
                     break;
                 }
             }
+
             if (!isCheckExits) {
                 assetCurrentUsageService.deleteAssetCurrentUsage(usage);
             }
