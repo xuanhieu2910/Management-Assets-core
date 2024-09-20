@@ -16,6 +16,7 @@ public interface CsvcUserService extends UserDetailsService {
     CsvcUser findByIdCsvcUser(Integer idUser);
 
     Optional<CsvcUser> findByCodeUser(String codeUser);
+    Optional<CsvcUser> findByUserName(String userName);
 
     Boolean exitsByUserName(String userName);
 

@@ -19,4 +19,6 @@ public interface CsvcUserRepositoryCustom {
     Boolean exitsByUserName(String userName);
 
     Page<FindAllUserUsedDto> findAllUserUsedDto(FindAllUserUsedRequest request, Pageable pageable);
+
+    Optional<CsvcUser> findByUserName(String userName);
 }

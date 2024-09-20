@@ -20,6 +20,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -62,9 +65,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (!(authentication instanceof OAuth2AuthenticationToken)){
             handleOAuthFilter(request, response, filterChain);
         } else {
-            CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            setContextHolder();
             filterChain.doFilter(request, response);
         }
+    }
+
+    private void setContextHolder() {
+        OidcUser oidcUser = (OidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CsvcUser csvcUser = oidcUser.getUserInfo().getClaim(WebSecurityConfig.INFORMATION_USER);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                csvcUser,
+                null,
+                csvcUser.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 
     private void handleOAuthFilter(HttpServletRequest request,HttpServletResponse response,FilterChain filterChain) throws ServletException, IOException {

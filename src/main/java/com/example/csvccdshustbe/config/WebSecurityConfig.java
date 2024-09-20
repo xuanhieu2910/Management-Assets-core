@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -55,6 +56,9 @@ public class WebSecurityConfig{
     @Autowired
     OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
+    public final static String PREFERRED_USERNAME = "preferred_username";
+    public final static String INFORMATION_USER = "informationUser";
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable).cors(c->c.configurationSource(corsConfigurationSource())).
@@ -86,7 +90,7 @@ public class WebSecurityConfig{
             OidcUser oidcUser = delegate.loadUser(userRequest);
             String userName = oidcUser.getIdToken().getClaimAsString("preferred_username").trim().toLowerCase();
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-            Optional<CsvcUser> userDetails = csvcUserService.findByCodeUser(userName);
+            Optional<CsvcUser> userDetails = csvcUserService.findByUserName(userName);
             if (userDetails.isEmpty()){
                 try {
                     csvcUserService.createNewUser(userName);
@@ -105,6 +109,7 @@ public class WebSecurityConfig{
             String userNameAttributeName = providerDetails.getUserInfoEndpoint().getUserNameAttributeName();
             OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(userDetails.get(),
                     mappedAuthorities, userRequest.getClientRegistration().getRegistrationId());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             if (StringUtils.hasText(userNameAttributeName)) {
                 oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUserInfo, userNameAttributeName);
             } else {

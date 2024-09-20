@@ -73,6 +73,11 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     }
 
     @Override
+    public Optional<CsvcUser> findByUserName(String userName) {
+        return csvcUserRepository.findByUserName(userName);
+    }
+
+    @Override
     public Boolean exitsByUserName(String userName) {
         return csvcUserRepository.exitsByUserName(userName.trim());
     }
