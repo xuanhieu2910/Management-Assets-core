@@ -65,7 +65,7 @@ public class WardsRepositoryImpl implements WardsRepositoryCustom {
     }
 
     private void setParameterFindAllWards(FindAllWardsRequest request, Query query) {
-        query.setParameter("districtsCode", request.getCodeDistricts());
+        query.setParameter("districtsCode", request.getCodeDistrict());
         if (StringUtils.isNotBlank(request.getKeyword())) {
             query.setParameter("keyword", request.getKeyword());
         }

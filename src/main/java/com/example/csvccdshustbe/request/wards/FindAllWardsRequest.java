@@ -10,5 +10,5 @@ import lombok.Setter;
 public class FindAllWardsRequest extends RequestPageBase {
 
     @NotNull
-    private String codeDistricts;
+    private String codeDistrict;
 }
