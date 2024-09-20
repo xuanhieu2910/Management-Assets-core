@@ -7,7 +7,6 @@ import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
