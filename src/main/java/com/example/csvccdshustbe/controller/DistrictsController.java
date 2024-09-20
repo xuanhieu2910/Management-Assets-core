@@ -28,7 +28,7 @@ public class DistrictsController {
     DistrictsService districtsService;
 
     @GetMapping("/find-all")
-    public ResponseEntity<?> findAllLocationVisible(@And({
+    public ResponseEntity<?> findAllDistrictsVisible(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
