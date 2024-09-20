@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.dto.user.UserAuthenticationDto;
 import com.example.csvccdshustbe.request.user.UserAuthenticationRequest;
 import com.example.csvccdshustbe.request.user.UserRegisterAccountRequest;
 import com.example.csvccdshustbe.response.token.resfreshToken.RefreshTokenResponse;
+import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
 import com.example.csvccdshustbe.service.auth.AuthenticationService;
 import com.example.csvccdshustbe.service.jwt.JwtTokenService;
 import com.example.csvccdshustbe.service.token.refeshToken.RefreshTokenService;
@@ -18,11 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 
 @Tag(name = "Authentication User", description = "The Authentication User API. Contains operations like register,login, logout, refresh-token etc.")

@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
 import com.example.csvccdshustbe.response.user.FindAllUserUsedResponse;
+import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -25,4 +26,6 @@ public interface CsvcUserService extends UserDetailsService {
     Page<FindAllUserUsedResponse> findAllUserUsedResponse(FindAllUserUsedRequest request);
 
     void createNewUser(String userName) throws RoleException;
+
+    UserAuthenticationResponse getInformationUser();
 }

@@ -11,17 +11,16 @@ import com.example.csvccdshustbe.repository.user.CsvcUserRepository;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
 import com.example.csvccdshustbe.request.user.UserRegisterAccountRequest;
 import com.example.csvccdshustbe.response.user.FindAllUserUsedResponse;
+import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
 import com.example.csvccdshustbe.service.role.RoleService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
-import com.example.csvccdshustbe.utility.CodeUserUtil;
-import com.example.csvccdshustbe.utility.Constants;
-import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.ValueUtil;
+import com.example.csvccdshustbe.utility.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -101,6 +100,17 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         CsvcUser csvcUser = createCsvcUserByRegisterAccount(userName);
         saveCsvcUser(csvcUser);
         userRoleService.saveUserRole(createUserRoleByRegisterAccount(csvcUser.getIdUser(),role.getIdRole()));
+    }
+
+    @Override
+    public UserAuthenticationResponse getInformationUser() {
+        CsvcUser user = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAuthenticationResponse response = new UserAuthenticationResponse();
+        response.setCodeUser(user.getCodeUser());
+        response.setUserName(user.getName());
+        response.setRoles(RoleUtils.convertToRoleResponse((List<Role>) user.getRole()));
+        response.setFullName(user.getFullName());
+        return response;
     }
 
     private List<FindAllUserUsedResponse> convertToFindAllUserUsedResponse(List<FindAllUserUsedDto> collect,

@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
+import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -36,6 +37,17 @@ public class CsvcUserController {
                     "Find all user used success!", HttpStatus.OK);
         }catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
+    @GetMapping("/information")
+    public ResponseEntity<?> findInformation(){
+        try {
+            UserAuthenticationResponse authenticationDto = csvcUserService.getInformationUser();
+            return ResponseEntity.ok(authenticationDto);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 }
