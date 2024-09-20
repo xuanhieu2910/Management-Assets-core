@@ -43,7 +43,7 @@ public class ProxyInitDataAssetUtil {
                 return new OtherAssetModuleFactory();
             }
             case OtherVehicleTransportModule -> {
-                return new OtherVehicleTransportModule();
+                return new OtherVehicleTransportModuleFactory();
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type modules!");

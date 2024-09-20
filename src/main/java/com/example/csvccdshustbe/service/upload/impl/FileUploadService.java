@@ -194,12 +194,14 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public Resource downLoadFileImportAsset() throws IOException {
+        String fileExcel = "C:\\Users\\hieux\\Desktop\\Projects\\src\\main\\resources\\static\\Template_import_asset.xlsx";
+        FileInputStream file = new FileInputStream(new File(fileExcel));
         Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory =
                 assetCategoriesService.findAllAssetCategoriesVisibleResponseToDownload();
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("ImportAsset");
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
         createAssetCategories(workbook, mapAssetCategory);
-        try (FileOutputStream fileOut = new FileOutputStream("C:\\Users\\hieux\\Desktop\\Projects\\src\\main\\resources\\static\\Template_import_asset.xlsx")) {
+        try (FileOutputStream fileOut = new FileOutputStream("C:\\Users\\hieux\\Desktop\\Projects\\Template_import_asset.xlsx")) {
             workbook.write(fileOut);
         } catch (IOException e) {
             throw new RuntimeException(e);
