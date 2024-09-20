@@ -108,7 +108,7 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         UserAuthenticationResponse response = new UserAuthenticationResponse();
         response.setCodeUser(user.getCodeUser());
         response.setUserName(user.getName());
-        response.setRoles(RoleUtils.convertToRoleResponse((List<Role>) user.getRole()));
+        response.setRoles(RoleUtils.convertToRoleResponse(user.getRole().stream().toList()));
         response.setFullName(user.getFullName());
         return response;
     }
