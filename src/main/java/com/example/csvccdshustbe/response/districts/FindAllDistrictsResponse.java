@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FindAllDistrictsResponse {
 
-    @JsonProperty("code_districts")
+    @JsonProperty("code_district")
     private String codeDistricts;
     @JsonProperty("code_province")
     private String codeProvince;

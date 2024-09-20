@@ -199,7 +199,7 @@ public class FileUploadService implements FilesStorageService {
         Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory =
                 assetCategoriesService.findAllAssetCategoriesVisibleResponseToDownload();
         Workbook workbook = new XSSFWorkbook(file);
-        Sheet sheet = workbook.getSheetAt(0);
+        Sheet sheet = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY);
         createAssetCategories(workbook, mapAssetCategory);
         try (FileOutputStream fileOut = new FileOutputStream("C:\\Users\\hieux\\Desktop\\Projects\\Template_import_asset.xlsx")) {
             workbook.write(fileOut);
@@ -241,12 +241,12 @@ public class FileUploadService implements FilesStorageService {
         DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
 
-        String formula = NAME_INDIRECT + "($A2)";
+        String formula = NAME_INDIRECT + "($A3)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
-        CellRangeAddressList productAddressList = new CellRangeAddressList(1, 1, 1, 1);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(2, 1000, 1,1);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
-        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ASSET_CATEGORY), true);
+//        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ASSET_CATEGORY), true);
     }
     private void filledDataAssetCategory(Sheet sheetAssetCategories,
                                          List<FindAllAssetCategoriesByCodeAndVisibleDto> dtos,

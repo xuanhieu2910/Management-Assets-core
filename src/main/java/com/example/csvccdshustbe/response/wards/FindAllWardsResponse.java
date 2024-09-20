@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 public class FindAllWardsResponse {
 
-    @JsonProperty("code_wards")
+    @JsonProperty("code_ward")
     private String codeWards;
-    @JsonProperty("name_wards")
+    @JsonProperty("name_ward")
     private String nameWards;
-    @JsonProperty("code_districts")
+    @JsonProperty("code_district")
     private String codeDistricts;
 }
