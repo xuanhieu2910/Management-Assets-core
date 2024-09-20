@@ -60,8 +60,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (!(authentication instanceof OAuth2AuthenticationToken)){
             handleOAuthFilter(request, response, filterChain);
         } else {
+            handleOAuth2Filter(authentication);
             filterChain.doFilter(request, response);
         }
+    }
+
+    private void handleOAuth2Filter(Authentication authentication) {
+        OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) authentication;
     }
 
     private void handleOAuthFilter(HttpServletRequest request,HttpServletResponse response,FilterChain filterChain) throws ServletException, IOException {

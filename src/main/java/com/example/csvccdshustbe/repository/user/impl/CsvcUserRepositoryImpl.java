@@ -154,7 +154,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("userName", userName);
         List<Object[]> result = query.getResultList();
-        return !CollectionUtils.isEmpty(result) ? true : false;
+        return !CollectionUtils.isEmpty(result);
     }
 
     @Override

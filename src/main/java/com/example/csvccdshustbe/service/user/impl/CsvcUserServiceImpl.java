@@ -2,11 +2,22 @@ package com.example.csvccdshustbe.service.user.impl;
 
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.entity.Role;
+import com.example.csvccdshustbe.entity.UserRole;
+import com.example.csvccdshustbe.enums.OAuth2Factory;
+import com.example.csvccdshustbe.enums.RolePattern;
+import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepository;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
+import com.example.csvccdshustbe.request.user.UserRegisterAccountRequest;
 import com.example.csvccdshustbe.response.user.FindAllUserUsedResponse;
+import com.example.csvccdshustbe.service.role.RoleService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
+import com.example.csvccdshustbe.service.userRole.UserRoleService;
+import com.example.csvccdshustbe.utility.CodeUserUtil;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,7 +26,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +39,10 @@ public class CsvcUserServiceImpl implements CsvcUserService {
 
     @Autowired
     CsvcUserRepository csvcUserRepository;
-
+    @Autowired
+    UserRoleService userRoleService;
+    @Autowired
+    RoleService roleService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<CsvcUser> user = csvcUserRepository.loadUserByUsername(username);
@@ -81,6 +97,14 @@ public class CsvcUserServiceImpl implements CsvcUserService {
                 pageable, allUserUsedDtos.getTotalElements()));
     }
 
+    @Override
+    public void createNewUser(String userName) throws RoleException {
+        Role role = userRoleService.findRoleByUserName(RolePattern.USER.name());
+        CsvcUser csvcUser = createCsvcUserByRegisterAccount(userName);
+        saveCsvcUser(csvcUser);
+        userRoleService.saveUserRole(createUserRoleByRegisterAccount(csvcUser.getIdUser(),role.getIdRole()));
+    }
+
     private List<FindAllUserUsedResponse> convertToFindAllUserUsedResponse(List<FindAllUserUsedDto> collect,
                                                                            Pageable pageable, long totalElements) {
         List<FindAllUserUsedResponse> findAllUserUsedResponses = new ArrayList<>();
@@ -92,5 +116,28 @@ public class CsvcUserServiceImpl implements CsvcUserService {
             findAllUserUsedResponses.add(response);
         }
         return findAllUserUsedResponses;
+    }
+
+    private CsvcUser createCsvcUserByRegisterAccount(String userName){
+        String timeCurrently = String.valueOf(new Timestamp(new Date().getTime()).getTime());
+        CsvcUser csvcUser = new CsvcUser();
+        csvcUser.setUserName(userName);
+        csvcUser.setPassword(null);
+        csvcUser.setTimeCreated(timeCurrently);
+        csvcUser.setTimeModified(timeCurrently);
+        csvcUser.setIsActived(Constants.ACCOUNT_IS_UN_LOCK);
+        csvcUser.setAuth(OAuth2Factory.azure.name());
+        csvcUser.setCodeUser(CodeUserUtil.autoGenerateSecureRandomUser(userName));
+        return csvcUser;
+    }
+
+    private UserRole createUserRoleByRegisterAccount(Integer idUser, Integer idRole){
+        String timeCurrently = String.valueOf(new Timestamp(new Date().getTime()).getTime());
+        UserRole userRole = new UserRole();
+        userRole.setIdUser(idUser);
+        userRole.setIdRole(idRole);
+        userRole.setTimeCreated(timeCurrently);
+        userRole.setTimeModified(timeCurrently);
+        return userRole;
     }
 }

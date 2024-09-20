@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.user;
 
 import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
 import com.example.csvccdshustbe.response.user.FindAllUserUsedResponse;
 import org.springframework.data.domain.Page;
@@ -19,4 +20,6 @@ public interface CsvcUserService extends UserDetailsService {
     CsvcUser saveCsvcUser(CsvcUser csvcUser);
 
     Page<FindAllUserUsedResponse> findAllUserUsedResponse(FindAllUserUsedRequest request);
+
+    void createNewUser(String userName) throws RoleException;
 }

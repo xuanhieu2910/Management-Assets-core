@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.config;
 
+import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +84,13 @@ public class WebSecurityConfig{
             String userName = oidcUser.getIdToken().getClaimAsString("preferred_username").trim().toLowerCase();
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
             UserDetails customUserDetails = csvcUserService.loadUserByUsername(userName);
+            if (!csvcUserService.exitsByUserName(userName)){
+                try {
+                    csvcUserService.createNewUser(userName);
+                } catch (RoleException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             Map<String, Object> claims = new HashMap<>();
             claims.put(Constants.CLAIMS_INFORMATION_USER,customUserDetails);
             OidcUserInfo oidcUserInfo = new OidcUserInfo(claims);
