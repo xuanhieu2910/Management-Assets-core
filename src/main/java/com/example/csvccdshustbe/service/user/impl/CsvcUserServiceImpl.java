@@ -68,15 +68,8 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     }
 
     @Override
-    public CsvcUser findByCodeUser(String codeUser) {
-        Optional<CsvcUser> user = csvcUserRepository.findByCodeCsvcUser(codeUser);
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException("User not found!");
-        }
-        if (!user.get().isAccountNonLocked()){
-            throw new UsernameNotFoundException("User is locked!");
-        }
-        return user.get();
+    public Optional<CsvcUser> findByCodeUser(String codeUser) {
+        return csvcUserRepository.findByCodeCsvcUser(codeUser);
     }
 
     @Override

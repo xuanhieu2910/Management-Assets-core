@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.config;
 
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.service.jwt.JwtTokenService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import jakarta.servlet.FilterChain;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -60,13 +62,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (!(authentication instanceof OAuth2AuthenticationToken)){
             handleOAuthFilter(request, response, filterChain);
         } else {
-            handleOAuth2Filter(authentication);
+            CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             filterChain.doFilter(request, response);
         }
-    }
-
-    private void handleOAuth2Filter(Authentication authentication) {
-        OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) authentication;
     }
 
     private void handleOAuthFilter(HttpServletRequest request,HttpServletResponse response,FilterChain filterChain) throws ServletException, IOException {

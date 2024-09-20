@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.config;
 
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
@@ -14,6 +15,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -83,20 +86,25 @@ public class WebSecurityConfig{
             OidcUser oidcUser = delegate.loadUser(userRequest);
             String userName = oidcUser.getIdToken().getClaimAsString("preferred_username").trim().toLowerCase();
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-            UserDetails customUserDetails = csvcUserService.loadUserByUsername(userName);
-            if (!csvcUserService.exitsByUserName(userName)){
+            Optional<CsvcUser> userDetails = csvcUserService.findByCodeUser(userName);
+            if (userDetails.isEmpty()){
                 try {
                     csvcUserService.createNewUser(userName);
                 } catch (RoleException e) {
                     throw new RuntimeException(e);
                 }
             }
+            if (userDetails.isPresent() && !userDetails.get().isAccountNonLocked()) {
+                throw new UsernameNotFoundException("User is locked!");
+            }
             Map<String, Object> claims = new HashMap<>();
-            claims.put(Constants.CLAIMS_INFORMATION_USER,customUserDetails);
+            claims.put(Constants.CLAIMS_INFORMATION_USER,userDetails.get());
             OidcUserInfo oidcUserInfo = new OidcUserInfo(claims);
-            mappedAuthorities.addAll(customUserDetails.getAuthorities());
+            mappedAuthorities.addAll(userDetails.get().getAuthorities());
             ClientRegistration.ProviderDetails providerDetails = userRequest.getClientRegistration().getProviderDetails();
             String userNameAttributeName = providerDetails.getUserInfoEndpoint().getUserNameAttributeName();
+            OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(userDetails.get(),
+                    mappedAuthorities, userRequest.getClientRegistration().getRegistrationId());
             if (StringUtils.hasText(userNameAttributeName)) {
                 oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUserInfo, userNameAttributeName);
             } else {

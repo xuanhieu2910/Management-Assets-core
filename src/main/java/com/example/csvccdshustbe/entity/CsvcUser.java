@@ -8,17 +8,19 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "csvc_user")
-public class CsvcUser implements UserDetails {
+public class CsvcUser implements OAuth2User,UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,6 +64,11 @@ public class CsvcUser implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name="role_id"))
     private Collection<Role> role;
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -120,5 +127,10 @@ public class CsvcUser implements UserDetails {
             privileges.add(item.getTitle());
         }
         return privileges;
+    }
+
+    @Override
+    public String getName() {
+        return this.userName;
     }
 }

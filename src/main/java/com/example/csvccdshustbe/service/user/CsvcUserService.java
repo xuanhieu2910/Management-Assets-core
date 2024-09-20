@@ -7,13 +7,15 @@ import com.example.csvccdshustbe.response.user.FindAllUserUsedResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.Optional;
+
 
 public interface CsvcUserService extends UserDetailsService {
 
 
     CsvcUser findByIdCsvcUser(Integer idUser);
 
-    CsvcUser findByCodeUser(String codeUser);
+    Optional<CsvcUser> findByCodeUser(String codeUser);
 
     Boolean exitsByUserName(String userName);
 

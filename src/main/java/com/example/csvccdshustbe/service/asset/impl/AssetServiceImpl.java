@@ -47,6 +47,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -339,8 +340,14 @@ public class AssetServiceImpl implements AssetService {
                 if (ValueUtil.getStringByObject(dataAsset.get(Constants.KEY_TYPE_MODULE)).
                         equals(bluePrintAssetModulesDto.getTypeModules())) {
                     if (StringUtils.isNotBlank(ValueUtil.getStringByObject(dataAsset.get("codeUser")))){
-                        CsvcUser user = csvcUserService.findByCodeUser(ValueUtil.getStringByObject(dataAsset.get("codeUser")));
-                        dataAsset.put("idUser", user.getIdUser());
+                        Optional<CsvcUser> user = csvcUserService.findByCodeUser(ValueUtil.getStringByObject(dataAsset.get("codeUser")));
+                        if (user.isEmpty()) {
+                            throw new UsernameNotFoundException("User not found!");
+                        }
+                        if (!user.get().isAccountNonLocked()){
+                            throw new UsernameNotFoundException("User is locked!");
+                        }
+                        dataAsset.put("idUser", user.get().getIdUser());
                     }
                     typeModules = bluePrintAssetModulesDto.getTypeModules();
                     idInstance = bluePrintAssetModulesDto.getIdInstance();
@@ -371,8 +378,14 @@ public class AssetServiceImpl implements AssetService {
             }
             if (!checkEqual){
                 if (StringUtils.isNotBlank(ValueUtil.getStringByObject(dataAsset.get("codeUser")))) {
-                    CsvcUser user = csvcUserService.findByCodeUser(ValueUtil.getStringByObject(dataAsset.get("codeUser")));
-                    dataAsset.put("idUser", user.getIdUser());
+                    Optional<CsvcUser> user = csvcUserService.findByCodeUser(ValueUtil.getStringByObject(dataAsset.get("codeUser")));
+                    if (user.isEmpty()) {
+                        throw new UsernameNotFoundException("User not found!");
+                    }
+                    if (!user.get().isAccountNonLocked()){
+                        throw new UsernameNotFoundException("User is locked!");
+                    }
+                    dataAsset.put("idUser", user.get().getIdUser());
                 }
                 dataAsset.put("idAsset", asset.getIdAsset());
                 ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
@@ -712,8 +725,14 @@ public class AssetServiceImpl implements AssetService {
         if (!CollectionUtils.isEmpty(modulesDataAsset)){
             for (HashMap<String, Object> moduleDataAsset : modulesDataAsset) {
                 if (StringUtils.isNotBlank(ValueUtil.getStringByObject(moduleDataAsset.get("codeUser")))){
-                    CsvcUser user = csvcUserService.findByCodeUser(ValueUtil.getStringByObject(moduleDataAsset.get("codeUser")));
-                    moduleDataAsset.put("idUser", user.getIdUser());
+                    Optional<CsvcUser> user = csvcUserService.findByCodeUser(ValueUtil.getStringByObject(moduleDataAsset.get("codeUser")));
+                    if (user.isEmpty()) {
+                        throw new UsernameNotFoundException("User not found!");
+                    }
+                    if (!user.get().isAccountNonLocked()){
+                        throw new UsernameNotFoundException("User is locked!");
+                    }
+                    moduleDataAsset.put("idUser", user.get().getIdUser());
                 }
                 moduleDataAsset.put("idAsset", asset.getIdAsset());
                 ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
