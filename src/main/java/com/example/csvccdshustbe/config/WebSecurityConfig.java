@@ -58,7 +58,7 @@ public class WebSecurityConfig{
 
     public final static String PREFERRED_USERNAME = "preferred_username";
     public final static String INFORMATION_USER = "informationUser";
-
+    public final static String DOMAIN_DEV = "https://csvc-development.hust.edu.vn";
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable).cors(c->c.configurationSource(corsConfigurationSource())).
@@ -122,8 +122,8 @@ public class WebSecurityConfig{
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-//        configuration.setAllowedOrigins(List.of("https://csvc-development.hust.edu.vn"));
+//        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of(DOMAIN_DEV));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
