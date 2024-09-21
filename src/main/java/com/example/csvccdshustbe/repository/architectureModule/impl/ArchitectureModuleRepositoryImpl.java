@@ -47,8 +47,6 @@ public class ArchitectureModuleRepositoryImpl implements ArchitectureModuleRepos
                 module.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[7]));
                 module.setNameInstance(ValueUtil.getStringByObject(obj[8]));
                 module.setNameCountryProducer(ValueUtil.getStringByObject(obj[9]));
-                module.setNameInstance(ValueUtil.getStringByObject(obj[10]));
-                module.setNameCountryProducer(ValueUtil.getStringByObject(obj[11]));
                 return Optional.of(module);
             }
         }

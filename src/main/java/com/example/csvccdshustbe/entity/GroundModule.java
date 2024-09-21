@@ -15,7 +15,7 @@ public class GroundModule implements IModules{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_ground_module")
     private Integer idGroundModule;
-    @Column(name = "id_asset")
+    @Column(name = "asset_id")
     private Integer idAsset;
     @Column(name = "province_code")
     private String provinceCode;
