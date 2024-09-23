@@ -20,7 +20,7 @@ public class GoalsUseGround {
     @Column(name = "code")
     private String code;
     @Column(name = "status")
-    private String status;
+    private Integer status;
     @Column(name = "time_created")
     private String timeCreated;
     @Column(name = "time_modified")

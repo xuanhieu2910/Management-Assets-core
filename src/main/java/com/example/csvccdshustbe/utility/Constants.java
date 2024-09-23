@@ -200,6 +200,11 @@ public class Constants {
     public static final Integer ORIGINALS_VISIBLE = 1;
     public static final Integer ORIGINALS_UN_VISIBLE = -1;
     /*----------------------------------------------------*/
+    /**
+     * Constant Medicine Group
+     * */
+    public static final Integer GOALS_USE_GROUND_ACTIVE_STATUS = 1;
 
+    /*----------------------------------------------------*/
 
 }
