@@ -1,6 +1,13 @@
 package com.example.csvccdshustbe.enums;
 
 public enum RolePattern {
-    ADMIN,
-    USER
+    SuperAdmin,
+    Admin,
+    User,
+    Manager,
+    ManagerDepartment,
+    ManagerAsset,
+    ManagerTool,
+    CreatorAsset,
+    CreatorTool
 }

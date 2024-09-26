@@ -19,6 +19,14 @@ public class Constants {
 
     /*-----------------------------------------------------*/
 
+    /**
+     * Constants ROLE_USER
+     * */
+    public static final Integer ROLE_USER_PICKED = 1;
+    public static final Integer ROLE_USER_UN_PICKED = -1;
+
+    /*-----------------------------------------------------*/
+
 
     /**
      * Constant Asset categories

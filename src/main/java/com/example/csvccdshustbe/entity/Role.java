@@ -32,8 +32,8 @@ public class Role {
     @Column(name = "time_modified")
     private String timeModified;
     @ManyToMany
-    @JoinTable(name = "role_privilege",
+    @JoinTable(name = "role_capabilities",
             joinColumns = @JoinColumn(name = "id_role"),
-            inverseJoinColumns = @JoinColumn(name="id_privilege"))
-    private Set<Privilege> privileges;
+            inverseJoinColumns = @JoinColumn(name="id_capabilities"))
+    private Set<Capabilities> capabilities;
 }

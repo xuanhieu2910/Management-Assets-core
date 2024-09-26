@@ -118,13 +118,13 @@ public class CsvcUser implements OAuth2User,UserDetails {
     private List<String> getPrivileges(Collection<Role> roles) {
 
         List<String> privileges = new ArrayList<>();
-        List<Privilege> collection = new ArrayList<>();
+        List<Capabilities> collection = new ArrayList<>();
         for (Role role : roles) {
-            privileges.add("ROLE_"+role.getTitle());
-            collection.addAll(role.getPrivileges());
+            privileges.add("ROLE_" + role.getTitle());
+            collection.addAll(role.getCapabilities());
         }
-        for (Privilege item : collection) {
-            privileges.add(item.getTitle());
+        for (Capabilities item : collection) {
+            privileges.add(item.getName());
         }
         return privileges;
     }

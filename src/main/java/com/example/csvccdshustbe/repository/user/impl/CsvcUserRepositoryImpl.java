@@ -1,9 +1,10 @@
 package com.example.csvccdshustbe.repository.user.impl;
 
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
+import com.example.csvccdshustbe.entity.Capabilities;
 import com.example.csvccdshustbe.entity.CsvcUser;
-import com.example.csvccdshustbe.entity.Privilege;
 import com.example.csvccdshustbe.entity.Role;
+import com.example.csvccdshustbe.enums.ContextLevelPattern;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepositoryCustom;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
 import com.example.csvccdshustbe.utility.Constants;
@@ -31,33 +32,63 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
     @Override
     public Optional<CsvcUser> loadUserByUsername(String username) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select csvcUser.id_user, csvcUser.user_name, " +
-                "       csvcUser.password, csvcUser.auth, csvcUser.code_user, " +
-                "       csvcUser.full_name, csvcUser.phone_number, csvcUser.path_avatar, " +
-                "       csvcUser.time_created, csvcUser.time_modified, csvcUser.delete_at, " +
-                "       csvcUser.first_access, csvcUser.last_access, csvcUser.last_login, " +
-                "       csvcUser.current_login, csvcUser.sex, csvcUser.is_actived, " +
-                "       role.id_role, role.title, role.status, role.content, " +
-                "       role.short_name, role.description, role.time_created, role.time_modified, " +
-                "       group_concat(privilege.title, '') privilege_title " +
-                "from csvc_user csvcUser " +
-                "    inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
-                "    inner join role role on role.id_role = userRole.id_role " +
-                "    inner join role_privilege rolePrivilege on role.id_role = rolePrivilege.id_role " +
-                "    inner join privilege privilege on rolePrivilege.id_privilege = privilege.id_privilege " +
-                "and privilege.status = 1 " +
-                "and role.status = 1 " +
-                "and csvcUser.user_name = :userName " +
-                "group by csvcUser.id_user, csvcUser.user_name, " +
-                "         csvcUser.password, csvcUser.auth, csvcUser.code_user, " +
-                "         csvcUser.full_name, csvcUser.phone_number, csvcUser.path_avatar, " +
-                "         csvcUser.time_created, csvcUser.time_modified, csvcUser.delete_at, " +
-                "         csvcUser.first_access, csvcUser.last_access, csvcUser.last_login, " +
-                "         csvcUser.current_login, csvcUser.sex, csvcUser.is_actived, " +
-                "         role.id_role, role.title, role.status, role.content, " +
-                "         role.short_name, role.description, role.time_created, role.time_modified ");
+        sb.append(" select csvcUser.id_user, csvcUser.user_name, csvcUser.password, csvcUser.auth,  " +
+                "       csvcUser.code_user, csvcUser.full_name, csvcUser.phone_number,  " +
+                "       csvcUser.path_avatar, csvcUser.time_created, csvcUser.time_modified,  " +
+                "       csvcUser.delete_at, csvcUser.first_access, csvcUser.last_access,  " +
+                "       csvcUser.last_login, csvcUser.current_login, csvcUser.sex, csvcUser.is_actived,  " +
+                "       role.id_role, role.title, role.status, role.content, role.short_name, role.description,  " +
+                "       role.time_created, role.time_modified,  " +
+                "       capabilities.name, capabilities.cap_type, capabilities.component  " +
+                "from csvc_user csvcUser  " +
+                "         inner join user_role userRole on csvcUser.id_user = userRole.id_user  " +
+                "         inner join role role on userRole.id_role = role.id_role  " +
+                "         inner join role_capabilities roleCapabilities on role.id_role = roleCapabilities.id_role  " +
+                "         inner join capabilities capabilities on roleCapabilities.id_capabilities = capabilities.id_capability  " +
+                "         inner join context context on context.id_context = roleCapabilities.id_context  " +
+                "where csvcUser.user_name = :userName and context.context_level = :contextLevel  " +
+                "      and role.status = 1 and roleCapabilities.permission = 1 and capabilities.status = 1  " +
+                "      and userRole.picked = :isPicked  " +
+                "group by csvcUser.id_user, csvcUser.user_name, csvcUser.password, csvcUser.auth,  " +
+                "         csvcUser.code_user, csvcUser.full_name, csvcUser.phone_number,  " +
+                "         csvcUser.path_avatar, csvcUser.time_created, csvcUser.time_modified,  " +
+                "         csvcUser.delete_at, csvcUser.first_access, csvcUser.last_access,  " +
+                "         csvcUser.last_login, csvcUser.current_login, csvcUser.sex, csvcUser.is_actived,  " +
+                "         role.id_role, role.title, role.status, role.content, role.short_name, role.description,  " +
+                "         role.time_created, role.time_modified,  " +
+                "         capabilities.name, capabilities.cap_type, capabilities.component  " +
+                "union all  " +
+                "select csvcUser.id_user, csvcUser.user_name, csvcUser.password, csvcUser.auth,  " +
+                "       csvcUser.code_user, csvcUser.full_name, csvcUser.phone_number,  " +
+                "       csvcUser.path_avatar, csvcUser.time_created, csvcUser.time_modified,  " +
+                "       csvcUser.delete_at, csvcUser.first_access, csvcUser.last_access,  " +
+                "       csvcUser.last_login, csvcUser.current_login, csvcUser.sex, csvcUser.is_actived,  " +
+                "       role.id_role, role.title, role.status, role.content, role.short_name, role.description,  " +
+                "       role.time_created, role.time_modified,  " +
+                "       capabilities.name, capabilities.cap_type, capabilities.component  " +
+                "from csvc_user csvcUser  " +
+                "         inner join user_role userRole on csvcUser.id_user = userRole.id_user  " +
+                "         inner join role_assignments roleAssignment on userRole.id_user_role = roleAssignment.id_user_role  " +
+                "         inner join role role on userRole.id_role = role.id_role  " +
+                "         inner join role_capabilities roleCapabilities on role.id_role = roleCapabilities.id_role  " +
+                "         inner join capabilities capabilities on roleCapabilities.id_capabilities = capabilities.id_capability  " +
+                "         inner join context context on context.id_context = roleCapabilities.id_context  " +
+                "                                           and roleAssignment.id_context = context.id_context  " +
+                "where csvcUser.user_name = :userName and context.context_level != :contextLevel  " +
+                "      and role.status = 1 and roleCapabilities.permission = 1 and capabilities.status = 1  " +
+                "  and userRole.picked = :isPicked  " +
+                "group by csvcUser.id_user, csvcUser.user_name, csvcUser.password, csvcUser.auth,  " +
+                "         csvcUser.code_user, csvcUser.full_name, csvcUser.phone_number,  " +
+                "         csvcUser.path_avatar, csvcUser.time_created, csvcUser.time_modified,  " +
+                "         csvcUser.delete_at, csvcUser.first_access, csvcUser.last_access,  " +
+                "         csvcUser.last_login, csvcUser.current_login, csvcUser.sex, csvcUser.is_actived,  " +
+                "         role.id_role, role.title, role.status, role.content, role.short_name, role.description,  " +
+                "         role.time_created, role.time_modified,  " +
+                "         capabilities.name, capabilities.cap_type, capabilities.component ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("userName", username);
+        query.setParameter("contextLevel", ContextLevelPattern.CONTEXT_SYSTEM.contextLevel);
+        query.setParameter("isPicked", Constants.ROLE_USER_PICKED);
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)) {
             CsvcUser csvcUser = setCsvcUserLoadByUserName(result.get(0));
@@ -187,33 +218,63 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
     @Override
     public Optional<CsvcUser> findByUserName(String userName) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select csvcUser.id_user, csvcUser.user_name,    " +
-                "        csvcUser.password, csvcUser.auth, csvcUser.code_user,    " +
-                "        csvcUser.full_name, csvcUser.phone_number, csvcUser.path_avatar,    " +
-                "        csvcUser.time_created, csvcUser.time_modified, csvcUser.delete_at,    " +
-                "        csvcUser.first_access, csvcUser.last_access, csvcUser.last_login,    " +
-                "        csvcUser.current_login, csvcUser.sex, csvcUser.is_actived,    " +
-                "        role.id_role, role.title, role.status, role.content,    " +
-                "        role.short_name, role.description, role.time_created, role.time_modified,    " +
-                "        group_concat(privilege.title, '') privilege_title    " +
-                " from csvc_user csvcUser    " +
-                "     inner join user_role userRole on csvcUser.id_user = userRole.id_user    " +
-                "     inner join role role on role.id_role = userRole.id_role    " +
-                "     inner join role_privilege rolePrivilege on role.id_role = rolePrivilege.id_role    " +
-                "     inner join privilege privilege on rolePrivilege.id_privilege = privilege.id_privilege    " +
-                " and privilege.status = 1    " +
-                " and role.status = 1    " +
-                " and csvcUser.user_name = :userName    " +
-                " group by csvcUser.id_user, csvcUser.user_name,    " +
-                "          csvcUser.password, csvcUser.auth, csvcUser.code_user,    " +
-                "          csvcUser.full_name, csvcUser.phone_number, csvcUser.path_avatar,    " +
-                "          csvcUser.time_created, csvcUser.time_modified, csvcUser.delete_at,    " +
-                "          csvcUser.first_access, csvcUser.last_access, csvcUser.last_login,    " +
-                "          csvcUser.current_login, csvcUser.sex, csvcUser.is_actived,    " +
-                "          role.id_role, role.title, role.status, role.content,    " +
-                "          role.short_name, role.description, role.time_created, role.time_modified  ");
+        sb.append(" select csvcUser.id_user, csvcUser.user_name, csvcUser.password, csvcUser.auth,  " +
+                "       csvcUser.code_user, csvcUser.full_name, csvcUser.phone_number,  " +
+                "       csvcUser.path_avatar, csvcUser.time_created, csvcUser.time_modified,  " +
+                "       csvcUser.delete_at, csvcUser.first_access, csvcUser.last_access,  " +
+                "       csvcUser.last_login, csvcUser.current_login, csvcUser.sex, csvcUser.is_actived,  " +
+                "       role.id_role, role.title, role.status, role.content, role.short_name, role.description,  " +
+                "       role.time_created, role.time_modified,  " +
+                "       capabilities.name, capabilities.cap_type, capabilities.component  " +
+                "from csvc_user csvcUser  " +
+                "         inner join user_role userRole on csvcUser.id_user = userRole.id_user  " +
+                "         inner join role role on userRole.id_role = role.id_role  " +
+                "         inner join role_capabilities roleCapabilities on role.id_role = roleCapabilities.id_role  " +
+                "         inner join capabilities capabilities on roleCapabilities.id_capabilities = capabilities.id_capability  " +
+                "         inner join context context on context.id_context = roleCapabilities.id_context  " +
+                "where csvcUser.user_name = :userName and context.context_level = :contextLevel  " +
+                "      and role.status = 1 and roleCapabilities.permission = 1 and capabilities.status = 1  " +
+                "      and userRole.picked = :isPicked  " +
+                "group by csvcUser.id_user, csvcUser.user_name, csvcUser.password, csvcUser.auth,  " +
+                "         csvcUser.code_user, csvcUser.full_name, csvcUser.phone_number,  " +
+                "         csvcUser.path_avatar, csvcUser.time_created, csvcUser.time_modified,  " +
+                "         csvcUser.delete_at, csvcUser.first_access, csvcUser.last_access,  " +
+                "         csvcUser.last_login, csvcUser.current_login, csvcUser.sex, csvcUser.is_actived,  " +
+                "         role.id_role, role.title, role.status, role.content, role.short_name, role.description,  " +
+                "         role.time_created, role.time_modified,  " +
+                "         capabilities.name, capabilities.cap_type, capabilities.component  " +
+                "union all  " +
+                "select csvcUser.id_user, csvcUser.user_name, csvcUser.password, csvcUser.auth,  " +
+                "       csvcUser.code_user, csvcUser.full_name, csvcUser.phone_number,  " +
+                "       csvcUser.path_avatar, csvcUser.time_created, csvcUser.time_modified,  " +
+                "       csvcUser.delete_at, csvcUser.first_access, csvcUser.last_access,  " +
+                "       csvcUser.last_login, csvcUser.current_login, csvcUser.sex, csvcUser.is_actived,  " +
+                "       role.id_role, role.title, role.status, role.content, role.short_name, role.description,  " +
+                "       role.time_created, role.time_modified,  " +
+                "       capabilities.name, capabilities.cap_type, capabilities.component  " +
+                "from csvc_user csvcUser  " +
+                "         inner join user_role userRole on csvcUser.id_user = userRole.id_user  " +
+                "         inner join role_assignments roleAssignment on userRole.id_user_role = roleAssignment.id_user_role  " +
+                "         inner join role role on userRole.id_role = role.id_role  " +
+                "         inner join role_capabilities roleCapabilities on role.id_role = roleCapabilities.id_role  " +
+                "         inner join capabilities capabilities on roleCapabilities.id_capabilities = capabilities.id_capability  " +
+                "         inner join context context on context.id_context = roleCapabilities.id_context  " +
+                "                                           and roleAssignment.id_context = context.id_context  " +
+                "where csvcUser.user_name = :userName and context.context_level != :contextLevel  " +
+                "      and role.status = 1 and roleCapabilities.permission = 1 and capabilities.status = 1  " +
+                "  and userRole.picked = :isPicked  " +
+                "group by csvcUser.id_user, csvcUser.user_name, csvcUser.password, csvcUser.auth,  " +
+                "         csvcUser.code_user, csvcUser.full_name, csvcUser.phone_number,  " +
+                "         csvcUser.path_avatar, csvcUser.time_created, csvcUser.time_modified,  " +
+                "         csvcUser.delete_at, csvcUser.first_access, csvcUser.last_access,  " +
+                "         csvcUser.last_login, csvcUser.current_login, csvcUser.sex, csvcUser.is_actived,  " +
+                "         role.id_role, role.title, role.status, role.content, role.short_name, role.description,  " +
+                "         role.time_created, role.time_modified,  " +
+                "         capabilities.name, capabilities.cap_type, capabilities.component ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("userName", userName);
+        query.setParameter("contextLevel", ContextLevelPattern.CONTEXT_SYSTEM.contextLevel);
+        query.setParameter("isPicked", Constants.ROLE_USER_PICKED);
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)) {
             CsvcUser csvcUser = setCsvcUserLoadByUserName(result.get(0));
@@ -271,28 +332,36 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
         return csvcUser;
     }
 
-    private List<Role> getRolesLoadByUserName(List<Object[]> result){
+    private List<Role> getRolesLoadByUserName(List<Object[]> result) {
         List<Role> roles = new ArrayList<>();
-        for (Object[] obj: result){
-            Role role = new Role();
-            role.setIdRole(ValueUtil.getIntegerByObject(obj[17]));
-            role.setTitle(ValueUtil.getStringByObject(obj[18]));
-            role.setStatus(ValueUtil.getIntegerByObject(obj[19]));
-            role.setContent(ValueUtil.getStringByObject(obj[20]));
-            role.setShortName(ValueUtil.getStringByObject(obj[21]));
-            role.setDescription(ValueUtil.getStringByObject(obj[22]));
-            role.setTimeCreated(ValueUtil.getStringByObject(obj[23]));
-            role.setTimeModified(ValueUtil.getStringByObject(obj[24]));
-            String[] privileges = ValueUtil.getStringByObject(obj[25]).split(Extension_privilege);
-            Set<Privilege> privilegeSet = new HashSet<>();
-            for(String privilege : privileges){
-                Privilege res = new Privilege();
-                res.setTitle(privilege);
-                privilegeSet.add(res);
-            }
-            role.setPrivileges(privilegeSet);
-            roles.add(role);
-        }
+        Role role = createRole(result.get(0));
+        role.setCapabilities(createCapabilities(result));
+        roles.add(role);
         return roles;
+    }
+
+    private Set<Capabilities> createCapabilities(List<Object[]> result) {
+        Set<Capabilities> capabilitiesSet = new HashSet<>();
+        for (Object[] obj : result){
+            Capabilities capa = new Capabilities();
+            capa.setName(ValueUtil.getStringByObject(obj[25]));
+            capa.setCapType(ValueUtil.getStringByObject(obj[26]));
+            capa.setComponent(ValueUtil.getStringByObject(obj[27]));
+            capabilitiesSet.add(capa);
+        }
+        return capabilitiesSet;
+    }
+
+    private Role createRole(Object[] obj) {
+        Role role = new Role();
+        role.setIdRole(ValueUtil.getIntegerByObject(obj[17]));
+        role.setTitle(ValueUtil.getStringByObject(obj[18]));
+        role.setStatus(ValueUtil.getIntegerByObject(obj[19]));
+        role.setContent(ValueUtil.getStringByObject(obj[20]));
+        role.setShortName(ValueUtil.getStringByObject(obj[21]));
+        role.setDescription(ValueUtil.getStringByObject(obj[22]));
+        role.setTimeCreated(ValueUtil.getStringByObject(obj[23]));
+        role.setTimeModified(ValueUtil.getStringByObject(obj[24]));
+        return role;
     }
 }

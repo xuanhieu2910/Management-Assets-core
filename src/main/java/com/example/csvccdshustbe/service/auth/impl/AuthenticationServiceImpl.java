@@ -65,7 +65,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (csvcUserService.exitsByUserName(request.getUsername())) {
             throw new ValidateFiledException("Exits user, please use another user name");
         }
-        Role role = userRoleService.findRoleByUserName(RolePattern.USER.name());
+        Role role = userRoleService.findRoleByUserName(RolePattern.User.name());
         ValueUtil.validateStrongPassword(request.getPassword());
         CsvcUser csvcUser = createCsvcUserByRegisterAccount(request);
         csvcUserService.saveCsvcUser(csvcUser);

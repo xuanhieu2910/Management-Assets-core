@@ -9,7 +9,9 @@ import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepository;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
+import com.example.csvccdshustbe.request.user.SwitchUserRequest;
 import com.example.csvccdshustbe.request.user.UserRegisterAccountRequest;
+import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
 import com.example.csvccdshustbe.response.user.FindAllUserUsedResponse;
 import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
 import com.example.csvccdshustbe.service.role.RoleService;
@@ -96,7 +98,7 @@ public class CsvcUserServiceImpl implements CsvcUserService {
 
     @Override
     public void createNewUser(String userName) throws RoleException {
-        Role role = userRoleService.findRoleByUserName(RolePattern.USER.name());
+        Role role = userRoleService.findRoleByUserName(RolePattern.User.name());
         CsvcUser csvcUser = createCsvcUserByRegisterAccount(userName);
         saveCsvcUser(csvcUser);
         userRoleService.saveUserRole(createUserRoleByRegisterAccount(csvcUser.getIdUser(),role.getIdRole()));
@@ -111,6 +113,30 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         response.setRoles(RoleUtils.convertToRoleResponse(user.getRole().stream().toList()));
         response.setFullName(user.getFullName());
         return response;
+    }
+
+    @Override
+    public List<FindAllRolesUserResponse> findAllRolesUser() {
+        CsvcUser user = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRoleService.findAllRolesUserByCodeUser(user.getCodeUser());
+    }
+
+    @Override
+    public void switchRoleUser(SwitchUserRequest request) {
+        CsvcUser user = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<UserRole> userRoles = userRoleService.findUserRoleByCodeUser(user.getCodeUser());
+        switchToAnotherRole(userRoles, request);
+        userRoleService.saveAllUserRole(userRoles);
+    }
+
+    private void switchToAnotherRole(List<UserRole> userRoles, SwitchUserRequest request) {
+        for (UserRole userRole: userRoles){
+            if (userRole.getIdRole().equals(request.getIdRoleSwitch())){
+                userRole.setPicked(Constants.ROLE_USER_PICKED);
+            } else {
+                userRole.setPicked(Constants.ROLE_USER_UN_PICKED);
+            }
+        }
     }
 
     private List<FindAllUserUsedResponse> convertToFindAllUserUsedResponse(List<FindAllUserUsedDto> collect,

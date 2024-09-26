@@ -1,6 +1,6 @@
 package com.example.csvccdshustbe.repository.role.impl;
 
-import com.example.csvccdshustbe.entity.Privilege;
+import com.example.csvccdshustbe.entity.Capabilities;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.repository.role.RoleRepositoryCustom;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -22,17 +22,17 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
     @Override
     public Optional<Role> findByTitleRole(String titleRole) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select role.id_role, role.title, role.status, " +
-                "       role.content, role.short_name, role.description, " +
-                "       role.time_created, role.time_modified, " +
-                "       privilege.id_privilege, privilege.title, privilege.status, " +
-                "       privilege.short_name, privilege.description, privilege.slug, " +
-                "       privilege.time_created, privilege.time_modified " +
+        sb.append(" select role.id_role, role.title, role.status,   " +
+                "        role.content, role.short_name, role.description,   " +
+                "        role.time_created, role.time_modified, " +
+                "        capabilities.id_capability, capabilities.name, capabilities.cap_type, " +
+                "       capabilities.context_level, capabilities.status, capabilities.component, " +
+                "       capabilities.time_created, capabilities.time_modified " +
                 "from role role " +
-                "    inner join role_privilege rolePrivilege on role.id_role = rolePrivilege.id_role " +
-                "    inner join privilege privilege on rolePrivilege.id_privilege = privilege.id_privilege " +
-                "where privilege.status = 1 " +
-                "and rolePrivilege.status = 1 " +
+                "     inner join role_capabilities roleCapabilities on role.id_role = roleCapabilities.id_role " +
+                "     inner join capabilities capabilities on roleCapabilities.id_capabilities = capabilities.id_capability " +
+                "where capabilities.status = 1 " +
+                "and roleCapabilities.permission = 1 " +
                 "and role.title = :titleRole ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("titleRole", titleRole);
@@ -48,20 +48,20 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
             role.setDescription(ValueUtil.getStringByObject(roleResponse[5]));
             role.setTimeCreated(ValueUtil.getStringByObject(roleResponse[6]));
             role.setTimeModified(ValueUtil.getStringByObject(roleResponse[7]));
-            Set<Privilege> privilegeSet = new HashSet<>();
+            Set<Capabilities> capabilities = new HashSet<>();
             for(Object[] obj: results){
-                Privilege privilege = new Privilege();
-                privilege.setIdPrivilege(ValueUtil.getIntegerByObject(obj[8]));
-                privilege.setTitle(ValueUtil.getStringByObject(obj[9]));
-                privilege.setStatus(ValueUtil.getIntegerByObject(obj[10]));
-                privilege.setShortName(ValueUtil.getStringByObject(obj[11]));
-                privilege.setDescription(ValueUtil.getStringByObject(obj[12]));
-                privilege.setSlug(ValueUtil.getStringByObject(obj[13]));
-                privilege.setTimeCreated(ValueUtil.getStringByObject(obj[14]));
-                privilege.setTimeModified(ValueUtil.getStringByObject(obj[15]));
-                privilegeSet.add(privilege);
+                Capabilities capability = new Capabilities();
+                capability.setIdCapability(ValueUtil.getIntegerByObject(obj[8]));
+                capability.setName(ValueUtil.getStringByObject(obj[9]));
+                capability.setCapType(ValueUtil.getStringByObject(obj[10]));
+                capability.setContextLevel(ValueUtil.getIntegerByObject(obj[11]));
+                capability.setStatus(ValueUtil.getIntegerByObject(obj[12]));
+                capability.setComponent(ValueUtil.getStringByObject(obj[13]));
+                capability.setTimeCreated(ValueUtil.getStringByObject(obj[14]));
+                capability.setTimeModified(ValueUtil.getStringByObject(obj[15]));
+                capabilities.add(capability);
             }
-            role.setPrivileges(privilegeSet);
+            role.setCapabilities(capabilities);
             return Optional.of(role);
         }
         return Optional.empty();

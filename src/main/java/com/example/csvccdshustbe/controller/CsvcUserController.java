@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
+import com.example.csvccdshustbe.request.user.SwitchUserRequest;
 import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,14 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 
 @Tag(name = "CSVC User Controller", description = "The Users APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/user")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class CsvcUserController {
 
     @Autowired
@@ -48,6 +47,30 @@ public class CsvcUserController {
             return ResponseEntity.ok(authenticationDto);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<?> findAllRoles(){
+        try {
+            return ApiResponseDto.createdWithState(csvcUserService.findAllRolesUser(),
+                    "Find all roles user success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/switch-user")
+    public ResponseEntity<?> switchUser(@RequestBody SwitchUserRequest request){
+        try {
+            csvcUserService.switchRoleUser(request);
+            return ApiResponseDto.createdWithMessage("Switch role user success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
 }
