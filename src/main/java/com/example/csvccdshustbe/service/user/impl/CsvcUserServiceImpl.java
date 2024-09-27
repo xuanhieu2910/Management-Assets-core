@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.user.impl;
 
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
+import com.example.csvccdshustbe.entity.Capabilities;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.entity.UserRole;
@@ -28,10 +29,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -127,6 +125,14 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         List<UserRole> userRoles = userRoleService.findUserRoleByCodeUser(user.getCodeUser());
         switchToAnotherRole(userRoles, request);
         userRoleService.saveAllUserRole(userRoles);
+    }
+
+    @Override
+    public void hasCapability(String servletPath, String method) {
+        CsvcUser user =  (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Set<Capabilities> capabilities = new HashSet<>();
+        user.getRole().stream().forEach(role -> capabilities.addAll(role.getCapabilities()));
+
     }
 
     private void switchToAnotherRole(List<UserRole> userRoles, SwitchUserRequest request) {

@@ -35,4 +35,6 @@ public interface CsvcUserService extends UserDetailsService {
     List<FindAllRolesUserResponse> findAllRolesUser();
 
     void switchRoleUser(SwitchUserRequest request);
+
+    void hasCapability(String servletPath, String method);
 }

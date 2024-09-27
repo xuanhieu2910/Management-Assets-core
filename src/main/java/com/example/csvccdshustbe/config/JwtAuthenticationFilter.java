@@ -66,6 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             handleOAuthFilter(request, response, filterChain);
         } else {
             setContextHolder();
+            hasCapability(request);
             filterChain.doFilter(request, response);
         }
     }
@@ -106,6 +107,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setContext(context);
             }
         }
+        hasCapability(request);
         filterChain.doFilter(request, response);
+    }
+
+
+    private void hasCapability(HttpServletRequest request){
+        csvcUserService.hasCapability(request.getServletPath(), request.getMethod());
+//        System.out.println(request);
+//        System.out.println(request.getServletPath());
+//        System.out.println(request.getMethod());
     }
 }
