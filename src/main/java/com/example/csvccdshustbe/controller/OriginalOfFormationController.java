@@ -19,7 +19,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Original of formation Controller", description = "The Original of formation APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/original-of-formation")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class OriginalOfFormationController {
 
 

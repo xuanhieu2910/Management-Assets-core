@@ -21,7 +21,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Documents Attack Controller", description = "The Type Use APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/type-use")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class TypeUseController {
     @Autowired
     TypeUseService typeUseService;

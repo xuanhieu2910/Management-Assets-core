@@ -16,7 +16,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Current usage Controller", description = "The Current usesage APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/current-usage")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class CurrentUsageController {
     @Autowired
     CurrentUsageService currentUsageService;

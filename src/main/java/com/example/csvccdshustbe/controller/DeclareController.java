@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Declare Controller", description = "The Declare APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/declare")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class DeclareController {
 
 

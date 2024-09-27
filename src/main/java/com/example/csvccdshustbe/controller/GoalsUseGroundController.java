@@ -21,7 +21,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Goals Use Ground Controller", description = "The Goals Use Ground APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/goals-use-ground")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class GoalsUseGroundController {
     @Autowired
     GoalsUseGroundService goalsUseGroundService;

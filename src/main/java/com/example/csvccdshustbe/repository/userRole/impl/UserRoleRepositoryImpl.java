@@ -20,7 +20,7 @@ public class UserRoleRepositoryImpl implements UserRoleRepositoryCustom {
     @Override
     public List<FindAllRolesUserResponse> findAllRolesUserByCodeUser(String codeUser) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select role.id_role, role.description, userRole.picked " +
+        sb.append(" select role.id_role, role.short_name, userRole.picked " +
                 "from csvc_user csvcUser " +
                 "    inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
                 "    inner join role role on userRole.id_role = role.id_role " +

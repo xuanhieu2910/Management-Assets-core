@@ -19,6 +19,7 @@ import com.example.csvccdshustbe.service.role.RoleService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.*;
+import jakarta.servlet.ServletException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -128,11 +129,25 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     }
 
     @Override
-    public void hasCapability(String servletPath, String method) {
+    public void hasCapability(String servletPath, String method) throws ServletException {
         CsvcUser user =  (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Set<Capabilities> capabilities = new HashSet<>();
         user.getRole().stream().forEach(role -> capabilities.addAll(role.getCapabilities()));
+        boolean isExitsRoleCapability = false;
+        for (Capabilities capability : capabilities) {
+            if(compareCapability(servletPath, method, capability)){
+                isExitsRoleCapability = true;
+                break;
+            }
+        }
+        if (!isExitsRoleCapability){
+            throw new ServletException("Don't Permission");
+        }
+    }
 
+    private boolean compareCapability(String servletPath, String method, Capabilities capabilities) {
+        String roleCapability = capabilities.getName().substring(capabilities.getName().indexOf(Constants.PATTERN_ROLE_SEPARATE) + 1);
+        return servletPath.equals(roleCapability) && method.equals(capabilities.getCapType());
     }
 
     private void switchToAnotherRole(List<UserRole> userRoles, SwitchUserRequest request) {

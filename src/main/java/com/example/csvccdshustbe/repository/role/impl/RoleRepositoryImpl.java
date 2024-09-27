@@ -2,22 +2,51 @@ package com.example.csvccdshustbe.repository.role.impl;
 
 import com.example.csvccdshustbe.entity.Capabilities;
 import com.example.csvccdshustbe.entity.Role;
+import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.repository.role.RoleRepositoryCustom;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class RoleRepositoryImpl implements RoleRepositoryCustom {
 
     @PersistenceContext
     EntityManager entityManager;
+
+    @Override
+    public List<Role> findAllRoleDefault() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select role.id_role, role.title, role.status, " +
+                "       role.content, role.short_name, role.description, " +
+                "       role.time_created, role.time_modified, role.id_department " +
+                "from role " +
+                "where id_department = :isDefaultRole ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("isDefaultRole", Constants.ROLE_DEFAULT);
+        List<Object[]> result = query.getResultList();
+        List<Role> roles = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                Role role = new Role();
+                role.setIdRole(ValueUtil.getIntegerByObject(obj[0]));
+                role.setTitle(ValueUtil.getStringByObject(obj[1]));
+                role.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                role.setContent(ValueUtil.getStringByObject(obj[3]));
+                role.setShortName(ValueUtil.getStringByObject(obj[4]));
+                role.setDescription(ValueUtil.getStringByObject(obj[5]));
+                role.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                role.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                role.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
+                roles.add(role);
+            }
+        }
+        return roles;
+    }
 
     @Override
     public Optional<Role> findByTitleRole(String titleRole) {

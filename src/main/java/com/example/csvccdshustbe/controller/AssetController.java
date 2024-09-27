@@ -26,7 +26,6 @@ import java.util.HashMap;
 @Tag(name = "Asset Controller", description = "The Asset APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/asset")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class AssetController {
 
     @Autowired

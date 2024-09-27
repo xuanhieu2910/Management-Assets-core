@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.request.user.SwitchUserRequest;
 import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
 import com.example.csvccdshustbe.response.user.FindAllUserUsedResponse;
 import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
+import jakarta.servlet.ServletException;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -36,5 +37,5 @@ public interface CsvcUserService extends UserDetailsService {
 
     void switchRoleUser(SwitchUserRequest request);
 
-    void hasCapability(String servletPath, String method);
+    void hasCapability(String servletPath, String method) throws ServletException;
 }

@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication User", description = "The Authentication User API. Contains operations like register,login, logout, refresh-token etc.")
 @RestController
 @RequestMapping("/api/v1/user/auth")
-@SecurityRequirements()
 public class UserAuthenticationController {
 
     @Autowired

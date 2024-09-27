@@ -20,7 +20,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Province Controller", description = "The Province APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/province")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class ProvinceController {
 
     @Autowired

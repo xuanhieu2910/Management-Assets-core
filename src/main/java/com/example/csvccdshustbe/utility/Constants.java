@@ -23,7 +23,19 @@ public class Constants {
      * Constants ROLE_USER
      * */
     public static final Integer ROLE_USER_PICKED = 1;
+    public static final Integer ROLE_STATUS = 1;
+    public static final Integer ROLE_UN_STATUS = -1;
     public static final Integer ROLE_USER_UN_PICKED = -1;
+    public static final Integer ROLE_DEFAULT = -1;
+
+    /*-----------------------------------------------------*/
+
+
+    /**
+     * Constants PATTERN ROLE CAPABILITIES
+     * */
+    public static final String PATTERN_ROLE_CAPABILITIES = "csvc/";
+    public static final String PATTERN_ROLE_SEPARATE = ":";
 
     /*-----------------------------------------------------*/
 

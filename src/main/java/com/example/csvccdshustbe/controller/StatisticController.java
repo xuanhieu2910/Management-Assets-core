@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Statistic Controller", description = "The Statistic APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/statistic")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class StatisticController {
 
 

@@ -20,7 +20,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Medicine Group Controller", description = "The Medicine Group APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/medicine-group")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class MedicineGroupController {
 
 

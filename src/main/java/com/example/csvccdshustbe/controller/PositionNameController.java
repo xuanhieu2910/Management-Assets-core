@@ -19,7 +19,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "PositionName Controller", description = "The Position Name APIs. Contains operations like find all edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/position-name")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class PositionNameController {
 
     @Autowired

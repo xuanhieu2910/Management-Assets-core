@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.config;
 
 import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.service.jwt.JwtTokenService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import jakarta.servlet.FilterChain;
@@ -112,10 +113,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
 
-    private void hasCapability(HttpServletRequest request){
+    private void hasCapability(HttpServletRequest request) throws ServletException {
         csvcUserService.hasCapability(request.getServletPath(), request.getMethod());
-//        System.out.println(request);
-//        System.out.println(request.getServletPath());
-//        System.out.println(request.getMethod());
     }
 }

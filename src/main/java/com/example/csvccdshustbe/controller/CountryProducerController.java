@@ -24,7 +24,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Country producer Controller", description = "The Country producer APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/country-producer")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class CountryProducerController {
     @Autowired
     CountryProducerService countryProducerService;

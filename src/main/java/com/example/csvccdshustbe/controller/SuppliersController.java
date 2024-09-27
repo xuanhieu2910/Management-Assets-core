@@ -17,7 +17,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Documents Suppliers Controller", description = "The Suppliers APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/suppliers")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class SuppliersController {
     @Autowired
     SuppliersService suppliersService;

@@ -36,4 +36,6 @@ public class Role {
             joinColumns = @JoinColumn(name = "id_role"),
             inverseJoinColumns = @JoinColumn(name="id_capabilities"))
     private Set<Capabilities> capabilities;
+    @Column(name = "id_department")
+    private Integer idDepartment;
 }

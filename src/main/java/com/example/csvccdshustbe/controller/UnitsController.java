@@ -21,7 +21,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Units Controller", description = "The Units APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/units")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class UnitsController {
 
 

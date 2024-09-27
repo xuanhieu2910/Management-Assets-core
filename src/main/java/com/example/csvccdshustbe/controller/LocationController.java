@@ -22,7 +22,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Location Controller", description = "The Location APIs. Contains operations like find all, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/location")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class LocationController {
     @Autowired
     LocationService locationService;

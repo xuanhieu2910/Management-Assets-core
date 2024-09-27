@@ -22,7 +22,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Method Buy Asset Controller", description = "The method buy asset APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/method-buy-asset")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class MethodBuyAssetController {
 
     @Autowired

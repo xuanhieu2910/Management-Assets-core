@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class RoleUtils {
 
-    private final static String SEPARATE = ";";
+    public final static String SEPARATE_ROLE_CAPABILITY = ";";
 
     public static List<RoleResponse> convertToRoleResponse(List<Role> customRoles){
         List<RoleResponse> responses = new ArrayList<>();
@@ -46,6 +46,6 @@ public class RoleUtils {
     }
 
     private static String concatCapabilities(String nameCapability, String typeMethod){
-        return String.join(SEPARATE,nameCapability, typeMethod);
+        return String.join(SEPARATE_ROLE_CAPABILITY,nameCapability, typeMethod);
     }
 }

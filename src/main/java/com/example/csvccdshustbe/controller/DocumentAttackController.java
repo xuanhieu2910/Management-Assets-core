@@ -19,7 +19,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Documents Attack Controller", description = "The Document attack APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/document-attack")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class DocumentAttackController {
 
 

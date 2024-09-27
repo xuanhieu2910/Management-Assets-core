@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Modules Controller", description = "The Modules APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/modules")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class ModulesController {
 
 

@@ -21,7 +21,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Wards Controller", description = "The Wards APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/wards")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class WardsController {
 
     @Autowired

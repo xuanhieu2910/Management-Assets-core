@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Type Declare Asset Controller", description = "The Type Declare Asset APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/type-declare-asset")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class TypeDeclareAssetController {
 
     @Autowired

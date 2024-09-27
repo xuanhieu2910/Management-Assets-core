@@ -20,7 +20,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Type Buy Asset Controller", description = "The Type buy asset APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/type-buy-asset")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class TypeBuyAssetController {
 
     @Autowired

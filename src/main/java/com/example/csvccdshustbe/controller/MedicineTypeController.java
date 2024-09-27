@@ -19,7 +19,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Medicine Type Controller", description = "The Medicine Type APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/medicine-type")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class MedicineTypeController {
 
     @Autowired

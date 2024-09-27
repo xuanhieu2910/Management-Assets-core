@@ -21,7 +21,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Projects Controller", description = "The Projects APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/projects")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class ProjectsController {
 
     @Autowired

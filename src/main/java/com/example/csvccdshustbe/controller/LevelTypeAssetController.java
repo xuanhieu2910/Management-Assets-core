@@ -18,7 +18,6 @@ import org.webjars.NotFoundException;
 @Tag(name = "Level type Asset Controller", description = "The Level type asset APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/level-type-asset")
-@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class LevelTypeAssetController {
     @Autowired
     LevelTypeAssetService levelTypeAssetService;
