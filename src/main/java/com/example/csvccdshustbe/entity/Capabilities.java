@@ -21,8 +21,6 @@ public class Capabilities {
     private String name;
     @Column(name = "cap_type")
     private String capType;
-    @Column(name = "context_level")
-    private Integer contextLevel;
     @Column(name = "status")
     private Integer status;
     @Column(name = "time_created")

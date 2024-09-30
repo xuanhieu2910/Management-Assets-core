@@ -1,8 +1,11 @@
 package com.example.csvccdshustbe.service.roleAllowAssign;
 
-import com.example.csvccdshustbe.service.roleAssignments.RoleAssignmentsService;
-import org.springframework.stereotype.Service;
+import com.example.csvccdshustbe.response.roleAllowAssign.FindAllRoleAllowAssignResponse;
 
-@Service
-public interface RoleAllowAssignService extends RoleAssignmentsService {
+import java.util.List;
+
+public interface RoleAllowAssignService {
+
+    List<FindAllRoleAllowAssignResponse> findAllRoleAllowAssign();
+
 }

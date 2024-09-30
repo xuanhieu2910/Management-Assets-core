@@ -51,18 +51,18 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
     @Override
     public Optional<Role> findByTitleRole(String titleRole) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select role.id_role, role.title, role.status,   " +
-                "        role.content, role.short_name, role.description,   " +
-                "        role.time_created, role.time_modified, " +
-                "        capabilities.id_capability, capabilities.name, capabilities.cap_type, " +
-                "       capabilities.context_level, capabilities.status, capabilities.component, " +
-                "       capabilities.time_created, capabilities.time_modified " +
-                "from role role " +
-                "     inner join role_capabilities roleCapabilities on role.id_role = roleCapabilities.id_role " +
-                "     inner join capabilities capabilities on roleCapabilities.id_capabilities = capabilities.id_capability " +
-                "where capabilities.status = 1 " +
-                "and roleCapabilities.permission = 1 " +
-                "and role.title = :titleRole ");
+        sb.append("select role.id_role, role.title, role.status,    " +
+                "                         role.content, role.short_name, role.description,     " +
+                "                         role.time_created, role.time_modified,   " +
+                "                         capabilities.id_capability, capabilities.name, capabilities.cap_type,   " +
+                "                         capabilities.status, capabilities.component,   " +
+                "                         capabilities.time_created, capabilities.time_modified   " +
+                "                 from role role   " +
+                "                      inner join role_capabilities roleCapabilities on role.id_role = roleCapabilities.id_role   " +
+                "                      inner join capabilities capabilities on roleCapabilities.id_capabilities = capabilities.id_capability   " +
+                "                 where capabilities.status = 1   " +
+                "                 and roleCapabilities.permission = 1   " +
+                "                 and role.title = :titleRole  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("titleRole", titleRole);
         List<Object[]> results = query.getResultList();
@@ -83,11 +83,10 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
                 capability.setIdCapability(ValueUtil.getIntegerByObject(obj[8]));
                 capability.setName(ValueUtil.getStringByObject(obj[9]));
                 capability.setCapType(ValueUtil.getStringByObject(obj[10]));
-                capability.setContextLevel(ValueUtil.getIntegerByObject(obj[11]));
-                capability.setStatus(ValueUtil.getIntegerByObject(obj[12]));
-                capability.setComponent(ValueUtil.getStringByObject(obj[13]));
-                capability.setTimeCreated(ValueUtil.getStringByObject(obj[14]));
-                capability.setTimeModified(ValueUtil.getStringByObject(obj[15]));
+                capability.setStatus(ValueUtil.getIntegerByObject(obj[11]));
+                capability.setComponent(ValueUtil.getStringByObject(obj[12]));
+                capability.setTimeCreated(ValueUtil.getStringByObject(obj[13]));
+                capability.setTimeModified(ValueUtil.getStringByObject(obj[14]));
                 capabilities.add(capability);
             }
             role.setCapabilities(capabilities);
