@@ -15,9 +15,9 @@ public class RoleAllowAssignController {
     @GetMapping("/find-all")
     public ResponseEntity<?> findAllRoleAllowAssign(){
         try {
-
+            return null;
         } catch (Exception e){
-
+            return null;
         }
     }
 }
