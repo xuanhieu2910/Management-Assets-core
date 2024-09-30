@@ -148,7 +148,8 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
 
     @Override
     public FindAssetCategoryDetailsResponse findAssetCategoryDetailsResponseByCode(String codeAssetCategory) {
-        Optional<FindAssetCategoryDetailsResponse> response = assetCategoriesRepository.findAssetCategoryDetailsPickedResponseByCode(codeAssetCategory);
+        Optional<FindAssetCategoryDetailsResponse> response =
+                assetCategoriesRepository.findAssetCategoryDetailsPickedResponseByCode(codeAssetCategory);
         if (response.isEmpty()) {
             throw new NotFoundException("Don't exits asset category by code!");
         }

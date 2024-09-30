@@ -7,6 +7,10 @@ import java.util.Optional;
 
 public interface RoleRepositoryCustom {
 
-    List<Role> findAllRoleDefault();
+    List<Role> findAllRole();
     Optional<Role> findByTitleRole(String titleRole);
+
+    Optional<Role> findRoleByTitleOrShortName(String title, String shortName);
+
+    List<Role> findRestRoleWithoutCurrentRole(Role role);
 }

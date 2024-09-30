@@ -14,4 +14,6 @@ public class DestinationRoleAssignResponse {
     private Integer idDestinationRoleAssign;
     @JsonProperty("name_destination_role_assign")
     private String nameDestinationRoleAssign;
+    @JsonProperty("status")
+    private Integer status;
 }

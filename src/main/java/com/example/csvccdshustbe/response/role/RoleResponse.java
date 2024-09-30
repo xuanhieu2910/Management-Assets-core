@@ -17,4 +17,8 @@ public class RoleResponse {
     private String role;
     @JsonProperty("role_capabilities")
     private List<CapabilitiesResponse> roleCapabilities;
+    @JsonProperty("id_department")
+    private Integer idDepartment;
+    @JsonProperty("name_department")
+    private String nameDepartment;
 }

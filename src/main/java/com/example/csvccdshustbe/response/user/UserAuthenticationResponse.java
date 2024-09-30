@@ -20,6 +20,7 @@ public class UserAuthenticationResponse {
     private String userName;
     @JsonProperty("fullName")
     private String fullName;
-    @JsonProperty("roles")
-    private List<RoleResponse> roles;
+//    @JsonProperty("roles")
+//    private List<Rol
+//    eResponse> roles;
 }

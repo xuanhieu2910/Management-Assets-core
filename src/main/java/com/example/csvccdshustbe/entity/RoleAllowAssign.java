@@ -18,4 +18,6 @@ public class RoleAllowAssign {
     private Integer idRole;
     @Column(name = "allow_assign")
     private Integer allowAssign;
+    @Column(name = "status")
+    private Integer status;
 }

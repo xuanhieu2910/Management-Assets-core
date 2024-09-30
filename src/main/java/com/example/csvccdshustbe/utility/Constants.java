@@ -26,9 +26,20 @@ public class Constants {
     public static final Integer ROLE_STATUS = 1;
     public static final Integer ROLE_UN_STATUS = -1;
     public static final Integer ROLE_USER_UN_PICKED = -1;
-    public static final Integer ROLE_DEFAULT = -1;
+    public static final Integer ROLE_DEFAULT = 2;
 
     /*-----------------------------------------------------*/
+
+    /**
+     * Constants ROLE_ALLOW_ASSIGN
+     * */
+
+    public static final Integer ROLE_ALLOW_ASSIGN_STATUS = 1;
+    public static final Integer ROLE_ALLOW_ASSIGN_UN_STATUS = -1;
+
+
+    /*-----------------------------------------------------*/
+
 
 
     /**

@@ -16,8 +16,6 @@ public class RoleCapabilities {
     private Integer idRoleCapabilities;
     @Column(name = "id_role")
     private Integer idRole;
-    @Column(name = "id_context")
-    private Integer idContext;
     @Column(name = "id_capabilities")
     private Integer idCapabilities;
     @Column(name = "permission")

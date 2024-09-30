@@ -73,4 +73,8 @@ public class CsvcUserController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+//    @PostMapping("/assign-roles")
+//    public ResponseEntity<?> assignRole()
+
 }
