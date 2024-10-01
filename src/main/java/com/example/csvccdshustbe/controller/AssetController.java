@@ -32,6 +32,7 @@ public class AssetController {
     AssetService assetService;
 
 
+
     @PostMapping("/create")
     public ResponseEntity<?> createAsset(@RequestBody HashMap<String, Object> createAssetRequest){
         try{
