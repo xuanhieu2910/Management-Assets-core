@@ -2,6 +2,8 @@ package com.example.csvccdshustbe.controller;
 
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.request.user.AddNewUserRequest;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
 import com.example.csvccdshustbe.request.user.SwitchUserRequest;
 import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
@@ -13,7 +15,6 @@ import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
 
@@ -74,7 +75,16 @@ public class CsvcUserController {
         }
     }
 
-//    @PostMapping("/assign-roles")
-//    public ResponseEntity<?> assignRole()
+    @PostMapping("/add-user")
+    public ResponseEntity<?> addNewUser(@RequestBody AddNewUserRequest request){
+        try {
+            csvcUserService.addNewUser(request);
+            return ApiResponseDto.createdWithMessage("Add new user success!", HttpStatus.OK);
+        } catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.OK);
+        }
+    }
 
 }

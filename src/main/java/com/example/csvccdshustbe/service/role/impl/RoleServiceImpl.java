@@ -73,6 +73,15 @@ public class RoleServiceImpl implements RoleService {
 
     }
 
+    @Override
+    public List<Role> findRoleByIds(List<Integer> ids) throws ValidateFiledException {
+        List<Role> roles = roleRepository.findRolesByIds(ids);
+        if (roles.size() != ids.size()) {
+            throw new ValidateFiledException("Don't exits role by ids");
+        }
+        return roles;
+    }
+
     private void createRoleCapabilities(Role role, CreateNewRoleRequest request) {
         List<RoleCapabilities> roleCapabilitiesList = new ArrayList<>();
         String currentTime = String.valueOf(new Date().getTime());

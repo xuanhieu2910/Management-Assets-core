@@ -1,24 +1,27 @@
 package com.example.csvccdshustbe.service.user.impl;
 
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
-import com.example.csvccdshustbe.entity.Capabilities;
-import com.example.csvccdshustbe.entity.CsvcUser;
-import com.example.csvccdshustbe.entity.Role;
-import com.example.csvccdshustbe.entity.UserRole;
+import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.OAuth2Factory;
 import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.RoleException;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepository;
+import com.example.csvccdshustbe.request.user.AddNewUserRequest;
+import com.example.csvccdshustbe.request.user.AssignRoleDetailsRequest;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
 import com.example.csvccdshustbe.request.user.SwitchUserRequest;
-import com.example.csvccdshustbe.request.user.UserRegisterAccountRequest;
 import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
 import com.example.csvccdshustbe.response.user.FindAllUserUsedResponse;
 import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
+import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.role.RoleService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
-import com.example.csvccdshustbe.utility.*;
+import com.example.csvccdshustbe.utility.CodeUserUtil;
+import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.PageUtils;
+import com.example.csvccdshustbe.utility.RoleUtils;
 import jakarta.servlet.ServletException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,7 +33,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +49,10 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     UserRoleService userRoleService;
     @Autowired
     RoleService roleService;
+    @Autowired
+    DepartmentService departmentService;
+
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<CsvcUser> user = csvcUserRepository.loadUserByUsername(username);
@@ -144,6 +154,47 @@ public class CsvcUserServiceImpl implements CsvcUserService {
 //            throw new ServletException("Don't Permission");
 //        }
     }
+
+    @Override
+    public void addNewUser(AddNewUserRequest request) throws ValidateFiledException {
+        List<Integer> idsUser = csvcUserRepository.findIdsUserByListUserName(request.getUsers());
+        if (idsUser.size() != request.getUsers().size()){
+            throw new ValidateFiledException("Don't exits user name!");
+        }
+        List<Integer> idsDepartment = new ArrayList<>();
+        List<Integer> idsRole = new ArrayList<>();
+        for (AssignRoleDetailsRequest detailsRequest : request.getRoleAssignDetails()){
+            idsDepartment.add(detailsRequest.getIdDepartment());
+            idsRole.add(detailsRequest.getIdRole());
+        }
+        departmentService.findDepartmentByIds(idsDepartment);
+        roleService.findRoleByIds(idsRole);
+        updateStatusAccountUser(idsUser);
+        storeRoleUser(idsUser, request.getRoleAssignDetails());
+    }
+
+    private void storeRoleUser(List<Integer> idsUser, List<AssignRoleDetailsRequest> roleAssignDetails) {
+        String timeCurrent = String.valueOf(new Date().getTime());
+        List<UserRole> userRoles = new ArrayList<>();
+        for (Integer idUser : idsUser) {
+            for (AssignRoleDetailsRequest roleAssign : roleAssignDetails){
+                UserRole userRole = new UserRole();
+                userRole.setIdUser(idUser);
+                userRole.setIdRole(roleAssign.getIdRole());
+                userRole.setIdDepartment(roleAssign.getIdDepartment());
+                userRole.setTimeCreated(timeCurrent);
+                userRole.setTimeModified(timeCurrent);
+                userRole.setPicked(roleAssign.getIsPicked());
+                userRoles.add(userRole);
+            }
+        }
+        userRoleService.saveAllUserRole(userRoles);
+    }
+
+    private void updateStatusAccountUser(List<Integer> idsUser) {
+        csvcUserRepository.updateStatusAccountUserByIds(idsUser, Constants.ACCOUNT_IS_UN_LOCK);
+    }
+
 
     private boolean compareCapability(String servletPath, String method, Capabilities capabilities) {
         String roleCapability = capabilities.getName().substring(capabilities.getName().indexOf(Constants.PATTERN_ROLE_SEPARATE) + 1);

@@ -1,6 +1,6 @@
 package com.example.csvccdshustbe.entity;
 
-//Kien 26-8
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

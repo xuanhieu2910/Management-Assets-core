@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class AssignRoleUserRequest {
+public class AddNewUserRequest {
 
     private List<String> users;
     private List<AssignRoleDetailsRequest> roleAssignDetails;

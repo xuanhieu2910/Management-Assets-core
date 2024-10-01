@@ -74,6 +74,15 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public List<Department> findDepartmentByIds(List<Integer> ids) throws ValidateFiledException {
+        List<Department> departments = departmentRepository.findDepartmentByIds(ids);
+        if (departments.size() != ids.size()) {
+            throw new ValidateFiledException("Don't exits department by ids");
+        }
+        return departments;
+    }
+
+    @Override
     public Page<FindAllDepartmentSResponse> findAllDepartment(FindAllDepartmentRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllDepartmentSDto> dtos = departmentRepository.findAllDepartment(pageable, request);

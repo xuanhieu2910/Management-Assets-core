@@ -12,4 +12,5 @@ public interface RoleService {
     List<FindAllRoleResponse> findAllRole() throws RoleException;
     Role findRoleByTitle(String titleRole);
     void createNewRole (CreateNewRoleRequest request) throws ValidateFiledException;
+    List<Role> findRoleByIds(List<Integer> ids) throws ValidateFiledException;
 }

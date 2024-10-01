@@ -150,4 +150,40 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
         }
         return roles;
     }
+
+    @Override
+    public List<Role> findRolesByIds(List<Integer> ids) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_role, " +
+                "       title, " +
+                "       status, " +
+                "       content, " +
+                "       short_name, " +
+                "       description, " +
+                "       time_created, " +
+                "       time_modified " +
+                "from role " +
+                "where role.status = :status " +
+                "  and role.id_role in (:ids) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", Constants.ROLE_STATUS);
+        query.setParameter("ids", ids);
+        List<Object[]> result = query.getResultList();
+        List<Role> roles = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                Role role = new Role();
+                role.setIdRole(ValueUtil.getIntegerByObject(obj[0]));
+                role.setTitle(ValueUtil.getStringByObject(obj[1]));
+                role.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                role.setContent(ValueUtil.getStringByObject(obj[3]));
+                role.setShortName(ValueUtil.getStringByObject(obj[4]));
+                role.setDescription(ValueUtil.getStringByObject(obj[5]));
+                role.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                role.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                roles.add(role);
+            }
+        }
+        return roles;
+    }
 }

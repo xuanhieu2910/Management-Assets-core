@@ -9,4 +9,5 @@ public class AssignRoleDetailsRequest {
 
     private Integer idDepartment;
     private Integer idRole;
+    private Integer isPicked;
 }

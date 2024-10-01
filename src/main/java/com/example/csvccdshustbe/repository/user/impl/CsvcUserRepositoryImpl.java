@@ -13,10 +13,12 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -221,6 +223,36 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
             return Optional.of(csvcUser);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<Integer> findIdsUserByListUserName(List<String> userName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_user " +
+                "from csvc_user where user_name in (:userName) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("userName", userName);
+        List<Integer> idsUser = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                idsUser.add(ValueUtil.getIntegerByObject(obj[0]));
+            }
+        }
+        return idsUser;
+    }
+
+    @Modifying
+    @Transactional
+    @Override
+    public void updateStatusAccountUserByIds(List<Integer> idsUser, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update csvc_user set is_actived = :isActive " +
+                "where id_user in (:ids) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("isActive", status);
+        query.setParameter("ids", idsUser);
+        query.executeUpdate();
     }
 
 

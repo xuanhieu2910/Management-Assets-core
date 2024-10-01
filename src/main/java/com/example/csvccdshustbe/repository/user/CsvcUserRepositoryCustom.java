@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CsvcUserRepositoryCustom {
@@ -21,4 +22,8 @@ public interface CsvcUserRepositoryCustom {
     Page<FindAllUserUsedDto> findAllUserUsedDto(FindAllUserUsedRequest request, Pageable pageable);
 
     Optional<CsvcUser> findByUserName(String userName);
+
+    List<Integer> findIdsUserByListUserName(List<String> userName);
+
+    void updateStatusAccountUserByIds(List<Integer> idsUser, Integer status);
 }

@@ -26,4 +26,7 @@ public interface DepartmentService {
     Department findDepartmentByIdDepartmentAndStatus(Integer idDepartment, Integer status);
 
     void updateStatusDepartment(UpdateStatusDepartmentRequest request) throws ValidateFiledException;
+
+    List<Department> findDepartmentByIds(List<Integer> ids) throws ValidateFiledException;
+
 }

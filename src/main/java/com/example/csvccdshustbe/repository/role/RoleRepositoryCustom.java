@@ -13,4 +13,5 @@ public interface RoleRepositoryCustom {
     Optional<Role> findRoleByTitleOrShortName(String title, String shortName);
 
     List<Role> findRestRoleWithoutCurrentRole(Role role);
+    List<Role> findRolesByIds(List<Integer> ids);
 }

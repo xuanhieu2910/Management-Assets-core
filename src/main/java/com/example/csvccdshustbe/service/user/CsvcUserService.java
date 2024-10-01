@@ -2,6 +2,8 @@ package com.example.csvccdshustbe.service.user;
 
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.exception.RoleException;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.request.user.AddNewUserRequest;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
 import com.example.csvccdshustbe.request.user.SwitchUserRequest;
 import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
@@ -38,4 +40,5 @@ public interface CsvcUserService extends UserDetailsService {
     void switchRoleUser(SwitchUserRequest request);
 
     void hasCapability(String servletPath, String method) throws ServletException;
+    void addNewUser(AddNewUserRequest request) throws ValidateFiledException;
 }

@@ -30,4 +30,5 @@ public interface DepartmentRepositoryCustom {
 
     boolean isExitsAssetByIdDepartment(Integer idDepartment);
 
+    List<Department> findDepartmentByIds(List<Integer> ids);
 }
