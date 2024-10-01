@@ -71,4 +71,12 @@ public class CarModulesDetailsDto {
     private String nameTypeUse;
     @JsonProperty("spare_part_attack")
     private String sparePartsAttack;
+    @JsonProperty("id_position_name")
+    private Integer idPositionName;
+    @JsonProperty("id_position_name_other")
+    private Integer idPositionNameOther;
+    @JsonProperty("name_position")
+    private String namePosition;
+    @JsonProperty("name_position_other")
+    private String namePositionOther;
 }

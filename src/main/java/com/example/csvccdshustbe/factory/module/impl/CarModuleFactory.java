@@ -36,6 +36,8 @@ public class CarModuleFactory implements ModuleFactory {
         carModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleCreate.get("idUser")));
         carModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleCreate.get("idTypeUse")));
         carModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleCreate.get("sparePartsAttack")));
+        carModule.setIdPositionName(ValueUtil.getIntegerByObject(mapModuleCreate.get("idPositionName")));
+        carModule.setIdPositionNameOther(ValueUtil.getIntegerByObject(mapModuleCreate.get("idPositionNameOther")));
         String timeCurrent = String.valueOf(new Date().getTime());
         carModule.setTimeCreated(timeCurrent);
         carModule.setTimeModified(timeCurrent);
@@ -67,6 +69,8 @@ public class CarModuleFactory implements ModuleFactory {
         carModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idUser")));
         carModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
         carModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
+        carModule.setIdPositionName(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idPositionName")));
+        carModule.setIdPositionNameOther(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idPositionNameOther")));
         String timeCurrent = String.valueOf(new Date().getTime());
         carModule.setTimeModified(timeCurrent);
         return carModule;
