@@ -5,6 +5,9 @@ import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCod
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoryDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
+import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.entity.Role;
+import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepository;
 import com.example.csvccdshustbe.request.assetCategories.*;
@@ -13,6 +16,7 @@ import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategories
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesVisibleResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
+import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -32,6 +37,8 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
 
     @Autowired
     AssetCategoriesRepository assetCategoriesRepository;
+    @Autowired
+    CsvcUserService csvcUserService;
 
 
     @Override
@@ -194,6 +201,13 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         categories.setYearUsedWearTear(request.getYearUsedWearTear());
         categories.setMinimumTimeDepreciation(request.getMinimumTimeDepreciation());
         categories.setMaximumTimeDepreciation(request.getMaximumTimeDepreciation());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Role> roles = new ArrayList<>(csvcUser.getRole());
+        if (roles.get(0).getTitle().equals(RolePattern.SuperAdmin.name())){
+            categories.setIdDepartmentOriginal(Constants.DEFAULT_ASSET_CATEGORY);
+        } else {
+            categories.setIdDepartmentOriginal(csvcUserService.getInformationUser().getIdDepartment());
+        }
         return categories;
     }
 

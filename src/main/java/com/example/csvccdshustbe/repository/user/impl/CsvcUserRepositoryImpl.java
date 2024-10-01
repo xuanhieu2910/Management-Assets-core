@@ -99,6 +99,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
                 "          capabilities.name, capabilities.cap_type, capabilities.component ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idUser", idUser);
+        query.setParameter("isPicked",  Constants.ROLE_USER_PICKED);
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)) {
             CsvcUser csvcUser = setCsvcUserLoadByUserName(result.get(0));

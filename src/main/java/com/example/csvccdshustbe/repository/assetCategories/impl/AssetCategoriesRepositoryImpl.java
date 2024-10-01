@@ -155,45 +155,47 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     @Override
     public Page<FindAllAssetCategoryDto> findAllAssetCategories(Pageable pageable, FindAllDocumentAssetCategoriesRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append("WITH RECURSIVE cte_asset_categories as (       " +
-                "     select assetCategires.id_asset_category,assetCategires.name,       " +
-                "            assetCategires.code_name, assetCategires.short_name,       " +
-                "            assetCategires.description, assetCategires.parent,       " +
-                "            assetCategires.sort_order, assetCategires.asset_count,       " +
-                "            assetCategires.visible, assetCategires.time_created,       " +
-                "            assetCategires.time_modified, assetCategires.is_pick,       " +
-                "            1 as depth,       " +
-                "            CAST(assetCategires.id_asset_category as NCHAR ) as path,    " +
-                "            assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,    " +
-                "            assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
-                "            case when assetCategires.parent is not null then assetCategires.name end nameParent  " +
-                "     from asset_categories assetCategires       " +
-                "     where assetCategires.parent is null    " +
-                "     union all       " +
-                "     select assetCategires.id_asset_category,assetCategires.name,       " +
-                "            assetCategires.code_name, assetCategires.short_name,       " +
-                "            assetCategires.description, assetCategires.parent,       " +
-                "            assetCategires.sort_order, assetCategires.asset_count,       " +
-                "            assetCategires.visible, assetCategires.time_created,       " +
-                "            assetCategires.time_modified, assetCategires.is_pick,       " +
-                "            cte.depth + 1 as depth,       " +
-                "            concat_ws('/',cte.path,CAST(assetCategires.id_asset_category as NCHAR)) as path,    " +
-                "            assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,    " +
-                "            assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
-                "            cte.name nameParent  " +
-                "     from asset_categories assetCategires       " +
-                "              INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category       " +
-                "     )       " +
-                " select cte.id_asset_category, cte.name,       " +
-                "        cte.code_name, cte.short_name, cte.description,       " +
-                "        cte.parent, cte.sort_order, cte.asset_count,       " +
-                "        cte.visible, cte.time_created, cte.time_modified,       " +
-                "        cte.is_pick, cte.depth, cte.path,    " +
-                "        cte.value_wear_tear, cte.year_used_wear_tear,    " +
-                "        cte.minimum_time_depreciation, cte.maximum_time_depreciation,  " +
-                "        cte.nameParent  " +
-                " from cte_asset_categories cte       " +
-                " where 1 = 1  ");
+        sb.append("WITH RECURSIVE cte_asset_categories as (         " +
+                "      select assetCategires.id_asset_category,assetCategires.name,         " +
+                "             assetCategires.code_name, assetCategires.short_name,         " +
+                "             assetCategires.description, assetCategires.parent,         " +
+                "             assetCategires.sort_order, assetCategires.asset_count,         " +
+                "             assetCategires.visible, assetCategires.time_created,         " +
+                "             assetCategires.time_modified, assetCategires.is_pick,         " +
+                "             1 as depth,         " +
+                "             CAST(assetCategires.id_asset_category as NCHAR ) as path,      " +
+                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,      " +
+                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,    " +
+                "             case when assetCategires.parent is not null then assetCategires.name end nameParent, " +
+                "             assetCategires.id_department_original " +
+                "      from asset_categories assetCategires         " +
+                "      where assetCategires.parent is null      " +
+                "      union all         " +
+                "      select assetCategires.id_asset_category,assetCategires.name,         " +
+                "             assetCategires.code_name, assetCategires.short_name,         " +
+                "             assetCategires.description, assetCategires.parent,         " +
+                "             assetCategires.sort_order, assetCategires.asset_count,         " +
+                "             assetCategires.visible, assetCategires.time_created,         " +
+                "             assetCategires.time_modified, assetCategires.is_pick,         " +
+                "             cte.depth + 1 as depth,         " +
+                "             concat_ws('/',cte.path,CAST(assetCategires.id_asset_category as NCHAR)) as path,      " +
+                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,      " +
+                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,    " +
+                "             cte.name nameParent, " +
+                "             assetCategires.id_department_original " +
+                "      from asset_categories assetCategires         " +
+                "               INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category         " +
+                "      )         " +
+                "select cte.id_asset_category, cte.name, " +
+                "         cte.code_name, cte.short_name, cte.description,         " +
+                "         cte.parent, cte.sort_order, cte.asset_count,         " +
+                "         cte.visible, cte.time_created, cte.time_modified,         " +
+                "         cte.is_pick, cte.depth, cte.path,      " +
+                "         cte.value_wear_tear, cte.year_used_wear_tear,      " +
+                "         cte.minimum_time_depreciation, cte.maximum_time_depreciation,    " +
+                "         cte.nameParent    " +
+                "from cte_asset_categories cte " +
+                "where 1 = 1 and cte.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllAssetCategories(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetCategories(request,query);
@@ -230,36 +232,40 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
 
     private long countFindAllAssetCategories(FindAllDocumentAssetCategoriesRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_asset_categories as (    " +
-                "      select assetCategires.id_asset_category,assetCategires.name,    " +
-                "             assetCategires.code_name, assetCategires.short_name,    " +
-                "             assetCategires.description, assetCategires.parent,    " +
-                "             assetCategires.sort_order, assetCategires.asset_count,    " +
-                "             assetCategires.visible, assetCategires.time_created,    " +
-                "             assetCategires.time_modified, assetCategires.is_pick,    " +
-                "             1 as depth,    " +
-                "             CAST(assetCategires.id_asset_category as NCHAR ) as path, " +
-                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear, " +
-                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation " +
-                "      from asset_categories assetCategires    " +
-                "      where assetCategires.parent is null " +
-                "      union all    " +
-                "      select assetCategires.id_asset_category,assetCategires.name,    " +
-                "             assetCategires.code_name, assetCategires.short_name,    " +
-                "             assetCategires.description, assetCategires.parent,    " +
-                "             assetCategires.sort_order, assetCategires.asset_count,    " +
-                "             assetCategires.visible, assetCategires.time_created,    " +
-                "             assetCategires.time_modified, assetCategires.is_pick,    " +
-                "             cte.depth + 1 as depth,    " +
-                "             concat_ws('/',cte.path,CAST(assetCategires.id_asset_category as NCHAR)) as path, " +
-                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear, " +
-                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation " +
-                "      from asset_categories assetCategires    " +
-                "               INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category    " +
-                "      )    " +
-                "  select count(cte.id_asset_category) count " +
-                "  from cte_asset_categories cte    " +
-                "  where 1 = 1 ");
+        sb.append("WITH RECURSIVE cte_asset_categories as (         " +
+                "      select assetCategires.id_asset_category,assetCategires.name,         " +
+                "             assetCategires.code_name, assetCategires.short_name,         " +
+                "             assetCategires.description, assetCategires.parent,         " +
+                "             assetCategires.sort_order, assetCategires.asset_count,         " +
+                "             assetCategires.visible, assetCategires.time_created,         " +
+                "             assetCategires.time_modified, assetCategires.is_pick,         " +
+                "             1 as depth,         " +
+                "             CAST(assetCategires.id_asset_category as NCHAR ) as path,      " +
+                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,      " +
+                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,    " +
+                "             case when assetCategires.parent is not null then assetCategires.name end nameParent, " +
+                "             assetCategires.id_department_original " +
+                "      from asset_categories assetCategires         " +
+                "      where assetCategires.parent is null      " +
+                "      union all         " +
+                "      select assetCategires.id_asset_category,assetCategires.name,         " +
+                "             assetCategires.code_name, assetCategires.short_name,         " +
+                "             assetCategires.description, assetCategires.parent,         " +
+                "             assetCategires.sort_order, assetCategires.asset_count,         " +
+                "             assetCategires.visible, assetCategires.time_created,         " +
+                "             assetCategires.time_modified, assetCategires.is_pick,         " +
+                "             cte.depth + 1 as depth,         " +
+                "             concat_ws('/',cte.path,CAST(assetCategires.id_asset_category as NCHAR)) as path,      " +
+                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,      " +
+                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,    " +
+                "             cte.name nameParent, " +
+                "             assetCategires.id_department_original " +
+                "      from asset_categories assetCategires         " +
+                "               INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category         " +
+                "      )         " +
+                "select count(0) count " +
+                "from cte_asset_categories cte " +
+                "where 1 = 1 and cte.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllAssetCategories(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetCategories(request, query);
@@ -267,6 +273,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     }
 
     private void setParameterFindAllAssetCategories(FindAllDocumentAssetCategoriesRequest request, Query query) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
         }
@@ -282,18 +289,19 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     @Override
     public Optional<AssetCategories> findAssetCategoriesVisibleByCodeName(String codeName) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select assetCategory.id_asset_category, assetCategory.name,   " +
-                "        assetCategory.short_name, assetCategory.code_name,   " +
-                "        assetCategory.description, assetCategory.parent,   " +
-                "        assetCategory.sort_order, assetCategory.asset_count,   " +
-                "        assetCategory.visible, assetCategory.time_created,   " +
-                "        assetCategory.time_modified, assetCategory.path_image,   " +
-                "        assetCategory.is_pick, assetCategory.value_wear_tear, " +
-                "        assetCategory.year_used_wear_tear, assetCategory.minimum_time_depreciation, " +
-                "        assetCategory.maximum_time_depreciation " +
-                "from asset_categories assetCategory   " +
-                "where assetCategory.code_name = :codeName   " +
-                "and assetCategory.visible = :visible  ");
+        sb.append("select assetCategory.id_asset_category, assetCategory.name,       " +
+                "         assetCategory.short_name, assetCategory.code_name,       " +
+                "         assetCategory.description, assetCategory.parent,       " +
+                "         assetCategory.sort_order, assetCategory.asset_count,       " +
+                "         assetCategory.visible, assetCategory.time_created,       " +
+                "         assetCategory.time_modified, assetCategory.path_image,       " +
+                "         assetCategory.is_pick, assetCategory.value_wear_tear,     " +
+                "         assetCategory.year_used_wear_tear, assetCategory.minimum_time_depreciation,     " +
+                "         assetCategory.maximum_time_depreciation,   " +
+                "         assetCategory.id_department_original  " +
+                "from asset_categories assetCategory       " +
+                "where assetCategory.code_name = :codeName       " +
+                "and assetCategory.visible = :visible   ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("codeName", codeName);
         query.setParameter("visible", Constants.IS_VISIBLE);
@@ -318,6 +326,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 categories.setYearUsedWearTear(ValueUtil.getStringByObject(obj[14]));
                 categories.setMinimumTimeDepreciation(ValueUtil.getStringByObject(obj[15]));
                 categories.setMaximumTimeDepreciation(ValueUtil.getStringByObject(obj[16]));
+                categories.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[17]));
                 return Optional.of(categories);
             }
         }
@@ -328,25 +337,26 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     public Optional<AssetCategories> findAssetCategoriesByVisibleAndIdAssetCategory(Integer idAssetCategory,
                                                                                     Integer visible) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select assetCategory.id_asset_category,   " +
-                "        assetCategory.name,   " +
-                "        assetCategory.short_name,   " +
-                "        assetCategory.code_name,   " +
-                "        assetCategory.description,   " +
-                "        assetCategory.parent,   " +
-                "        assetCategory.sort_order,   " +
-                "        assetCategory.asset_count,   " +
-                "        assetCategory.visible,   " +
-                "        assetCategory.time_created,   " +
-                "        assetCategory.time_modified,   " +
-                "        assetCategory.path_image,   " +
-                "        assetCategory.is_pick, " +
-                "        assetCategory.value_wear_tear, " +
-                "        assetCategory.year_used_wear_tear, " +
-                "        assetCategory.minimum_time_depreciation, " +
-                "        assetCategory.maximum_time_depreciation " +
-                "from asset_categories assetCategory   " +
-                "where assetCategory.id_asset_category = :idAssetCategory   " +
+        sb.append("select assetCategory.id_asset_category,     " +
+                "       assetCategory.name,     " +
+                "       assetCategory.short_name,     " +
+                "       assetCategory.code_name,     " +
+                "       assetCategory.description,     " +
+                "       assetCategory.parent,     " +
+                "       assetCategory.sort_order,     " +
+                "       assetCategory.asset_count,     " +
+                "       assetCategory.visible,     " +
+                "       assetCategory.time_created,     " +
+                "       assetCategory.time_modified,     " +
+                "       assetCategory.path_image,     " +
+                "       assetCategory.is_pick,   " +
+                "       assetCategory.value_wear_tear,   " +
+                "       assetCategory.year_used_wear_tear,   " +
+                "       assetCategory.minimum_time_depreciation,   " +
+                "       assetCategory.maximum_time_depreciation,  " +
+                "       assetCategory.id_department_original  " +
+                "from asset_categories assetCategory     " +
+                "where assetCategory.id_asset_category = :idAssetCategory     " +
                 "and assetCategory.visible = :visible  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAssetCategory", idAssetCategory);
@@ -372,6 +382,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 categories.setYearUsedWearTear(ValueUtil.getStringByObject(obj[14]));
                 categories.setMinimumTimeDepreciation(ValueUtil.getStringByObject(obj[15]));
                 categories.setMaximumTimeDepreciation(ValueUtil.getStringByObject(obj[16]));
+                categories.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[17]));
                 return Optional.of(categories);
             }
         }
@@ -551,16 +562,17 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     @Override
     public Optional<AssetCategories> findAssetCategoryParentByParentId(Integer parentId) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select assetCategories.id_asset_category, assetCategories.name,   " +
-                "        assetCategories.short_name, assetCategories.code_name,   " +
-                "        assetCategories.description, assetCategories.parent,   " +
-                "        assetCategories.sort_order, assetCategories.asset_count,   " +
-                "        assetCategories.visible, assetCategories.time_created,   " +
-                "        assetCategories.time_modified, assetCategories.path_image,   " +
-                "        assetCategories.is_pick, assetCategories.value_wear_tear, " +
-                "        assetCategories.year_used_wear_tear, assetCategories.minimum_time_depreciation, " +
-                "        assetCategories.maximum_time_depreciation " +
-                "from asset_categories assetCategories   " +
+        sb.append("select assetCategories.id_asset_category, assetCategories.name,     " +
+                "       assetCategories.short_name, assetCategories.code_name,     " +
+                "       assetCategories.description, assetCategories.parent,     " +
+                "       assetCategories.sort_order, assetCategories.asset_count,     " +
+                "       assetCategories.visible, assetCategories.time_created,     " +
+                "       assetCategories.time_modified, assetCategories.path_image,     " +
+                "       assetCategories.is_pick, assetCategories.value_wear_tear,   " +
+                "       assetCategories.year_used_wear_tear, assetCategories.minimum_time_depreciation,   " +
+                "       assetCategories.maximum_time_depreciation,  " +
+                "       assetCategories.id_department_original  " +
+                "from asset_categories assetCategories     " +
                 "where assetCategories.id_asset_category = :parentId ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("parentId", parentId);
@@ -585,6 +597,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 categories.setYearUsedWearTear(ValueUtil.getStringByObject(obj[14]));
                 categories.setMinimumTimeDepreciation(ValueUtil.getStringByObject(obj[15]));
                 categories.setMaximumTimeDepreciation(ValueUtil.getStringByObject(obj[16]));
+                categories.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[17]));
                 return Optional.of(categories);
             }
         }
@@ -594,16 +607,17 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     @Override
     public Optional<AssetCategories> findAssetCategoryById(Integer idAssetCategory) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select assetCategories.id_asset_category, assetCategories.name,   " +
-                "        assetCategories.short_name, assetCategories.code_name,   " +
-                "        assetCategories.description, assetCategories.parent,   " +
-                "        assetCategories.sort_order, assetCategories.asset_count,   " +
-                "        assetCategories.visible, assetCategories.time_created,   " +
-                "        assetCategories.time_modified, assetCategories.path_image,   " +
-                "        assetCategories.is_pick, assetCategories.value_wear_tear, " +
-                "        assetCategories.year_used_wear_tear, assetCategories.minimum_time_depreciation, " +
-                "        assetCategories.maximum_time_depreciation " +
-                "from asset_categories assetCategories   " +
+        sb.append("select assetCategories.id_asset_category, assetCategories.name,     " +
+                "       assetCategories.short_name, assetCategories.code_name,     " +
+                "       assetCategories.description, assetCategories.parent,     " +
+                "       assetCategories.sort_order, assetCategories.asset_count,     " +
+                "       assetCategories.visible, assetCategories.time_created,     " +
+                "       assetCategories.time_modified, assetCategories.path_image,     " +
+                "       assetCategories.is_pick, assetCategories.value_wear_tear,   " +
+                "       assetCategories.year_used_wear_tear, assetCategories.minimum_time_depreciation,   " +
+                "       assetCategories.maximum_time_depreciation,  " +
+                "       assetCategories.id_department_original  " +
+                "from asset_categories assetCategories     " +
                 "where assetCategories.id_asset_category = :idAssetCategory  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAssetCategory", idAssetCategory);
@@ -628,6 +642,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 categories.setYearUsedWearTear(ValueUtil.getStringByObject(obj[14]));
                 categories.setMinimumTimeDepreciation(ValueUtil.getStringByObject(obj[15]));
                 categories.setMaximumTimeDepreciation(ValueUtil.getStringByObject(obj[16]));
+                categories.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[17]));
                 return Optional.of(categories);
             }
         }

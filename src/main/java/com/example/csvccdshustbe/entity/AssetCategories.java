@@ -48,4 +48,6 @@ public class AssetCategories {
     private String minimumTimeDepreciation;
     @Column(name = "maximum_time_depreciation")
     private String maximumTimeDepreciation;
+    @Column(name = "id_department_original")
+    private Integer idDepartmentOriginal;
 }
