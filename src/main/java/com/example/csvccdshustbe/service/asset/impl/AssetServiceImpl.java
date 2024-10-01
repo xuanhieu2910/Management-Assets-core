@@ -110,13 +110,21 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public Page<FindAllAssetResponse> findAllAsset(FindAllAssetRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-
-        Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
-        List<FindAllDepartmentByCodeAndVisibleDto> allStructDepartment =
-                departmentService.findAllStructureDepartmentByIdDepartment(idDepartment);
+        setIdsDepartmentOriginal(request);
         Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoByIdsDepartment(request, pageable);
         return new PageImpl<>(convertToFindAllAssetResponse(findAllAssetDtos.get().collect(Collectors.toList())),
                     pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    private void setIdsDepartmentOriginal(FindAllAssetRequest request) {
+        Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
+        List<FindAllDepartmentByCodeAndVisibleDto> allStructDepartment =
+                departmentService.findAllStructureDepartmentByIdDepartment(idDepartment);
+        List<Integer> idsDepartmentOriginal = new ArrayList<>();
+        for (FindAllDepartmentByCodeAndVisibleDto dto : allStructDepartment) {
+            idsDepartmentOriginal.add(dto.getIdDepartment());
+        }
+        request.setIdsDepartmentOriginal(idsDepartmentOriginal);
     }
 
     @Override

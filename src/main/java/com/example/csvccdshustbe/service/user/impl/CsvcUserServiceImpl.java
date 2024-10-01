@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.user.impl;
 
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
+import com.example.csvccdshustbe.dto.userRole.DepartmentUserRoleDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.OAuth2Factory;
 import com.example.csvccdshustbe.enums.RolePattern;
@@ -116,11 +117,14 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     @Override
     public UserAuthenticationResponse getInformationUser() {
         CsvcUser user = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        DepartmentUserRoleDto departmentUserRoleDto = userRoleService.getDepartmentUserRoleByCodeUser(user.getCodeUser());
         UserAuthenticationResponse response = new UserAuthenticationResponse();
         response.setCodeUser(user.getCodeUser());
         response.setUserName(user.getName());
         response.setRoles(RoleUtils.convertToRoleResponse(user.getRole().stream().toList()));
         response.setFullName(user.getFullName());
+        response.setIdDepartment(departmentUserRoleDto.getIdDepartment());
+        response.setNameDepartment(departmentUserRoleDto.getNameDepartment());
         return response;
     }
 
