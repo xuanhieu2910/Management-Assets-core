@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.auth.impl;
 
 import com.example.csvccdshustbe.config.JwtAuthenticationFilter;
 import com.example.csvccdshustbe.dto.user.UserAuthenticationDto;
+import com.example.csvccdshustbe.dto.userRole.DepartmentUserRoleDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.entity.UserRole;
@@ -106,10 +107,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public UserAuthenticationResponse convertToAuthenticationResponse(UserAuthenticationDto authenticationDto) {
+        DepartmentUserRoleDto departmentUserRoleDto = userRoleService.getDepartmentUserRoleByCodeUser(authenticationDto.getCodeUser());
         UserAuthenticationResponse response = new UserAuthenticationResponse();
         response.setCodeUser(authenticationDto.getCodeUser());
         response.setUserName(authenticationDto.getUserName());
         response.setRoles(authenticationDto.getRoles());
+        response.setIdDepartment(departmentUserRoleDto.getIdDepartment());
+        response.setNameDepartment(departmentUserRoleDto.getNameDepartment());
         response.setFullName(authenticationDto.getFullName());
         return response;
     }

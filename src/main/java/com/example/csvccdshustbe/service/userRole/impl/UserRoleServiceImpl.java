@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.userRole.impl;
 
+import com.example.csvccdshustbe.dto.userRole.DepartmentUserRoleDto;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.entity.UserRole;
 import com.example.csvccdshustbe.exception.RoleException;
@@ -55,5 +56,10 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     public void saveAllUserRole(List<UserRole> userRoles) {
         userRoleRepository.saveAll(userRoles);
+    }
+
+    @Override
+    public DepartmentUserRoleDto getDepartmentUserRoleByCodeUser(String codeUser) {
+        return userRoleRepository.getDepartmentUserRoleDtoByCodeUser(codeUser);
     }
 }

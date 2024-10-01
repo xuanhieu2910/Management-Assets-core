@@ -1,8 +1,10 @@
 package com.example.csvccdshustbe.repository.userRole.impl;
 
+import com.example.csvccdshustbe.dto.userRole.DepartmentUserRoleDto;
 import com.example.csvccdshustbe.entity.UserRole;
 import com.example.csvccdshustbe.repository.userRole.UserRoleRepositoryCustom;
 import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -69,5 +71,29 @@ public class UserRoleRepositoryImpl implements UserRoleRepositoryCustom {
             }
         }
         return userRoles;
+    }
+
+    @Override
+    public DepartmentUserRoleDto getDepartmentUserRoleDtoByCodeUser(String codeUser) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select de.id_department, de.name, userRole.id_user_role " +
+                "from csvc_user csvcUser " +
+                "    inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
+                "    left join department de on userRole.id_department = de.id_department " +
+                "where userRole.picked = :isPicked " +
+                "and csvcUser.code_user = :codeUser ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeUser", codeUser);
+        query.setParameter("isPicked", Constants.ROLE_USER_PICKED);
+        List<Object[]> result = query.getResultList();
+        DepartmentUserRoleDto departmentUserRoleDto = new DepartmentUserRoleDto();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                departmentUserRoleDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
+                departmentUserRoleDto.setNameDepartment(ValueUtil.getStringByObject(obj[1]));
+                departmentUserRoleDto.setIdUserRole(ValueUtil.getIntegerByObject(obj[2]));
+            }
+        }
+        return departmentUserRoleDto;
     }
 }
