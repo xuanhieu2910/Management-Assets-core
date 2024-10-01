@@ -4,8 +4,10 @@ import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategor
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoryDto;
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -16,6 +18,7 @@ import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategories
 import com.example.csvccdshustbe.response.assetCategories.FindAllAssetCategoriesVisibleResponse;
 import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
+import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -39,7 +42,8 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     AssetCategoriesRepository assetCategoriesRepository;
     @Autowired
     CsvcUserService csvcUserService;
-
+    @Autowired
+    DepartmentService departmentService;
 
     @Override
     public List<FindAllAssetCategoriesPickedResponse> findAllAssetCategoriesIsPicked() {
@@ -59,9 +63,21 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     @Override
     public Page<FindAllAssetCategoriesResponse> findAllAssetCategories(FindAllDocumentAssetCategoriesRequest request) {
             Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+            setListIdsDepartmentOriginal(request);
             Page<FindAllAssetCategoryDto> categories =
                     assetCategoriesRepository.findAllAssetCategories(pageable, request);
             return new PageImpl<>(convertToFindAllAssetCategoriesBy(categories.get().collect(Collectors.toList())), pageable, categories.getTotalElements());
+    }
+
+    private void setListIdsDepartmentOriginal(FindAllDocumentAssetCategoriesRequest request) {
+        List<FindAllDepartmentByCodeAndVisibleDto> structureDepartment =
+                departmentService.findAllStructureDepartmentByIdDepartment(csvcUserService.getInformationUser().getIdDepartment());
+        List<Integer> idsDepartment = new ArrayList<>();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        for (FindAllDepartmentByCodeAndVisibleDto dto : structureDepartment){
+            idsDepartment.add(dto.getIdDepartment());
+        }
+        request.setIdsDepartmentOriginal(idsDepartment);
     }
 
     @Override
