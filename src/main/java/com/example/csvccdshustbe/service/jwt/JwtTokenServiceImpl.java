@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.jwt;
 
+import com.example.csvccdshustbe.entity.Role;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.util.WebUtils;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -69,10 +71,11 @@ public class JwtTokenServiceImpl implements  JwtTokenService{
     private String buildToken(
             UserDetails userDetails
     ) {
-        String authorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+//        String authorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+//        List<Role> roles = userDetails.getAuthorities()
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .claim(AUTHORITIES_KEY, authorities)
+//                .claim(AUTHORITIES_KEY, authorities)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY))
                 .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
@@ -86,18 +89,18 @@ public class JwtTokenServiceImpl implements  JwtTokenService{
 
     public UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final UserDetails userDetails) {
 
-        final JwtParser jwtParser = Jwts.parser().setSigningKey(SIGNING_KEY);
+//        final JwtParser jwtParser = Jwts.parser().setSigningKey(SIGNING_KEY);
 
-        final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
+//        final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
 
-        final Claims claims = claimsJws.getBody();
+//        final Claims claims = claimsJws.getBody();
 
-        final Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+//        final Collection<? extends GrantedAuthority> authorities =
+//                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+//                        .map(SimpleGrantedAuthority::new)
+//                        .collect(Collectors.toList());
 
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+        return new UsernamePasswordAuthenticationToken(userDetails, "", null);
     }
 
     public ResponseCookie generateJwtCookie(String jwt) {
