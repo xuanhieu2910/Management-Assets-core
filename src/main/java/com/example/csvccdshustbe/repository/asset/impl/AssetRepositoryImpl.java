@@ -47,7 +47,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
 
     @Override
-    public Page<FindAllAssetDto> findAllAssetDto(FindAllAssetRequest request, Pageable pageable) {
+    public Page<FindAllAssetDto> findAllAssetDtoByIdsDepartment(FindAllAssetRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select asset.id_asset idAsset, asset.code_asset codeAsset, " +
                 "       asset.name nameAsset, assetCategories.id_asset_category idAssetCategory, " +
@@ -178,16 +178,17 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Optional<Asset> findAssetByCodeAsset(String codeAsset) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select asset.id_asset, asset.name, asset.code_asset, " +
-                "       asset.id_asset_category, asset.id_document_attack, " +
-                "       asset.id_department, asset.id_location, " +
-                "       asset.id_unit, asset.id_projects, asset.description, " +
-                "       asset.purpose, asset.notes, asset.file_attack, " +
-                "       asset.time_created, asset.time_modified, asset.id_department_default, " +
-                "       asset.id_level_type_asset, asset.id_user_created, " +
-                "       asset.id_user_modified, asset.quantity, asset.id_instance " +
-                "from asset  " +
-                "where asset.code_asset = :codeAsset ");
+        sb.append("select asset.id_asset, asset.name, asset.code_asset,    " +
+                "        asset.id_asset_category, asset.id_document_attack,    " +
+                "        asset.id_department, asset.id_location,    " +
+                "        asset.id_unit, asset.id_projects, asset.description,    " +
+                "        asset.purpose, asset.notes, asset.file_attack,    " +
+                "        asset.time_created, asset.time_modified, asset.id_department_default,    " +
+                "        asset.id_level_type_asset, asset.id_user_created,    " +
+                "        asset.id_user_modified, asset.quantity, asset.id_instance,  " +
+                "        asset.id_department_origin  " +
+                " from asset     " +
+                " where asset.code_asset = :codeAsset ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("codeAsset", codeAsset);
         List<Object[]> result = query.getResultList();
@@ -215,6 +216,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdUserModified(ValueUtil.getIntegerByObject(obj[18]));
                 asset.setQuantity(ValueUtil.getIntegerByObject(obj[19]));
                 asset.setIdInstance(ValueUtil.getIntegerByObject(obj[20]));
+                asset.setIdDepartmentOrigin(ValueUtil.getIntegerByObject(obj[21]));
                 return Optional.of(asset);
             }
         }

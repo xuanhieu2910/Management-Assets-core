@@ -29,4 +29,6 @@ public interface DepartmentService {
 
     List<Department> findDepartmentByIds(List<Integer> ids) throws ValidateFiledException;
 
+    List<FindAllDepartmentByCodeAndVisibleDto> findAllStructureDepartmentByIdDepartment(Integer department);
+
 }

@@ -137,6 +137,61 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
         return dtos;
     }
 
+    @Override
+    public List<FindAllDepartmentByCodeAndVisibleDto> findAllStructDepartmentByIdDepartment(Integer idDepartment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH RECURSIVE cte_department as (     " +
+                "       select department.id_department,department.name,     " +
+                "              department.code, department.short_name,     " +
+                "              department.description, department.parent,     " +
+                "               department.time_created,department.status,     " +
+                "              department.time_modified,     " +
+                "              1 as depth,   CAST(department.id_department as NCHAR ) as path     " +
+                "       from department     " +
+                "       where department.id_department = :idDepartment  " +
+                "       union all     " +
+                "       select department.id_department,department.name,     " +
+                "              department.code, department.short_name,     " +
+                "              department.description, department.parent,     " +
+                "              department.time_created,department.status,     " +
+                "              department.time_modified,     " +
+                "              cte.depth + 1 as depth,     " +
+                "   concat_ws('/',cte.path,CAST(department.id_department as NCHAR)) as path     " +
+                "   from department    " +
+                "                INNER JOIN cte_department cte ON department.parent = cte.id_department     " +
+                "   )     " +
+                "select cte.id_department, cte.name,  " +
+                "       cte.code, cte.short_name, cte.description,  " +
+                "       cte.parent,  " +
+                "       cte.time_created, cte.time_modified,  " +
+                "       cte.depth, cte.status, cte.path  " +
+                "from cte_department cte  " +
+                "where cte.status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idDepartment", idDepartment);
+        query.setParameter("status", Constants.DEPARTMENT_ACTIVE_STATUS);
+        List<Object[]> result = query.getResultList();
+        List<FindAllDepartmentByCodeAndVisibleDto> dtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj: result){
+                FindAllDepartmentByCodeAndVisibleDto dto= new FindAllDepartmentByCodeAndVisibleDto();
+                dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                dto.setCode(ValueUtil.getStringByObject(obj[2]));
+                dto.setShortName(ValueUtil.getStringByObject(obj[3]));
+                dto.setDescription(ValueUtil.getStringByObject(obj[4]));
+                dto.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                dto.setDepth(ValueUtil.getIntegerByObject(obj[8]));
+                dto.setStatus(ValueUtil.getIntegerByObject(obj[9]));
+                dto.setPath(ValueUtil.getStringByObject(obj[10]));
+                dtos.add(dto);
+            }
+        }
+        return dtos;
+    }
+
     private void setParameterFindAllDepartmentByCodeAndVisible(FindAllDepartmentVisibleRequest request, Query query) {
         query.setParameter("status", Constants.DEPARTMENT_ACTIVE_STATUS);
         if (StringUtils.isNotBlank(request.getKeyword())) {

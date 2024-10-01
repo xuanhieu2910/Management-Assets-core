@@ -57,4 +57,6 @@ public class Asset {
     private Integer quantity;
     @Column(name = "id_instance")
     private Integer idInstance;
+    @Column(name = "id_department_origin")
+    private Integer idDepartmentOrigin;
 }

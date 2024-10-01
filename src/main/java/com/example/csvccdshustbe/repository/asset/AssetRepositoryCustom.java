@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface AssetRepositoryCustom {
 
-    Page<FindAllAssetDto> findAllAssetDto(FindAllAssetRequest request, Pageable pageable);
+    Page<FindAllAssetDto> findAllAssetDtoByIdsDepartment(FindAllAssetRequest request, Pageable pageable);
 
     Optional<AssetBluePrintDto> findDetailAssetByCodeAsset(String codeAsset);
 

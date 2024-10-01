@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
 import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
@@ -109,7 +110,11 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public Page<FindAllAssetResponse> findAllAsset(FindAllAssetRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDto(request, pageable);
+
+        Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
+        List<FindAllDepartmentByCodeAndVisibleDto> allStructDepartment =
+                departmentService.findAllStructureDepartmentByIdDepartment(idDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoByIdsDepartment(request, pageable);
         return new PageImpl<>(convertToFindAllAssetResponse(findAllAssetDtos.get().collect(Collectors.toList())),
                     pageable, findAllAssetDtos.getTotalElements());
     }
@@ -800,6 +805,7 @@ public class AssetServiceImpl implements AssetService {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());
+        asset.setIdDepartmentOrigin(csvcUserService.getInformationUser().getIdDepartment());
         return asset;
     }
 
