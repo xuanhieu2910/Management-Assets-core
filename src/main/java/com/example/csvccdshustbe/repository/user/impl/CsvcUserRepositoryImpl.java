@@ -6,7 +6,9 @@ import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.enums.ContextLevelPattern;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepositoryCustom;
+import com.example.csvccdshustbe.request.user.FindAllUserRequest;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
+import com.example.csvccdshustbe.response.user.FindAllUserResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -254,6 +257,113 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
         query.setParameter("isActive", status);
         query.setParameter("ids", idsUser);
         query.executeUpdate();
+    }
+
+    @Override
+    public Page<FindAllUserResponse> findAllUser(FindAllUserRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select csvcUser.code_user, csvcUser.user_name, csvcUser.full_name, " +
+                "       de.id_department, de.name, group_concat(role.short_name separator ';' ) roles " +
+                "from csvc_user csvcUser " +
+                "    inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
+                "    inner join role role on userRole.id_role = role.id_role " +
+                "    inner join department de on userRole.id_department = de.id_department " +
+                "where de.id_department in (:idsDepartment) " +
+                "and csvcUser.id_user != :idUserCurrent ");
+        setConditionFindAllUser(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllUser(request, query);
+        PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Object[]> result = query.getResultList();
+        List<FindAllUserResponse> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FindAllUserResponse response = new FindAllUserResponse();
+                response.setCodeUser(ValueUtil.getStringByObject(obj[0]));
+                response.setUserName(ValueUtil.getStringByObject(obj[1]));
+                response.setFullName(ValueUtil.getStringByObject(obj[2]));
+                response.setIdDepartment(ValueUtil.getIntegerByObject(obj[3]));
+                response.setNameDepartment(ValueUtil.getStringByObject(obj[4]));
+                response.setRoles(ValueUtil.getStringByObject(obj[5]));
+                responses.add(response);
+            }
+        }
+        return new PageImpl<>(responses, pageable, countFindAllUser(request));
+    }
+
+    private long countFindAllUser(FindAllUserRequest request){
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0)  count " +
+                "from (select csvcUser.code_user, csvcUser.user_name, csvcUser.full_name,   " +
+                "         de.id_department, de.name, group_concat(role.short_name, ';') roles   " +
+                "from csvc_user csvcUser   " +
+                "      inner join user_role userRole on csvcUser.id_user = userRole.id_user   " +
+                "      inner join role role on userRole.id_role = role.id_role   " +
+                "      inner join department de on userRole.id_department = de.id_department   " +
+                "where de.id_department in (:idsDepartment)   " +
+                "and csvcUser.id_user != :idUserCurrent   ");
+        setConditionCountFindAllUser(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterCountFindAllUser(request, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private void setParameterCountFindAllUser(FindAllUserRequest request, Query query) {
+        query.setParameter("idsDepartment", request.getIdsDepartment());
+        Integer idUserCurrent = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdUser();
+        query.setParameter("idUserCurrent", idUserCurrent);
+        if (StringUtils.isNotBlank(request.getFullName())){
+            query.setParameter("fullName", request.getFullName());
+        }
+        if (Objects.nonNull(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (StringUtils.isNotBlank(request.getNameRole())){
+            query.setParameter("shortNameRole", request.getNameRole());
+        }
+    }
+
+    private void setConditionCountFindAllUser(FindAllUserRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getFullName())){
+            sb.append(" and (csvcUser.full_name REGEXP  :fullName ) ");
+        }
+        if (Objects.nonNull(request.getIdDepartment())){
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (StringUtils.isNotBlank(request.getNameRole())){
+            sb.append(" and ( role.short_name REGEXP  :shortNameRole ) ");
+        }
+        sb.append(" group by csvcUser.code_user, csvcUser.user_name, csvcUser.full_name, " +
+                "         de.id_department, de.name ) result");
+    }
+
+    private void setParameterFindAllUser(FindAllUserRequest request, Query query) {
+        query.setParameter("idsDepartment", request.getIdsDepartment());
+        Integer idUserCurrent = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdUser();
+        query.setParameter("idUserCurrent", idUserCurrent);
+        if (StringUtils.isNotBlank(request.getFullName())){
+            query.setParameter("fullName", request.getFullName());
+        }
+        if (Objects.nonNull(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (StringUtils.isNotBlank(request.getNameRole())){
+            query.setParameter("shortNameRole", request.getNameRole());
+        }
+    }
+
+    private void setConditionFindAllUser(FindAllUserRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getFullName())){
+            sb.append(" and (csvcUser.full_name REGEXP  :fullName ) ");
+        }
+        if (Objects.nonNull(request.getIdDepartment())){
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (StringUtils.isNotBlank(request.getNameRole())){
+            sb.append(" and ( role.short_name REGEXP  :shortNameRole ) ");
+        }
+        sb.append(" group by csvcUser.code_user, csvcUser.user_name, csvcUser.full_name, " +
+                "         de.id_department, de.name ");
     }
 
 

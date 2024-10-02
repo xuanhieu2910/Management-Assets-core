@@ -4,6 +4,7 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.user.AddNewUserRequest;
+import com.example.csvccdshustbe.request.user.FindAllUserRequest;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
 import com.example.csvccdshustbe.request.user.SwitchUserRequest;
 import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
@@ -86,5 +87,62 @@ public class CsvcUserController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.OK);
         }
     }
+
+    @GetMapping("/find-all")
+    public ResponseEntity<?> findAllUser(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    })FindAllUserRequest request){
+        try {
+            return ApiResponseDto.createdWithState(csvcUserService.findAllUserResponse(request),
+                    "Find all user success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

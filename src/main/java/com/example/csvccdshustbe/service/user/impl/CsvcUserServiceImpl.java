@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.user.impl;
 
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.dto.userRole.DepartmentUserRoleDto;
 import com.example.csvccdshustbe.entity.*;
@@ -8,11 +9,9 @@ import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepository;
-import com.example.csvccdshustbe.request.user.AddNewUserRequest;
-import com.example.csvccdshustbe.request.user.AssignRoleDetailsRequest;
-import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
-import com.example.csvccdshustbe.request.user.SwitchUserRequest;
+import com.example.csvccdshustbe.request.user.*;
 import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
+import com.example.csvccdshustbe.response.user.FindAllUserResponse;
 import com.example.csvccdshustbe.response.user.FindAllUserUsedResponse;
 import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
@@ -175,6 +174,25 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         roleService.findRoleByIds(idsRole);
         updateStatusAccountUser(idsUser);
         storeRoleUser(idsUser, request.getRoleAssignDetails());
+    }
+
+    @Override
+    public Page<FindAllUserResponse> findAllUserResponse(FindAllUserRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        setIdsStructureDepartment(request);
+        Page<FindAllUserResponse> responses = csvcUserRepository.findAllUser(request, pageable);
+        return responses;
+    }
+
+    private void setIdsStructureDepartment(FindAllUserRequest request) {
+        Integer idDepartment = getInformationUser().getIdDepartment();
+        List<FindAllDepartmentByCodeAndVisibleDto> structureDepartment
+                = departmentService.findAllStructureDepartmentByIdDepartment(idDepartment);
+        List<Integer> idsDepartment = new ArrayList<>();
+        for (FindAllDepartmentByCodeAndVisibleDto dto : structureDepartment){
+            idsDepartment.add(dto.getIdDepartment());
+        }
+        request.setIdsDepartment(idsDepartment);
     }
 
     private void storeRoleUser(List<Integer> idsUser, List<AssignRoleDetailsRequest> roleAssignDetails) {
