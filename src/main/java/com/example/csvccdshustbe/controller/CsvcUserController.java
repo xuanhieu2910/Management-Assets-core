@@ -3,10 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.user.AddNewUserRequest;
-import com.example.csvccdshustbe.request.user.FindAllUserRequest;
-import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
-import com.example.csvccdshustbe.request.user.SwitchUserRequest;
+import com.example.csvccdshustbe.request.user.*;
 import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -98,6 +95,18 @@ public class CsvcUserController {
             return ApiResponseDto.createdWithState(csvcUserService.findAllUserResponse(request),
                     "Find all user success!", HttpStatus.OK);
         } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<?> findDetailsUser(@RequestBody FindDetailsUserRequest request) {
+        try {
+            return ApiResponseDto.createdWithState(csvcUserService.findDetailsUserResponse(request),
+                    "Get details user success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

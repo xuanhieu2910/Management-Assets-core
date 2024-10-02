@@ -4,7 +4,9 @@ import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.request.user.FindAllUserRequest;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
+import com.example.csvccdshustbe.request.user.FindDetailsUserRequest;
 import com.example.csvccdshustbe.response.user.FindAllUserResponse;
+import com.example.csvccdshustbe.response.user.FindDetailsUserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,4 +25,6 @@ public interface CsvcUserRepositoryCustom {
     List<Integer> findIdsUserByListUserName(List<String> userName);
     void updateStatusAccountUserByIds(List<Integer> idsUser, Integer status);
     Page<FindAllUserResponse> findAllUser(FindAllUserRequest request, Pageable pageable);
+    Optional<FindDetailsUserResponse> findDetailsUserResponse(FindDetailsUserRequest request);
+
 }

@@ -8,7 +8,10 @@ import com.example.csvccdshustbe.enums.ContextLevelPattern;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepositoryCustom;
 import com.example.csvccdshustbe.request.user.FindAllUserRequest;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
+import com.example.csvccdshustbe.request.user.FindDetailsUserRequest;
 import com.example.csvccdshustbe.response.user.FindAllUserResponse;
+import com.example.csvccdshustbe.response.user.FindAllUserRoleDepartmentResponse;
+import com.example.csvccdshustbe.response.user.FindDetailsUserResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -289,6 +292,52 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllUser(request));
+    }
+
+    @Override
+    public Optional<FindDetailsUserResponse> findDetailsUserResponse(FindDetailsUserRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select csvcUser.code_user, csvcUser.user_name, csvcUser.full_name,  " +
+                "       csvcUser.phone_number, csvcUser.path_avatar,  " +
+                "       userRole.id_user_role idUserRole,  " +
+                "       de.id_department, de.name, de.code codeDeparment,  " +
+                "       role.id_role idRole, role.short_name  " +
+                "from csvc_user csvcUser  " +
+                "      inner join user_role userRole on csvcUser.id_user = userRole.id_user  " +
+                "      inner join role role on userRole.id_role = role.id_role  " +
+                "      inner join department de on userRole.id_department = de.id_department  " +
+                "where de.id_department in (:idsDepartment)  " +
+                "and csvcUser.code_user = :codeUser");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsDepartment", request.getIdsDepartment());
+        query.setParameter("codeUser", request.getCodeUser());
+        List<Object[]> result = query.getResultList();
+        FindDetailsUserResponse response = new FindDetailsUserResponse();
+        List<FindAllUserRoleDepartmentResponse> roleDepartmentResponseList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            setFindDetailsUser(response, result.get(0));
+            for (Object[] obj : result){
+                FindAllUserRoleDepartmentResponse roleDepartment = new FindAllUserRoleDepartmentResponse();
+                roleDepartment.setIdUserRole(ValueUtil.getIntegerByObject(obj[6]));
+                roleDepartment.setIdDepartment(ValueUtil.getIntegerByObject(obj[7]));
+                roleDepartment.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
+                roleDepartment.setCodeDepartment(ValueUtil.getStringByObject(obj[9]));
+                roleDepartment.setIdRole(ValueUtil.getIntegerByObject(obj[10]));
+                roleDepartment.setNameRole(ValueUtil.getStringByObject(obj[11]));
+                roleDepartmentResponseList.add(roleDepartment);
+            }
+            response.setUserRoleDepartment(roleDepartmentResponseList);
+            return Optional.of(response);
+        }
+        return Optional.empty();
+    }
+
+    private void setFindDetailsUser(FindDetailsUserResponse response, Object[] obj) {
+        response.setCodeUser(ValueUtil.getStringByObject(obj[0]));
+        response.setUserName(ValueUtil.getStringByObject(obj[1]));
+        response.setFullName(ValueUtil.getStringByObject(obj[2]));
+        response.setPhoneNumber(ValueUtil.getStringByObject(obj[3]));
+        response.setPathAvatar(ValueUtil.getStringByObject(obj[4]));
     }
 
     private long countFindAllUser(FindAllUserRequest request){

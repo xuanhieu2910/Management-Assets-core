@@ -10,10 +10,7 @@ import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepository;
 import com.example.csvccdshustbe.request.user.*;
-import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
-import com.example.csvccdshustbe.response.user.FindAllUserResponse;
-import com.example.csvccdshustbe.response.user.FindAllUserUsedResponse;
-import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
+import com.example.csvccdshustbe.response.user.*;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.role.RoleService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
@@ -31,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -184,15 +182,24 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         return responses;
     }
 
+    @Override
+    public FindDetailsUserResponse findDetailsUserResponse(FindDetailsUserRequest request) {
+        setIdsDepartmentFindDetailsRequest(request);
+        Optional<FindDetailsUserResponse> response = csvcUserRepository.findDetailsUserResponse(request);
+        if (response.isEmpty()){
+            throw new NotFoundException("Don't exits user!");
+        }
+        return response.get();
+    }
+
+    private void setIdsDepartmentFindDetailsRequest(FindDetailsUserRequest request) {
+        Integer department = getInformationUser().getIdDepartment();
+        request.setIdsDepartment(departmentService.findIdsStructureDepartment(department));
+    }
+
     private void setIdsStructureDepartment(FindAllUserRequest request) {
         Integer idDepartment = getInformationUser().getIdDepartment();
-        List<FindAllDepartmentByCodeAndVisibleDto> structureDepartment
-                = departmentService.findAllStructureDepartmentByIdDepartment(idDepartment);
-        List<Integer> idsDepartment = new ArrayList<>();
-        for (FindAllDepartmentByCodeAndVisibleDto dto : structureDepartment){
-            idsDepartment.add(dto.getIdDepartment());
-        }
-        request.setIdsDepartment(idsDepartment);
+        request.setIdsDepartment(departmentService.findIdsStructureDepartment(idDepartment));
     }
 
     private void storeRoleUser(List<Integer> idsUser, List<AssignRoleDetailsRequest> roleAssignDetails) {

@@ -118,13 +118,7 @@ public class AssetServiceImpl implements AssetService {
 
     private void setIdsDepartmentOriginal(FindAllAssetRequest request) {
         Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
-        List<FindAllDepartmentByCodeAndVisibleDto> allStructDepartment =
-                departmentService.findAllStructureDepartmentByIdDepartment(idDepartment);
-        List<Integer> idsDepartmentOriginal = new ArrayList<>();
-        for (FindAllDepartmentByCodeAndVisibleDto dto : allStructDepartment) {
-            idsDepartmentOriginal.add(dto.getIdDepartment());
-        }
-        request.setIdsDepartmentOriginal(idsDepartmentOriginal);
+        request.setIdsDepartmentOriginal(departmentService.findIdsStructureDepartment(idDepartment));
     }
 
     @Override

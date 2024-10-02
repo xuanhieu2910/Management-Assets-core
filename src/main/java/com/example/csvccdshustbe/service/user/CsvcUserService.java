@@ -3,14 +3,8 @@ package com.example.csvccdshustbe.service.user;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.user.AddNewUserRequest;
-import com.example.csvccdshustbe.request.user.FindAllUserRequest;
-import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
-import com.example.csvccdshustbe.request.user.SwitchUserRequest;
-import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
-import com.example.csvccdshustbe.response.user.FindAllUserResponse;
-import com.example.csvccdshustbe.response.user.FindAllUserUsedResponse;
-import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
+import com.example.csvccdshustbe.request.user.*;
+import com.example.csvccdshustbe.response.user.*;
 import jakarta.servlet.ServletException;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,4 +28,5 @@ public interface CsvcUserService extends UserDetailsService {
     void hasCapability(String servletPath, String method) throws ServletException;
     void addNewUser(AddNewUserRequest request) throws ValidateFiledException;
     Page<FindAllUserResponse> findAllUserResponse(FindAllUserRequest request);
+    FindDetailsUserResponse findDetailsUserResponse(FindDetailsUserRequest request);
 }

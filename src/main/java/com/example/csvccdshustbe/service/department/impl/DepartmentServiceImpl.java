@@ -89,6 +89,16 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public List<Integer> findIdsStructureDepartment(Integer department) {
+        List<FindAllDepartmentByCodeAndVisibleDto> dtos = findAllStructureDepartmentByIdDepartment(department);
+        List<Integer> idsStructureDepartment = new ArrayList<>();
+        for (FindAllDepartmentByCodeAndVisibleDto dto : dtos){
+            idsStructureDepartment.add(dto.getIdDepartment());
+        }
+        return idsStructureDepartment;
+    }
+
+    @Override
     public Page<FindAllDepartmentSResponse> findAllDepartment(FindAllDepartmentRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllDepartmentSDto> dtos = departmentRepository.findAllDepartment(pageable, request);

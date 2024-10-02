@@ -70,13 +70,8 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     }
 
     private void setListIdsDepartmentOriginal(FindAllDocumentAssetCategoriesRequest request) {
-        List<FindAllDepartmentByCodeAndVisibleDto> structureDepartment =
-                departmentService.findAllStructureDepartmentByIdDepartment(csvcUserService.getInformationUser().getIdDepartment());
-        List<Integer> idsDepartment = new ArrayList<>();
+        List<Integer> idsDepartment = departmentService.findIdsStructureDepartment(csvcUserService.getInformationUser().getIdDepartment());
         idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
-        for (FindAllDepartmentByCodeAndVisibleDto dto : structureDepartment){
-            idsDepartment.add(dto.getIdDepartment());
-        }
         request.setIdsDepartmentOriginal(idsDepartment);
     }
 

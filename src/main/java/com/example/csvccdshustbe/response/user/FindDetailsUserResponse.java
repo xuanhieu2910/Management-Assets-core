@@ -10,18 +10,18 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllUserResponse {
+public class FindDetailsUserResponse {
 
+    @JsonProperty("path_avatar")
+    private String pathAvatar;
     @JsonProperty("code_user")
     private String codeUser;
-    @JsonProperty("user_name")
-    private String userName;
     @JsonProperty("full_name")
     private String fullName;
-    @JsonProperty("id_department")
-    private Integer idDepartment;
-    @JsonProperty("name_department")
-    private String nameDepartment;
-    @JsonProperty("roles")
-    private String roles;
+    @JsonProperty("user_name")
+    private String userName;
+    @JsonProperty("phone_number")
+    private String phoneNumber;
+    @JsonProperty("role_department")
+    private List<FindAllUserRoleDepartmentResponse> userRoleDepartment;
 }
