@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.enums.EnumModuleFactory;
 import com.example.csvccdshustbe.enums.EnumOriginalFactory;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.factory.declare.impl.CommonDeclareFactory;
+import com.example.csvccdshustbe.factory.declare.impl.GroundDeclareFactory;
 import com.example.csvccdshustbe.factory.declare.impl.HouseDeclareFactory;
 import com.example.csvccdshustbe.factory.module.impl.*;
 import com.example.csvccdshustbe.factory.original.impl.noShape.*;
@@ -58,7 +59,7 @@ public class ProxyInitDataAssetUtil {
                 return new HouseDeclareFactory();
             }
             case GroundDeclare -> {
-                return new GroundDeclare();
+                return new GroundDeclareFactory();
             }
             case CommonDeclare -> {
                 return new CommonDeclareFactory();
