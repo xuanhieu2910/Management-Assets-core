@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserRoleRepositoryImpl implements UserRoleRepositoryCustom {
 
@@ -127,5 +128,31 @@ public class UserRoleRepositoryImpl implements UserRoleRepositoryCustom {
             }
         }
         return userRoles;
+    }
+
+    @Override
+    public Optional<UserRole> findUserRoleByIdUserRole(Integer idUserRole) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_user_role, id_user, id_role,  " +
+                "       id_department, time_created, time_modified, picked " +
+                "from user_role userRole " +
+                "where userRole.id_user_role = :idUserRole ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idUserRole", idUserRole);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj:result){
+                UserRole userRole = new UserRole();
+                userRole.setIdUserRole(ValueUtil.getIntegerByObject(obj[0]));
+                userRole.setIdUser(ValueUtil.getIntegerByObject(obj[1]));
+                userRole.setIdRole(ValueUtil.getIntegerByObject(obj[2]));
+                userRole.setIdDepartment(ValueUtil.getIntegerByObject(obj[3]));
+                userRole.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                userRole.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                userRole.setPicked(ValueUtil.getIntegerByObject(obj[6]));
+                return Optional.of(userRole);
+            }
+        }
+        return Optional.empty();
     }
 }

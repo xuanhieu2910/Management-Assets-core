@@ -4,6 +4,8 @@ import com.example.csvccdshustbe.dto.userRole.DepartmentUserRoleDto;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.entity.UserRole;
 import com.example.csvccdshustbe.exception.RoleException;
+import com.example.csvccdshustbe.request.userRole.AddNewRoleDepartmentUserRequest;
+import com.example.csvccdshustbe.request.userRole.UpdateUserRoleRequest;
 import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
 
 import java.util.List;
@@ -23,4 +25,9 @@ public interface UserRoleService {
     DepartmentUserRoleDto getDepartmentUserRoleByCodeUser (String codeUser);
 
     void removeUserByIdDepartmentAndIdUser(Integer idDepartment, Integer idUser);
+
+    void updateUserRole(UpdateUserRoleRequest request);
+
+    void deleteUserRole(Integer idUserRole);
+    void createNewUserRole(AddNewRoleDepartmentUserRequest request);
 }

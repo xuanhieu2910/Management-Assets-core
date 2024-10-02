@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.entity.UserRole;
 import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRoleRepositoryCustom {
     List<FindAllRolesUserResponse> findAllRolesUserByCodeUser(String codeUser);
@@ -13,4 +14,6 @@ public interface UserRoleRepositoryCustom {
 
     DepartmentUserRoleDto getDepartmentUserRoleDtoByCodeUser (String codeUser);
     List<UserRole> findUserRoleByIdDepartmentAndIdUser(Integer idDepartment, Integer idUser);
+
+    Optional<UserRole> findUserRoleByIdUserRole(Integer idUserRole);
 }

@@ -9,9 +9,8 @@ public interface RoleRepositoryCustom {
 
     List<Role> findAllRole();
     Optional<Role> findByTitleRole(String titleRole);
-
+    Optional<Role> findByIdRole(Integer idRole);
     Optional<Role> findRoleByTitleOrShortName(String title, String shortName);
-
     List<Role> findRestRoleWithoutCurrentRole(Role role);
     List<Role> findRolesByIds(List<Integer> ids);
 }

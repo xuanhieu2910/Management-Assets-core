@@ -19,7 +19,7 @@ public class GroundDeclare implements IDeclare{
     private Integer idAsset;
     @Column(name = "id_goals_use_ground")
     private Integer idGoalsUseGround;
-    @Column(name = "work_place")
+    @Column(name = "workplace")
     private Double workplace;
     @Column(name = "hdsn_no_bussiness")
     private Double hdsnNoBussiness;

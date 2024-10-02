@@ -93,6 +93,34 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
     }
 
     @Override
+    public Optional<Role> findByIdRole(Integer idRole) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_role, title, status, content, " +
+                "       short_name, description, time_created,  " +
+                "       time_modified " +
+                "from role role  " +
+                "where role.id_role = :idRole ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idRole", idRole);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Role role = new Role();
+                role.setIdRole(ValueUtil.getIntegerByObject(obj[0]));
+                role.setTitle(ValueUtil.getStringByObject(obj[1]));
+                role.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                role.setContent(ValueUtil.getStringByObject(obj[3]));
+                role.setShortName(ValueUtil.getStringByObject(obj[4]));
+                role.setDescription(ValueUtil.getStringByObject(obj[5]));
+                role.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                role.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                return Optional.of(role);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Role> findRoleByTitleOrShortName(String title, String shortName) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select role.id_role, role.title, role.status, " +
