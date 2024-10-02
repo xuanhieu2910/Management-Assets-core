@@ -4,17 +4,37 @@ import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
-import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
 import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
 import com.example.csvccdshustbe.entity.*;
+import com.example.csvccdshustbe.exception.FileExcelException;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.factory.declare.DeclareFactory;
 import com.example.csvccdshustbe.factory.module.ModuleFactory;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
+import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepository;
+import com.example.csvccdshustbe.repository.countryProducer.CountryProducerRepository;
+import com.example.csvccdshustbe.repository.currentUsage.CurrentUsageRepository;
+import com.example.csvccdshustbe.repository.declare.DeclareRepository;
+import com.example.csvccdshustbe.repository.department.DepartmentRepository;
+import com.example.csvccdshustbe.repository.districts.DistrictsRepository;
+import com.example.csvccdshustbe.repository.documentAttack.DocumentAttackRepository;
+import com.example.csvccdshustbe.repository.levelTypeAsset.LevelTypeAssetRepository;
+import com.example.csvccdshustbe.repository.location.LocationRepository;
+import com.example.csvccdshustbe.repository.medicineGroup.MedicineGroupRepository;
+import com.example.csvccdshustbe.repository.medicineType.MedicineTypeRepository;
+import com.example.csvccdshustbe.repository.modules.ModulesRepository;
+import com.example.csvccdshustbe.repository.original.OriginalRepository;
+import com.example.csvccdshustbe.repository.originalOfFormation.OriginalOfFormationRepository;
+import com.example.csvccdshustbe.repository.projects.ProjectsRepository;
+import com.example.csvccdshustbe.repository.province.ProvinceRepository;
+import com.example.csvccdshustbe.repository.typeDeclareAsset.TypeDeclareAssetRepository;
+import com.example.csvccdshustbe.repository.typeUse.TypeUseRepository;
+import com.example.csvccdshustbe.repository.units.UnitsRepository;
+import com.example.csvccdshustbe.repository.wards.WardsRepository;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.response.asset.FindAllAssetResponse;
@@ -29,6 +49,7 @@ import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
 import com.example.csvccdshustbe.service.location.LocationService;
 import com.example.csvccdshustbe.service.modules.ModulesServiceFactory;
+import com.example.csvccdshustbe.service.original.OriginalService;
 import com.example.csvccdshustbe.service.original.OriginalServiceFactory;
 import com.example.csvccdshustbe.service.originalOfFormation.OriginalOfFormationService;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
@@ -42,6 +63,10 @@ import com.nimbusds.jose.util.JSONObjectUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -94,7 +119,48 @@ public class AssetServiceImpl implements AssetService {
     AssetDepreciationService assetDepreciationService;
     @Autowired
     FilesStorageService filesStorageService;
-
+    @Autowired
+    OriginalService originalService;
+    @Autowired
+    UnitsRepository unitsRepository;
+    @Autowired
+    LocationRepository locationRepository;
+    @Autowired
+    DepartmentRepository departmentRepository;
+    @Autowired
+    AssetCategoriesRepository assetCategoriesRepository;
+    @Autowired
+    DocumentAttackRepository documentAttackRepository;
+    @Autowired
+    ProjectsRepository projectsRepository;
+    @Autowired
+    OriginalRepository originalRepository;
+    @Autowired
+    ModulesRepository modulesRepository;
+    @Autowired
+    OriginalOfFormationRepository originalOfFormationRepository;
+    @Autowired
+    DeclareRepository declareRepository;
+    @Autowired
+    LevelTypeAssetRepository levelTypeAssetRepository;
+    @Autowired
+    CountryProducerRepository countryProducerRepository;
+    @Autowired
+    TypeUseRepository typeUseRepository;
+    @Autowired
+    MedicineTypeRepository medicineTypeRepository;
+    @Autowired
+    MedicineGroupRepository medicineGroupRepository;
+    @Autowired
+    WardsRepository wardsRepository;
+    @Autowired
+    DistrictsRepository districtsRepository;
+    @Autowired
+    ProvinceRepository provinceRepository;
+    @Autowired
+    TypeDeclareAssetRepository typeDeclareAssetRepository;
+    @Autowired
+    CurrentUsageRepository currentUsageRepository;
 
 
 
@@ -814,6 +880,459 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public Resource downloadFileTemplateImportAsset() throws IOException {
         return filesStorageService.downLoadFileImportAsset();
+    }
+
+
+    //Upload File CSV Sample
+    public void uploadFileAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException {
+    ValidateExcelUtils.checkFileExcel(file);
+    List<Map<String, Object>> assetRequests = handleUploadFileAsset(file);
+    for (Map<String, Object> createAssetRequest : assetRequests) {
+        createAssetFromFile(createAssetRequest);
+        }
+    }
+    public void createAssetFromFile(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException {
+        Map<String, Object> dataCreateAssetRequest =
+                objectMapper.readValue(JSONObjectUtils.toJSONString(createAssetRequest), Map.class);
+//        validateDataCreateAsset(dataCreateAssetRequest);
+        storeNewAssetFromFile(dataCreateAssetRequest);
+    }
+    private void storeNewAssetFromFile(Map<String, Object> createAssetRequest) throws ValidateFiledException {
+        log.info("Init store asset");
+        Asset asset = storeCommonData(createAssetRequest);
+        storeModulesDataAsset(createAssetRequest, asset);
+        storeOriginalDataAsset(createAssetRequest, asset);
+        storeDeclareDataAsset(createAssetRequest, asset);
+//        storeDepreciation(createAssetRequest, asset);
+
+    }
+    private List<Map<String, Object>> handleUploadFileAsset(MultipartFile file) {
+        List<Map<String, Object>> assetRequests = new ArrayList<>();
+        int indexSheet = 0;
+        int indexRowStartToReadData = 3;
+
+        try {
+            XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file.getInputStream());
+            XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(indexSheet);
+            int totalRow = xssfSheet.getLastRowNum();
+
+            for (int i = indexRowStartToReadData; i <= totalRow; ++i) {
+                XSSFRow row = xssfSheet.getRow(i);
+                if (row != null) {
+                    // Convert the row into Map<String, Object>
+                    assetRequests.add(convertExcelRowToMap(row));
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return assetRequests;
+    }
+
+
+
+
+    private Map<String, Object> convertExcelRowToMap(XSSFRow row) {
+        Map<String, Object> createAssetRequest = new HashMap<>();
+
+        // Gọi hàm xử lý commonData
+        Map<String, Object> commonData = processCommonData(row);
+        createAssetRequest.put(Constants.KEY_COMMON, commonData);
+
+        // Gọi hàm xử lý modulesDataAsset
+        List<Map<String, Object>> modulesDataAsset = processModulesData(row, commonData);
+        createAssetRequest.put(Constants.KEY_MODULE, modulesDataAsset);
+
+        Map<String, Object> DeclareData = processDeclareData(row,commonData);
+        createAssetRequest.put(Constants.KEY_DECLARE_ASSET, DeclareData);
+
+        Map<String, Object> originalData = processOriginalData(row);
+        createAssetRequest.put(Constants.KEY_ORIGINAL_ASSET, originalData);
+        return createAssetRequest;
+
+    }
+
+    private Map<String, Object> processCommonData(XSSFRow row) {
+        Map<String, Object> commonData = new HashMap<>();
+
+        String instanceCategory = (String) ExcelUtil.convertValue(row.getCell(0), CellType.STRING);
+        String category = (String) ExcelUtil.convertValue(row.getCell(1), CellType.STRING);
+        String nameAsset = (String) ExcelUtil.convertValue(row.getCell(2), CellType.STRING);
+        String department = (String) ExcelUtil.convertValue(row.getCell(3), CellType.STRING);
+        String location = (String) ExcelUtil.convertValue(row.getCell(4), CellType.STRING);
+        String unit = (String) ExcelUtil.convertValue(row.getCell(5), CellType.STRING);
+        String documentAttack = (String) ExcelUtil.convertValue(row.getCell(6), CellType.STRING);
+        String project = (String) ExcelUtil.convertValue(row.getCell(7), CellType.STRING);
+        String purpose = (String) ExcelUtil.convertValue(row.getCell(8), CellType.STRING);
+        String levelTypeAsset = (String) ExcelUtil.convertValue(row.getCell(9), CellType.STRING);
+        String description = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
+        String departmentDefault = (String) ExcelUtil.convertValue(row.getCell(11), CellType.STRING);
+        String notes = (String) ExcelUtil.convertValue(row.getCell(12), CellType.STRING);
+        String original = (String) ExcelUtil.convertValue(row.getCell(13), CellType.STRING);
+        String originalOfFormationName = (String) ExcelUtil.convertValue(row.getCell(14), CellType.STRING);
+        String originalOfFormationValues = (String) ExcelUtil.convertValue(row.getCell(15), CellType.STRING);
+
+        Optional<AssetCategories> assetCategoriesInstanceOptional=assetCategoriesRepository.findAssetCategoryByName(instanceCategory);
+        Optional<AssetCategories> assetCategoriesOptional=assetCategoriesRepository.findAssetCategoryByName(category);
+        Optional<Department> departmentOptional=departmentRepository.findDepartmentByName(department);
+        Optional<Location> locationOptional=locationRepository.findLocationByName(location);
+        Optional<Units> unitsOptional = unitsRepository.findUnitByName(unit);
+        Optional<DocumentAttack> documentAttackOptional=documentAttackRepository.findDocumentAttackByName(documentAttack);
+        Optional<Projects> projectsOptional=projectsRepository.findProjectByName(project);
+        Optional<Department> departmentDefaultOptional=departmentRepository.findDepartmentByName(departmentDefault);
+        Optional<Original> originalOptional=originalRepository.findOriginalByName(original);
+
+
+        String codeAsset= ValueUtil.getStringByObject(departmentOptional.get().getCode()) + "-" + UUID.randomUUID();
+        String[] originOfFormationNameArray = originalOfFormationName.split(";");
+        String[] originOfFormationValuesArray = originalOfFormationValues.split(";");
+        List<Map<String, Object>> originOfFormationList = new ArrayList<>();
+        for (int i = 0; i < originOfFormationNameArray.length; i++) {
+            Map<String, Object> originOfFormation = new HashMap<>();
+            Optional<OriginalOfFormation> originalOfFormationOptional=originalOfFormationRepository.findOriginalOfFormationByName(originOfFormationNameArray[i]);
+            originOfFormation.put("idOriginOfFormation", originalOfFormationOptional.map(OriginalOfFormation::getIdOriginalOfFormation).orElse(null));
+            originOfFormation.put("value", originOfFormationValuesArray[i]);
+            originOfFormationList.add(originOfFormation);
+        }
+
+
+        commonData.put("codeAsset", codeAsset);
+        commonData.put("name", nameAsset);
+        commonData.put("idAssetCategory", assetCategoriesOptional.map(AssetCategories::getIdAssetCategory).orElse(null));
+        commonData.put("idInstance", assetCategoriesInstanceOptional.map(AssetCategories::getIdAssetCategory).orElse(null));
+        commonData.put("idDepartment", departmentOptional.map(Department::getIdDepartment).orElse(null));
+        commonData.put("codeDepartment", departmentOptional.map(Department::getCode).orElse(null));
+        commonData.put("idLocation", locationOptional.map(Location::getIdLocation).orElse(null));
+        commonData.put("idUnit", unitsOptional.map(Units::getIdUnit).orElse(null));
+        commonData.put("idDocumentAttack", documentAttackOptional.map(DocumentAttack::getIdDocumentAttack).orElse(null));
+        commonData.put("idProjects", projectsOptional.map(Projects::getIdProject).orElse(null));
+        commonData.put("idOriginal", originalOptional.map(Original::getIdOriginal).orElse(null));
+        commonData.put("originOfFormation", originOfFormationList);
+        commonData.put("purpose", purpose);
+        commonData.put("notes", notes);
+        commonData.put("description", description);
+        commonData.put("quantity", levelTypeAsset);
+        commonData.put("idDepartmentDefault", departmentDefaultOptional.map(Department::getIdDepartment).orElse(null));
+
+        return commonData;
+    }
+
+    private List<Map<String, Object>> processModulesData(XSSFRow row, Map<String, Object> commonData) {
+        List<Map<String, Object>> modulesDataAsset = new ArrayList<>();
+
+        Optional<AssetCategories> assetCategoriesInstanceOptional = assetCategoriesRepository.findAssetCategoryById((Integer) commonData.get("idInstance"));
+        List<Modules> ModulesArray = modulesRepository.findAllModulesByIdAssetCategoryAndStatus(assetCategoriesInstanceOptional.get().getIdAssetCategory(), 1);
+
+        for (Modules modules : ModulesArray) {
+            String typeModules = modules.getHardCode();
+//            Map<String, Object> moduleAssetData = new HashMap<>();
+//            Map<String, Object> moduleDataDetails = new HashMap<>();
+//            Map<String, Object> BluePrintAssetModules= new HashMap<>();
+////            BluePrintAssetModules.put("id_instance", originalOfFormationOptional.map(OriginalOfFormation::getIdOriginalOfFormation).orElse(null));
+//            BluePrintAssetModules.put("id_modules", modules.getIdModule());
+//            BluePrintAssetModules.put("name_modules",modules.getName());
+//            BluePrintAssetModules.put("types_modules", modules.getCode());
+//            moduleAssetData.put("blue_print_asset_modules",BluePrintAssetModules);
+            Map<String, Object> moduleDataDetails = new HashMap<>();
+            moduleDataDetails.put("typeModules", typeModules);
+
+
+
+            switch (typeModules) {
+                case "MachineModule":
+                    String countryProducer = (String)ExcelUtil.convertValue(row.getCell(20), CellType.STRING);
+                    Optional<CountryProducer> countryProducerOptional=countryProducerRepository.findCountryProducerByNameAndStatus(countryProducer,1);
+                    String userNameMachine = (String) ExcelUtil.convertValue(row.getCell(21), CellType.STRING);
+                    Optional<CsvcUser> userOptionalMachine = csvcUserService.findByUserName(userNameMachine);
+                    String typeUse = (String) ExcelUtil.convertValue(row.getCell(22), CellType.STRING);
+                    Optional<TypeUse> typeUseOptional=typeUseRepository.findTypeUseByName(typeUse);
+                    moduleDataDetails.put("labelMachine", ExcelUtil.convertValue(row.getCell(16), CellType.STRING));
+                    moduleDataDetails.put("model", ExcelUtil.convertValue(row.getCell(17), CellType.STRING));
+                    moduleDataDetails.put("serial", ExcelUtil.convertValue(row.getCell(18), CellType.STRING));
+                    moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(19), CellType.STRING));
+                    moduleDataDetails.put("idCountryProducer",  countryProducerOptional.map(CountryProducer::getIdCountryProducer).orElse(null));
+                    moduleDataDetails.put("codeUser",  userOptionalMachine.isPresent() ? userOptionalMachine.get().getCodeUser() : null);
+                    moduleDataDetails.put("idTypeUse", typeUseOptional.map(TypeUse::getIdTypeUse).orElse(null));
+
+                    break;
+
+                case "GroundModule":
+//                    String province = (String)ExcelUtil.convertValue(row.getCell(23), CellType.STRING);
+//                    Optional<Provinces> provincesOptional=provinceRepository.find(province);
+//                    String district = (String)ExcelUtil.convertValue(row.getCell(24), CellType.STRING);
+//                    Optional<Districts> districtsOptional=districtsRepository.find(district);
+//                    String ward = (String)ExcelUtil.convertValue(row.getCell(23), CellType.STRING);
+//                    Optional<Wards> wardsOptional=wardsRepository.find(ward);
+
+                    moduleDataDetails.put("provinceCode", ExcelUtil.convertValue(row.getCell(23), CellType.STRING));
+                    moduleDataDetails.put("districtCode", ExcelUtil.convertValue(row.getCell(24), CellType.STRING));
+                    moduleDataDetails.put("wardCode", ExcelUtil.convertValue(row.getCell(25), CellType.STRING));
+                    moduleDataDetails.put("addressDetail", ExcelUtil.convertValue(row.getCell(26), CellType.STRING));
+                    break;
+                case "HouseModule":
+//                    String province = (String)ExcelUtil.convertValue(row.getCell(29), CellType.STRING);
+//                    Optional<Provinces> provincesOptional=provinceRepository.find(province);
+//                    String district = (String)ExcelUtil.convertValue(row.getCell(30), CellType.STRING);
+//                    Optional<Districts> districtsOptional=districtsRepository.find(district);
+//                    String ward = (String)ExcelUtil.convertValue(row.getCell(31), CellType.STRING);
+//                    Optional<Wards> wardsOptional=wardsRepository.find(ward);
+                    moduleDataDetails.put("isManageGround", ExcelUtil.convertValue(row.getCell(27), CellType.STRING));
+                    moduleDataDetails.put("idInstance", ExcelUtil.convertValue(row.getCell(28), CellType.STRING));
+                    moduleDataDetails.put("provinceCode", ExcelUtil.convertValue(row.getCell(29), CellType.STRING));
+                    moduleDataDetails.put("districtCode", ExcelUtil.convertValue(row.getCell(30), CellType.STRING));
+                    moduleDataDetails.put("wardCode", ExcelUtil.convertValue(row.getCell(31), CellType.STRING));
+                    moduleDataDetails.put("addressDetail", ExcelUtil.convertValue(row.getCell(32), CellType.STRING));
+                    moduleDataDetails.put("floorsNumber", ExcelUtil.convertValue(row.getCell(33), CellType.STRING));
+                    moduleDataDetails.put("acreage", ExcelUtil.convertValue(row.getCell(34), CellType.STRING));
+                    moduleDataDetails.put("publishYear", ExcelUtil.convertValue(row.getCell(35), CellType.STRING));
+                    break;
+                case "ArchitectureModule":
+                    String countryProducerArchitecture = (String)ExcelUtil.convertValue(row.getCell(41), CellType.STRING);
+                    Optional<CountryProducer> countryProducerArchitectureOptional=countryProducerRepository.findCountryProducerByNameAndStatus(countryProducerArchitecture,1);
+
+                    moduleDataDetails.put("idInstance", ExcelUtil.convertValue(row.getCell(36), CellType.STRING));
+                    moduleDataDetails.put("length", ExcelUtil.convertValue(row.getCell(37), CellType.STRING));
+                    moduleDataDetails.put("acreage", ExcelUtil.convertValue(row.getCell(38), CellType.STRING));
+                    moduleDataDetails.put("volume", ExcelUtil.convertValue(row.getCell(39), CellType.STRING));
+                    moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(40), CellType.STRING));
+                    moduleDataDetails.put("idCountryProducer", countryProducerArchitectureOptional.map(CountryProducer::getIdCountryProducer).orElse(null));
+                    break;
+                case "CarModule":
+                    String countryProducerCar = (String)ExcelUtil.convertValue(row.getCell(55), CellType.STRING);
+                    Optional<CountryProducer> countryProducerCarOptional=countryProducerRepository.findCountryProducerByNameAndStatus(countryProducerCar,43);
+                    String userNameCar= (String) ExcelUtil.convertValue(row.getCell(61), CellType.STRING);
+                    Optional<CsvcUser> userOptionalCar = csvcUserService.findByUserName(userNameCar);
+                    String typeUseCar = (String) ExcelUtil.convertValue(row.getCell(62), CellType.STRING);
+                    Optional<TypeUse> typeUseOptionalCar=typeUseRepository.findTypeUseByName(typeUseCar);
+
+                    moduleDataDetails.put("isFreeTax", ExcelUtil.convertValue(row.getCell(42), CellType.STRING));
+                    moduleDataDetails.put("valueTax", ExcelUtil.convertValue(row.getCell(43), CellType.STRING));
+                    moduleDataDetails.put("licensePlate", ExcelUtil.convertValue(row.getCell(44), CellType.STRING));
+                    moduleDataDetails.put("labelCar", ExcelUtil.convertValue(row.getCell(45), CellType.STRING));
+                    moduleDataDetails.put("typeCar", ExcelUtil.convertValue(row.getCell(46), CellType.STRING));
+                    moduleDataDetails.put("loadCapacity", ExcelUtil.convertValue(row.getCell(47), CellType.STRING));
+                    moduleDataDetails.put("numberSeats", ExcelUtil.convertValue(row.getCell(48), CellType.STRING));
+                    moduleDataDetails.put("capacity", ExcelUtil.convertValue(row.getCell(49), CellType.STRING));
+                    moduleDataDetails.put("cylinderCapacity", ExcelUtil.convertValue(row.getCell(50), CellType.STRING));
+                    moduleDataDetails.put("clutchNumber", ExcelUtil.convertValue(row.getCell(51), CellType.STRING));
+                    moduleDataDetails.put("vehicleIdentificationNumber", ExcelUtil.convertValue(row.getCell(52), CellType.STRING));
+                    moduleDataDetails.put("machineNumber", ExcelUtil.convertValue(row.getCell(53), CellType.STRING));
+                    moduleDataDetails.put("publishYear", ExcelUtil.convertValue(row.getCell(54), CellType.STRING));
+                    moduleDataDetails.put("idCountryProducer",  countryProducerCarOptional.map(CountryProducer::getIdCountryProducer).orElse(null));
+                    moduleDataDetails.put("licenseCertificateRegister", ExcelUtil.convertValue(row.getCell(56), CellType.STRING));
+                    moduleDataDetails.put("publishDateLicense", ExcelUtil.convertValue(row.getCell(57), CellType.STRING));
+                    moduleDataDetails.put("companyRegister", ExcelUtil.convertValue(row.getCell(58), CellType.STRING));
+                    moduleDataDetails.put("source", ExcelUtil.convertValue(row.getCell(59), CellType.STRING));
+                    moduleDataDetails.put("color", ExcelUtil.convertValue(row.getCell(60), CellType.STRING));
+                    moduleDataDetails.put("codeUser",  userOptionalCar.isPresent() ? userOptionalCar.get().getCodeUser() : null);
+                    moduleDataDetails.put("idTypeUse", typeUseOptionalCar.map(TypeUse::getIdTypeUse).orElse(null));
+                    break;
+                case "OtherVehicleTransportModule":
+                    String countryProducerOtherVehicle = (String)ExcelUtil.convertValue(row.getCell(73), CellType.STRING);
+                    Optional<CountryProducer> countryProducerOtherVehicleOptional=countryProducerRepository.findCountryProducerByNameAndStatus(countryProducerOtherVehicle,1);
+                    String userNameOtherVehicle= (String) ExcelUtil.convertValue(row.getCell(79), CellType.STRING);
+                    Optional<CsvcUser> userOptionalOtherVehicle = csvcUserService.findByUserName(userNameOtherVehicle);
+                    String typeUseOtherVehicle = (String) ExcelUtil.convertValue(row.getCell(80), CellType.STRING);
+                    Optional<TypeUse> typeUseOptionalOtherVehicle=typeUseRepository.findTypeUseByName(typeUseOtherVehicle);
+                    moduleDataDetails.put("licensePlate", ExcelUtil.convertValue(row.getCell(63), CellType.STRING));
+                    moduleDataDetails.put("label", ExcelUtil.convertValue(row.getCell(64), CellType.STRING));
+                    moduleDataDetails.put("loadCapacity", ExcelUtil.convertValue(row.getCell(65), CellType.STRING));
+                    moduleDataDetails.put("numberSeats", ExcelUtil.convertValue(row.getCell(66), CellType.STRING));
+                    moduleDataDetails.put("capacity", ExcelUtil.convertValue(row.getCell(67), CellType.STRING));
+                    moduleDataDetails.put("cylinderCapacity", ExcelUtil.convertValue(row.getCell(68), CellType.STRING));
+                    moduleDataDetails.put("clutchNumber", ExcelUtil.convertValue(row.getCell(69), CellType.STRING));
+                    moduleDataDetails.put("vehicleIdentificationNumber", ExcelUtil.convertValue(row.getCell(70), CellType.STRING));
+                    moduleDataDetails.put("machineNumber", ExcelUtil.convertValue(row.getCell(71), CellType.STRING));
+                    moduleDataDetails.put("publishYear", ExcelUtil.convertValue(row.getCell(72), CellType.STRING));
+                    moduleDataDetails.put("idCountryProducer",  countryProducerOtherVehicleOptional.map(CountryProducer::getIdCountryProducer).orElse(null));
+                    moduleDataDetails.put("licenseCertificateRegister", ExcelUtil.convertValue(row.getCell(74), CellType.STRING));
+                    moduleDataDetails.put("publishDateLicense", ExcelUtil.convertValue(row.getCell(75), CellType.STRING));
+                    moduleDataDetails.put("companyRegister", ExcelUtil.convertValue(row.getCell(76), CellType.STRING));
+                    moduleDataDetails.put("source", ExcelUtil.convertValue(row.getCell(77), CellType.STRING));
+                    moduleDataDetails.put("color", ExcelUtil.convertValue(row.getCell(78), CellType.STRING));
+                    moduleDataDetails.put("codeUser",  userOptionalOtherVehicle.isPresent() ? userOptionalOtherVehicle.get().getCodeUser() : null);
+                    moduleDataDetails.put("idTypeUse", typeUseOptionalOtherVehicle.map(TypeUse::getIdTypeUse).orElse(null));
+                    moduleDataDetails.put("idPositionName", ExcelUtil.convertValue(row.getCell(81), CellType.STRING));
+                    break;
+
+                case "TreeAndAnimalModule":
+                    String countryProducerTreeAndAnimal = (String)ExcelUtil.convertValue(row.getCell(83), CellType.STRING);
+                    Optional<CountryProducer> countryProducerTreeAndAnimalOptional=countryProducerRepository.findCountryProducerByNameAndStatus(countryProducerTreeAndAnimal,1);
+                    String typeUseTreeAndAnimal = (String) ExcelUtil.convertValue(row.getCell(84), CellType.STRING);
+                    Optional<TypeUse> typeUseOptionalTreeAndAnimal=typeUseRepository.findTypeUseByName(typeUseTreeAndAnimal);
+                    moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(82), CellType.STRING));
+                    moduleDataDetails.put("idTypeUse", typeUseOptionalTreeAndAnimal.map(TypeUse::getIdTypeUse).orElse(null));
+                    moduleDataDetails.put("idCountryProducer", countryProducerTreeAndAnimalOptional.map(CountryProducer::getIdCountryProducer).orElse(null));
+                    break;
+                case "OtherAssetModule":
+                    String countryProducerOther = (String)ExcelUtil.convertValue(row.getCell(89), CellType.STRING);
+                    Optional<CountryProducer> countryProducerOtherOptional=countryProducerRepository.findCountryProducerByNameAndStatus(countryProducerOther,1);
+                    String userNameOther= (String) ExcelUtil.convertValue(row.getCell(90), CellType.STRING);
+                    Optional<CsvcUser> userOptionalOther = csvcUserService.findByUserName(userNameOther);
+                    String typeUseOther = (String) ExcelUtil.convertValue(row.getCell(91), CellType.STRING);
+                    Optional<TypeUse> typeUseOptionalOther=typeUseRepository.findTypeUseByName(typeUseOther);
+
+                    moduleDataDetails.put("label", ExcelUtil.convertValue(row.getCell(85), CellType.STRING));
+                    moduleDataDetails.put("model", ExcelUtil.convertValue(row.getCell(86), CellType.STRING));
+                    moduleDataDetails.put("serial", ExcelUtil.convertValue(row.getCell(87), CellType.STRING));
+                    moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(88), CellType.STRING));
+                    moduleDataDetails.put("idCountryProducer", countryProducerOtherOptional.map(CountryProducer::getIdCountryProducer).orElse(null));
+                    moduleDataDetails.put("codeUser",  userOptionalOther.isPresent() ? userOptionalOther.get().getCodeUser() : null);
+                    moduleDataDetails.put("idTypeUse", typeUseOptionalOther.map(TypeUse::getIdTypeUse).orElse(null));
+                    break;
+                case "MedicineModule":
+                    String medicineType = (String)ExcelUtil.convertValue(row.getCell(92), CellType.STRING);
+                    Optional<MedicineType> medicineTypeOptional=medicineTypeRepository.findMedicineTypeByName(medicineType);
+                    String medicineGroup = (String)ExcelUtil.convertValue(row.getCell(93), CellType.STRING);
+                    Optional<MedicineGroup> medicineGroupOptional=medicineGroupRepository.findMedicineGroupByName(medicineGroup);
+
+                    moduleDataDetails.put("idMedicineType", medicineTypeOptional.map(MedicineType::getIdMedicineType).orElse(null));
+                    moduleDataDetails.put("idMedicineGroup", medicineGroupOptional.map(MedicineGroup::getIdMedicineGroup).orElse(null));
+                    moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(94), CellType.STRING));
+                    moduleDataDetails.put("expiryDate", ExcelUtil.convertValue(row.getCell(95), CellType.STRING));
+                    moduleDataDetails.put("circulationNumber", ExcelUtil.convertValue(row.getCell(96), CellType.STRING));
+                    moduleDataDetails.put("numberBatchOfGoods", ExcelUtil.convertValue(row.getCell(97), CellType.STRING));
+                    moduleDataDetails.put("ownNameCirculationNumber", ExcelUtil.convertValue(row.getCell(98), CellType.STRING));
+                    moduleDataDetails.put("ownAddressCirculationNumber", ExcelUtil.convertValue(row.getCell(99), CellType.STRING));
+//                    moduleDataDetails.put("sparePartsAttack", ExcelUtil.convertValue(row.getCell(31), CellType.STRING));
+                    break;
+            }
+//            moduleAssetData.put("data_details",moduleDataDetails);
+            modulesDataAsset.add(moduleDataDetails);
+        }
+
+        return modulesDataAsset;
+    }
+    private Integer getIdForCurrentUsage(String usageType) {
+        Optional<CurrentUsage> currentUsage=currentUsageRepository.findCurrentUsageByName(usageType);
+        return currentUsage.get().getIdCurrentUsage();
+    }
+    private Map<String, Object> processDeclareData(XSSFRow row, Map<String, Object> commonData) {
+
+
+        Optional<AssetCategories> assetCategoriesInstanceOptional = assetCategoriesRepository.findAssetCategoryById((Integer) commonData.get("idInstance"));
+        Optional<Declare> declareOptional= declareRepository.findDeclareByIdAssetCategoryAndVisible( assetCategoriesInstanceOptional.get().getIdAssetCategory(),1);
+//        Optional<TypeDeclareAsset> typeDeclareAssetOptional = typeDeclareAssetRepository.findAllTypeDeclareAssetActive((Integer) commonData.get("idInstance"));
+        String typeDeclare=declareOptional.get().getHardCode();
+        Map<String, Object> declareData = new HashMap<>();
+        declareData.put("typeDeclare", typeDeclare);
+
+
+        switch (typeDeclare) {
+            case "CommonDeclare":
+                List<Map<String, Object>> currentUsageList = new ArrayList<>();
+
+                Object value;
+
+                value = (String)ExcelUtil.convertValue(row.getCell(101), CellType.STRING);
+                if (value != null && value.equals("1")) {
+                    currentUsageList.add(Map.of("idCurrentUsage", getIdForCurrentUsage("Quản lý nhà nước")));
+                }
+
+                value = (String)ExcelUtil.convertValue(row.getCell(102), CellType.STRING);
+                if (value != null && value.equals("1")) {
+                    currentUsageList.add(Map.of("idCurrentUsage", getIdForCurrentUsage("HĐSN - Không KD")));
+                }
+
+                value = (String)ExcelUtil.convertValue(row.getCell(103), CellType.STRING);
+                if (value != null && value.equals("1")) {
+                    currentUsageList.add(Map.of("idCurrentUsage", getIdForCurrentUsage("HĐSN - KD")));
+                }
+
+                value = (String)ExcelUtil.convertValue(row.getCell(104), CellType.STRING);
+                if (value != null && value.equals("1")) {
+                    currentUsageList.add(Map.of("idCurrentUsage", getIdForCurrentUsage("HĐSN - LDLK")));
+                }
+
+                value = (String)ExcelUtil.convertValue(row.getCell(105), CellType.STRING);
+                if (value != null && value.equals("1")) {
+                    currentUsageList.add(Map.of("idCurrentUsage", getIdForCurrentUsage("HĐSN - Cho thuê")));
+                }
+
+                value = (String)ExcelUtil.convertValue(row.getCell(106), CellType.STRING);
+                if (value != null && value.equals("1")) {
+                    currentUsageList.add(Map.of("idCurrentUsage", getIdForCurrentUsage("Sử dụng khác")));
+                }
+
+                declareData.put("specification", ExcelUtil.convertValue(row.getCell(100), CellType.STRING));
+                declareData.put("currentUsage",currentUsageList);
+//                declareData.put("idTypeDeclareAsset", ExcelUtil.convertValue(row.getCell(200), CellType.STRING));
+                break;
+
+            case "HouseDeclare":
+                declareData.put("workplace", ExcelUtil.convertValue(row.getCell(107), CellType.STRING));
+                declareData.put("hdsnNoBussiness", ExcelUtil.convertValue(row.getCell(108), CellType.STRING));
+                declareData.put("hdsnBussiness", ExcelUtil.convertValue(row.getCell(109), CellType.STRING));
+                declareData.put("hdsnRent", ExcelUtil.convertValue(row.getCell(110), CellType.STRING));
+                declareData.put("hdsnBonds", ExcelUtil.convertValue(row.getCell(111), CellType.STRING));
+                declareData.put("syntheticUse", ExcelUtil.convertValue(row.getCell(112), CellType.STRING));
+                declareData.put("blankPlace", ExcelUtil.convertValue(row.getCell(113), CellType.STRING));
+                declareData.put("livePlace", ExcelUtil.convertValue(row.getCell(114), CellType.STRING));
+                declareData.put("encroachedPlace", ExcelUtil.convertValue(row.getCell(115), CellType.STRING));
+                declareData.put("otherUse", ExcelUtil.convertValue(row.getCell(116), CellType.STRING));
+//                declareData.put("acreage", ExcelUtil.convertValue(row.getCell(20), CellType.STRING));
+//                declareData.put("idTypeDeclareAsset", ExcelUtil.convertValue(row.getCell(200), CellType.STRING));
+
+                break;
+            case "GroundDeclare":
+
+                declareData.put("workplace", ExcelUtil.convertValue(row.getCell(107), CellType.STRING));
+                declareData.put("hdsnNoBussiness", ExcelUtil.convertValue(row.getCell(108), CellType.STRING));
+                declareData.put("hdsnBussiness", ExcelUtil.convertValue(row.getCell(109), CellType.STRING));
+                declareData.put("hdsnRent", ExcelUtil.convertValue(row.getCell(110), CellType.STRING));
+                declareData.put("hdsnBonds", ExcelUtil.convertValue(row.getCell(111), CellType.STRING));
+                declareData.put("syntheticUse", ExcelUtil.convertValue(row.getCell(112), CellType.STRING));
+                declareData.put("blankPlace", ExcelUtil.convertValue(row.getCell(113), CellType.STRING));
+                declareData.put("livePlace", ExcelUtil.convertValue(row.getCell(114), CellType.STRING));
+                declareData.put("encroachedPlace", ExcelUtil.convertValue(row.getCell(115), CellType.STRING));
+                declareData.put("otherUse", ExcelUtil.convertValue(row.getCell(116), CellType.STRING));
+//                declareData.put("acreage", ExcelUtil.convertValue(row.getCell(20), CellType.STRING));
+                declareData.put("idGoalsUseGround", ExcelUtil.convertValue(row.getCell(117), CellType.STRING));
+                declareData.put("licenseCertificateUseGround", ExcelUtil.convertValue(row.getCell(118), CellType.STRING));
+                declareData.put("dateLicenseCertificateUseGround", ExcelUtil.convertValue(row.getCell(119), CellType.STRING));
+                declareData.put("numberDecisionDeliverGround", ExcelUtil.convertValue(row.getCell(120), CellType.STRING));
+                declareData.put("dateNumberDecisionDeliverGround", ExcelUtil.convertValue(row.getCell(121), CellType.STRING));
+                declareData.put("contractNumberTransferGround", ExcelUtil.convertValue(row.getCell(122), CellType.STRING));
+                declareData.put("dateContractNumberTransferGround", ExcelUtil.convertValue(row.getCell(123), CellType.STRING));
+                declareData.put("contractNumberRentGround", ExcelUtil.convertValue(row.getCell(124), CellType.STRING));
+                declareData.put("dateContractNumberRentGround", ExcelUtil.convertValue(row.getCell(125), CellType.STRING));
+                declareData.put("numberDecisionRentGround", ExcelUtil.convertValue(row.getCell(126), CellType.STRING));
+                declareData.put("dateNumberDecisionRentGround", ExcelUtil.convertValue(row.getCell(127), CellType.STRING));
+                declareData.put("anotherContract", ExcelUtil.convertValue(row.getCell(128), CellType.STRING));
+//                declareData.put("idTypeDeclareAsset", ExcelUtil.convertValue(row.getCell(200), CellType.STRING));
+                break;
+
+
+        }
+
+        return declareData;
+    }
+
+    private Map<String, Object> processOriginalData(XSSFRow row) {
+        String original = (String) ExcelUtil.convertValue(row.getCell(13), CellType.STRING);
+        Optional<Original> originalOptional = originalRepository.findOriginalByName(original);
+        Map<String, Object> departmentInFor = new HashMap<>();
+        departmentInFor.put("idOriginal", originalOptional.map(Original::getIdOriginal).orElse(null));
+        departmentInFor.put("typeOriginal", originalOptional.map(Original::getHardCodeDev).orElse(null));
+        return departmentInFor;
+    }
+    private Map<String, Object> processDepreciationData(XSSFRow row) {
+        Map<String, Object> DepreciationData = new HashMap<>();
+
+        String timeStartedWearTear = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
+        String valueWearTear = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
+        String yearUsedWearTear = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
+        String timeStartedDepreciation = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
+        String cumulative = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
+//        Optional<Original> originalOptional = originalRepository.findOriginalByName(original);
+        Map<String, Object> depreciationInFor = new HashMap<>();
+        depreciationInFor.put("timeStartedWearTear",timeStartedWearTear);
+        depreciationInFor.put("value_wear_tear", valueWearTear);
+        depreciationInFor.put("year_used_wear_tear", yearUsedWearTear);
+        depreciationInFor.put("timeStartedDepreciation",timeStartedDepreciation);
+        DepreciationData.put("cumulative",cumulative);
+        return DepreciationData;
     }
 
 }

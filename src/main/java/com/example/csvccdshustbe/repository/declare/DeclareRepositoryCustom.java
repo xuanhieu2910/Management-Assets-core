@@ -9,4 +9,5 @@ public interface DeclareRepositoryCustom {
 
     List<Declare> findAllDeclareByIdAssetCategoryAndVisible(Integer idAssetCategory, Integer visible);
     Optional<Declare> findDeclareByHardCodeAndVisible(String hardCode, Integer visible);
+    Optional<Declare> findDeclareByIdAssetCategoryAndVisible(Integer idAssetCategory, Integer visible);
 }

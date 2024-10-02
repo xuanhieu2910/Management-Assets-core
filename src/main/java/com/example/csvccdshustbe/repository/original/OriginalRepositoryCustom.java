@@ -13,4 +13,5 @@ public interface OriginalRepositoryCustom {
     Page<FindAllOriginalDto> findAllOriginalDtoByIdAssetCategory(FindAllOriginalVisibleRequest request, Pageable pageable);
 
     Optional<Original> findOriginalByHardCodeAndStatus(String hardCode, Integer status);
+    Optional<Original> findOriginalByName(String name);
 }

@@ -703,4 +703,49 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         setParameterFindAllAssetCategoriesByCodeAndVisible(request, query);
         return  ValueUtil.getLongByObject(query.getSingleResult());
     }
+
+    @Override
+    public Optional<AssetCategories> findAssetCategoryByName(String name) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select assetCategory.id_asset_category, assetCategory.name,       " +
+                "         assetCategory.short_name, assetCategory.code_name,       " +
+                "         assetCategory.description, assetCategory.parent,       " +
+                "         assetCategory.sort_order, assetCategory.asset_count,       " +
+                "         assetCategory.visible, assetCategory.time_created,       " +
+                "         assetCategory.time_modified, assetCategory.path_image,       " +
+                "         assetCategory.is_pick, assetCategory.value_wear_tear,     " +
+                "         assetCategory.year_used_wear_tear, assetCategory.minimum_time_depreciation,     " +
+                "         assetCategory.maximum_time_depreciation,   " +
+                "         assetCategory.id_department_original  " +
+                "from asset_categories assetCategory       " +
+                "where assetCategory.name = :name       " );
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("name", name);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for(Object[] obj: result){
+                AssetCategories categories = new AssetCategories();
+                categories.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[0]));
+                categories.setName(ValueUtil.getStringByObject(obj[1]));
+                categories.setShortName(ValueUtil.getStringByObject(obj[2]));
+                categories.setCodeName(ValueUtil.getStringByObject(obj[3]));
+                categories.setDescription(ValueUtil.getStringByObject(obj[4]));
+                categories.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                categories.setSortOrder(ValueUtil.getStringByObject(obj[6]));
+                categories.setAssetCount(ValueUtil.getIntegerByObject(obj[7]));
+                categories.setVisible(ValueUtil.getIntegerByObject(obj[8]));
+                categories.setTimeCreated(ValueUtil.getStringByObject(obj[9]));
+                categories.setTimeModified(ValueUtil.getStringByObject(obj[10]));
+                categories.setPathImage(ValueUtil.getStringByObject(obj[11]));
+                categories.setIsPick(ValueUtil.getIntegerByObject(obj[12]));
+                categories.setValueWearTear(ValueUtil.getStringByObject(obj[13]));
+                categories.setYearUsedWearTear(ValueUtil.getStringByObject(obj[14]));
+                categories.setMinimumTimeDepreciation(ValueUtil.getStringByObject(obj[15]));
+                categories.setMaximumTimeDepreciation(ValueUtil.getStringByObject(obj[16]));
+                categories.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[17]));
+                return Optional.of(categories);
+            }
+        }
+        return Optional.empty();
+    }
 }

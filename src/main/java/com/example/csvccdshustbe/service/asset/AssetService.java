@@ -38,4 +38,7 @@ public interface AssetService {
     void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException;
 
     Resource downloadFileTemplateImportAsset() throws IOException;
+
+    void uploadFileAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException;
+
 }

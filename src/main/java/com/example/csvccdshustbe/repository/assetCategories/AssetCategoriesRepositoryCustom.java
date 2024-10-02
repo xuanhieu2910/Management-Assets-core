@@ -1,6 +1,9 @@
 package com.example.csvccdshustbe.repository.assetCategories;
 
-import com.example.csvccdshustbe.dto.assetCategories.*;
+import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategoryDto;
+import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
+import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
+import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoryDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesByCodeRequest;
 import com.example.csvccdshustbe.request.assetCategories.FindAllDocumentAssetCategoriesRequest;
@@ -11,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 public interface AssetCategoriesRepositoryCustom {
 
@@ -31,4 +33,6 @@ public interface AssetCategoriesRepositoryCustom {
     boolean isCheckExitsAssetByIdAssetCategory(Integer idAssetCategory);
     Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> findAllAssetCategoriesByVisibleToDownload();
 
+
+    Optional<AssetCategories> findAssetCategoryByName(String name);
 }

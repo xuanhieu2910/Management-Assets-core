@@ -239,4 +239,6 @@ public class Constants {
 
     /*----------------------------------------------------*/
 
+    public static String[] FILE_EXCEL = {"xls", "xlsx", "xlsm"};
+
 }

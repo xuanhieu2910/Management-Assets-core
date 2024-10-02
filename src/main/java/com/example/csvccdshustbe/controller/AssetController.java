@@ -16,7 +16,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
@@ -117,15 +116,15 @@ public class AssetController {
     }
 
 
-    @PostMapping("/upload-file")
-    public ResponseEntity<?> uploadFiles(@RequestParam("file")MultipartFile multipartFile){
-        try {
-            return ApiResponseDto.createdWithState(assetService.uploadFile(multipartFile),
-                    "Upload file success!", HttpStatus.OK);
-        } catch (Exception e){
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @PostMapping("/upload-file")
+//    public ResponseEntity<?> uploadFiles(@RequestParam("file")MultipartFile multipartFile){
+//        try {
+//            return ApiResponseDto.createdWithState(assetService.uploadFile(multipartFile),
+//                    "Upload file success!", HttpStatus.OK);
+//        } catch (Exception e){
+//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
     @PostMapping("/delete-file")
     public ResponseEntity<?> deleteFiles(@RequestParam("path-file") String pathFile){
@@ -147,6 +146,16 @@ public class AssetController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                     .body(resource);
         } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/upload-file")
+    public ResponseEntity<?> uploadFileAssetToSystem(@RequestParam("file")MultipartFile file){
+        try {
+            assetService.uploadFileAsset(file);
+            return ApiResponseDto.createdWithMessage("Upload file asset success!", HttpStatus.OK);
+        }catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
