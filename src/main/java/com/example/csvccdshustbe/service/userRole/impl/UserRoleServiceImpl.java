@@ -8,7 +8,9 @@ import com.example.csvccdshustbe.repository.role.RoleRepository;
 import com.example.csvccdshustbe.repository.userRole.UserRoleRepository;
 import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
@@ -61,5 +63,17 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     public DepartmentUserRoleDto getDepartmentUserRoleByCodeUser(String codeUser) {
         return userRoleRepository.getDepartmentUserRoleDtoByCodeUser(codeUser);
+    }
+
+
+    @Modifying
+    @Transactional
+    @Override
+    public void removeUserByIdDepartmentAndIdUser(Integer idDepartment, Integer idUser) {
+        List<UserRole> userRoles = userRoleRepository.findUserRoleByIdDepartmentAndIdUser(idDepartment, idUser);
+        if (CollectionUtils.isEmpty(userRoles)){
+            throw new NotFoundException("Don't exits user role by id department and id user!");
+        }
+        userRoleRepository.deleteAll(userRoles);
     }
 }

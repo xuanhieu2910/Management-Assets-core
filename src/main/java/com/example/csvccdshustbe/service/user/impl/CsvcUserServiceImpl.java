@@ -192,6 +192,16 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         return response.get();
     }
 
+    @Override
+    public void removeUserByDepartmentAndCodeUser(RemoveUserDepartmentRequest request) {
+        Optional<CsvcUser> user = csvcUserRepository.findByCodeCsvcUser(request.getCodeUser());
+        if (user.isEmpty()){
+            throw new NotFoundException("Don't exits user by code user!");
+        }
+        Department department = departmentService.findDepartmentByIdDepartmentAndStatus(request.getIdDepartment(), Constants.DEPARTMENT_ACTIVE_STATUS);
+        userRoleService.removeUserByIdDepartmentAndIdUser(department.getIdDepartment(), user.get().getIdUser());
+    }
+
     private void setIdsDepartmentFindDetailsRequest(FindDetailsUserRequest request) {
         Integer department = getInformationUser().getIdDepartment();
         request.setIdsDepartment(departmentService.findIdsStructureDepartment(department));

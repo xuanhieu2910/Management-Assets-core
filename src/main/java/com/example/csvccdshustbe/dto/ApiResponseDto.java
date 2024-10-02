@@ -31,6 +31,7 @@ public class ApiResponseDto<T> {
     private Map<?, ?> errors;
 
     private String message = "Thành công";
+    private static final String MESSAGE_BAD_GATEWAY = "Hệ thống gặp cố, xin vui lòng thử lại sau!";
 
     public static <T> ApiResponseDto<T> build() {
         return new ApiResponseDto<>();
@@ -85,6 +86,9 @@ public class ApiResponseDto<T> {
 
     public static @ResponseBody
     ResponseEntity<?> createdWithMessage(String message, HttpStatus status) {
+        if (status.equals(HttpStatus.BAD_GATEWAY)){
+            message = MESSAGE_BAD_GATEWAY;
+        }
         return build().withHttpStatus(status)
                 .withMessage(message)
                 .toResponseEntity();

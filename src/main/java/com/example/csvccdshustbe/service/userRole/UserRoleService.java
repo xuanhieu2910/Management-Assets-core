@@ -21,4 +21,6 @@ public interface UserRoleService {
     void saveAllUserRole(List<UserRole> userRoles);
 
     DepartmentUserRoleDto getDepartmentUserRoleByCodeUser (String codeUser);
+
+    void removeUserByIdDepartmentAndIdUser(Integer idDepartment, Integer idUser);
 }

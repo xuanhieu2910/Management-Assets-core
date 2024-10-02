@@ -111,6 +111,17 @@ public class CsvcUserController {
         }
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> removeUserByIdDepartmentAndCodeUser(@RequestBody RemoveUserDepartmentRequest request){
+        try {
+            csvcUserService.removeUserByDepartmentAndCodeUser(request);
+            return ApiResponseDto.createdWithMessage("Remove user success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 
 
 

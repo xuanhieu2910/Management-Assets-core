@@ -29,4 +29,5 @@ public interface CsvcUserService extends UserDetailsService {
     void addNewUser(AddNewUserRequest request) throws ValidateFiledException;
     Page<FindAllUserResponse> findAllUserResponse(FindAllUserRequest request);
     FindDetailsUserResponse findDetailsUserResponse(FindDetailsUserRequest request);
+    void removeUserByDepartmentAndCodeUser(RemoveUserDepartmentRequest request);
 }
