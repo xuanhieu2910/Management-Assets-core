@@ -71,8 +71,8 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public DepartmentUserRoleDto getDepartmentUserRoleByCodeUser(String codeUser) {
-        return userRoleRepository.getDepartmentUserRoleDtoByCodeUser(codeUser);
+    public DepartmentUserRoleDto getDepartmentCurrentUserRoleByCodeUser(String codeUser) {
+        return userRoleRepository.getDepartmentCurrentUserRoleDtoByCodeUser(codeUser);
     }
 
 

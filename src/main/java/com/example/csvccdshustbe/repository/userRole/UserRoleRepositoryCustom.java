@@ -12,7 +12,7 @@ public interface UserRoleRepositoryCustom {
 
     List<UserRole> findUserRoleByCodeUser(String codeUser);
 
-    DepartmentUserRoleDto getDepartmentUserRoleDtoByCodeUser (String codeUser);
+    DepartmentUserRoleDto getDepartmentCurrentUserRoleDtoByCodeUser (String codeUser);
     List<UserRole> findUserRoleByIdDepartmentAndIdUser(Integer idDepartment, Integer idUser);
 
     Optional<UserRole> findUserRoleByIdUserRole(Integer idUserRole);

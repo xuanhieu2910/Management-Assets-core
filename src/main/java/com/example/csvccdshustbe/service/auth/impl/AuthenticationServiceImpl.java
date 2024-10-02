@@ -107,7 +107,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public UserAuthenticationResponse convertToAuthenticationResponse(UserAuthenticationDto authenticationDto) {
-        DepartmentUserRoleDto departmentUserRoleDto = userRoleService.getDepartmentUserRoleByCodeUser(authenticationDto.getCodeUser());
+        DepartmentUserRoleDto departmentUserRoleDto = userRoleService.getDepartmentCurrentUserRoleByCodeUser(authenticationDto.getCodeUser());
         UserAuthenticationResponse response = new UserAuthenticationResponse();
         response.setCodeUser(authenticationDto.getCodeUser());
         response.setUserName(authenticationDto.getUserName());

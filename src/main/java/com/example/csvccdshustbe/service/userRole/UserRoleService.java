@@ -22,7 +22,7 @@ public interface UserRoleService {
 
     void saveAllUserRole(List<UserRole> userRoles);
 
-    DepartmentUserRoleDto getDepartmentUserRoleByCodeUser (String codeUser);
+    DepartmentUserRoleDto getDepartmentCurrentUserRoleByCodeUser (String codeUser);
 
     void removeUserByIdDepartmentAndIdUser(Integer idDepartment, Integer idUser);
 

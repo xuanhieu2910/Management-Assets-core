@@ -75,7 +75,7 @@ public class UserRoleRepositoryImpl implements UserRoleRepositoryCustom {
     }
 
     @Override
-    public DepartmentUserRoleDto getDepartmentUserRoleDtoByCodeUser(String codeUser) {
+    public DepartmentUserRoleDto getDepartmentCurrentUserRoleDtoByCodeUser(String codeUser) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select de.id_department, de.name, userRole.id_user_role " +
                 "from csvc_user csvcUser " +

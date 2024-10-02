@@ -2,15 +2,19 @@ package com.example.csvccdshustbe.service.department.impl;
 
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.repository.department.DepartmentRepository;
+import com.example.csvccdshustbe.repository.user.CsvcUserRepository;
 import com.example.csvccdshustbe.request.department.*;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentSResponse;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentVisibleResponse;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
+import com.example.csvccdshustbe.service.user.CsvcUserService;
+import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -21,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -32,6 +37,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Autowired
     DepartmentRepository departmentRepository;
+    @Autowired
+    UserRoleService userRoleService;
 
 
 
@@ -39,11 +46,20 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Page<FindAllDepartmentVisibleResponse> findAllDepartmentVisibleByCodeAndVisible(
             FindAllDepartmentVisibleRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        setIdsDepartmentFindAllDepartmentVisibleResponse(request);
         Page<FindAllDepartmentByCodeAndVisibleDto> department =
                 departmentRepository.findAllDepartmentByCodeAndVisible(pageable, request);
         return new PageImpl<>(convertToFindAllDepartmentVisibleByCodeAndVisible(department.get().collect(Collectors.toList())),
                 pageable, department.getTotalElements());
     }
+
+    private void setIdsDepartmentFindAllDepartmentVisibleResponse(FindAllDepartmentVisibleRequest request) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer idDepartment = userRoleService.getDepartmentCurrentUserRoleByCodeUser(csvcUser.getCodeUser()).getIdDepartment();
+        request.setIdDepartmentOriginal(findIdsStructureDepartment(idDepartment));
+
+    }
+
 
     @Override
     public List<FindAllDepartmentByCodeAndVisibleDto> findAllDepartmentVisibleByCodeAndVisible() {
@@ -98,12 +114,21 @@ public class DepartmentServiceImpl implements DepartmentService {
         return idsStructureDepartment;
     }
 
+
+
     @Override
     public Page<FindAllDepartmentSResponse> findAllDepartment(FindAllDepartmentRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        setIdsDepartmentFindAllDepartment(request);
         Page<FindAllDepartmentSDto> dtos = departmentRepository.findAllDepartment(pageable, request);
         return new PageImpl<>(convertToFindAllDepartment(dtos.stream().collect(Collectors.toList())),
                 pageable, dtos.getTotalElements());
+    }
+
+    private void setIdsDepartmentFindAllDepartment(FindAllDepartmentRequest request) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer idDepartment = userRoleService.getDepartmentCurrentUserRoleByCodeUser(csvcUser.getCodeUser()).getIdDepartment();
+        request.setIdsDepartment(findIdsStructureDepartment(idDepartment));
     }
 
     @Override

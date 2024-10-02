@@ -14,22 +14,14 @@ import java.util.List;
 public interface DepartmentService {
 
     Page<FindAllDepartmentSResponse> findAllDepartment(FindAllDepartmentRequest request);
-
     void createDepartment(CreateDepartmentRequest request) throws ValidateFiledException;
-
     void updateDepartment(UpdateDepartmentRequest request) throws ValidateFiledException;
-
     void deleteDepartmentByIdDepartment(Integer idDepartment) throws ValidateFiledException;
     Page<FindAllDepartmentVisibleResponse> findAllDepartmentVisibleByCodeAndVisible(FindAllDepartmentVisibleRequest request);
     List<FindAllDepartmentByCodeAndVisibleDto> findAllDepartmentVisibleByCodeAndVisible();
-
     Department findDepartmentByIdDepartmentAndStatus(Integer idDepartment, Integer status);
-
     void updateStatusDepartment(UpdateStatusDepartmentRequest request) throws ValidateFiledException;
-
     List<Department> findDepartmentByIds(List<Integer> ids) throws ValidateFiledException;
-
     List<FindAllDepartmentByCodeAndVisibleDto> findAllStructureDepartmentByIdDepartment(Integer department);
     List<Integer> findIdsStructureDepartment(Integer department);
-
 }

@@ -114,7 +114,7 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     @Override
     public UserAuthenticationResponse getInformationUser() {
         CsvcUser user = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        DepartmentUserRoleDto departmentUserRoleDto = userRoleService.getDepartmentUserRoleByCodeUser(user.getCodeUser());
+        DepartmentUserRoleDto departmentUserRoleDto = userRoleService.getDepartmentCurrentUserRoleByCodeUser(user.getCodeUser());
         UserAuthenticationResponse response = new UserAuthenticationResponse();
         response.setCodeUser(user.getCodeUser());
         response.setUserName(user.getName());

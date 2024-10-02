@@ -56,7 +56,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
                 "        cte.time_created, cte.time_modified,  " +
                 "       cte.depth, cte.status, cte.path  " +
                 "from cte_department cte  " +
-                "where 1 = 1 and cte.status = :status ");
+                "where 1 = 1 and cte.status = :status and cte.id_department in (:idsDepartment) ");
         setConditionFindAllDepartmentByCodeAndVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDepartmentByCodeAndVisible(request, query);
@@ -194,6 +194,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
 
     private void setParameterFindAllDepartmentByCodeAndVisible(FindAllDepartmentVisibleRequest request, Query query) {
         query.setParameter("status", Constants.DEPARTMENT_ACTIVE_STATUS);
+        query.setParameter("idsDepartment", request.getIdDepartmentOriginal());
         if (StringUtils.isNotBlank(request.getKeyword())) {
             query.setParameter("keyword", request.getKeyword());
         }
@@ -230,7 +231,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
                 "cte.time_created, cte.time_modified,  " +
                 "cte.depth, cte.status, cte.path, cte.nameParent  " +
                 "from cte_asset_categories cte  " +
-                "where 1 = 1 ");
+                "where 1 = 1 and cte.id_department in (:idsDepartment) ");
         setConditionFindAllDepartment(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDepartment(request, query);
@@ -259,29 +260,29 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
     }
 
     @Override
-                public Optional<Department> findDepartmentByName(String name) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(" select de.id_department, de.name, de.code, " +
-                            "       de.short_name, de.description, de.parent, " +
-                            "       de.time_created, de.time_modified, de.status " +
-                            "from department de " +
-                            "where de.name = :name ");
-                    Query query = entityManager.createNativeQuery(sb.toString());
-                    query.setParameter("name", name);
-                    List<Object[]> result = query.getResultList();
-                    if (!CollectionUtils.isEmpty(result)){
-                        for (Object[] obj: result){
-                            Department department = new Department();
-                            department.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
-                            department.setName(ValueUtil.getStringByObject(obj[1]));
-                            department.setCode(ValueUtil.getStringByObject(obj[2]));
-                            department.setShortName(ValueUtil.getStringByObject(obj[3]));
-                            department.setDescription(ValueUtil.getStringByObject(obj[4]));
-                            department.setParent(ValueUtil.getIntegerByObject(obj[5]));
-                            department.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
-                            department.setTimeModified(ValueUtil.getStringByObject(obj[7]));
-                            department.setStatus(ValueUtil.getIntegerByObject(obj[8]));
-                            return Optional.of(department);
+    public Optional<Department> findDepartmentByName(String name) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select de.id_department, de.name, de.code, " +
+                "       de.short_name, de.description, de.parent, " +
+                "       de.time_created, de.time_modified, de.status " +
+                "from department de " +
+                "where de.name = :name ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("name", name);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                Department department = new Department();
+                department.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
+                department.setName(ValueUtil.getStringByObject(obj[1]));
+                department.setCode(ValueUtil.getStringByObject(obj[2]));
+                department.setShortName(ValueUtil.getStringByObject(obj[3]));
+                department.setDescription(ValueUtil.getStringByObject(obj[4]));
+                department.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                department.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                department.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                department.setStatus(ValueUtil.getIntegerByObject(obj[8]));
+                return Optional.of(department);
             }
         }
         return Optional.empty();
@@ -449,6 +450,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
     }
 
     private void setParameterFindAllDepartment(FindAllDepartmentRequest request, Query query) {
+        query.setParameter("idsDepartment", request.getIdsDepartment());
         if (StringUtils.isNotBlank(request.getKeyword())){
           query.setParameter("keyword", request.getKeyword());
         }
@@ -513,7 +515,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
                 "    )  " +
                 "    select count(cte.id_department) count  " +
                 "    from cte_department cte   " +
-                "where 1 = 1 and cte.status = :status  ");
+                "where 1 = 1 and cte.status = :status and cte.id_department in (:idsDepartment)  ");
         setConditionFindAllDepartmentByCodeAndVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDepartmentByCodeAndVisible(request, query);
@@ -546,7 +548,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
                 "  )        " +
                 "select count(cte.id_department) count  " +
                 "from cte_asset_categories cte  " +
-                "where 1 = 1 ");
+                "where 1 = 1 and cte.id_department in (:idsDepartment)  ");
         setConditionFindAllDepartment(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDepartment(request, query);
