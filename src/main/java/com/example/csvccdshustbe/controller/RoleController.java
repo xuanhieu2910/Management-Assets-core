@@ -48,6 +48,5 @@ public class RoleController {
         } catch (Exception e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
-
     }
 }
