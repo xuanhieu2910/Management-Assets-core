@@ -318,12 +318,12 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
             setFindDetailsUser(response, result.get(0));
             for (Object[] obj : result){
                 FindAllUserRoleDepartmentResponse roleDepartment = new FindAllUserRoleDepartmentResponse();
-                roleDepartment.setIdUserRole(ValueUtil.getIntegerByObject(obj[6]));
-                roleDepartment.setIdDepartment(ValueUtil.getIntegerByObject(obj[7]));
-                roleDepartment.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
-                roleDepartment.setCodeDepartment(ValueUtil.getStringByObject(obj[9]));
-                roleDepartment.setIdRole(ValueUtil.getIntegerByObject(obj[10]));
-                roleDepartment.setNameRole(ValueUtil.getStringByObject(obj[11]));
+                roleDepartment.setIdUserRole(ValueUtil.getIntegerByObject(obj[5]));
+                roleDepartment.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
+                roleDepartment.setNameDepartment(ValueUtil.getStringByObject(obj[7]));
+                roleDepartment.setCodeDepartment(ValueUtil.getStringByObject(obj[8]));
+                roleDepartment.setIdRole(ValueUtil.getIntegerByObject(obj[9]));
+                roleDepartment.setNameRole(ValueUtil.getStringByObject(obj[10]));
                 roleDepartmentResponseList.add(roleDepartment);
             }
             response.setUserRoleDepartment(roleDepartmentResponseList);
