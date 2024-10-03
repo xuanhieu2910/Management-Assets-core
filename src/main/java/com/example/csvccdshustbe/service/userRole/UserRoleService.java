@@ -30,4 +30,6 @@ public interface UserRoleService {
 
     void deleteUserRole(Integer idUserRole);
     void createNewUserRole(AddNewRoleDepartmentUserRequest request);
+
+    void deleteUserRoleByIdRole(Integer idRole);
 }

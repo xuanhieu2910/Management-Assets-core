@@ -77,4 +77,9 @@ public class RoleAllowAssignServiceImpl implements RoleAllowAssignService {
         Integer idRoleCurrent = roles.get(0).getIdRole();
         return roleAllowAssignRepository.findRestRoleAssignResponse(pageable, request, idRoleCurrent);
     }
+
+    @Override
+    public void deleteRoleAssignByIdRole(Integer roleId) {
+        roleAllowAssignRepository.deleteRoleAssignByIdRole(roleId);
+    }
 }

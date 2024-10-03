@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface RoleService {
     Page<FindAllRoleResponse> findAllRole(FindAllRoleRequest findAllRoleRequest) throws RoleException;
-    Role findRoleByTitle(String titleRole);
     void createNewRole (CreateNewRoleRequest request) throws ValidateFiledException;
     List<Role> findRoleByIds(List<Integer> ids) throws ValidateFiledException;
+    void deleteRole(Integer idRole) throws ValidateFiledException;
 }

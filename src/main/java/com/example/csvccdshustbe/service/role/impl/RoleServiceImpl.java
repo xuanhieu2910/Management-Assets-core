@@ -14,6 +14,7 @@ import com.example.csvccdshustbe.response.role.FindAllRoleResponse;
 import com.example.csvccdshustbe.service.role.RoleService;
 import com.example.csvccdshustbe.service.roleAllowAssign.RoleAllowAssignService;
 import com.example.csvccdshustbe.service.roleCapabilities.RoleCapabilitiesService;
+import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -37,6 +40,8 @@ public class RoleServiceImpl implements RoleService {
     RoleAllowAssignService roleAllowAssignService;
     @Autowired
     RoleCapabilitiesService roleCapabilitiesService;
+    @Autowired
+    UserRoleService userRoleService;
 
 
 
@@ -62,12 +67,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role findRoleByTitle(String titleRole) {
-
-        return null;
-    }
-
-    @Override
     public void createNewRole(CreateNewRoleRequest request) throws ValidateFiledException {
         validateCreateNewRole(request);
         Role role = constructionRole(request);
@@ -84,6 +83,22 @@ public class RoleServiceImpl implements RoleService {
             throw new ValidateFiledException("Don't exits role by ids");
         }
         return roles;
+    }
+
+    @Override
+    public void deleteRole(Integer idRole) throws ValidateFiledException {
+        Optional<Role> role = roleRepository.findByIdRole(idRole);
+        if (role.isEmpty()) {
+            throw new NotFoundException("Don't exits role by id role!");
+        } else {
+            if (role.get().getStatus().equals(Constants.ROLE_DEFAULT)){
+                throw new ValidateFiledException("Can't delete role default!");
+            }
+        }
+        roleRepository.delete(role.get());
+        roleCapabilitiesService.deleteRoleCapabilitiesByIdRole(idRole);
+        roleAllowAssignService.deleteRoleAssignByIdRole(idRole);
+        userRoleService.deleteUserRoleByIdRole(idRole);
     }
 
     private void createRoleCapabilities(Role role, CreateNewRoleRequest request) {

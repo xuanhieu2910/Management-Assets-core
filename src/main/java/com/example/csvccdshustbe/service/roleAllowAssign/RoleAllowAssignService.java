@@ -21,4 +21,6 @@ public interface RoleAllowAssignService {
     List<FindAllRoleAllowResponse> findAllRoleAllowAssignByTitleRole();
 
     Page<FindRestRoleResponse> findRestRoleResponseAssign(FindRestRoleRequest request);
+
+    void deleteRoleAssignByIdRole(Integer roleId);
 }

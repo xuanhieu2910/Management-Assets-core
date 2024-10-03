@@ -19,4 +19,6 @@ public interface RoleAllowAssignRepositoryCustom {
     List<FindAllRoleAllowResponse> findAllRoleAllowAssignByTitleRole(String titleRole);
 
     Page<FindRestRoleResponse> findRestRoleAssignResponse(Pageable pageable, FindRestRoleRequest request, Integer idRoleCurrent);
+
+    void deleteRoleAssignByIdRole(Integer roleId);
 }

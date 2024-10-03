@@ -11,10 +11,12 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -163,6 +165,19 @@ public class RoleAllowAssignRepositoryImpl implements RoleAllowAssignRepositoryC
             }
         }
         return new PageImpl<>(responses, pageable, countFindRestRoleAssign(request, idRoleCurrent));
+    }
+
+
+    @Transactional
+    @Modifying
+    @Override
+    public void deleteRoleAssignByIdRole(Integer roleId) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete " +
+                "from role_allow_assign " +
+                "where id_role = :idRole or allow_assign = :idRole ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.executeUpdate();
     }
 
     private long countFindRestRoleAssign(FindRestRoleRequest request, Integer idRoleCurrent) {

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 
 @Tag(name = "Role Controller", description = "The Role APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
@@ -44,6 +45,18 @@ public class RoleController {
             roleService.createNewRole(request);
             return ApiResponseDto.createdWithMessage("Create role success!", HttpStatus.OK);
         } catch (ValidateFiledException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteRole(@RequestParam("id-role") Integer idRole){
+        try {
+            roleService.deleteRole(idRole);
+            return ApiResponseDto.createdWithMessage("Delete role success!", HttpStatus.OK);
+        } catch (NotFoundException | ValidateFiledException e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
