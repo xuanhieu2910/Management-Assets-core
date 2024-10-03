@@ -18,4 +18,6 @@ public class FindAllRoleResponse {
     private String contentName;
     @JsonProperty("description")
     private String description;
+    @JsonProperty("status")
+    private Integer status;
 }

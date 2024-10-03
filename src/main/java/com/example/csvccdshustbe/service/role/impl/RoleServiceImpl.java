@@ -55,6 +55,7 @@ public class RoleServiceImpl implements RoleService {
             response.setTitleRole(role.getTitle());
             response.setContentName(response.getContentName());
             response.setDescription(response.getDescription());
+            response.setStatus(response.getStatus());
             responses.add(response);
         }
         return responses;
