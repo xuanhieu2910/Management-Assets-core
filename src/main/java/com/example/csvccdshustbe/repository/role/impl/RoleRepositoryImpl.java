@@ -4,11 +4,17 @@ import com.example.csvccdshustbe.entity.Capabilities;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.repository.role.RoleRepositoryCustom;
+import com.example.csvccdshustbe.request.role.FindAllRoleRequest;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -19,13 +25,16 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public List<Role> findAllRole() {
+    public Page<Role> findAllRole(Pageable pageable, FindAllRoleRequest findAllRoleRequest) {
         StringBuilder sb = new StringBuilder();
         sb.append("select role.id_role, role.title, role.status,   " +
                 "        role.content, role.short_name, role.description,   " +
                 "        role.time_created, role.time_modified   " +
-                "from role   ");
+                "from role  where 1 = 1 ");
+        setConditionalFindAllRole(findAllRoleRequest, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllRole(findAllRoleRequest, query);
+        PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
         List<Role> roles = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
@@ -42,7 +51,30 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
                 roles.add(role);
             }
         }
-        return roles;
+        return new PageImpl<>(roles, pageable, countFindAllRole(findAllRoleRequest));
+    }
+
+    private long countFindAllRole(FindAllRoleRequest findAllRoleRequest) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) count    " +
+                "from role  where 1 = 1  ");
+        setConditionalFindAllRole(findAllRoleRequest, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllRole(findAllRoleRequest, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindAllRole(FindAllRoleRequest findAllRoleRequest, Query query) {
+        if (StringUtils.isNotBlank(findAllRoleRequest.getKeyword())){
+            query.setParameter("keyword", findAllRoleRequest.getKeyword());
+        }
+    }
+
+    private void setConditionalFindAllRole(FindAllRoleRequest findAllRoleRequest, StringBuilder sb) {
+        if (StringUtils.isNotBlank(findAllRoleRequest.getKeyword())){
+            sb.append(" and (role.short_name REGEXP  :keyword ) ");
+        }
+        sb.append(" ORDER BY role.id_role ");
     }
 
     @Override

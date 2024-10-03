@@ -8,13 +8,18 @@ import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.role.RoleRepository;
 import com.example.csvccdshustbe.request.role.CreateNewRoleRequest;
+import com.example.csvccdshustbe.request.role.FindAllRoleRequest;
 import com.example.csvccdshustbe.request.roleCapabilities.CreateNewRoleCapabilitiesRequest;
 import com.example.csvccdshustbe.response.role.FindAllRoleResponse;
 import com.example.csvccdshustbe.service.role.RoleService;
 import com.example.csvccdshustbe.service.roleAllowAssign.RoleAllowAssignService;
 import com.example.csvccdshustbe.service.roleCapabilities.RoleCapabilitiesService;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -36,12 +41,10 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public List<FindAllRoleResponse> findAllRole() throws RoleException {
-        List<Role> roles = roleRepository.findAllRole();
-        if (CollectionUtils.isEmpty(roles)){
-            throw new RoleException("Don't exits role default!");
-        }
-        return convertToFindAllRoleResponse(roles);
+    public Page<FindAllRoleResponse> findAllRole(FindAllRoleRequest findAllRoleRequest) throws RoleException {
+        Pageable pageable = PageUtils.buildPage(findAllRoleRequest.getPage(), findAllRoleRequest.getSize());
+        Page<Role> roles = roleRepository.findAllRole(pageable, findAllRoleRequest);
+        return new PageImpl<>(convertToFindAllRoleResponse(roles.getContent()),pageable, roles.getTotalElements());
     }
 
     private List<FindAllRoleResponse> convertToFindAllRoleResponse(List<Role> roles) {
