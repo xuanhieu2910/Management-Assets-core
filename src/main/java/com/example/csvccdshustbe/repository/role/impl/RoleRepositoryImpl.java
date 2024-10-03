@@ -5,6 +5,8 @@ import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.repository.role.RoleRepositoryCustom;
 import com.example.csvccdshustbe.request.role.FindAllRoleRequest;
+import com.example.csvccdshustbe.response.role.FindAllRoleCapabilitiesByIdRoleResponse;
+import com.example.csvccdshustbe.response.role.FindDetailsRoleCapabilitiesResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -245,5 +247,41 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
             }
         }
         return roles;
+    }
+
+    @Override
+    public FindDetailsRoleCapabilitiesResponse findDetailsRoleCapabilitiesByIdRole(Integer idRole) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select role.id_role, role.short_name, role.description, role.status, " +
+                "       roleCapabilities.id_capabilities, roleCapabilities.permission, " +
+                "       capa.name nameCapabilities, capa.cap_type, capa.component " +
+                "from role role " +
+                "    inner join role_capabilities roleCapabilities " +
+                "        on role.id_role = roleCapabilities.id_role " +
+                "    inner join capabilities capa on roleCapabilities.id_capabilities = capa.id_capability " +
+                "where role.id_role = :idRole ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idRole", idRole);
+        List<Object[]> result = query.getResultList();
+        FindDetailsRoleCapabilitiesResponse response = new FindDetailsRoleCapabilitiesResponse();
+        if (!CollectionUtils.isEmpty(result)){
+            Object[] data = result.get(0);
+            response.setIdRole(ValueUtil.getIntegerByObject(data[0]));
+            response.setNameRole(ValueUtil.getStringByObject(data[1]));
+            response.setDescription(ValueUtil.getStringByObject(data[2]));
+            response.setStatus(ValueUtil.getIntegerByObject(data[3]));
+            List<FindAllRoleCapabilitiesByIdRoleResponse> capabilities = new ArrayList<>();
+            for (Object[] obj: result){
+                FindAllRoleCapabilitiesByIdRoleResponse roleCapability = new FindAllRoleCapabilitiesByIdRoleResponse();
+                roleCapability.setIdCapability(ValueUtil.getIntegerByObject(obj[4]));
+                roleCapability.setPermission(ValueUtil.getIntegerByObject(obj[5]));
+                roleCapability.setNameCapability(ValueUtil.getStringByObject(obj[6]));
+                roleCapability.setCapType(ValueUtil.getStringByObject(obj[7]));
+                roleCapability.setComponent(ValueUtil.getStringByObject(obj[8]));
+                capabilities.add(roleCapability);
+            }
+            response.setCapabilities(capabilities);
+        }
+        return response;
     }
 }

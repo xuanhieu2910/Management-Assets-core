@@ -11,6 +11,7 @@ import com.example.csvccdshustbe.request.role.CreateNewRoleRequest;
 import com.example.csvccdshustbe.request.role.FindAllRoleRequest;
 import com.example.csvccdshustbe.request.roleCapabilities.CreateNewRoleCapabilitiesRequest;
 import com.example.csvccdshustbe.response.role.FindAllRoleResponse;
+import com.example.csvccdshustbe.response.role.FindDetailsRoleCapabilitiesResponse;
 import com.example.csvccdshustbe.service.role.RoleService;
 import com.example.csvccdshustbe.service.roleAllowAssign.RoleAllowAssignService;
 import com.example.csvccdshustbe.service.roleCapabilities.RoleCapabilitiesService;
@@ -99,6 +100,11 @@ public class RoleServiceImpl implements RoleService {
         roleCapabilitiesService.deleteRoleCapabilitiesByIdRole(idRole);
         roleAllowAssignService.deleteRoleAssignByIdRole(idRole);
         userRoleService.deleteUserRoleByIdRole(idRole);
+    }
+
+    @Override
+    public FindDetailsRoleCapabilitiesResponse findDetailsRoleCapabilitiesByIdRole(Integer idRole) {
+        return roleRepository.findDetailsRoleCapabilitiesByIdRole(idRole);
     }
 
     private void createRoleCapabilities(Role role, CreateNewRoleRequest request) {

@@ -62,4 +62,17 @@ public class RoleController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @GetMapping("/details")
+    public ResponseEntity<?> findDetailsRole(@RequestParam("id-role") Integer idRole){
+        try {
+            return ApiResponseDto.createdWithState(roleService.findDetailsRoleCapabilitiesByIdRole(idRole),
+                    "Find detail role capability!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 }
