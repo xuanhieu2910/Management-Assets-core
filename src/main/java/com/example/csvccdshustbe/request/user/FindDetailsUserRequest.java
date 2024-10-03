@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.request.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.List;
 public class FindDetailsUserRequest {
 
     @NotNull
+    @JsonProperty(namespace = "code-user")
     private String codeUser;
     private List<Integer> idsDepartment;
 }
