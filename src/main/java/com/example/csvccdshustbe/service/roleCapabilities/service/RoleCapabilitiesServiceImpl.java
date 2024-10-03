@@ -33,4 +33,9 @@ public class RoleCapabilitiesServiceImpl implements RoleCapabilitiesService {
             roleCapabilitiesRepository.deleteAll(roleCapabilitiesList);
         }
     }
+
+    @Override
+    public List<RoleCapabilities> findAllRoleCapabilitiesByIdRole(Integer idRole) {
+        return roleCapabilitiesRepository.findRoleCapabilitiesByIdRole(idRole);
+    }
 }

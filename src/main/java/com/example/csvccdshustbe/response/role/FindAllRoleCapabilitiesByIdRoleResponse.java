@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class FindAllRoleCapabilitiesByIdRoleResponse {
 
+    private Integer idRoleCapabilities;
     private Integer idCapability;
     private Integer permission;
     private String nameCapability;

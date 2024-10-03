@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.role.CreateNewRoleRequest;
 import com.example.csvccdshustbe.request.role.FindAllRoleRequest;
+import com.example.csvccdshustbe.request.role.UpdateRoleRequest;
 import com.example.csvccdshustbe.service.role.RoleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -75,4 +76,15 @@ public class RoleController {
         }
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<?> updateRole(@RequestBody UpdateRoleRequest request){
+        try {
+            roleService.updateRole(request);
+            return ApiResponseDto.createdWithMessage("Update role success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

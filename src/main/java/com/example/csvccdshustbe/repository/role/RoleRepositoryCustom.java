@@ -13,6 +13,7 @@ public interface RoleRepositoryCustom {
 
     Page<Role> findAllRole(Pageable pageable, FindAllRoleRequest findAllRoleRequest);
     Optional<Role> findByTitleRole(String titleRole);
+    Optional<Role> findByShortNameRole(String shortName);
     Optional<Role> findByIdRole(Integer idRole);
     Optional<Role> findRoleByTitleOrShortName(String title, String shortName);
     List<Role> findRestRoleWithoutCurrentRole(Role role);

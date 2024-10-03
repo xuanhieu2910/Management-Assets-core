@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.role.CreateNewRoleRequest;
 import com.example.csvccdshustbe.request.role.FindAllRoleRequest;
+import com.example.csvccdshustbe.request.role.UpdateRoleRequest;
 import com.example.csvccdshustbe.response.role.FindAllRoleResponse;
 import com.example.csvccdshustbe.response.role.FindDetailsRoleCapabilitiesResponse;
 import org.springframework.data.domain.Page;
@@ -17,4 +18,5 @@ public interface RoleService {
     List<Role> findRoleByIds(List<Integer> ids) throws ValidateFiledException;
     void deleteRole(Integer idRole) throws ValidateFiledException;
     FindDetailsRoleCapabilitiesResponse findDetailsRoleCapabilitiesByIdRole(Integer idRole);
+    void updateRole(UpdateRoleRequest request) throws ValidateFiledException;
 }

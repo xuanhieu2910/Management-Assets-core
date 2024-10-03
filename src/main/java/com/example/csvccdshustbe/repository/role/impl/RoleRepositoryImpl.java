@@ -127,6 +127,53 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
     }
 
     @Override
+    public Optional<Role> findByShortNameRole(String shortNameRole) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select role.id_role, role.title, role.status,    " +
+                "                         role.content, role.short_name, role.description,     " +
+                "                         role.time_created, role.time_modified,   " +
+                "                         capabilities.id_capability, capabilities.name, capabilities.cap_type,   " +
+                "                         capabilities.status, capabilities.component,   " +
+                "                         capabilities.time_created, capabilities.time_modified   " +
+                "                 from role role   " +
+                "                      inner join role_capabilities roleCapabilities on role.id_role = roleCapabilities.id_role   " +
+                "                      inner join capabilities capabilities on roleCapabilities.id_capabilities = capabilities.id_capability   " +
+                "                 where capabilities.status = 1   " +
+                "                 and roleCapabilities.permission = 1   " +
+                "                 and role.short_name = :shortName  ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("shortName", shortNameRole);
+        List<Object[]> results = query.getResultList();
+        if (!CollectionUtils.isEmpty(results)) {
+            Object[] roleResponse = results.get(0);
+            Role role = new Role();
+            role.setIdRole(ValueUtil.getIntegerByObject(roleResponse[0]));
+            role.setTitle(ValueUtil.getStringByObject(roleResponse[1]));
+            role.setStatus(ValueUtil.getIntegerByObject(roleResponse[2]));
+            role.setContent(ValueUtil.getStringByObject(roleResponse[3]));
+            role.setShortName(ValueUtil.getStringByObject(roleResponse[4]));
+            role.setDescription(ValueUtil.getStringByObject(roleResponse[5]));
+            role.setTimeCreated(ValueUtil.getStringByObject(roleResponse[6]));
+            role.setTimeModified(ValueUtil.getStringByObject(roleResponse[7]));
+            Set<Capabilities> capabilities = new HashSet<>();
+            for(Object[] obj: results){
+                Capabilities capability = new Capabilities();
+                capability.setIdCapability(ValueUtil.getIntegerByObject(obj[8]));
+                capability.setName(ValueUtil.getStringByObject(obj[9]));
+                capability.setCapType(ValueUtil.getStringByObject(obj[10]));
+                capability.setStatus(ValueUtil.getIntegerByObject(obj[11]));
+                capability.setComponent(ValueUtil.getStringByObject(obj[12]));
+                capability.setTimeCreated(ValueUtil.getStringByObject(obj[13]));
+                capability.setTimeModified(ValueUtil.getStringByObject(obj[14]));
+                capabilities.add(capability);
+            }
+            role.setCapabilities(capabilities);
+            return Optional.of(role);
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Role> findByIdRole(Integer idRole) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select id_role, title, status, content, " +
@@ -252,9 +299,10 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
     @Override
     public FindDetailsRoleCapabilitiesResponse findDetailsRoleCapabilitiesByIdRole(Integer idRole) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select role.id_role, role.short_name, role.description, role.status, " +
+        sb.append("select role.id_role, role.short_name, role.description, role.status, " +
                 "       roleCapabilities.id_capabilities, roleCapabilities.permission, " +
-                "       capa.name nameCapabilities, capa.cap_type, capa.component " +
+                "       capa.name nameCapabilities, capa.cap_type, capa.component, " +
+                "       roleCapabilities.id_role_capabilities " +
                 "from role role " +
                 "    inner join role_capabilities roleCapabilities " +
                 "        on role.id_role = roleCapabilities.id_role " +
@@ -278,6 +326,7 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
                 roleCapability.setNameCapability(ValueUtil.getStringByObject(obj[6]));
                 roleCapability.setCapType(ValueUtil.getStringByObject(obj[7]));
                 roleCapability.setComponent(ValueUtil.getStringByObject(obj[8]));
+                roleCapability.setIdRoleCapabilities(ValueUtil.getIntegerByObject(obj[9]));
                 capabilities.add(roleCapability);
             }
             response.setCapabilities(capabilities);

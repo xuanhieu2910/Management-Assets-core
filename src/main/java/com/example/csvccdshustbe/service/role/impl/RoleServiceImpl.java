@@ -9,7 +9,9 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.role.RoleRepository;
 import com.example.csvccdshustbe.request.role.CreateNewRoleRequest;
 import com.example.csvccdshustbe.request.role.FindAllRoleRequest;
+import com.example.csvccdshustbe.request.role.UpdateRoleRequest;
 import com.example.csvccdshustbe.request.roleCapabilities.CreateNewRoleCapabilitiesRequest;
+import com.example.csvccdshustbe.request.roleCapabilities.UpdateRoleCapabilitiesRequest;
 import com.example.csvccdshustbe.response.role.FindAllRoleResponse;
 import com.example.csvccdshustbe.response.role.FindDetailsRoleCapabilitiesResponse;
 import com.example.csvccdshustbe.service.role.RoleService;
@@ -18,6 +20,7 @@ import com.example.csvccdshustbe.service.roleCapabilities.RoleCapabilitiesServic
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -105,6 +108,61 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public FindDetailsRoleCapabilitiesResponse findDetailsRoleCapabilitiesByIdRole(Integer idRole) {
         return roleRepository.findDetailsRoleCapabilitiesByIdRole(idRole);
+    }
+
+    @Override
+    public void updateRole(UpdateRoleRequest request) throws ValidateFiledException {
+        Optional<Role> role = roleRepository.findByIdRole(request.getIdRole());
+        if (role.isEmpty()) {
+            throw new NotFoundException("Don't exits role by id role!");
+        }
+        validateDataUpdateRole(request);
+        List<RoleCapabilities> roleCapabilitiesList =
+                roleCapabilitiesService.findAllRoleCapabilitiesByIdRole(request.getIdRole());
+        if (roleCapabilitiesList.size() != request.getRoleCapabilities().size()){
+            throw new ValidateFiledException("Validate data role capabilities!");
+        }
+        updateDataRole(request, role.get());
+        updateDataRoleCapabilities(roleCapabilitiesList, request.getRoleCapabilities());
+    }
+
+    private void updateDataRoleCapabilities(List<RoleCapabilities> roleCapabilitiesList,
+                                            List<UpdateRoleCapabilitiesRequest> roleCapabilitiesRequest) {
+        String timeCurrent = String.valueOf(new Date().getTime());
+        Integer idUserModified = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdUser();
+        for (RoleCapabilities roleCapabilities : roleCapabilitiesList){
+            for (UpdateRoleCapabilitiesRequest updateRoleCapabilitiesRequest : roleCapabilitiesRequest){
+                if (updateRoleCapabilitiesRequest.getIdRoleCapabilities().equals(roleCapabilities.getIdRoleCapabilities())){
+                    roleCapabilities.setPermission(updateRoleCapabilitiesRequest.getStatus());
+                    roleCapabilities.setTimeModified(timeCurrent);
+                    roleCapabilities.setIdUserModified(idUserModified);
+                    break;
+                }
+            }
+        }
+        roleCapabilitiesService.saveAllRoleCapabilities(roleCapabilitiesList);
+    }
+
+    private void updateDataRole(UpdateRoleRequest request, Role role) {
+        role.setShortName(request.getNameRole());
+        role.setDescription(request.getDescription());
+        role.setStatus(request.getStatus());
+        role.setTimeModified(String.valueOf(new Date().getTime()));
+        roleRepository.save(role);
+    }
+
+    private void validateDataUpdateRole(UpdateRoleRequest request) throws ValidateFiledException {
+        if (StringUtils.isBlank(request.getNameRole())){
+            throw new ValidateFiledException("Validate name role!");
+        }
+        Optional<Role> role = roleRepository.findByShortNameRole(request.getNameRole());
+        if (role.isPresent()){
+            throw new ValidateFiledException("Validate name role!");
+        }
+        if (!request.getStatus().equals(Constants.ROLE_STATUS) ||
+            !request.getStatus().equals(Constants.ROLE_UN_STATUS)) {
+            throw new ValidateFiledException("Validate status role!");
+        }
     }
 
     private void createRoleCapabilities(Role role, CreateNewRoleRequest request) {
