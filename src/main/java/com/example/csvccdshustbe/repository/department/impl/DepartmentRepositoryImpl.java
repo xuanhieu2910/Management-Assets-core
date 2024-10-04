@@ -472,7 +472,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
             for (Object[] obj : result){
                 idDepartment = ValueUtil.getIntegerByObject(obj[0]);
                 nameDepartment = ValueUtil.getStringByObject(obj[1]);
-                keyword = "STT." + idDepartment + nameDepartment.replace(" ","");
+                keyword = "STT_" + idDepartment + nameDepartment.replace(" ","").replace("-","");
                 if (responses.containsKey(keyword)){
                     FindAllLocationDto findAllLocationDto = new FindAllLocationDto();
                     findAllLocationDto.setIdLocation(ValueUtil.getIntegerByObject(obj[2]));

@@ -198,10 +198,11 @@ public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
                 "from units un " +
                 "    inner join asset_categories ac on un.id_asset_category = ac.id_asset_category " +
                 "where ac.is_pick = :isPick " +
-                "and un.status = :status ");
+                "and un.status = :status and ac.visible = :visible ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("isPick", Constants.ASSET_CATEGORY_IS_PICK);
         query.setParameter("status", Constants.UNITS_IS_ACTIVE);
+        query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
         List<Object[]> result = query.getResultList();
         Map<String, List<FindAllUnitsDto>> responses = new HashMap<>();
         if (!CollectionUtils.isEmpty(result)){

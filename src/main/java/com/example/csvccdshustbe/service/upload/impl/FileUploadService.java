@@ -20,7 +20,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddressBase;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.util.CellRangeUtil;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -282,8 +284,12 @@ public class FileUploadService implements FilesStorageService {
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(index));
             String prefix = cellReference.formatAsString().substring(0, 1);
-            Name electronicsRange = sheetUnit.getWorkbook().createName();
-            electronicsRange.setNameName(keyword);
+            Name electronicsRange = sheetUnit.getWorkbook().getName(keyword);
+            if (electronicsRange == null){
+                electronicsRange = sheetUnit.getWorkbook().createName();
+                electronicsRange.setNameName(keyword);
+            }
+//            electronicsRange.getNameName(keyword);
             electronicsRange.setRefersToFormula(NAME_SHEET_DATA_UNITS
                     + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
                     + ":$" + prefix + "$" + dtos.size());
@@ -315,7 +321,7 @@ public class FileUploadService implements FilesStorageService {
         categoryValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
 
-        String formula = NAME_INDIRECT + "($A4)";
+        String formula = NAME_INDIRECT + "($D4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
         CellRangeAddressList productAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 4,4);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);

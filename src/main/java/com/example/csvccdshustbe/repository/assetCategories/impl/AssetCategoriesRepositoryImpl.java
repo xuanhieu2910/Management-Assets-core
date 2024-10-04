@@ -546,6 +546,12 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         return mapAssetCategory;
     }
 
+    public static void main(String[] args) {
+        String abc = "Máy móc dụng cụ,(abc)";
+        System.out.println(abc.replaceAll("[\\\\p{S}\\\\p{P}º]+",""));
+    }
+
+
     private FindAllAssetCategoriesToDownloadDto contructionData(Object[] obj) {
         FindAllAssetCategoriesToDownloadDto categories = new FindAllAssetCategoriesToDownloadDto();
         categories.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[0]));
