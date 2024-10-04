@@ -173,7 +173,7 @@ public class RoleServiceImpl implements RoleService {
             RoleCapabilities capabilities = new RoleCapabilities();
             capabilities.setIdRole(role.getIdRole());
             capabilities.setIdCapabilities(roleCapabilitiesRequest.getIdCapability());
-            capabilities.setPermission(roleCapabilitiesRequest.getPermission());
+            capabilities.setPermission(roleCapabilitiesRequest.getStatus());
             capabilities.setTimeCreated(currentTime);
             capabilities.setTimeModified(currentTime);
             capabilities.setIdUserModified(csvcUser.getIdUser());

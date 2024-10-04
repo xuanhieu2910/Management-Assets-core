@@ -1,9 +1,6 @@
 package com.example.csvccdshustbe.service.assetCategories.impl;
 
-import com.example.csvccdshustbe.dto.assetCategories.BluePrintParentAssetCategoryDto;
-import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
-import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
-import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoryDto;
+import com.example.csvccdshustbe.dto.assetCategories.*;
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.entity.CsvcUser;
@@ -190,8 +187,11 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     }
 
     @Override
-    public Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> findAllAssetCategoriesVisibleResponseToDownload() {
-        return assetCategoriesRepository.findAllAssetCategoriesByVisibleToDownload();
+    public Map<String, List<FindAllAssetCategoriesToDownloadDto>> findAllAssetCategoriesVisibleResponseToDownload() {
+        Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
+        List<Integer> idsDepartment = departmentService.findIdsStructureDepartment(idDepartment);
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        return assetCategoriesRepository.findAllAssetCategoriesByVisibleToDownload(idsDepartment);
     }
 
     private AssetCategories createAssetCategoryRequest(CreateAssetCategoryRequest request) {

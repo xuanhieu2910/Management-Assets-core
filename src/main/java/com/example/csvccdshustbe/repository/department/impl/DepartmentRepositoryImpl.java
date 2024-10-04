@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.repository.department.impl;
 
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
+import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.repository.department.DepartmentRepositoryCustom;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
@@ -19,9 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
     @PersistenceContext
@@ -448,6 +447,51 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
         }
         return departments;
     }
+
+    @Override
+    public Map<String, List<FindAllLocationDto>>
+    findAllDepartmentLocationToDownloadByIdsDepartment(List<Integer> idsDepartment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select de.id_department, de.name nameDepartment, " +
+                "       lo.id_location, lo.name nameLocation " +
+                "from department de " +
+                "    left join location lo on de.id_department = lo.id_department " +
+                "where de.id_department in (:idDepartments) " +
+                "and de.status = :statusDepartment " +
+                "and lo.visible = :visibleLocation ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusDepartment", Constants.DEPARTMENT_ACTIVE_STATUS);
+        query.setParameter("visibleLocation", Constants.LOCATION_ACTIVE_STATUS);
+        query.setParameter("idDepartments", idsDepartment);
+        List<Object[]> result = query.getResultList();
+        Map<String,List<FindAllLocationDto>> responses = new HashMap<>();
+        if (!CollectionUtils.isEmpty(result)){
+            String keyword = null;
+            Integer idDepartment = null;
+            String nameDepartment = null;
+            for (Object[] obj : result){
+                idDepartment = ValueUtil.getIntegerByObject(obj[0]);
+                nameDepartment = ValueUtil.getStringByObject(obj[1]);
+                keyword = "STT." + idDepartment + nameDepartment.replace(" ","");
+                if (responses.containsKey(keyword)){
+                    FindAllLocationDto findAllLocationDto = new FindAllLocationDto();
+                    findAllLocationDto.setIdLocation(ValueUtil.getIntegerByObject(obj[2]));
+                    findAllLocationDto.setName(ValueUtil.getStringByObject(obj[3]));
+                    responses.get(keyword).add(findAllLocationDto);
+                } else {
+                    List<FindAllLocationDto> findAllLocationDtos = new ArrayList<>();
+                    FindAllLocationDto findAllLocationDto = new FindAllLocationDto();
+                    findAllLocationDto.setIdLocation(ValueUtil.getIntegerByObject(obj[2]));
+                    findAllLocationDto.setName(ValueUtil.getStringByObject(obj[3]));
+                    findAllLocationDtos.add(findAllLocationDto);
+                    responses.put(keyword,findAllLocationDtos);
+
+                }
+            }
+        }
+        return responses;
+    }
+
 
     private void setParameterFindAllDepartment(FindAllDepartmentRequest request, Query query) {
         query.setParameter("idsDepartment", request.getIdsDepartment());
