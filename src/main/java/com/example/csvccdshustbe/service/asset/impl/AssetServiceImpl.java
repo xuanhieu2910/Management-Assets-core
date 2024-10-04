@@ -80,6 +80,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -902,9 +906,9 @@ public class AssetServiceImpl implements AssetService {
         log.info("Init store asset");
         Asset asset = storeCommonData(createAssetRequest);
 //        storeModulesDataAsset(createAssetRequest, asset);
-//        storeOriginalDataAsset(createAssetRequest, asset);
-        storeDeclareDataAsset(createAssetRequest, asset);
-//        storeDepreciation(createAssetRequest, asset);
+        storeOriginalDataAsset(createAssetRequest, asset);
+//        storeDeclareDataAsset(createAssetRequest, asset);
+        storeDepreciation(createAssetRequest, asset);
 
     }
 
@@ -1017,6 +1021,9 @@ public class AssetServiceImpl implements AssetService {
 
         Map<String, Object> originalData = processOriginalData(row);
         createAssetRequest.put(Constants.KEY_ORIGINAL_ASSET, originalData);
+
+        Map<String, Object> depreciationData = processDepreciationData(row);
+        createAssetRequest.put(Constants.KEY_DEPRECIATION, depreciationData);
         return createAssetRequest;
 
     }
@@ -1448,33 +1455,88 @@ public class AssetServiceImpl implements AssetService {
         departmentInFor.put("typeOriginal", originalOptional.map(Original::getHardCodeDev).orElse(null));
         return departmentInFor;
     }
+    public int calculateRemainingMonths(String dateFromExcel) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Ví dụ: 01/01/2023
+        LocalDate dateFromExcelParsed = LocalDate.parse(dateFromExcel, formatter);
+        LocalDate dateAfter15Months = dateFromExcelParsed.plusMonths(15);
+        LocalDate currentDate = LocalDate.now();
+        long monthsRemaining = ChronoUnit.MONTHS.between(currentDate, dateAfter15Months);
+
+        return (int) monthsRemaining; // Chuyển đổi sang kiểu int
+    }
     private Map<String, Object> processDepreciationData(XSSFRow row) {
-        Map<String, Object> DepreciationData = new HashMap<>();
-        String typeCalculate = (String) ExcelUtil.convertValue(row.getCell(130), CellType.STRING);
-        String timeBuy = (String) ExcelUtil.convertValue(row.getCell(131), CellType.STRING);
-        String valueWearTear = (String) ExcelUtil.convertValue(row.getCell(131), CellType.STRING);
-        String yearUsedWearTear = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
-        String timeStartedWearTear = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
-        String timeStartedDepreciation = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
-        String cumulative = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
-//        Optional<Original> originalOptional = originalRepository.findOriginalByName(original);
         Map<String, Object> depreciationInFor = new HashMap<>();
-        depreciationInFor.put("typeCalculate",typeCalculate); //cách tính hao mòn
+
+        String timeBuy = (String) ExcelUtil.convertValue(row.getCell(131), CellType.STRING);
+        String timeStartedUsed = (String) ExcelUtil.convertValue(row.getCell(132), CellType.STRING);
+        String timeStartedIncrease = (String) ExcelUtil.convertValue(row.getCell(133), CellType.STRING);
+        String timeStartedWearTear = (String) ExcelUtil.convertValue(row.getCell(134), CellType.STRING);
+        String timeEndWearTear = (String) ExcelUtil.convertValue(row.getCell(137), CellType.STRING);
+        String timeStartedDepreciation = (String) ExcelUtil.convertValue(row.getCell(138), CellType.STRING);
+        String amountMonthsDepreciation = (String) ExcelUtil.convertValue(row.getCell(140), CellType.STRING);
+
+        Integer amountMonthsDepreciationNumber = null;
+        if (amountMonthsDepreciation != null && !amountMonthsDepreciation.isEmpty()) {
+            amountMonthsDepreciationNumber = Integer.parseInt(amountMonthsDepreciation);
+        }
+
+        Double cumulative = convertStringToDouble(ExcelUtil.convertValue(row.getCell(141), CellType.STRING));
+        if (cumulative == null) {
+            cumulative = 0.0;
+        }
+        Object valueTypeCalculate = (String) ExcelUtil.convertValue(row.getCell(130), CellType.STRING);
+        if (valueTypeCalculate != null) {
+            switch (valueTypeCalculate.toString()) {
+                case "Tính hao mòn":
+                    depreciationInFor.put("typeCalculate", 1);
+                    break;
+                case "Tính khấu hao":
+                    depreciationInFor.put("typeCalculate", 2);
+                    break;
+                case "Tính cả hai":
+                    depreciationInFor.put("typeCalculate", 3);
+                    break;
+            }
+        }
+
         depreciationInFor.put("timeBuy", timeBuy);      // thời gian mua
-        depreciationInFor.put("timeStartedUsed",timeStartedWearTear); // bắt đầu sử dụng
-        depreciationInFor.put("timeStartedIncrease", yearUsedWearTear); //bắt đầu ghi tăng
-        depreciationInFor.put("timeStartedWearTear",timeStartedWearTear); //bắt đầu tính hao moòn
-        depreciationInFor.put("timeEndWearTear",timeStartedWearTear); //kết thúc tính hao mòn
-        depreciationInFor.put("timeStartedDepreciation",timeStartedDepreciation); //bắt đầu tính khấu hao
-        depreciationInFor.put("valueDepreciation", yearUsedWearTear); //giá trị trích khấu hao tháng
-        depreciationInFor.put("amountMonthsDepreciation", valueWearTear); //số tháng khấu hao
-        depreciationInFor.put("amountRestMonthsDepreciation", valueWearTear); //số tháng khấu hao còn lại
-        depreciationInFor.put("typeDepreciation", yearUsedWearTear); //loại kỳ tích khấu hao
-        depreciationInFor.put("valueTypeDepreciation", yearUsedWearTear); //giá trị trích khấu hao tháng
-        depreciationInFor.put("timeYearTracking", yearUsedWearTear); //giá trị trích khấu hao tháng
-        DepreciationData.put("cumulative",cumulative);
-        DepreciationData.put("restValue",cumulative); // giá trị còn lại
-        return DepreciationData;
+        depreciationInFor.put("timeStartedUsed", timeStartedUsed); // bắt đầu sử dụng
+        depreciationInFor.put("timeStartedIncrease", timeStartedIncrease); //bắt đầu ghi tăng
+        depreciationInFor.put("timeYearTracking", String.valueOf(Year.now())); //năm theo dõi
+        depreciationInFor.put("timeStartedWearTear", timeStartedWearTear); //bắt đầu tính hao mòn
+        depreciationInFor.put("timeEndWearTear", timeEndWearTear); //kết thúc tính hao mòn
+        depreciationInFor.put("timeStartedDepreciation", timeStartedDepreciation); //bắt đầu tính khấu hao
+        depreciationInFor.put("amountMonthsDepreciation", amountMonthsDepreciationNumber); //số tháng khấu hao
+
+        String valueDepreciation = (String) ExcelUtil.convertValue(row.getCell(15), CellType.STRING);
+        double totalDepreciation = 0;
+        if (valueDepreciation != null && !valueDepreciation.isEmpty()) {
+            String[] valueDepreciationArray = valueDepreciation.split(";");
+            for (String value : valueDepreciationArray) {
+                totalDepreciation += Double.parseDouble(value.trim());
+            }
+        }
+        depreciationInFor.put("valueDepreciation", String.valueOf(totalDepreciation)); //giá trị tổng original
+
+        Object valueTypeDepreciation = (String) ExcelUtil.convertValue(row.getCell(139), CellType.STRING); // loại kỳ tích khấu hao
+        if (valueTypeDepreciation != null) {
+            if (valueTypeDepreciation.equals("Năm")) {
+                depreciationInFor.put("typeDepreciation", 1);
+                depreciationInFor.put("valueTypeDepreciation", String.valueOf(totalDepreciation * 12 / amountMonthsDepreciationNumber)); //giá trị tổng original theo năm
+            } else if (valueTypeDepreciation.equals("Tháng")) {
+                depreciationInFor.put("typeDepreciation", 2);
+                depreciationInFor.put("valueTypeDepreciation", String.valueOf(totalDepreciation / amountMonthsDepreciationNumber)); //giá trị tổng original theo tháng
+            }
+        }
+
+        if (timeStartedDepreciation != null && !timeStartedDepreciation.isEmpty()) {
+            int remainingMonths = calculateRemainingMonths(timeStartedDepreciation);
+            depreciationInFor.put("amountRestMonthsDepreciation", remainingMonths); // số tháng khấu hao còn lại
+        }
+
+        depreciationInFor.put("cumulative", String.valueOf(cumulative));
+        depreciationInFor.put("restValue", String.valueOf(totalDepreciation - cumulative)); // giá trị còn lại
+        return depreciationInFor;
     }
 
 }
