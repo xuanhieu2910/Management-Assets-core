@@ -16,4 +16,6 @@ public interface TypeUseRepositoryCustom {
 
 
     Optional<TypeUse> findTypeUseById(Integer idTypeUse);
+
+    List<TypeUse> findAllTypeUseByIds(List<Integer> typeUseIds);
 }

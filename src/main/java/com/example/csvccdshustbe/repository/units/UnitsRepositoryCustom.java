@@ -17,4 +17,6 @@ public interface UnitsRepositoryCustom {
     Optional<Units> findUnitById(Integer idUnit);
 
     Optional<Units> findUnitByIdUnitAndStatus(Integer idUnit, Integer status);
+
+    List<Units> findAllUnitsById(List<Integer> idUnit);
 }

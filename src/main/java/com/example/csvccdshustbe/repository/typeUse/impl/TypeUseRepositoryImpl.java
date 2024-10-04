@@ -123,4 +123,29 @@ public class TypeUseRepositoryImpl implements TypeUseRepositoryCustom {
         }
         return Optional.empty();
     }
+
+    @Override
+    public List<TypeUse> findAllTypeUseByIds(List<Integer> typeUseIds) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select ty.id_type_use, ty.name, " +
+                "       ty.time_created, ty.time_modified, ty.status " +
+                "from type_use ty " +
+                "where ty.id_type_use in :idTypeUse ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idTypeUse", typeUseIds);
+        List<Object[]> result = query.getResultList();
+        List<TypeUse> typeUseList= new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                TypeUse typeUse = new TypeUse();
+                typeUse.setIdTypeUse(ValueUtil.getIntegerByObject(obj[0]));
+                typeUse.setName(ValueUtil.getStringByObject(obj[1]));
+                typeUse.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
+                typeUse.setTimeModified(ValueUtil.getStringByObject(obj[3]));
+                typeUse.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                typeUseList.add(typeUse);
+            }
+        }
+        return typeUseList;
+    }
 }

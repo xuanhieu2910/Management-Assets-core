@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.wards.impl;
 
+import com.example.csvccdshustbe.entity.Wards;
 import com.example.csvccdshustbe.repository.wards.WardsRepositoryCustom;
 import com.example.csvccdshustbe.request.wards.FindAllWardsRequest;
 import com.example.csvccdshustbe.response.wards.FindAllWardsResponse;
@@ -75,5 +76,27 @@ public class WardsRepositoryImpl implements WardsRepositoryCustom {
         if (StringUtils.isNotBlank(request.getKeyword())) {
             sb.append(" and (wa.name REGEXP  :keyword ) ");
         }
+    }
+
+    @Override
+    public List<Wards> findAllWardsByCodes(List<String> wardsCodes ) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select wards.code, wards.name " +
+                "from wards  " +
+                "where wards.code in :wardsCodes ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("wardsCodes", wardsCodes);
+
+        List<Wards> wardsArrayList = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj: result){
+                Wards wards = new Wards();
+                wards.setCode(ValueUtil.getStringByObject(obj[0]));
+                wards.setName(ValueUtil.getStringByObject(obj[1]));
+                wardsArrayList.add(wards);
+            }
+        }
+        return wardsArrayList;
     }
 }

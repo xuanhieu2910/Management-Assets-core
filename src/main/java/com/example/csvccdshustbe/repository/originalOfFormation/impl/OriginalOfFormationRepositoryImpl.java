@@ -1,7 +1,6 @@
 package com.example.csvccdshustbe.repository.originalOfFormation.impl;
 
 import com.example.csvccdshustbe.dto.originalOfFormation.FindAllOriginalOfFormationDto;
-import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.OriginalOfFormation;
 import com.example.csvccdshustbe.repository.originalOfFormation.OriginalOfFormationRepositoryCustom;
 import com.example.csvccdshustbe.request.originalOfFormation.FindAllOriginalOfFormationRequest;
@@ -387,5 +386,39 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idOriginalOfFormation", idOriginalOfFormation);
         return !CollectionUtils.isEmpty(query.getResultList());
+    }
+
+    @Override
+
+    public List<OriginalOfFormation> findAllOriginalOfFormationById(List<Integer> OriginalOfFormationIds) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select oof.id_original_of_formation, oof.name, " +
+                "       oof.short_name, oof.code_name, oof.description, oof.parent, " +
+                "oof.sort_order, oof.visible, " +
+                "       oof.time_created, oof.time_modified  " +
+                "from original_of_formation oof " +
+                "where oof.id_original_of_formation in :idOriginalOfFormation ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idOriginalOfFormation", OriginalOfFormationIds);
+        List<Object[]> result = query.getResultList();
+        List<OriginalOfFormation> originalOfFormationList= new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                OriginalOfFormation originalOfFormation = new OriginalOfFormation();
+                originalOfFormation.setIdOriginalOfFormation(ValueUtil.getIntegerByObject(obj[0]));
+                originalOfFormation.setName(ValueUtil.getStringByObject(obj[1]));
+                originalOfFormation.setShortName(ValueUtil.getStringByObject(obj[2]));
+                originalOfFormation.setCodeName(ValueUtil.getStringByObject(obj[3]));
+                originalOfFormation.setDescription(ValueUtil.getStringByObject(obj[4]));
+                originalOfFormation.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                originalOfFormation.setSortOrder(ValueUtil.getStringByObject(obj[6]));
+                originalOfFormation.setVisible(ValueUtil.getIntegerByObject(obj[7]));
+                originalOfFormation.setTimeCreated(ValueUtil.getStringByObject(obj[8]));
+                originalOfFormation.setTimeModified(ValueUtil.getStringByObject(obj[9]));
+
+                originalOfFormationList.add(originalOfFormation);
+            }
+        }
+        return originalOfFormationList;
     }
 }

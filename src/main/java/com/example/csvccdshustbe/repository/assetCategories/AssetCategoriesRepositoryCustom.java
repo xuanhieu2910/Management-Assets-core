@@ -35,4 +35,5 @@ public interface AssetCategoriesRepositoryCustom {
 
 
     Optional<AssetCategories> findAssetCategoryByName(String name);
+    List<AssetCategories> findAllAssetCategoriesByIdIn(List<Integer> idCategory);
 }

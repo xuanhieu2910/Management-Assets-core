@@ -17,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TypeDeclareAssetRepositoryImpl implements TypeDeclareAssetRepositoryCustom {
 
@@ -89,5 +90,34 @@ public class TypeDeclareAssetRepositoryImpl implements TypeDeclareAssetRepositor
         if (StringUtils.isNotBlank(request.getKeyword())) {
             sb.append(" and (typeDeclareAsset.name REGEXP :keyword ) ");
         }
+    }
+
+
+    @Override
+    public Optional<TypeDeclareAsset> findTypeDeclareAssetByIdAssetCategory(Integer idAssetCategory) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select typeDeclareAsset.id_type_declare_asset, typeDeclareAsset.name,  " +
+                "       typeDeclareAsset.status, typeDeclareAsset.time_created,  " +
+                "       typeDeclareAsset.time_modified,  " +
+                "       typeDeclareAsset.id_asset_category " +
+                "from type_declare_asset typeDeclareAsset " +
+                "where typeDeclareAsset.id_asset_category = :idAssetCategory ");
+
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idAssetCategory", idAssetCategory);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj: result){
+                TypeDeclareAsset typeDeclareAsset = new TypeDeclareAsset();
+                typeDeclareAsset.setIdTypeDeclareAsset(ValueUtil.getIntegerByObject(obj[0]));
+                typeDeclareAsset.setName(ValueUtil.getStringByObject(obj[1]));
+                typeDeclareAsset.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                typeDeclareAsset.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                typeDeclareAsset.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                typeDeclareAsset.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[5]));
+                return Optional.of(typeDeclareAsset);
+            }
+        }
+        return Optional.empty();
     }
 }

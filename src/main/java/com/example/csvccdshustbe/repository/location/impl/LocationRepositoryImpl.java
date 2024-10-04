@@ -399,4 +399,34 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
         query.setParameter("idLocation", idLocation);
         return !CollectionUtils.isEmpty(query.getResultList());
     }
+
+
+    @Override
+    public List<Location> findAllLocationById(List<Integer> idLocation) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select location.id_location, location.name, " +
+                "       location.short_name, location.parent, location.id_department, " +
+                "       location.time_created, location.time_modified, location.visible " +
+                "from location " +
+                "where location.id_location in :idLocation ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idLocation", idLocation);
+        List<Object[]> result = query.getResultList();
+        List<Location> locationList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                Location location = new Location();
+                location.setIdLocation(ValueUtil.getIntegerByObject(obj[0]));
+                location.setName(ValueUtil.getStringByObject(obj[1]));
+                location.setShortName(ValueUtil.getStringByObject(obj[2]));
+                location.setParent(ValueUtil.getIntegerByObject(obj[3]));
+                location.setIdDepartment(ValueUtil.getIntegerByObject(obj[4]));
+                location.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+                location.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                location.setVisible(ValueUtil.getIntegerByObject(obj[7]));
+                locationList.add(location);
+            }
+        }
+        return locationList;
+    }
 }

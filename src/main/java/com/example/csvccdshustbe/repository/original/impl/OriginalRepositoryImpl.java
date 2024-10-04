@@ -212,4 +212,41 @@ public class OriginalRepositoryImpl implements OriginalRepositoryCustom {
         return Optional.empty();
     }
 
+
+    @Override
+    public List<Original> findAllOriginalById(List<Integer> idOriginal) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select ori.id_original, ori.name, ori.short_name, " +
+                "       ori.description, ori.parent, ori.sort_order, " +
+                "       ori.visible, ori.time_created, ori.time_modified, " +
+                "       ori.id_user_created, ori.id_user_modified, " +
+                "       ori.id_asset_category, ori.hard_code_dev, ori.is_default " +
+                "from original ori " +
+                "where ori.id_original in :idOriginal " );
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idOriginal", idOriginal);
+        List<Object[]> result = query.getResultList();
+        List<Original> originalList=new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                Original original = new Original();
+                original.setIdOriginal(ValueUtil.getIntegerByObject(obj[0]));
+                original.setName(ValueUtil.getStringByObject(obj[1]));
+                original.setShortName(ValueUtil.getStringByObject(obj[2]));
+                original.setDescription(ValueUtil.getStringByObject(obj[3]));
+                original.setParent(ValueUtil.getIntegerByObject(obj[4]));
+                original.setSortOrder(ValueUtil.getStringByObject(obj[5]));
+                original.setVisible(ValueUtil.getIntegerByObject(obj[6]));
+                original.setTimeCreated(ValueUtil.getStringByObject(obj[7]));
+                original.setTimeModified(ValueUtil.getStringByObject(obj[8]));
+                original.setIdUserCreated(ValueUtil.getIntegerByObject(obj[9]));
+                original.setIdUserModified(ValueUtil.getIntegerByObject(obj[10]));
+                original.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[11]));
+                original.setHardCodeDev(ValueUtil.getStringByObject(obj[12]));
+                original.setIsDefault(ValueUtil.getIntegerByObject(obj[13]));
+                originalList.add(original);
+            }
+        }
+        return originalList;
+    }
 }

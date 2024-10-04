@@ -25,4 +25,6 @@ public interface ProjectsRepositoryCustom {
 
     boolean isExitsAssetByIdProject(Integer idProject);
 
+    List<Projects> findAllProjectById(List<Integer>idProjects);
+
 }

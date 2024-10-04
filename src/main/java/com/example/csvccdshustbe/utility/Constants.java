@@ -241,4 +241,5 @@ public class Constants {
 
     public static String[] FILE_EXCEL = {"xls", "xlsx", "xlsm"};
 
+    public static  final Integer SIZE_HANDLE = 50;
 }

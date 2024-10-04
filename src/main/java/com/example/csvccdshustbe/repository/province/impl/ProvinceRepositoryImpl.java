@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.province.impl;
 
+import com.example.csvccdshustbe.entity.Provinces;
 import com.example.csvccdshustbe.repository.province.ProvinceRepositoryCustom;
 import com.example.csvccdshustbe.request.province.FindAllProvinceRequest;
 import com.example.csvccdshustbe.response.province.FindAllProvinceResponse;
@@ -67,5 +68,27 @@ public class ProvinceRepositoryImpl implements ProvinceRepositoryCustom {
         if (StringUtils.isNotBlank(request.getKeyword())){
             sb.append(" and (pro.name REGEXP  :keyword ) ");
         }
+    }
+
+    @Override
+    public List<Provinces> findAllProvincesByCodes(List<String> ProvincesCodes ) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select pro.code, pro.name " +
+                "from provinces pro " +
+                "where pro.code in :ProvincesCodes ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("ProvincesCodes", ProvincesCodes);
+
+        List<Provinces> provincesList = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj: result){
+                Provinces provinces = new Provinces();
+                provinces.setCode(ValueUtil.getStringByObject(obj[0]));
+                provinces.setName(ValueUtil.getStringByObject(obj[1]));
+                provincesList.add(provinces);
+            }
+        }
+        return provincesList;
     }
 }

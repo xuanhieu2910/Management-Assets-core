@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.request.originalOfFormation.FindAllOriginalOfFo
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OriginalOfFormationRepositoryCustom {
@@ -23,4 +24,6 @@ public interface OriginalOfFormationRepositoryCustom {
     boolean checkExitsOriginalOfFormationByNameOrShortNameOrCodeName(String name,String codeName,String shortName);
 
     boolean isCheckAssetByIdOriginalOfFormation(Integer idOriginalOfFormation);
+
+    List<OriginalOfFormation> findAllOriginalOfFormationById(List<Integer> OriginalOfFormationId);
 }

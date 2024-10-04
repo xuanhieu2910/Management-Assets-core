@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.request.original.FindAllOriginalVisibleRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OriginalRepositoryCustom {
@@ -14,4 +15,6 @@ public interface OriginalRepositoryCustom {
 
     Optional<Original> findOriginalByHardCodeAndStatus(String hardCode, Integer status);
     Optional<Original> findOriginalByName(String name);
+
+    List<Original> findAllOriginalById(List<Integer> idOriginal);
 }

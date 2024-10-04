@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.districts.impl;
 
+import com.example.csvccdshustbe.entity.Districts;
 import com.example.csvccdshustbe.repository.districts.DistrictsRepositoryCustom;
 import com.example.csvccdshustbe.request.districts.FindAllDistrictsRequest;
 import com.example.csvccdshustbe.response.districts.FindAllDistrictsResponse;
@@ -73,5 +74,27 @@ public class DistrictsRepositoryImpl implements DistrictsRepositoryCustom {
         if (StringUtils.isNotBlank(request.getKeyword())) {
             sb.append(" and (dis.name REGEXP  :keyword ) ");
         }
+    }
+
+    @Override
+    public List<Districts> findAllDistrictsByCodes(List<String> DistrictCodes ) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select dis.code, dis.name " +
+                "from districts dis " +
+                "where dis.code in :DistrictCodes ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("DistrictCodes", DistrictCodes);
+
+        List<Districts> districtsList = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj: result){
+                Districts districts = new Districts();
+                districts.setCode(ValueUtil.getStringByObject(obj[0]));
+                districts.setName(ValueUtil.getStringByObject(obj[1]));
+                districtsList.add(districts);
+            }
+        }
+        return districtsList;
     }
 }
