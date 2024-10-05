@@ -266,6 +266,11 @@ public class FileUploadService implements FilesStorageService {
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
         CellRangeAddressList productAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 5,5);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
     }
 
@@ -289,7 +294,6 @@ public class FileUploadService implements FilesStorageService {
                 electronicsRange = sheetUnit.getWorkbook().createName();
                 electronicsRange.setNameName(keyword);
             }
-//            electronicsRange.getNameName(keyword);
             electronicsRange.setRefersToFormula(NAME_SHEET_DATA_UNITS
                     + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
                     + ":$" + prefix + "$" + dtos.size());
@@ -325,6 +329,11 @@ public class FileUploadService implements FilesStorageService {
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
         CellRangeAddressList productAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 4,4);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
     }
 
@@ -379,8 +388,13 @@ public class FileUploadService implements FilesStorageService {
         String formula = NAME_INDIRECT + "($A4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
         CellRangeAddressList productAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 1,1);
-        DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
-        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
+        DataValidation subCategoryValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        subCategoryValidation.setShowErrorBox(true);
+        subCategoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        subCategoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        subCategoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        subCategoryValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(subCategoryValidation);
 //        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ASSET_CATEGORY), true);
     }
     private void filledDataAssetCategory(Sheet sheetAssetCategories,
