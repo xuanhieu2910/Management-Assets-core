@@ -60,7 +60,14 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         if (!user.get().isAccountNonLocked()){
             throw new UsernameNotFoundException("User is locked!");
         }
+        setIdsDepartment(user.get());
         return user.get();
+    }
+
+    private void setIdsDepartment(CsvcUser csvcUser) {
+        DepartmentUserRoleDto departmentUserRoleDto = userRoleService.getDepartmentCurrentUserRoleByCodeUser(csvcUser.getCodeUser());
+        List<Integer> idsDepartment = departmentService.findIdsStructureDepartment(departmentUserRoleDto.getIdDepartment());
+        csvcUser.setIdsDepartmentCurrent(idsDepartment);
     }
 
     @Override

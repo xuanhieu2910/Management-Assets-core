@@ -70,9 +70,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Map<String, List<FindAllLocationDto>> findAllDepartmentLocationVisibleToDownload() {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Integer idDepartment = userRoleService.getDepartmentCurrentUserRoleByCodeUser(csvcUser.getCodeUser()).getIdDepartment();
-        List<Integer> idsDepartment = findIdsStructureDepartment(idDepartment);
-        return departmentRepository.findAllDepartmentLocationToDownloadByIdsDepartment(idsDepartment);
+        return departmentRepository.findAllDepartmentLocationToDownloadByIdsDepartment(csvcUser.getIdsDepartmentCurrent());
     }
 
     @Override

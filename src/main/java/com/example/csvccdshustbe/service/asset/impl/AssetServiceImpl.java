@@ -117,8 +117,8 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private void setIdsDepartmentOriginal(FindAllAssetRequest request) {
-        Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
-        request.setIdsDepartmentOriginal(departmentService.findIdsStructureDepartment(idDepartment));
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
     }
 
     @Override

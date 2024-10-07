@@ -17,10 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCustom {
     @PersistenceContext
@@ -253,5 +250,63 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idDocumentAttack", idDocumentAttack);
         return !CollectionUtils.isEmpty(query.getResultList());
+    }
+
+    @Override
+    public Map<String, List<FindAllDocumentAttackDto>>
+    findAllDocumentAttackToDownloadByIdsDepartment(List<Integer> idsDepartment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select documentAttack.id_document_attack, " +
+                "        documentAttack.name, documentAttack.code, documentAttack.id_department,  " +
+                "        documentAttack.date_determination_document, documentAttack.status,  " +
+                "        documentAttack.time_created, documentAttack.time_modified,  " +
+                "        de.name nameDepartment  " +
+                "from document_attack documentAttack  " +
+                "     left join department de on documentAttack.id_department = de.id_department  " +
+                "where documentAttack.id_department in (:idsDepartment)  " +
+                "and documentAttack.status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsDepartment", idsDepartment);
+        query.setParameter("status", Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
+        List<Object[]> result = query.getResultList();
+        Map<String,List<FindAllDocumentAttackDto>> responses = new HashMap<>();
+        if (!CollectionUtils.isEmpty(result)){
+            String keyword = null;
+            Integer idDepartment = null;
+            String nameDepartment = null;
+            for (Object[] obj : result){
+                idDepartment = ValueUtil.getIntegerByObject(obj[3]);
+                nameDepartment = ValueUtil.getStringByObject(obj[8]);
+                keyword = "STT_" + idDepartment + nameDepartment.replace(" ","").replace("-","");
+                if (responses.containsKey(keyword)){
+                    FindAllDocumentAttackDto findAllDocumentAttackDto = new FindAllDocumentAttackDto();
+                    findAllDocumentAttackDto.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[0]));
+                    findAllDocumentAttackDto.setName(ValueUtil.getStringByObject(obj[1]));
+                    findAllDocumentAttackDto.setCode(ValueUtil.getStringByObject(obj[2]));
+                    findAllDocumentAttackDto.setIdDepartment(ValueUtil.getIntegerByObject(3));
+                    findAllDocumentAttackDto.setDateDeterminationDocument(ValueUtil.getStringByObject(obj[4]));
+                    findAllDocumentAttackDto.setStatus(ValueUtil.getIntegerByObject(obj[5]));
+                    findAllDocumentAttackDto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                    findAllDocumentAttackDto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                    findAllDocumentAttackDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
+                    responses.get(keyword).add(findAllDocumentAttackDto);
+                } else {
+                    List<FindAllDocumentAttackDto> findAllDocumentAttackDtos = new ArrayList<>();
+                    FindAllDocumentAttackDto findAllDocumentAttackDto = new FindAllDocumentAttackDto();
+                    findAllDocumentAttackDto.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[0]));
+                    findAllDocumentAttackDto.setName(ValueUtil.getStringByObject(obj[1]));
+                    findAllDocumentAttackDto.setCode(ValueUtil.getStringByObject(obj[2]));
+                    findAllDocumentAttackDto.setIdDepartment(ValueUtil.getIntegerByObject(3));
+                    findAllDocumentAttackDto.setDateDeterminationDocument(ValueUtil.getStringByObject(obj[4]));
+                    findAllDocumentAttackDto.setStatus(ValueUtil.getIntegerByObject(obj[5]));
+                    findAllDocumentAttackDto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                    findAllDocumentAttackDto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                    findAllDocumentAttackDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
+                    findAllDocumentAttackDtos.add(findAllDocumentAttackDto);
+                    responses.put(keyword,findAllDocumentAttackDtos);
+                }
+            }
+        }
+        return responses;
     }
 }
