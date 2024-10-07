@@ -63,6 +63,7 @@ import com.nimbusds.jose.util.JSONObjectUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -85,6 +86,7 @@ import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -908,7 +910,7 @@ public class AssetServiceImpl implements AssetService {
 //        storeModulesDataAsset(createAssetRequest, asset);
         storeOriginalDataAsset(createAssetRequest, asset);
 //        storeDeclareDataAsset(createAssetRequest, asset);
-        storeDepreciation(createAssetRequest, asset);
+//        storeDepreciation(createAssetRequest, asset);
 
     }
 
@@ -960,6 +962,11 @@ public class AssetServiceImpl implements AssetService {
             for (int start = 0; start < allRows.size(); start += batchSize) {
                 List<Integer> instanceCategoryNames = new ArrayList<>();
                 List<Integer> categoryNames = new ArrayList<>();
+                List<Integer> originalOfFormationIds = new ArrayList<>();
+                List<OriginalOfFormation> originalOfFormationList = originalOfFormationRepository.findAll();
+                for (OriginalOfFormation original : originalOfFormationList) {
+                    originalOfFormationIds.add(original.getIdOriginalOfFormation());
+                }
 
                 for (int i = start; i < Math.min(start + batchSize, allRows.size()); i++) {
                     XSSFRow row = allRows.get(i);
@@ -976,24 +983,26 @@ public class AssetServiceImpl implements AssetService {
 
                 List<AssetCategories> assetInstanceCategoryNamesList = assetCategoriesRepository.findAllAssetCategoriesByIdIn(instanceCategoryNames);
                 List<AssetCategories> assetCategoriesList = assetCategoriesRepository.findAllAssetCategoriesByIdIn(categoryNames);
+                List<OriginalOfFormation> ofFormationList = originalOfFormationRepository.findAllOriginalOfFormationById(originalOfFormationIds);
                 if (instanceCategoryNames.size() != assetInstanceCategoryNamesList.size()) {
                     // Log error or throw an exception
-                    throw new RuntimeException("quantity is other");
+                    throw new RuntimeException("You need update new file temple Upload Asset");
                 }
 
                 if (categoryNames.size() != assetCategoriesList.size()) {
-                    throw new RuntimeException("quantity is other");
+                    throw new RuntimeException("You need update new file temple Upload Asset");
                 }
 //                Map<String, AssetCategories> assetInstanceCategoriesMap = assetInstanceCategoryNamesList.stream()
 //                        .collect(Collectors.toMap(AssetCategories::getName, Function.identity(), (existing, replacement) -> existing));
 //                Map<String, AssetCategories> assetCategoriesMap = assetCategoriesList.stream()
 //                        .collect(Collectors.toMap(AssetCategories::getName, Function.identity(), (existing, replacement) -> existing));
-
+                Map<String, OriginalOfFormation> originalOfFormationMap = ofFormationList.stream()
+                        .collect(Collectors.toMap(OriginalOfFormation::getName, Function.identity(), (existing, replacement) -> existing));
 
                 for (int i = start; i < Math.min(start + batchSize, allRows.size()); i++) {
                     XSSFRow row = allRows.get(i);
                     if (row != null) {
-                        assetRequests.add(convertExcelRowToMap(row));
+                        assetRequests.add(convertExcelRowToMap(row,originalOfFormationMap));
                     }
                 }
             }
@@ -1005,11 +1014,11 @@ public class AssetServiceImpl implements AssetService {
     }
 
 
-    private Map<String, Object> convertExcelRowToMap(XSSFRow row) {
+    private Map<String, Object> convertExcelRowToMap(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap) {
         Map<String, Object> createAssetRequest = new HashMap<>();
 
         // Gọi hàm xử lý commonData
-        Map<String, Object> commonData = processCommonData(row);
+        Map<String, Object> commonData = processCommonData(row,originalOfFormationMap);
         createAssetRequest.put(Constants.KEY_COMMON, commonData);
 
         // Gọi hàm xử lý modulesDataAsset
@@ -1028,8 +1037,13 @@ public class AssetServiceImpl implements AssetService {
 
     }
 
-
-    private Map<String, Object> processCommonData(XSSFRow row) {
+    private String getCellValue(Cell cell) {
+        if (cell == null || cell.getCellType() == CellType.BLANK) {
+            return "";
+        }
+        return (String) ExcelUtil.convertValue(cell, CellType.STRING);
+    }
+    private Map<String, Object> processCommonData(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap) {
         Map<String, Object> commonData = new HashMap<>();
 
         String instanceCategory = (String) ExcelUtil.convertValue(row.getCell(0), CellType.STRING);
@@ -1051,6 +1065,7 @@ public class AssetServiceImpl implements AssetService {
 
 //        Optional<AssetCategories> assetCategoriesInstanceOptional=assetCategoriesRepository.findAssetCategoryByName(instanceCategory);
 //        Optional<AssetCategories> assetCategoriesOptional=assetCategoriesRepository.findAssetCategoryByName(category);
+
         Optional<Department> departmentOptional=departmentRepository.findDepartmentById(extractIdValueFromExcel(department));
 //        Optional<Location> locationOptional=locationRepository.findLocationByName(location);
 //        Optional<Units> unitsOptional = unitsRepository.findUnitByName(unit);
@@ -1066,8 +1081,9 @@ public class AssetServiceImpl implements AssetService {
         List<Map<String, Object>> originOfFormationList = new ArrayList<>();
         for (int i = 0; i < originOfFormationNameArray.length; i++) {
             Map<String, Object> originOfFormation = new HashMap<>();
-            Optional<OriginalOfFormation> originalOfFormationOptional=originalOfFormationRepository.findOriginalOfFormationByName(originOfFormationNameArray[i]);
-            originOfFormation.put("idOriginOfFormation", originalOfFormationOptional.map(OriginalOfFormation::getIdOriginalOfFormation).orElse(null));
+//            Optional<OriginalOfFormation> originalOfFormationOptional=originalOfFormationRepository.findOriginalOfFormationByName(originOfFormationNameArray[i]);
+//            originOfFormation.put("idOriginOfFormation", originalOfFormationOptional.map(OriginalOfFormation::getIdOriginalOfFormation).orElse(null));
+            originOfFormation.put("idOriginOfFormation", originalOfFormationMap.get(originOfFormationNameArray[i]).getIdOriginalOfFormation());
             originOfFormation.put("value", originOfFormationValuesArray[i]);
             originOfFormationList.add(originOfFormation);
         }
@@ -1146,7 +1162,11 @@ public class AssetServiceImpl implements AssetService {
                     String districtHouse  = (String)ExcelUtil.convertValue(row.getCell(30), CellType.STRING);
                     String wardHouse  = (String)ExcelUtil.convertValue(row.getCell(31), CellType.STRING);
                     String houseBelongLand = (String) ExcelUtil.convertValue(row.getCell(28), CellType.STRING);
-                    moduleDataDetails.put("isManageGround", ExcelUtil.convertValue(row.getCell(27), CellType.STRING));
+                    Object valueIsManagerGround;
+                    valueIsManagerGround = (String) ExcelUtil.convertValue(row.getCell(27), CellType.STRING);
+                    if (valueIsManagerGround != null && valueIsManagerGround.equals("Có")) {
+                        moduleDataDetails.put("isManageGround",1);
+                    }
                     moduleDataDetails.put("idInstance", extractIdValueFromExcel(houseBelongLand));
                     moduleDataDetails.put("provinceCode", extractCodeValueFromExcel(provinceHouse));
                     moduleDataDetails.put("districtCode", extractCodeValueFromExcel(districtHouse));
@@ -1181,12 +1201,13 @@ public class AssetServiceImpl implements AssetService {
                     valueIsFreeTax = (String)ExcelUtil.convertValue(row.getCell(42), CellType.STRING);
                     if (valueIsFreeTax != null && valueIsFreeTax.equals("Có")) {
                         moduleDataDetails.put("isFreeTax", 1);
+                        moduleDataDetails.put("valueTax", ExcelUtil.convertValue(row.getCell(43), CellType.STRING));
                     }
                     else{
                         moduleDataDetails.put("isFreeTax", -1);
                     }
 
-                    moduleDataDetails.put("valueTax", ExcelUtil.convertValue(row.getCell(43), CellType.STRING));
+
                     moduleDataDetails.put("licensePlate", ExcelUtil.convertValue(row.getCell(44), CellType.STRING));
                     moduleDataDetails.put("labelCar", ExcelUtil.convertValue(row.getCell(45), CellType.STRING));
                     moduleDataDetails.put("typeCar", ExcelUtil.convertValue(row.getCell(46), CellType.STRING));
@@ -1438,31 +1459,36 @@ public class AssetServiceImpl implements AssetService {
     }
     public String extractNameValueFromExcel(String input) {
         if (input != null && input.contains(".")) {
-            String[] parts = input.split("\\."); // Escape dấu chấm bằng "\\."
-
-            // Kiểm tra xem có đủ phần tử sau khi tách không
+            String[] parts = input.split("\\.");
             if (parts.length > 1) {
-                return parts[1]; // Trả về phần tử thứ hai nếu tồn tại
+                return parts[1];
             }
         }
-        return input; // Trả về chuỗi gốc nếu không hợp lệ hoặc không có dấu chấm
+        return input;
     }
     private Map<String, Object> processOriginalData(XSSFRow row) {
         String original = (String) ExcelUtil.convertValue(row.getCell(13), CellType.STRING);
-        Optional<Original> originalOptional = originalRepository.findOriginalByName(extractNameValueFromExcel(original));
         Map<String, Object> departmentInFor = new HashMap<>();
-        departmentInFor.put("idOriginal", extractIdValueFromExcel(original));
-        departmentInFor.put("typeOriginal", originalOptional.map(Original::getHardCodeDev).orElse(null));
+        if(original !=null){
+            Optional<Original> originalOptional = originalRepository.findOriginalByName(extractNameValueFromExcel(original));
+            departmentInFor.put("idOriginal", extractIdValueFromExcel(original));
+            departmentInFor.put("typeOriginal", originalOptional.map(Original::getHardCodeDev).orElse(null));
+        }
+        else {
+            departmentInFor.put("idOriginal", null);
+            departmentInFor.put("typeOriginal", null);
+        }
+
         return departmentInFor;
     }
     public int calculateRemainingMonths(String dateFromExcel) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Ví dụ: 01/01/2023
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate dateFromExcelParsed = LocalDate.parse(dateFromExcel, formatter);
         LocalDate dateAfter15Months = dateFromExcelParsed.plusMonths(15);
         LocalDate currentDate = LocalDate.now();
         long monthsRemaining = ChronoUnit.MONTHS.between(currentDate, dateAfter15Months);
 
-        return (int) monthsRemaining; // Chuyển đổi sang kiểu int
+        return (int) monthsRemaining;
     }
     private Map<String, Object> processDepreciationData(XSSFRow row) {
         Map<String, Object> depreciationInFor = new HashMap<>();
