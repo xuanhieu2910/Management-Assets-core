@@ -1,16 +1,16 @@
 package com.example.csvccdshustbe.service.upload.impl;
 
-import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesToDownloadDto;
-import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.documentAttack.FindAllDocumentAttackDto;
 import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
+import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
 import com.example.csvccdshustbe.dto.unit.FindAllUnitsDto;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
+import com.example.csvccdshustbe.service.projects.ProjectsService;
 import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.utility.DateUtil;
@@ -22,9 +22,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddressBase;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.ss.util.CellRangeUtil;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +52,10 @@ public class FileUploadService implements FilesStorageService {
     private static final String NAME_SHEET_IMPORT_ASSET_CATEGORY = "ImportAsset";
     private static final String NAME_SHEET_DATA_ASSET_CATEGORY = "AssetCategories";
     private static final String NAME_SHEET_DATA_DEPARTMENT = "Department";
+    private static final String NAME_SHEET_DATA_LOCATION = "Location";
     private static final String NAME_SHEET_DATA_UNITS = "Units";
     private static final String NAME_SHEET_DATA_DOCUMENT_ATTACK = "DocumentAttacks";
+    private static final String NAME_SHEET_DATA_PROJECTS = "Projects";
     private static final String NAME_INDIRECT = "INDIRECT";
     private static final String VLOOKUP = "VLOOKUP";
 
@@ -71,6 +71,8 @@ public class FileUploadService implements FilesStorageService {
     UnitsService unitsService;
     @Autowired
     DocumentAttackService documentAttackService;
+    @Autowired
+    ProjectsService projectsService;
 
 
     @Override
@@ -216,7 +218,7 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public Resource downLoadFileImportAsset() throws IOException {
-        String fileExcel = "C:\\Users\\Lenovo\\Desktop\\Project_BK\\csvc-hust\\src\\main\\resources\\static\\Test_import.xlsx";
+        String fileExcel = "C:\\Users\\hieux\\Desktop\\Projects\\src\\main\\resources\\static\\ABC.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
 
         Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory =
@@ -226,17 +228,21 @@ public class FileUploadService implements FilesStorageService {
         Map<String,List<FindAllUnitsDto>> dataUnits = unitsService.findAllUnitsToDownload();
         Map<String,List<FindAllDocumentAttackDto>> dataDocumentAttack =
                 documentAttackService.findAllDocumentAttackToDownload();
+        List<FindAllProjectsDto> dataProjects = projectsService.findAllProjectToDownload();
+
 
 
         Workbook workbook = new XSSFWorkbook(file);
         createAssetCategoriesImport(workbook, mapAssetCategory);
         createAssetDepartmentImport(workbook, dataDepartment);
         createAssetUnits(workbook, dataUnits);
-        createDocumentAttack(workbook, dataDocumentAttack);
-        String filePathOutput = "C:\\Users\\Lenovo\\Desktop\\Personal\\Template_import_asset.xlsx";
+        createDocumentAttack(workbook, dataDepartment, dataDocumentAttack);
+        createProjects(workbook, dataProjects);
+        String filePathOutput = "C:\\Users\\hieux\\Desktop\\DEF.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
         workbook.close();
@@ -256,15 +262,49 @@ public class FileUploadService implements FilesStorageService {
         return null;
     }
 
-    private void createDocumentAttack(Workbook workbook, Map<String, List<FindAllDocumentAttackDto>> dataDocumentAttack) {
+    private void createProjects(Workbook workbook, List<FindAllProjectsDto> dataProjects) {
+        Sheet sheetDocumentAttack = workbook.createSheet(NAME_SHEET_DATA_PROJECTS);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataProjects.size(); i++){
+            if (sheetDocumentAttack.getRow(i) == null) {
+                row = sheetDocumentAttack.createRow(i);
+            } else {
+                row = sheetDocumentAttack.getRow(i);
+            }
+            String valueCell = dataProjects.get(i).getIdProject() + "." + dataProjects.get(i).getShortName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        CellReference cellReference = new CellReference(row.getCell(indexCell));
+        String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_PROJECTS + "!", "").replaceAll("\\d","");
+//        String formula = "=Department!$A$1:$A$20"
+        String formula = "=" + NAME_SHEET_DATA_PROJECTS + "!$" + prefix + "$1:" + "$" + prefix + dataProjects.size();
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+        int indexFirstRow = 3;
+        int limitAmountRow = 2000;
+        CellRangeAddressList categoryAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 7, 7);
+        DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+        categoryValidation.setShowErrorBox(true);
+        categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        categoryValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+    }
+
+    private void createDocumentAttack(Workbook workbook, Map<String, List<FindAllLocationDto>> dataDepartment,
+                                      Map<String, List<FindAllDocumentAttackDto>> dataDocumentAttack) {
         Sheet sheetDocumentAttack = workbook.createSheet(NAME_SHEET_DATA_DOCUMENT_ATTACK);
-        Iterator<String> keywords = dataDocumentAttack.keySet().iterator();
+        Iterator<String> keywords = dataDepartment.keySet().iterator();
         int index = 0;
-        String[] documents = new String[dataDocumentAttack.size()];
         while (keywords.hasNext()){
             String keyword = keywords.next();
-            filledDataDocumentAttack(sheetDocumentAttack,dataDocumentAttack.get(keyword), index, keyword);
-            documents[index] = keyword;
+            if (!dataDocumentAttack.containsKey(keyword)) {
+                filledDataDocumentAttackDefault(sheetDocumentAttack,dataDocumentAttack.get("STT_100Macdinh"), index, keyword);
+            } else {
+                filledDataDocumentAttack(sheetDocumentAttack, dataDocumentAttack.get(keyword), index, keyword);
+            }
             ++index;
         }
 
@@ -283,6 +323,30 @@ public class FileUploadService implements FilesStorageService {
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
     }
 
+    private void filledDataDocumentAttackDefault(Sheet sheetDocumentAttack, List<FindAllDocumentAttackDto> dtos,
+                                                 int index, String keyword) {
+        Row row = null;
+        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
+            if (sheetDocumentAttack.getRow(i) == null) {
+                row = sheetDocumentAttack.createRow(i);
+            } else {
+                row = sheetDocumentAttack.getRow(i);
+            }
+            String valueCell = dtos.get(i).getIdDocumentAttack() + "." + dtos.get(i).getName();
+            row.createCell(index).setCellValue(valueCell);
+
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(index));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_DOCUMENT_ATTACK + "!", "").replaceAll("\\d","");
+            Name electronicsRange = sheetDocumentAttack.getWorkbook().createName();
+            electronicsRange.setNameName(PREFIX[4] + keyword);
+            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_DOCUMENT_ATTACK
+                    + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
+                    + ":$" + prefix + "$" + dtos.size());
+        }
+    }
+
     private void filledDataDocumentAttack(Sheet sheetDocumentAttack,
                                           List<FindAllDocumentAttackDto> dtos, int index,
                                           String keyword) {
@@ -299,7 +363,7 @@ public class FileUploadService implements FilesStorageService {
         }
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(index));
-            String prefix = cellReference.formatAsString().substring(0, 1);
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_DOCUMENT_ATTACK + "!", "").replaceAll("\\d","");
             Name electronicsRange = sheetDocumentAttack.getWorkbook().createName();
             electronicsRange.setNameName(PREFIX[4] + keyword);
             electronicsRange.setRefersToFormula(NAME_SHEET_DATA_DOCUMENT_ATTACK
@@ -349,7 +413,7 @@ public class FileUploadService implements FilesStorageService {
         }
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(index));
-            String prefix = cellReference.formatAsString().substring(0, 1);
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_UNITS + "!", "").replaceAll("\\d","");
             Name electronicsRange = sheetUnit.getWorkbook().getName(keyword);
             if (electronicsRange == null){
                 electronicsRange = sheetUnit.getWorkbook().createName();
@@ -362,30 +426,24 @@ public class FileUploadService implements FilesStorageService {
     }
 
     private void createAssetDepartmentImport(Workbook workbook, Map<String,List<FindAllLocationDto>> dataDepartment) {
-        Sheet sheetDepartment = workbook.createSheet(NAME_SHEET_DATA_DEPARTMENT);
+        Sheet sheetLocation = workbook.createSheet(NAME_SHEET_DATA_LOCATION);
         Iterator<String> keywords = dataDepartment.keySet().iterator();
         int index = 0;
         String[] departments = new String[dataDepartment.size()];
         while (keywords.hasNext()){
             String keyword = keywords.next();
-            filledDataDepartment(sheetDepartment,dataDepartment.get(keyword), index, keyword);
+            filledDataLocation(sheetLocation,dataDepartment.get(keyword), index, keyword);
             departments[index] = keyword;
             ++index;
         }
 
         int indexFirstRow = 3;
         int limitAmountRow = 2000;
+        if (workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY) == null) {
+            throw new IllegalArgumentException("Sheet " + NAME_SHEET_IMPORT_ASSET_CATEGORY + " does not exist.");
+        }
         DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
-        DataValidationConstraint categoryConstraint = dvHelper.createExplicitListConstraint(departments);
-        CellRangeAddressList categoryAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 3, 3);
-        DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
-        categoryValidation.setShowErrorBox(true);
-        categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
-        categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
-        categoryValidation.setShowPromptBox(true);
-        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
-
+        setDataDepartment(departments,workbook);
         String formula = NAME_INDIRECT + "(\"" + PREFIX[3] + "\"" + " & $D4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
         CellRangeAddressList productAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 4,4);
@@ -398,26 +456,75 @@ public class FileUploadService implements FilesStorageService {
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
     }
 
-    private void filledDataDepartment(Sheet sheetDepartment, List<FindAllLocationDto> dtos, int index, String keyword) {
+    private void setDataDepartment(String[] departments, Workbook workbook) {
+        Sheet sheetDepartment = workbook.createSheet(NAME_SHEET_DATA_DEPARTMENT);
         Row row = null;
-        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
+        int indexCellDepartment = 0;
+        for (int i = 0; i< departments.length; i++){
             if (sheetDepartment.getRow(i) == null) {
                 row = sheetDepartment.createRow(i);
             } else {
                 row = sheetDepartment.getRow(i);
             }
-            String valueCell = dtos.get(i).getIdLocation() + "." + dtos.get(i).getName();
-            row.createCell(index).setCellValue(valueCell);
-
+            row.createCell(indexCellDepartment).setCellValue(departments[i]);
         }
-        if (row != null) {
-            CellReference cellReference = new CellReference(row.getCell(index));
-            String prefix = cellReference.formatAsString().substring(0, 1);
-            Name electronicsRange = sheetDepartment.getWorkbook().createName();
-            electronicsRange.setNameName(PREFIX[3] + keyword);
-            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_DEPARTMENT
-                    + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
-                    + ":$" + prefix + "$" + dtos.size());
+        CellReference cellReference = new CellReference(row.getCell(indexCellDepartment));
+        String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_DEPARTMENT+"!", "").replaceAll("\\d","");
+//        String formula = "=Department!$A$1:$A$20"
+        String formula = "=" + NAME_SHEET_DATA_DEPARTMENT + "!$" + prefix + "$1:" + "$" + prefix + departments.length;
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+        int indexFirstRow = 3;
+        int limitAmountRow = 2000;
+        CellRangeAddressList categoryAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 3, 3);
+        DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+        categoryValidation.setShowErrorBox(true);
+        categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        categoryValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+    }
+
+    private void filledDataLocation(Sheet sheetDepartment, List<FindAllLocationDto> dtos, int index, String keyword) {
+        Row row = null;
+        int indexStartFilled = INDEX_START_FILLED_DATA;
+        if (dtos.size() != 0) {
+            for (int i = 0; i < dtos.size() ; i++) {
+                if (sheetDepartment.getRow(indexStartFilled) == null) {
+                    row = sheetDepartment.createRow(indexStartFilled);
+                } else {
+                    row = sheetDepartment.getRow(indexStartFilled);
+                }
+                String valueCell = dtos.get(i).getIdLocation() + "." + dtos.get(i).getName();
+                row.createCell(index).setCellValue(valueCell);
+                ++indexStartFilled;
+            }
+            if (row != null) {
+                CellReference cellReference = new CellReference(row.getCell(index));
+                String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_LOCATION + "!", "").replaceAll("\\d","");
+                Name electronicsRange = sheetDepartment.getWorkbook().createName();
+                electronicsRange.setNameName(PREFIX[3] + keyword);
+                electronicsRange.setRefersToFormula(NAME_SHEET_DATA_LOCATION
+                        + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
+                        + ":$" + prefix + "$" + (INDEX_START_FILLED_DATA + dtos.size()));
+            }
+        } else {
+            if (sheetDepartment.getRow(indexStartFilled) == null) {
+                row = sheetDepartment.createRow(indexStartFilled);
+            } else {
+                row = sheetDepartment.getRow(indexStartFilled);
+            }
+            if (row != null) {
+                row.createCell(index).setCellValue("Không có");
+                CellReference cellReference = new CellReference(row.getCell(index));
+                String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_LOCATION + "!", "").replaceAll("\\d","");
+                Name electronicsRange = sheetDepartment.getWorkbook().createName();
+                electronicsRange.setNameName(PREFIX[3] + keyword);
+                electronicsRange.setRefersToFormula(NAME_SHEET_DATA_LOCATION
+                        + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
+                        + ":$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1 + dtos.size()));
+            }
         }
     }
 
@@ -497,7 +604,7 @@ public class FileUploadService implements FilesStorageService {
         }
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(0));
-            String prefix = cellReference.formatAsString().substring(0, 1);
+            String prefix =  cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_ASSET_CATEGORY + "!", "").replaceAll("\\d","");
             Name electronicsRange = sheetAssetCategories.getWorkbook().createName();
             electronicsRange.setNameName(PREFIX[0] + keywords);
             electronicsRange.setRefersToFormula(NAME_SHEET_DATA_ASSET_CATEGORY

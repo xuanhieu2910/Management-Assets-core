@@ -450,15 +450,15 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
 
     @Override
     public Map<String, List<FindAllLocationDto>>
-    findAllDepartmentLocationToDownloadByIdsDepartment(List<Integer> idsDepartment) {
+     findAllDepartmentLocationToDownloadByIdsDepartment(List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select de.id_department, de.name nameDepartment, " +
-                "       lo.id_location, lo.name nameLocation " +
-                "from department de " +
-                "    left join location lo on de.id_department = lo.id_department " +
-                "where de.id_department in (:idDepartments) " +
-                "and de.status = :statusDepartment " +
-                "and lo.visible = :visibleLocation ");
+        sb.append(" select de.id_department, de.name nameDepartment,     " +
+                "         lo.id_location, lo.name nameLocation     " +
+                "  from department de     " +
+                "      left join (select * from location where location.visible = :visibleLocation)lo  " +
+                "          on de.id_department = lo.id_department  " +
+                "  where de.id_department in (:idDepartments)     " +
+                "  and de.status = :statusDepartment ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("statusDepartment", Constants.DEPARTMENT_ACTIVE_STATUS);
         query.setParameter("visibleLocation", Constants.LOCATION_ACTIVE_STATUS);
@@ -472,7 +472,8 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
             for (Object[] obj : result){
                 idDepartment = ValueUtil.getIntegerByObject(obj[0]);
                 nameDepartment = ValueUtil.getStringByObject(obj[1]);
-                keyword = "STT_" + idDepartment + nameDepartment.replace(" ","").replace("-","");
+                keyword = "STT_" + idDepartment + nameDepartment;
+                keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
                 if (responses.containsKey(keyword)){
                     FindAllLocationDto findAllLocationDto = new FindAllLocationDto();
                     findAllLocationDto.setIdLocation(ValueUtil.getIntegerByObject(obj[2]));
@@ -480,12 +481,13 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
                     responses.get(keyword).add(findAllLocationDto);
                 } else {
                     List<FindAllLocationDto> findAllLocationDtos = new ArrayList<>();
-                    FindAllLocationDto findAllLocationDto = new FindAllLocationDto();
-                    findAllLocationDto.setIdLocation(ValueUtil.getIntegerByObject(obj[2]));
-                    findAllLocationDto.setName(ValueUtil.getStringByObject(obj[3]));
-                    findAllLocationDtos.add(findAllLocationDto);
-                    responses.put(keyword,findAllLocationDtos);
-
+                    if (ValueUtil.getIntegerByObject(obj[2]) != null) {
+                        FindAllLocationDto findAllLocationDto = new FindAllLocationDto();
+                        findAllLocationDto.setIdLocation(ValueUtil.getIntegerByObject(obj[2]));
+                        findAllLocationDto.setName(ValueUtil.getStringByObject(obj[3]));
+                        findAllLocationDtos.add(findAllLocationDto);
+                    }
+                    responses.put(keyword, findAllLocationDtos);
                 }
             }
         }

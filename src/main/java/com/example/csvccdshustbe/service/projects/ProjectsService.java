@@ -1,4 +1,5 @@
 package com.example.csvccdshustbe.service.projects;
+import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
 import com.example.csvccdshustbe.entity.Projects;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.projects.CreateProjectsRequest;
@@ -7,6 +8,8 @@ import com.example.csvccdshustbe.request.projects.UpdateProjectsRequest;
 import com.example.csvccdshustbe.request.projects.UpdateStatusProjectRequest;
 import com.example.csvccdshustbe.response.projects.FindAllProjectsResponse;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface ProjectsService {
 
@@ -21,4 +24,6 @@ public interface ProjectsService {
     Projects findProjectsByIdProjectAndStatus(Integer idProject, Integer status);
 
     void updateStatusProject(UpdateStatusProjectRequest request) throws ValidateFiledException;
+
+    List<FindAllProjectsDto> findAllProjectToDownload();
 }
