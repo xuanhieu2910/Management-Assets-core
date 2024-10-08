@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeVisible
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MedicineTypeRepositoryCustom {
@@ -21,5 +22,6 @@ public interface MedicineTypeRepositoryCustom {
     Optional<MedicineType> findMedicineTypeById(Integer idMedicineType);
 
     boolean checkExitsMedicineTypeByNameOrCodeOrShortName(String name, String code,String shortName);
+    List<MedicineType> findMedicineTypeByAllId(List<Integer> idMedicineType);
 
 }

@@ -135,4 +135,31 @@ public class MedicineGroupRepositoryImpl implements MedicineGroupRepositoryCusto
         }
         return Optional.empty();
     }
+    @Override
+    public List<MedicineGroup> findMedicineGroupByAllId(List<Integer> idMedicineType) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select mg.id_medicine_group, mg.name, " +
+                "mg.short_name, mg.description, " +
+                "mg.time_created, mg.time_modified, mg.status " +
+                "from medicine_group mg " +
+                "where mg.id_medicine_group in :idMedicineType ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idMedicineType", idMedicineType);
+        List<Object[]> result = query.getResultList();
+        List<MedicineGroup> medicineGroupList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                MedicineGroup medicineGroup = new MedicineGroup();
+                medicineGroup.setIdMedicineGroup(ValueUtil.getIntegerByObject(obj[0]));
+                medicineGroup.setName(ValueUtil.getStringByObject(obj[1]));
+                medicineGroup.setShortName(ValueUtil.getStringByObject(obj[2]));
+                medicineGroup.setDescription(ValueUtil.getStringByObject(obj[3]));
+                medicineGroup.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                medicineGroup.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                medicineGroup.setStatus(ValueUtil.getIntegerByObject(obj[6]));
+                medicineGroupList.add(medicineGroup);
+            }
+        }
+        return medicineGroupList;
+    }
 }

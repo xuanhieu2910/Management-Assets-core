@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.positionName.impl;
 
 import com.example.csvccdshustbe.dto.positionName.FindAllPositionNameDto;
+import com.example.csvccdshustbe.entity.CountryProducer;
 import com.example.csvccdshustbe.entity.PositionName;
 import com.example.csvccdshustbe.repository.positionName.PositionNameRepositoryCustom;
 import com.example.csvccdshustbe.request.positionName.FindAllPositionNameRequest;
@@ -201,5 +202,30 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idPositionName", idPositionName);
         return !CollectionUtils.isEmpty(query.getResultList());
+    }
+
+    @Override
+    public List<PositionName> findPositionNameByListId(List<Integer> idPositionName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select pn.id_position_name, pn.name, pn.status, " +
+                "pn.time_created, pn.time_modified " +
+                "from position_name pn " +
+                "where 1=1 and pn.id_position_name in :idPositionName ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idPositionName", idPositionName);
+        List<Object[]> result = query.getResultList();
+        List<PositionName>positionNameList= new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                PositionName positionName = new PositionName();
+                positionName.setIdPositionName(ValueUtil.getIntegerByObject(obj[0]));
+                positionName.setName(ValueUtil.getStringByObject(obj[1]));
+                positionName.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                positionName.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                positionName.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                positionNameList.add(positionName);
+            }
+        }
+        return positionNameList;
     }
 }

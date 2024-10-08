@@ -424,10 +424,8 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
                 "       de.short_name, de.description, de.parent, " +
                 "       de.time_created, de.time_modified, de.status " +
                 "from department de  " +
-                "where de.status = :status " +
-                "and de.id_department in (:ids) ");
+                "where de.id_department in :ids ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("status", Constants.DEPARTMENT_ACTIVE_STATUS);
         query.setParameter("ids", ids);
         List<Department> departments = new ArrayList<>();
         List<Object[]> result = query.getResultList();

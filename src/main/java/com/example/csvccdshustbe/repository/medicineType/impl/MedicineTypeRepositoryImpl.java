@@ -354,4 +354,34 @@ public class MedicineTypeRepositoryImpl implements MedicineTypeRepositoryCustom 
         List<Object[]> result = query.getResultList();
         return CollectionUtils.isEmpty(result);
     }
+
+    @Override
+    public List<MedicineType> findMedicineTypeByAllId(List<Integer> idMedicineType) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select mt.id_medicine_type, mt.name, mt.code, " +
+                "       mt.short_name, mt.notes, mt.parent, " +
+                "       mt.time_created, mt.time_modified, mt.visible " +
+                "from medicine_type mt " +
+                "where mt.id_medicine_type in :idMedicineType ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idMedicineType", idMedicineType);
+        List<Object[]> result = query.getResultList();
+        List<MedicineType> medicineTypeList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                MedicineType medicineType = new MedicineType();
+                medicineType.setIdMedicineType(ValueUtil.getIntegerByObject(obj[0]));
+                medicineType.setName(ValueUtil.getStringByObject(obj[1]));
+                medicineType.setCode(ValueUtil.getStringByObject(obj[2]));
+                medicineType.setShortName(ValueUtil.getStringByObject(obj[3]));
+                medicineType.setNotes(ValueUtil.getStringByObject(obj[4]));
+                medicineType.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                medicineType.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                medicineType.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                medicineType.setVisible(ValueUtil.getIntegerByObject(obj[8]));
+                medicineTypeList.add(medicineType);
+            }
+        }
+        return medicineTypeList;
+    }
 }
