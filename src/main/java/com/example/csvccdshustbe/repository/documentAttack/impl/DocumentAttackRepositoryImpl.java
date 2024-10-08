@@ -276,8 +276,12 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
             String nameDepartment = null;
             for (Object[] obj : result){
                 idDepartment = ValueUtil.getIntegerByObject(obj[3]);
-                nameDepartment = ValueUtil.getStringByObject(obj[8]);
-                keyword = "STT_" + idDepartment + nameDepartment.replace(" ","").replace("-","");
+                if (idDepartment.equals(Constants.DEFAULT_ASSET_CATEGORY)){
+                nameDepartment = "Mặc định";
+                } else {
+                    nameDepartment = ValueUtil.getStringByObject(obj[8]);
+                }
+                keyword = "STT_" + Math.abs(idDepartment) + nameDepartment.replace(" ","").replace("-","");
                 if (responses.containsKey(keyword)){
                     FindAllDocumentAttackDto findAllDocumentAttackDto = new FindAllDocumentAttackDto();
                     findAllDocumentAttackDto.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[0]));

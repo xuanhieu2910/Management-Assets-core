@@ -216,7 +216,7 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public Resource downLoadFileImportAsset() throws IOException {
-        String fileExcel = "C:\\Users\\hieux\\Desktop\\Projects\\src\\main\\resources\\static\\Template_import_asset.xlsx";
+        String fileExcel = "C:\\Users\\Lenovo\\Desktop\\Project_BK\\csvc-hust\\src\\main\\resources\\static\\Test_import.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
 
         Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory =
@@ -233,7 +233,7 @@ public class FileUploadService implements FilesStorageService {
         createAssetDepartmentImport(workbook, dataDepartment);
         createAssetUnits(workbook, dataUnits);
         createDocumentAttack(workbook, dataDocumentAttack);
-        String filePathOutput = "C:\\Users\\hieux\\Desktop\\Projects\\Template_import_asset.xlsx";
+        String filePathOutput = "C:\\Users\\Lenovo\\Desktop\\Personal\\Template_import_asset.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
         } catch (IOException e) {
