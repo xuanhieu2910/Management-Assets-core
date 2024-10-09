@@ -121,6 +121,10 @@ public class DepartmentServiceImpl implements DepartmentService {
         return idsStructureDepartment;
     }
 
+    @Override
+    public List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload() {
+        return departmentRepository.findAllAssetDepartmentToDownload();
+    }
 
 
     @Override

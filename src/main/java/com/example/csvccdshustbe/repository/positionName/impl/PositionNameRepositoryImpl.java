@@ -202,4 +202,11 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
         query.setParameter("idPositionName", idPositionName);
         return !CollectionUtils.isEmpty(query.getResultList());
     }
+
+    @Override
+    public List<FindAllPositionNameDto> findAllPositionNameToDownload() {
+        StringBuilder sb = new StringBuilder();
+
+        return null;
+    }
 }

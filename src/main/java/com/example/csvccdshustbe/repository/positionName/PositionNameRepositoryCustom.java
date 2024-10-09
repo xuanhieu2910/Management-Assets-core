@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.request.positionName.FindAllPositionNameVisible
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PositionNameRepositoryCustom {
@@ -15,5 +16,6 @@ public interface PositionNameRepositoryCustom {
     Optional<PositionName> findPositionNameByName(String name);
     Optional<PositionName> findPositionNameById(Integer idPositionName);
     boolean isCheckExitsAssetByIdPositionName(Integer idPositionName);
+    List<FindAllPositionNameDto> findAllPositionNameToDownload();
 
 }

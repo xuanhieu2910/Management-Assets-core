@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.typeUse.impl;
 
 
+import com.example.csvccdshustbe.dto.typeUse.FindAllTypeUseDto;
 import com.example.csvccdshustbe.entity.TypeUse;
 import com.example.csvccdshustbe.repository.typeUse.TypeUseRepositoryCustom;
 import com.example.csvccdshustbe.request.typeUse.FindAllTypeUseRequest;
@@ -122,5 +123,28 @@ public class TypeUseRepositoryImpl implements TypeUseRepositoryCustom {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<FindAllTypeUseDto> findAllTypeUserDtoToDownload() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select id_type_use, name, status, time_created, time_modified " +
+                "from type_use where status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", Constants.TYPE_USE_ACTIVE_STATUS);
+        List<Object[]> result = query.getResultList();
+        List<FindAllTypeUseDto> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FindAllTypeUseDto findAllTypeUseDto = new FindAllTypeUseDto();
+                findAllTypeUseDto.setIdTypeUse(ValueUtil.getIntegerByObject(obj[0]));
+                findAllTypeUseDto.setNameTypeUse(ValueUtil.getStringByObject(obj[1]));
+                findAllTypeUseDto.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                findAllTypeUseDto.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                findAllTypeUseDto.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                responses.add(findAllTypeUseDto);
+            }
+        }
+        return responses;
     }
 }

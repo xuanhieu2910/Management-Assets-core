@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface CsvcUserRepositoryCustom {
@@ -26,5 +27,5 @@ public interface CsvcUserRepositoryCustom {
     void updateStatusAccountUserByIds(List<Integer> idsUser, Integer status);
     Page<FindAllUserResponse> findAllUser(FindAllUserRequest request, Pageable pageable);
     Optional<FindDetailsUserResponse> findDetailsUserResponse(FindDetailsUserRequest request);
-
+    Map<String, List<FindAllUserUsedDto>> findAllUserUsedToDownloadByIdsDepartment(List<Integer> idsDepartmentCurrent);
 }

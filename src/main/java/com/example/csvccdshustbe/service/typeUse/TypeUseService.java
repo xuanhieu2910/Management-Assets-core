@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.typeUse;
 
+import com.example.csvccdshustbe.dto.typeUse.FindAllTypeUseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 
 import com.example.csvccdshustbe.request.typeUse.CreateTypeUseRequest;
@@ -11,11 +12,12 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface TypeUseService {
-        Page<FindAllTypeUseResponse> findAllTypeUseActiveResponse(FindAllTypeUseRequest request);
+    Page<FindAllTypeUseResponse> findAllTypeUseActiveResponse(FindAllTypeUseRequest request);
 
-        void createTypeUse(CreateTypeUseRequest request) throws ValidateFiledException;
+    void createTypeUse(CreateTypeUseRequest request) throws ValidateFiledException;
 
-        void updateTypeUse(UpdateTypeUseRequest request) throws ValidateFiledException;
+    void updateTypeUse(UpdateTypeUseRequest request) throws ValidateFiledException;
 
-        void deleteTypeUseByIdTypeUse(Integer idTypeUse);
+    void deleteTypeUseByIdTypeUse(Integer idTypeUse);
+    List<FindAllTypeUseDto> findAllTypeUseToDownload();
 }

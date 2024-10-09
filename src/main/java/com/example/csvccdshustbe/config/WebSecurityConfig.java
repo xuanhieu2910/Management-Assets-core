@@ -58,8 +58,8 @@ public class WebSecurityConfig{
 
     public final static String PREFERRED_USERNAME = "preferred_username";
     public final static String INFORMATION_USER = "informationUser";
-//    public final static String DOMAIN_DEV = "https://csvc-development.hust.edu.vn";
-    public final static String DOMAIN_DEV = "http://localhost:3000";
+    public final static String DOMAIN_DEV = "https://csvc-development.hust.edu.vn";
+//    public final static String DOMAIN_DEV = "http://localhost:3000";
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable).cors(c->c.configurationSource(corsConfigurationSource())).

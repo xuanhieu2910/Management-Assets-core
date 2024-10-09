@@ -67,13 +67,21 @@ public class WardsRepositoryImpl implements WardsRepositoryCustom {
             for (Object[] obj : result){
                 keyword = ValueUtil.getStringByObject(obj[0]);
                 if (responses.containsKey(keyword)){
-                    List<>
+                    WardsDto wardsDto = new WardsDto();
+                    wardsDto.setCodeWard(ValueUtil.getStringByObject(obj[1]));
+                    wardsDto.setNameWard(ValueUtil.getStringByObject(obj[2]));
+                    responses.get(keyword).add(wardsDto);
                 } else {
-
+                    List<WardsDto> dtos = new ArrayList<>();
+                    WardsDto wardsDto = new WardsDto();
+                    wardsDto.setCodeWard(ValueUtil.getStringByObject(obj[1]));
+                    wardsDto.setNameWard(ValueUtil.getStringByObject(obj[2]));
+                    dtos.add(wardsDto);
+                    responses.put(keyword,dtos);
                 }
             }
         }
-        return null;
+        return responses;
     }
 
 

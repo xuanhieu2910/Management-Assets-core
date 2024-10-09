@@ -1,23 +1,35 @@
 package com.example.csvccdshustbe.service.upload.impl;
 
+import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesToDownloadDto;
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
 import com.example.csvccdshustbe.dto.districts.DistrictsDto;
 import com.example.csvccdshustbe.dto.documentAttack.FindAllDocumentAttackDto;
 import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
+import com.example.csvccdshustbe.dto.original.FindAllOriginalDto;
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
 import com.example.csvccdshustbe.dto.provinces.ProvincesDto;
+import com.example.csvccdshustbe.dto.typeUse.FindAllTypeUseDto;
 import com.example.csvccdshustbe.dto.unit.FindAllUnitsDto;
-import com.example.csvccdshustbe.entity.Provinces;
+import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
+import com.example.csvccdshustbe.dto.wards.WardsDto;
+import com.example.csvccdshustbe.entity.CountryProducer;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
+import com.example.csvccdshustbe.service.countryProducer.CountryProducerService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.districts.DistrictsService;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
+import com.example.csvccdshustbe.service.original.OriginalService;
+import com.example.csvccdshustbe.service.positionName.PositionNameService;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
 import com.example.csvccdshustbe.service.province.ProvinceService;
+import com.example.csvccdshustbe.service.typeUse.TypeUseService;
 import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
+import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.wards.WardsService;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.FileUtil;
@@ -86,8 +98,18 @@ public class FileUploadService implements FilesStorageService {
     DistrictsService districtsService;
     @Autowired
     WardsService wardsService;
-
-
+    @Autowired
+    OriginalService originalService;
+    @Autowired
+    CountryProducerService countryProducerService;
+    @Autowired
+    CsvcUserService csvcUserService;
+    @Autowired
+    AssetService assetService;
+    @Autowired
+    TypeUseService typeUseService;
+    @Autowired
+    PositionNameService positionNameService;
 
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
@@ -245,7 +267,14 @@ public class FileUploadService implements FilesStorageService {
         List<FindAllProjectsDto> dataProjects = projectsService.findAllProjectToDownload();
         List<ProvincesDto> dataProvinces = provinceService.findAllProvinceToDownload();
         Map<String, List<DistrictsDto>> dataDistrict = districtsService.findAllDistrictToDownload();
-        Map<String, List<WardsDto>> dataWards =
+        Map<String, List<WardsDto>> dataWards = wardsService.findAllWardsToDownload();
+        List<FindAllDepartmentSDto> dataAssetDepartment = departmentService.findAllAssetDepartmentToDownload();
+        Map<String, List<FindAllOriginalDto>> dataOriginal = originalService.findAllOriginalToDownload();
+        List<CountryProducer> dataCountryProducer = countryProducerService.findAllCountryProducerToDownload();
+        Map<String, List<FindAllUserUsedDto>> dataUserUsed = csvcUserService.findAllUserUsedToDownload();
+        List<FindAllGroundAssetDto> dataGroundAsset = assetService.findAllGroundAssetToDownload();
+        List<FindAllTypeUseDto> dataTypeUse = typeUseService.findAllTypeUseToDownload();
+
         Workbook workbook = new XSSFWorkbook(file);
         createAssetCategoriesImport(workbook, mapAssetCategory);
         createAssetDepartmentImport(workbook, dataDepartment);
@@ -254,6 +283,15 @@ public class FileUploadService implements FilesStorageService {
         createProjects(workbook, dataProjects);
         createProvinces(workbook, dataProvinces);
         createDistrict(workbook, dataDistrict);
+        createWards(workbook, dataWards);
+        createAssetDepartment(workbook, dataAssetDepartment);
+        createOriginal(workbook, dataOriginal);
+        createCountryProducer(workbook, dataCountryProducer);
+        createUserUsed(workbook, dataUserUsed);
+        createGroundAsset(workbook, dataGroundAsset);
+        createTypeUse(workbook, dataTypeUse);
+        
+        
         String filePathOutput = "C:\\Users\\hieux\\Desktop\\DEF.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
@@ -262,20 +300,29 @@ public class FileUploadService implements FilesStorageService {
             throw new RuntimeException(e);
         }
         workbook.close();
-        //Common
-        //Modules
-        //Original
-        //Declare
-
-        //Lấy danh mục tài san picked
-        //Lay danh sach tai san theo picked
-        //Lay danh sach department
-        //Lay danh sach location theo department
-        //Lay danh sach don vi theo picked
-        // Document
-        // Project
-        //
         return null;
+    }
+
+    private void createTypeUse(Workbook workbook, List<FindAllTypeUseDto> dataTypeUse) {
+    }
+
+    private void createGroundAsset(Workbook workbook, List<FindAllGroundAssetDto> dataGroundAsset) {
+    }
+
+    private void createUserUsed(Workbook workbook, Map<String, List<FindAllUserUsedDto>> dataUserUsed) {
+    }
+
+    private void createCountryProducer(Workbook workbook, List<CountryProducer> dataCountryProducer) {
+    }
+
+    private void createOriginal(Workbook workbook, Map<String, List<FindAllOriginalDto>> dataOriginal) {
+    }
+
+    private void createWards(Workbook workbook, Map<String, List<WardsDto>> dataWards) {
+    }
+
+    private void createAssetDepartment(Workbook workbook, List<FindAllDepartmentSDto> dataAssetDepartment) {
+
     }
 
     private void createDistrict(Workbook workbook, Map<String, List<DistrictsDto>> dataDistrict) {

@@ -6,11 +6,13 @@ import com.example.csvccdshustbe.request.original.FindAllOriginalVisibleRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface OriginalRepositoryCustom {
 
     Page<FindAllOriginalDto> findAllOriginalDtoByIdAssetCategory(FindAllOriginalVisibleRequest request, Pageable pageable);
-
     Optional<Original> findOriginalByHardCodeAndStatus(String hardCode, Integer status);
+    Map<String, List<FindAllOriginalDto>> findAllOriginalToDownload();
 }

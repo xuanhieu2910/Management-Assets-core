@@ -16,6 +16,7 @@ import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,11 @@ public class OriginalServiceImpl implements OriginalService {
             throw new NotFoundException("Don't exits original!");
         }
         return original.get();
+    }
+
+    @Override
+    public Map<String, List<FindAllOriginalDto>> findAllOriginalToDownload() {
+        return originalRepository.findAllOriginalToDownload();
     }
 
     private List<FindAllOriginalVisibleResponse> convertToFindAllOriginalVisibleResponse(List<FindAllOriginalDto> collect) {

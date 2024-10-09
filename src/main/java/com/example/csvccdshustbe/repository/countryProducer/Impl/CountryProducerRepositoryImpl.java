@@ -153,4 +153,29 @@ public class CountryProducerRepositoryImpl implements CountryProducerRepositoryC
         }
         return Optional.empty();
     }
+
+    @Override
+    public List<CountryProducer> findAllCountryProducerToDownload() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_country_producer, name,  " +
+                "       status, time_created, time_modified " +
+                "from country_producer " +
+                "where status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", Constants.COUNTRY_PRODUCER_ACTIVE_STATUS);
+        List<Object[]> result = query.getResultList();
+        List<CountryProducer> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                CountryProducer countryProducer = new CountryProducer();
+                countryProducer.setIdCountryProducer(ValueUtil.getIntegerByObject(obj[0]));
+                countryProducer.setName(ValueUtil.getStringByObject(obj[1]));
+                countryProducer.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                countryProducer.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                countryProducer.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                responses.add(countryProducer);
+            }
+        }
+        return responses;
+    }
 }

@@ -212,7 +212,8 @@ public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
             for (Object[] obj : result){
                 idAssetCategory = ValueUtil.getIntegerByObject(obj[0]);
                 nameAssetCategory = ValueUtil.getStringByObject(obj[1]);
-                keyword = "STT_" + idAssetCategory + "_" + nameAssetCategory.replace(" ","").replace(",","");
+                keyword = "STT_" + idAssetCategory + "_" + nameAssetCategory;
+                keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
                 if (responses.containsKey(keyword)){
                     responses.get(keyword).add(constructUnit(obj));
                 } else {

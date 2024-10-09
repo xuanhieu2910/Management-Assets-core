@@ -524,7 +524,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         query.setParameter("idsDepartmentOriginal",idsDepartment);
         List<Object[]> result = query.getResultList();
         Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory = new HashMap<>();
-        String key = null;
+        String keyword = null;
         Integer idAssetCategory ;
         String nameAssetCategory ;
         if (!CollectionUtils.isEmpty(result)){
@@ -532,13 +532,14 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 idAssetCategory = ValueUtil.getIntegerByObject(obj[0]);
                 nameAssetCategory = ValueUtil.getStringByObject(obj[1]);
                 if (ValueUtil.getIntegerByObject(obj[3]) != null && ValueUtil.getIntegerByObject(obj[3]).equals(Constants.ASSET_CATEGORY_IS_PICK)){
-                    key = "STT_" + idAssetCategory + "_" + nameAssetCategory.replace(" ","").replace(",","");
+                    keyword = "STT_" + idAssetCategory + "_" + nameAssetCategory;
+                    keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
                     List<FindAllAssetCategoriesToDownloadDto> dtos = new ArrayList<>();
                     dtos.add(contructionData(obj));
-                    mapAssetCategory.put(key, dtos);
+                    mapAssetCategory.put(keyword, dtos);
                 } else {
-                    mapAssetCategory.containsKey(key);
-                    mapAssetCategory.get(key).add(contructionData(obj));
+                    mapAssetCategory.containsKey(keyword);
+                    mapAssetCategory.get(keyword).add(contructionData(obj));
 
                 }
             }

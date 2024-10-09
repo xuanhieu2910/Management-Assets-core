@@ -36,4 +36,5 @@ public interface DepartmentRepositoryCustom {
     List<Department> findDepartmentByIds(List<Integer> ids);
     Map<String, List<FindAllLocationDto>>
     findAllDepartmentLocationToDownloadByIdsDepartment(List<Integer> idsDepartment);
+    List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload();
 }

@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.department;
 
 
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
 import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -27,4 +28,5 @@ public interface DepartmentService {
     List<Department> findDepartmentByIds(List<Integer> ids) throws ValidateFiledException;
     List<FindAllDepartmentByCodeAndVisibleDto> findAllStructureDepartmentByIdDepartment(Integer department);
     List<Integer> findIdsStructureDepartment(Integer department);
+    List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload();
 }

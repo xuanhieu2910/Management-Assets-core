@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.service.asset.impl;
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
 import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
@@ -814,6 +815,11 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public Resource downloadFileTemplateImportAsset() throws IOException {
         return filesStorageService.downLoadFileImportAsset();
+    }
+
+    @Override
+    public List<FindAllGroundAssetDto> findAllGroundAssetToDownload() {
+        return assetRepository.findAllGroundAssetToDownload();
     }
 
 }
