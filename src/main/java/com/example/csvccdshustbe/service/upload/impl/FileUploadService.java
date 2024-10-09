@@ -5,8 +5,12 @@ import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesToDow
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
 import com.example.csvccdshustbe.dto.districts.DistrictsDto;
 import com.example.csvccdshustbe.dto.documentAttack.FindAllDocumentAttackDto;
+import com.example.csvccdshustbe.dto.goalsUseGround.FindAllGoalsUseGroundDto;
 import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineGroup.MedicineGroupDetailsDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineType.MedicineTypeDetailsDto;
 import com.example.csvccdshustbe.dto.original.FindAllOriginalDto;
+import com.example.csvccdshustbe.dto.positionName.FindAllPositionNameDto;
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
 import com.example.csvccdshustbe.dto.provinces.ProvincesDto;
 import com.example.csvccdshustbe.dto.typeUse.FindAllTypeUseDto;
@@ -16,12 +20,16 @@ import com.example.csvccdshustbe.dto.wards.WardsDto;
 import com.example.csvccdshustbe.entity.CountryProducer;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.countryProducer.CountryProducerService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.districts.DistrictsService;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
+import com.example.csvccdshustbe.service.goalsUseGround.GoalsUseGroundService;
+import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
+import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import com.example.csvccdshustbe.service.original.OriginalService;
 import com.example.csvccdshustbe.service.positionName.PositionNameService;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
@@ -49,7 +57,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @Service
@@ -77,7 +87,8 @@ public class FileUploadService implements FilesStorageService {
     private static final String NAME_SHEET_DATA_PROVINCES = "Provinces";
     private static final String NAME_INDIRECT = "INDIRECT";
     private static final String VLOOKUP = "VLOOKUP";
-
+    private static final Integer TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW  = 3;
+    private static final Integer TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW  = 2000;
     private static final String ERROR = "Error!";
     private static final String PROMPT = "Notes";
     private static final String[] PREFIX = {"category_","unit_", "original_", "location_", "documents_"};
@@ -105,11 +116,17 @@ public class FileUploadService implements FilesStorageService {
     @Autowired
     CsvcUserService csvcUserService;
     @Autowired
-    AssetService assetService;
+    AssetRepository assetRepository;
     @Autowired
     TypeUseService typeUseService;
     @Autowired
     PositionNameService positionNameService;
+    @Autowired
+    MedicineTypeService medicineTypeService;
+    @Autowired
+    MedicineGroupService medicineGroupService;
+    @Autowired
+    GoalsUseGroundService goalsUseGroundService;
 
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
@@ -272,8 +289,12 @@ public class FileUploadService implements FilesStorageService {
         Map<String, List<FindAllOriginalDto>> dataOriginal = originalService.findAllOriginalToDownload();
         List<CountryProducer> dataCountryProducer = countryProducerService.findAllCountryProducerToDownload();
         Map<String, List<FindAllUserUsedDto>> dataUserUsed = csvcUserService.findAllUserUsedToDownload();
-        List<FindAllGroundAssetDto> dataGroundAsset = assetService.findAllGroundAssetToDownload();
+        List<FindAllGroundAssetDto> dataGroundAsset = assetRepository.findAllGroundAssetToDownload();
         List<FindAllTypeUseDto> dataTypeUse = typeUseService.findAllTypeUseToDownload();
+        List<FindAllPositionNameDto> dataPositionName = positionNameService.findAllPositionNameToDownload();
+        List<MedicineTypeDetailsDto> dataMedicineType = medicineTypeService.findAllMedicineTypeToDownload();
+        List<MedicineGroupDetailsDto> dataMedicineGroup = medicineGroupService.findAllMedicineGroupToDownload();
+        List<FindAllGoalsUseGroundDto> dataGoalsUseGround = goalsUseGroundService.findAllGoalsUseGroundToDownload();
 
         Workbook workbook = new XSSFWorkbook(file);
         createAssetCategoriesImport(workbook, mapAssetCategory);
@@ -290,7 +311,12 @@ public class FileUploadService implements FilesStorageService {
         createUserUsed(workbook, dataUserUsed);
         createGroundAsset(workbook, dataGroundAsset);
         createTypeUse(workbook, dataTypeUse);
-        
+        createPositionName(workbook, dataPositionName);
+        createDataMedicineType(workbook, dataMedicineType);
+        createDataMedicineGroup(workbook, dataMedicineGroup);
+        createDataGoalsUseGround(workbook, dataGoalsUseGround);
+
+
         
         String filePathOutput = "C:\\Users\\hieux\\Desktop\\DEF.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
@@ -301,6 +327,18 @@ public class FileUploadService implements FilesStorageService {
         }
         workbook.close();
         return null;
+    }
+
+    private void createDataGoalsUseGround(Workbook workbook, List<FindAllGoalsUseGroundDto> dataGoalsUseGround) {
+    }
+
+    private void createDataMedicineGroup(Workbook workbook, List<MedicineGroupDetailsDto> dataMedicineGroup) {
+    }
+
+    private void createDataMedicineType(Workbook workbook, List<MedicineTypeDetailsDto> dataMedicineType) {
+    }
+
+    private void createPositionName(Workbook workbook, List<FindAllPositionNameDto> dataPositionName) {
     }
 
     private void createTypeUse(Workbook workbook, List<FindAllTypeUseDto> dataTypeUse) {
@@ -348,13 +386,12 @@ public class FileUploadService implements FilesStorageService {
         }
         CellReference cellReference = new CellReference(row.getCell(indexCell));
         String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_PROJECTS + "!", "").replaceAll("\\d","");
-//        String formula = "=Department!$A$1:$A$20"
         String formula = "=" + NAME_SHEET_DATA_PROJECTS + "!$" + prefix + "$1:" + "$" + prefix + dataProjects.size();
         DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
         DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
-        int indexFirstRow = 3;
-        int limitAmountRow = 2000;
-        CellRangeAddressList categoryAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 7, 7);
+
+        CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 7, 7);
         DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
         categoryValidation.setShowErrorBox(true);
         categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
@@ -379,12 +416,11 @@ public class FileUploadService implements FilesStorageService {
             ++index;
         }
 
-        int indexFirstRow = 3;
-        int limitAmountRow = 2000;
         DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
         String formula = NAME_INDIRECT + "(\"" + PREFIX[4] + "\"" + " & $D4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
-        CellRangeAddressList productAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 6,6);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 6,6);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         productValidation.setShowErrorBox(true);
         productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
@@ -455,12 +491,11 @@ public class FileUploadService implements FilesStorageService {
             ++index;
         }
 
-        int indexFirstRow = 3;
-        int limitAmountRow = 2000;
         DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
         String formula = NAME_INDIRECT + "(\"" + PREFIX[1] + "\"" + " & $A4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
-        CellRangeAddressList productAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 5,5);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 5,5);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         productValidation.setShowErrorBox(true);
         productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
@@ -508,8 +543,6 @@ public class FileUploadService implements FilesStorageService {
             ++index;
         }
 
-        int indexFirstRow = 3;
-        int limitAmountRow = 2000;
         if (workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY) == null) {
             throw new IllegalArgumentException("Sheet " + NAME_SHEET_IMPORT_ASSET_CATEGORY + " does not exist.");
         }
@@ -517,7 +550,8 @@ public class FileUploadService implements FilesStorageService {
         setDataDepartment(departments,workbook);
         String formula = NAME_INDIRECT + "(\"" + PREFIX[3] + "\"" + " & $D4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
-        CellRangeAddressList productAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 4,4);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 4,4);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         productValidation.setShowErrorBox(true);
         productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
@@ -545,9 +579,8 @@ public class FileUploadService implements FilesStorageService {
         String formula = "=" + NAME_SHEET_DATA_DEPARTMENT + "!$" + prefix + "$1:" + "$" + prefix + departments.length;
         DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
         DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
-        int indexFirstRow = 3;
-        int limitAmountRow = 2000;
-        CellRangeAddressList categoryAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 3, 3);
+        CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 3, 3);
         DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
         categoryValidation.setShowErrorBox(true);
         categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
@@ -613,11 +646,10 @@ public class FileUploadService implements FilesStorageService {
             ++indexFilledData;
         }
 
-        int indexFirstRow = 3;
-        int limitAmountRow = 2000;
         DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
         DataValidationConstraint categoryConstraint = dvHelper.createExplicitListConstraint(assetCategories);
-        CellRangeAddressList categoryAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 0, 0);
+        CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 0, 0);
         DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
         categoryValidation.setShowErrorBox(true);
         categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
@@ -628,7 +660,8 @@ public class FileUploadService implements FilesStorageService {
 
         String formula = NAME_INDIRECT + "(\"" + PREFIX[0] + "\"" + " & $A4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
-        CellRangeAddressList productAddressList = new CellRangeAddressList(indexFirstRow, limitAmountRow, 1,1);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 1,1);
         DataValidation subCategoryValidation = dvHelper.createValidation(productConstraint, productAddressList);
         subCategoryValidation.setShowErrorBox(true);
         subCategoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
@@ -638,7 +671,7 @@ public class FileUploadService implements FilesStorageService {
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(subCategoryValidation);
 
         // SET DEPRECIATION
-        for (int rowIndex = indexFirstRow; rowIndex <= limitAmountRow; rowIndex++) {
+        for (int rowIndex = TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW; rowIndex <= TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW; rowIndex++) {
             Row row = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getRow(rowIndex);
             if (row == null) {
                 row = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).createRow(rowIndex); // Create row if it doesn't exist

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.medicineGroup.impl;
 
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineGroup.MedicineGroupDetailsDto;
 import com.example.csvccdshustbe.entity.MedicineGroup;
 import com.example.csvccdshustbe.repository.medicineGroup.MedicineGroupRepositoryCustom;
 import com.example.csvccdshustbe.request.medicineGroup.FindAllMedicineGroupRequest;
@@ -134,5 +135,26 @@ public class MedicineGroupRepositoryImpl implements MedicineGroupRepositoryCusto
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<MedicineGroupDetailsDto> findAllMedicineGroupToDownload() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select medicineGroup.id_medicine_group, medicineGroup.name " +
+                "   from medicine_group medicineGroup    " +
+                "   where medicineGroup.status = :status  ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", Constants.MEDICINE_GROUP_ACTIVE_STATUS);
+        List<Object[]> result = query.getResultList();
+        List<MedicineGroupDetailsDto> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                MedicineGroupDetailsDto dto = new MedicineGroupDetailsDto();
+                dto.setIdMedicineGroup(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                responses.add(dto);
+            }
+        }
+        return responses;
     }
 }

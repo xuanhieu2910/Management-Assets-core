@@ -5,7 +5,6 @@ import com.example.csvccdshustbe.entity.PositionName;
 import com.example.csvccdshustbe.repository.positionName.PositionNameRepositoryCustom;
 import com.example.csvccdshustbe.request.positionName.FindAllPositionNameRequest;
 import com.example.csvccdshustbe.request.positionName.FindAllPositionNameVisibleRequest;
-import com.example.csvccdshustbe.response.positionName.FindAllPositionNameVisibleResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -206,7 +205,26 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
     @Override
     public List<FindAllPositionNameDto> findAllPositionNameToDownload() {
         StringBuilder sb = new StringBuilder();
-
-        return null;
+        sb.append(" select id_position_name, name,  " +
+                "       time_created, time_modified,  " +
+                "       status " +
+                "from position_name " +
+                "where status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", Constants.POSITION_NAME_ACTIVE_STATUS);
+        List<Object[]> result = query.getResultList();
+        List<FindAllPositionNameDto> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FindAllPositionNameDto dto = new FindAllPositionNameDto();
+                dto.setIdPositionName(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[3]));
+                dto.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                responses.add(dto);
+            }
+        }
+        return responses;
     }
 }

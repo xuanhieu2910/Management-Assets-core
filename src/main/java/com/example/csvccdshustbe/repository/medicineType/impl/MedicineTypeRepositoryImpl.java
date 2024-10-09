@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.medicineType.impl;
 
 import com.example.csvccdshustbe.dto.modules.medicineModules.FindAllMedicineTypeDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineType.MedicineTypeDetailsDto;
 import com.example.csvccdshustbe.entity.MedicineType;
 import com.example.csvccdshustbe.repository.medicineType.MedicineTypeRepositoryCustom;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
@@ -353,5 +354,46 @@ public class MedicineTypeRepositoryImpl implements MedicineTypeRepositoryCustom 
         }
         List<Object[]> result = query.getResultList();
         return CollectionUtils.isEmpty(result);
+    }
+
+    @Override
+    public List<MedicineTypeDetailsDto> findAllMedicineTypeToDownload() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH RECURSIVE cte_medicine_type as (        " +
+                "        select medicineType.id_medicine_type, medicineType.name,        " +
+                "               medicineType.short_name, medicineType.code,        " +
+                "               medicineType.parent, medicineType.visible, medicineType.notes,        " +
+                "               medicineType.time_created, medicineType.time_modified,        " +
+                "               1 as depth,           " +
+                "               CAST(medicineType.id_medicine_type as NCHAR ) as path        " +
+                "        from medicine_type medicineType        " +
+                "        where medicineType.parent is null        " +
+                "        union all           " +
+                "        select medicineType.id_medicine_type, medicineType.name,        " +
+                "               medicineType.short_name, medicineType.code,        " +
+                "               medicineType.parent, medicineType.visible, medicineType.notes,        " +
+                "               medicineType.time_created, medicineType.time_modified,        " +
+                "               cte.depth + 1 as depth,           " +
+                "               concat_ws('/',cte.path,CAST(medicineType.id_medicine_type as NCHAR)) as path        " +
+                "        from medicine_type medicineType        " +
+                "                 INNER JOIN cte_medicine_type cte ON medicineType.parent = cte.id_medicine_type        " +
+                "        )           " +
+                "    select cte.id_medicine_type, cte.name   " +
+                "    from cte_medicine_type cte        " +
+                "    where 1 = 1        " +
+                "    and cte.visible = :visible  ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("visible", Constants.MEDICINE_TYPE_IS_VISIBLE);
+        List<Object[]> result = query.getResultList();
+        List<MedicineTypeDetailsDto> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                MedicineTypeDetailsDto dto = new MedicineTypeDetailsDto();
+                dto.setIdMedicineType(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                responses.add(dto);
+            }
+        }
+        return responses;
     }
 }

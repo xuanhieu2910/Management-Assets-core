@@ -30,5 +30,4 @@ public interface AssetService {
     String uploadFile(MultipartFile multipartFile) throws FileException, IOException, FileExcelException;
     void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException;
     Resource downloadFileTemplateImportAsset() throws IOException;
-    List<FindAllGroundAssetDto> findAllGroundAssetToDownload();
 }

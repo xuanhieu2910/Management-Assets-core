@@ -817,9 +817,4 @@ public class AssetServiceImpl implements AssetService {
         return filesStorageService.downLoadFileImportAsset();
     }
 
-    @Override
-    public List<FindAllGroundAssetDto> findAllGroundAssetToDownload() {
-        return assetRepository.findAllGroundAssetToDownload();
-    }
-
 }
