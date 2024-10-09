@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.repository.department.impl;
 
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
+import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.repository.department.DepartmentRepositoryCustom;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
@@ -19,9 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
     @PersistenceContext
@@ -446,6 +445,107 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
         }
         return departments;
     }
+
+    @Override
+    public Map<String, List<FindAllLocationDto>>
+     findAllDepartmentLocationToDownloadByIdsDepartment(List<Integer> idsDepartment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select de.id_department, de.name nameDepartment,     " +
+                "         lo.id_location, lo.name nameLocation     " +
+                "  from department de     " +
+                "      left join (select * from location where location.visible = :visibleLocation)lo  " +
+                "          on de.id_department = lo.id_department  " +
+                "  where de.id_department in (:idDepartments)     " +
+                "  and de.status = :statusDepartment ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusDepartment", Constants.DEPARTMENT_ACTIVE_STATUS);
+        query.setParameter("visibleLocation", Constants.LOCATION_ACTIVE_STATUS);
+        query.setParameter("idDepartments", idsDepartment);
+        List<Object[]> result = query.getResultList();
+        Map<String,List<FindAllLocationDto>> responses = new HashMap<>();
+        if (!CollectionUtils.isEmpty(result)){
+            String keyword = null;
+            Integer idDepartment = null;
+            String nameDepartment = null;
+            for (Object[] obj : result){
+                idDepartment = ValueUtil.getIntegerByObject(obj[0]);
+                nameDepartment = ValueUtil.getStringByObject(obj[1]);
+                keyword = "STT_" + idDepartment + nameDepartment;
+                keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
+                if (responses.containsKey(keyword)){
+                    FindAllLocationDto findAllLocationDto = new FindAllLocationDto();
+                    findAllLocationDto.setIdLocation(ValueUtil.getIntegerByObject(obj[2]));
+                    findAllLocationDto.setName(ValueUtil.getStringByObject(obj[3]));
+                    responses.get(keyword).add(findAllLocationDto);
+                } else {
+                    List<FindAllLocationDto> findAllLocationDtos = new ArrayList<>();
+                    if (ValueUtil.getIntegerByObject(obj[2]) != null) {
+                        FindAllLocationDto findAllLocationDto = new FindAllLocationDto();
+                        findAllLocationDto.setIdLocation(ValueUtil.getIntegerByObject(obj[2]));
+                        findAllLocationDto.setName(ValueUtil.getStringByObject(obj[3]));
+                        findAllLocationDtos.add(findAllLocationDto);
+                    }
+                    responses.put(keyword, findAllLocationDtos);
+                }
+            }
+        }
+        return responses;
+    }
+
+    @Override
+    public List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("WITH RECURSIVE cte_department as ( " +
+                "    select department.id_department,department.name, " +
+                "           department.code, department.short_name, " +
+                "           department.description, department.parent, " +
+                "            department.time_created,department.status, " +
+                "           department.time_modified, " +
+                "           1 as depth,   CAST(department.id_department as NCHAR ) as path " +
+                "    from department " +
+                "    where department.parent is null " +
+                "    union all " +
+                "    select department.id_department,department.name, " +
+                "           department.code, department.short_name, " +
+                "           department.description, department.parent, " +
+                "           department.time_created,department.status, " +
+                "           department.time_modified, " +
+                "           cte.depth + 1 as depth, " +
+                "concat_ws('/',cte.path,CAST(department.id_department as NCHAR)) as path " +
+                "from department" +
+                "             INNER JOIN cte_department cte ON department.parent = cte.id_department " +
+                ") " +
+                "select cte.id_department, cte.name,  " +
+                "       cte.code, cte.short_name, cte.description,  " +
+                "       cte.parent,  " +
+                "        cte.time_created, cte.time_modified,  " +
+                "       cte.depth, cte.status, cte.path  " +
+                "from cte_department cte  " +
+                "where 1 = 1 and cte.status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", Constants.DEPARTMENT_ACTIVE_STATUS);
+        List<Object[]> result = query.getResultList();
+        List<FindAllDepartmentSDto> dtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj: result){
+                FindAllDepartmentSDto dto= new FindAllDepartmentSDto();
+                dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                dto.setCode(ValueUtil.getStringByObject(obj[2]));
+                dto.setShortName(ValueUtil.getStringByObject(obj[3]));
+                dto.setDescription(ValueUtil.getStringByObject(obj[4]));
+                dto.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                dto.setDepth(ValueUtil.getIntegerByObject(obj[8]));
+                dto.setStatus(ValueUtil.getIntegerByObject(obj[9]));
+                dto.setPath(ValueUtil.getStringByObject(obj[10]));
+                dtos.add(dto);
+            }
+        }
+        return dtos;
+    }
+
 
     private void setParameterFindAllDepartment(FindAllDepartmentRequest request, Query query) {
         query.setParameter("idsDepartment", request.getIdsDepartment());

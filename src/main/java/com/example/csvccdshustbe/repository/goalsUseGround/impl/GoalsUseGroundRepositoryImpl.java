@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.goalsUseGround.impl;
 
+import com.example.csvccdshustbe.dto.goalsUseGround.FindAllGoalsUseGroundDto;
 import com.example.csvccdshustbe.entity.GoalsUseGround;
 import com.example.csvccdshustbe.repository.goalsUseGround.GoalsUseGroundRepositoryCustom;
 import com.example.csvccdshustbe.request.goalsUseGround.FindAllGoalsUseGroundRequest;
@@ -130,5 +131,31 @@ public class GoalsUseGroundRepositoryImpl implements GoalsUseGroundRepositoryCus
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<FindAllGoalsUseGroundDto> findAllGoalsUseGroundToDownload() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_goals_use_ground, name, code, " +
+                "       status, time_created, time_modified " +
+                "from goals_use_ground " +
+                "where status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", Constants.GOALS_USE_GROUND_ACTIVE_STATUS);
+        List<FindAllGoalsUseGroundDto> responses = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                FindAllGoalsUseGroundDto dto = new FindAllGoalsUseGroundDto();
+                dto.setIdGoalsUseGround(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setNameGoalsUseGround(ValueUtil.getStringByObject(obj[1]));
+                dto.setCodeGoalsUseGround(ValueUtil.getStringByObject(obj[2]));
+                dto.setStatus(ValueUtil.getIntegerByObject(obj[3]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                responses.add(dto);
+            }
+        }
+        return responses;
     }
 }

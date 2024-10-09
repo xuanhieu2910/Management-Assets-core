@@ -3,15 +3,20 @@ package com.example.csvccdshustbe.repository.roleAllowAssign.impl;
 import com.example.csvccdshustbe.entity.RoleAllowAssign;
 import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.repository.roleAllowAssign.RoleAllowAssignRepositoryCustom;
-import com.example.csvccdshustbe.response.roleAllowAssign.DestinationRoleAssignResponse;
-import com.example.csvccdshustbe.response.roleAllowAssign.FindAllRoleAllowAssignResponse;
-import com.example.csvccdshustbe.response.roleAllowAssign.FindAllRoleAllowResponse;
-import com.example.csvccdshustbe.response.roleAllowAssign.SourceRoleAssignResponse;
+import com.example.csvccdshustbe.request.roleAllowAssignt.FindRestRoleRequest;
+import com.example.csvccdshustbe.response.roleAllowAssign.*;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -119,5 +124,102 @@ public class RoleAllowAssignRepositoryImpl implements RoleAllowAssignRepositoryC
             }
         }
         return responses;
+    }
+
+    @Override
+    public Page<FindRestRoleResponse> findRestRoleAssignResponse(Pageable pageable,
+                                                                 FindRestRoleRequest request,
+                                                                 Integer idRoleCurrent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select result.idDestinationRole, result.titleDestinationRole " +
+                "from (select destinationRole.id_role    idDestinationRole, " +
+                "             destinationRole.short_name titleDestinationRole " +
+                "      from role role " +
+                "               inner join role_allow_assign roleAllowAssign " +
+                "                          on role.id_role = roleAllowAssign.id_role " +
+                "               inner join role destinationRole " +
+                "                          on roleAllowAssign.allow_assign = destinationRole.id_role " +
+                "      where role.id_role = :idRole " +
+                "        and roleAllowAssign.status = :status " +
+                "        and destinationRole.id_role not in (select role.id_role " +
+                "                                            from csvc_user csvcUser " +
+                "                                                     inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
+                "                                                     inner join role role on userRole.id_role = role.id_role " +
+                "                                                     inner join department department " +
+                "                                                                on userRole.id_department = department.id_department " +
+                "                                            where csvcUser.code_user = :codeUser " +
+                "                                              and department.id_department = :idDepartment)) as result " +
+                "where 1 = 1 ");
+        setConditionFindRestRoleAssign(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindRestRoleAssign(request, query, idRoleCurrent);
+        PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Object[]> result = query.getResultList();
+        List<FindRestRoleResponse> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FindRestRoleResponse response = new FindRestRoleResponse();
+                response.setIdRole(ValueUtil.getIntegerByObject(obj[0]));
+                response.setNameRole(ValueUtil.getStringByObject(obj[1]));
+                responses.add(response);
+            }
+        }
+        return new PageImpl<>(responses, pageable, countFindRestRoleAssign(request, idRoleCurrent));
+    }
+
+
+    @Transactional
+    @Modifying
+    @Override
+    public void deleteRoleAssignByIdRole(Integer roleId) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" delete " +
+                "from role_allow_assign " +
+                "where id_role = :idRole or allow_assign = :idRole ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.executeUpdate();
+    }
+
+    private long countFindRestRoleAssign(FindRestRoleRequest request, Integer idRoleCurrent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) count " +
+                "from (select destinationRole.id_role    idDestinationRole, " +
+                "             destinationRole.short_name titleDestinationRole " +
+                "      from role role " +
+                "               inner join role_allow_assign roleAllowAssign " +
+                "                          on role.id_role = roleAllowAssign.id_role " +
+                "               inner join role destinationRole " +
+                "                          on roleAllowAssign.allow_assign = destinationRole.id_role " +
+                "      where role.id_role = :idRole " +
+                "        and roleAllowAssign.status = :status " +
+                "        and destinationRole.id_role not in (select role.id_role " +
+                "                                            from csvc_user csvcUser " +
+                "                                                     inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
+                "                                                     inner join role role on userRole.id_role = role.id_role " +
+                "                                                     inner join department department " +
+                "                                                                on userRole.id_department = department.id_department " +
+                "                                            where csvcUser.code_user = :codeUser " +
+                "                                              and department.id_department = :idDepartment)) as result " +
+                "where 1 = 1 ");
+        setConditionFindRestRoleAssign(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindRestRoleAssign(request, query, idRoleCurrent);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindRestRoleAssign(FindRestRoleRequest request, Query query, Integer idRoleCurrent) {
+        query.setParameter("idRole",idRoleCurrent);
+        query.setParameter("status", Constants.ROLE_ALLOW_ASSIGN_STATUS);
+        query.setParameter("codeUser", request.getCodeUser());
+        query.setParameter("idDepartment", request.getIdDepartment());
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            query.setParameter("keyword", request.getKeyword());
+        }
+    }
+
+    private void setConditionFindRestRoleAssign(FindRestRoleRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            sb.append(" and (result.titleDestinationRole REGEXP :keyword ) ");
+        }
     }
 }

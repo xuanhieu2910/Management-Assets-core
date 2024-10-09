@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.medicineType;
 
 import com.example.csvccdshustbe.dto.modules.medicineModules.FindAllMedicineTypeDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineType.MedicineTypeDetailsDto;
 import com.example.csvccdshustbe.entity.MedicineType;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeRequest;
 import com.example.csvccdshustbe.request.medicineType.FindAllMedicineTypeVisibleRequest;
@@ -24,4 +25,5 @@ public interface MedicineTypeRepositoryCustom {
     boolean checkExitsMedicineTypeByNameOrCodeOrShortName(String name, String code,String shortName);
     List<MedicineType> findMedicineTypeByAllId(List<Integer> idMedicineType);
 
+    List<MedicineTypeDetailsDto> findAllMedicineTypeToDownload();
 }

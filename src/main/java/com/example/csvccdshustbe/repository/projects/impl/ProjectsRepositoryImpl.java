@@ -372,31 +372,54 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
     }
 
     @Override
-    public List<Projects> findAllProjectById(List<Integer>idProjects) {
+    public List<FindAllProjectsDto> findAllProjectsToDownload() {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select pj.id_project, pj.name, " +
-                "  pj.short_name, pj.parent, " +
-                "  pj.time_created, pj.time_modified, pj.visible " +
-                " from projects pj " +
-                "where pj.id_project in :idProject ");
+        sb.append("WITH RECURSIVE cte_projects as (       " +
+                "        select projects.id_project, projects.name, projects.short_name,       " +
+                "               projects.parent, projects.time_created, projects.time_modified,       " +
+                "               projects.visible,       " +
+                "               1 as depth,       " +
+                "               CAST(projects.id_project as NCHAR ) as path ,   " +
+                "               case when projects.parent is not null then projects.name end nameParent   " +
+                "        from projects projects       " +
+                "        where projects.parent is null       " +
+                "        union all       " +
+                "        select projects.id_project, projects.name, projects.short_name,       " +
+                "               projects.parent, projects.time_created, projects.time_modified,       " +
+                "               projects.visible,       " +
+                "               cte.depth + 1 as depth,       " +
+                "               concat_ws('/',cte.path,CAST(projects.id_project as NCHAR)) as path ,   " +
+                "               cte.name nameParent   " +
+                "        from projects projects       " +
+                "                 INNER JOIN cte_projects cte ON projects.parent = cte.id_project       " +
+                "        )       " +
+                "select cte.id_project, cte.name, cte.short_name,   " +
+                "           cte.parent, cte.time_created, cte.time_modified,       " +
+                "           cte.visible, cte.depth, cte.path ,   " +
+                "           cte.nameParent   " +
+                "from cte_projects cte   " +
+                "where 1 = 1 and cte.visible = :visible ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("idProject", idProjects);
-        List<Projects> projectsList=new ArrayList<>();
+        query.setParameter("visible", Constants.PROJECTS_IS_VISIBLE);
         List<Object[]> result = query.getResultList();
-        if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj: result){
-                Projects projects = new Projects();
-                projects.setIdProject(ValueUtil.getIntegerByObject(obj[0]));
-                projects.setName(ValueUtil.getStringByObject(obj[1]));
-                projects.setShortName(ValueUtil.getStringByObject(obj[2]));
-                projects.setParent(ValueUtil.getIntegerByObject(obj[3]));
-                projects.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
-                projects.setTimeModified(ValueUtil.getStringByObject(obj[5]));
-                projects.setVisible(ValueUtil.getIntegerByObject(obj[6]));
-                projectsList.add(projects);
+        List<FindAllProjectsDto> findAllProjectsDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                FindAllProjectsDto dto = new FindAllProjectsDto();
+                dto.setIdProject(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                dto.setShortName(ValueUtil.getStringByObject(obj[2]));
+                dto.setParent(ValueUtil.getIntegerByObject(obj[3]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                dto.setVisible(ValueUtil.getIntegerByObject(obj[6]));
+                dto.setDepth(ValueUtil.getIntegerByObject(obj[7]));
+                dto.setPath(ValueUtil.getStringByObject(obj[8]));
+                dto.setNameParent(ValueUtil.getStringByObject(obj[9]));
+                findAllProjectsDtos.add(dto);
             }
         }
-        return projectsList;
+        return findAllProjectsDtos;
     }
 
 }

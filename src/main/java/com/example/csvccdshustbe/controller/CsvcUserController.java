@@ -99,7 +99,7 @@ public class CsvcUserController {
         }
     }
 
-    @GetMapping("/details")
+    @PostMapping("/details")
     public ResponseEntity<?> findDetailsUser(@RequestBody FindDetailsUserRequest request) {
         try {
             return ApiResponseDto.createdWithState(csvcUserService.findDetailsUserResponse(request),

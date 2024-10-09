@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.medicineType.impl;
 
 import com.example.csvccdshustbe.dto.modules.medicineModules.FindAllMedicineTypeDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineType.MedicineTypeDetailsDto;
 import com.example.csvccdshustbe.entity.MedicineType;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.medicineType.MedicineTypeRepository;
@@ -117,6 +118,11 @@ public class MedicineTypeServiceImpl implements MedicineTypeService {
         }
         medicineTypeOptional.get().setVisible(request.getVisible());
         medicineTypeRepository.save(medicineTypeOptional.get());
+    }
+
+    @Override
+    public List<MedicineTypeDetailsDto> findAllMedicineTypeToDownload() {
+        return medicineTypeRepository.findAllMedicineTypeToDownload();
     }
 
     private void validateDataCreateMedicineType(CreateMedicineTypeRequest request) throws ValidateFiledException {

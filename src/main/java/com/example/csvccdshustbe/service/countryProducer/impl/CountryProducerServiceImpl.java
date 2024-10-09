@@ -76,6 +76,11 @@ public class CountryProducerServiceImpl implements CountryProducerService {
         countryProducerRepository.delete(countryProducerOptional.get());
     }
 
+    @Override
+    public List<CountryProducer> findAllCountryProducerToDownload() {
+        return countryProducerRepository.findAllCountryProducerToDownload();
+    }
+
     private CountryProducer validateDataUpdateCountryProducer(UpdateCountryProducerRequest request) throws ValidateFiledException {
         Optional<CountryProducer> countryProducerOptional = countryProducerRepository.findCountryProducerById(request.getIdCountryProducer());
         if (countryProducerOptional.isEmpty()) {

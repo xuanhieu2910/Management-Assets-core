@@ -1,15 +1,47 @@
 package com.example.csvccdshustbe.service.upload.impl;
 
-import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesByCodeAndVisibleDto;
-import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
+import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
+import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesToDownloadDto;
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
+import com.example.csvccdshustbe.dto.districts.DistrictsDto;
+import com.example.csvccdshustbe.dto.documentAttack.FindAllDocumentAttackDto;
+import com.example.csvccdshustbe.dto.goalsUseGround.FindAllGoalsUseGroundDto;
+import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineGroup.MedicineGroupDetailsDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineType.MedicineTypeDetailsDto;
+import com.example.csvccdshustbe.dto.original.FindAllOriginalDto;
+import com.example.csvccdshustbe.dto.positionName.FindAllPositionNameDto;
+import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
+import com.example.csvccdshustbe.dto.provinces.ProvincesDto;
+import com.example.csvccdshustbe.dto.typeUse.FindAllTypeUseDto;
+import com.example.csvccdshustbe.dto.unit.FindAllUnitsDto;
+import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
+import com.example.csvccdshustbe.dto.wards.WardsDto;
+import com.example.csvccdshustbe.entity.CountryProducer;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
+import com.example.csvccdshustbe.service.countryProducer.CountryProducerService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
+import com.example.csvccdshustbe.service.districts.DistrictsService;
+import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
+import com.example.csvccdshustbe.service.goalsUseGround.GoalsUseGroundService;
+import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
+import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
+import com.example.csvccdshustbe.service.original.OriginalService;
+import com.example.csvccdshustbe.service.positionName.PositionNameService;
+import com.example.csvccdshustbe.service.projects.ProjectsService;
+import com.example.csvccdshustbe.service.province.ProvinceService;
+import com.example.csvccdshustbe.service.typeUse.TypeUseService;
+import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
+import com.example.csvccdshustbe.service.user.CsvcUserService;
+import com.example.csvccdshustbe.service.wards.WardsService;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.FileUtil;
 import com.example.csvccdshustbe.utility.PropertiesUtil;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -25,7 +57,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @Service
@@ -42,17 +76,71 @@ public class FileUploadService implements FilesStorageService {
     private static final String CREATE_FILE_UNIX = "touch";
     private static final String CREATE_FILE_WIN = "copy con";
     private static final String FILE_TEMPLATE_UP_ASSET = "Template_upload_asset";
-
     private static final Integer INDEX_START_FILLED_DATA = 1;
     private static final String NAME_SHEET_IMPORT_ASSET_CATEGORY = "ImportAsset";
     private static final String NAME_SHEET_DATA_ASSET_CATEGORY = "AssetCategories";
+    private static final String NAME_SHEET_DATA_DEPARTMENT = "Department";
+    private static final String NAME_SHEET_DATA_LOCATION = "Location";
+    private static final String NAME_SHEET_DATA_UNITS = "Units";
+    private static final String NAME_SHEET_DATA_DOCUMENT_ATTACK = "DocumentAttacks";
+    private static final String NAME_SHEET_DATA_PROJECTS = "Projects";
+    private static final String NAME_SHEET_DATA_PROVINCES = "Provinces";
+    private static final String NAME_SHEET_DATA_DISTRICTS = "Districts";
+    private static final String NAME_SHEET_DATA_WARDS = "Wards";
+    private static final String NAME_SHEET_DATA_ASSET_DEPARTMENT = "AssetDepartment";
+    private static final String NAME_SHEET_DATA_ORIGINAL = "Original";
+    private static final String NAME_SHEET_DATA_COUNTRY_PRODUCER = "CountryProducer";
+    private static final String NAME_SHEET_DATA_USER_USED = "UserUsed";
+    private static final String NAME_SHEET_DATA_TYPE_USED = "TypeUsed";
+    private static final String NAME_SHEET_DATA_ASSET_GROUND = "AssetGround";
+    private static final String NAME_SHEET_DATA_POSITION_NAME = "PositionName";
+    private static final String NAME_SHEET_DATA_MEDICINE_TYPE = "MedicineType";
+    private static final String NAME_SHEET_DATA_MEDICINE_GROUP = "MedicineGroup";
+    private static final String NAME_SHEET_DATA_GOALS_USE_GROUND = "GoalsUseGround";
+
     private static final String NAME_INDIRECT = "INDIRECT";
+    private static final String VLOOKUP = "VLOOKUP";
+    private static final Integer TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW  = 3;
+    private static final Integer TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW  = 2000;
+    private static final String ERROR = "Error!";
+    private static final String PROMPT = "Notes";
+    private static final String[] PREFIX = {"category_","unit_", "original_",
+            "location_", "documents_", "provinces_", "districts_","wards_", "userused_"};
 
     @Autowired
     AssetCategoriesService assetCategoriesService;
     @Autowired
     DepartmentService departmentService;
-
+    @Autowired
+    UnitsService unitsService;
+    @Autowired
+    DocumentAttackService documentAttackService;
+    @Autowired
+    ProjectsService projectsService;
+    @Autowired
+    ProvinceService provinceService;
+    @Autowired
+    DistrictsService districtsService;
+    @Autowired
+    WardsService wardsService;
+    @Autowired
+    OriginalService originalService;
+    @Autowired
+    CountryProducerService countryProducerService;
+    @Autowired
+    CsvcUserService csvcUserService;
+    @Autowired
+    AssetRepository assetRepository;
+    @Autowired
+    TypeUseService typeUseService;
+    @Autowired
+    PositionNameService positionNameService;
+    @Autowired
+    MedicineTypeService medicineTypeService;
+    @Autowired
+    MedicineGroupService medicineGroupService;
+    @Autowired
+    GoalsUseGroundService goalsUseGroundService;
 
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
@@ -197,92 +285,1104 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public Resource downLoadFileImportAsset() throws IOException {
-
-        String fileExcel = "D:\\CompanyBk\\CSVC\\csvc-hust\\src\\main\\resources\\static\\Template_import_asset.xlsx";
+        String fileExcel = "C:\\Users\\hieux\\Desktop\\Projects\\src\\main\\resources\\static\\ABC.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
 
-        Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory =
+        Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory =
                 assetCategoriesService.findAllAssetCategoriesVisibleResponseToDownload();
-
-        List<FindAllDepartmentByCodeAndVisibleDto> dataDepartment = departmentService.findAllDepartmentVisibleByCodeAndVisible();
+        Map<String,List<FindAllLocationDto>> dataDepartment =
+                departmentService.findAllDepartmentLocationVisibleToDownload();
+        Map<String,List<FindAllUnitsDto>> dataUnits = unitsService.findAllUnitsToDownload();
+        Map<String,List<FindAllDocumentAttackDto>> dataDocumentAttack =
+                documentAttackService.findAllDocumentAttackToDownload();
+        List<FindAllProjectsDto> dataProjects = projectsService.findAllProjectToDownload();
+        List<ProvincesDto> dataProvinces = provinceService.findAllProvinceToDownload();
+        Map<String, List<DistrictsDto>> dataDistrict = districtsService.findAllDistrictToDownload();
+        Map<String, List<WardsDto>> dataWards = wardsService.findAllWardsToDownload();
+        List<FindAllDepartmentSDto> dataAssetDepartment = departmentService.findAllAssetDepartmentToDownload();
+        Map<String, List<FindAllOriginalDto>> dataOriginal = originalService.findAllOriginalToDownload();
+        List<CountryProducer> dataCountryProducer = countryProducerService.findAllCountryProducerToDownload();
+        Map<String, List<FindAllUserUsedDto>> dataUserUsed = csvcUserService.findAllUserUsedToDownload();
+        List<FindAllGroundAssetDto> dataGroundAsset = assetRepository.findAllGroundAssetToDownload();
+        List<FindAllTypeUseDto> dataTypeUse = typeUseService.findAllTypeUseToDownload();
+        List<FindAllPositionNameDto> dataPositionName = positionNameService.findAllPositionNameToDownload();
+        List<MedicineTypeDetailsDto> dataMedicineType = medicineTypeService.findAllMedicineTypeToDownload();
+        List<MedicineGroupDetailsDto> dataMedicineGroup = medicineGroupService.findAllMedicineGroupToDownload();
+        List<FindAllGoalsUseGroundDto> dataGoalsUseGround = goalsUseGroundService.findAllGoalsUseGroundToDownload();
 
         Workbook workbook = new XSSFWorkbook(file);
         createAssetCategoriesImport(workbook, mapAssetCategory);
         createAssetDepartmentImport(workbook, dataDepartment);
-        String filePathOutput = "D:\\CompanyBk\\CSVC\\csvc-hust\\Template_import_asset.xlsx";
+        createAssetUnits(workbook, dataUnits);
+        createDocumentAttack(workbook, dataDepartment, dataDocumentAttack);
+        createProjects(workbook, dataProjects);
+        createProvinces(workbook, dataProvinces);
+        createDistrict(workbook, dataDistrict);
+        createWards(workbook, dataWards);
+        createAssetDepartment(workbook, dataAssetDepartment);
+        createOriginal(workbook, dataOriginal);
+        createCountryProducer(workbook, dataCountryProducer);
+        createUserUsed(workbook, dataUserUsed);
+        createGroundAsset(workbook, dataGroundAsset);
+        createTypeUse(workbook, dataTypeUse);
+        createPositionName(workbook, dataPositionName);
+        createDataMedicineType(workbook, dataMedicineType);
+        createDataMedicineGroup(workbook, dataMedicineGroup);
+        createDataGoalsUseGround(workbook, dataGoalsUseGround);
+
+
+        
+        String filePathOutput = "C:\\Users\\hieux\\Desktop\\DEF.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
         workbook.close();
-        //Common
-        //Modules
-        //Original
-        //Declare
-
-        //Lấy danh mục tài san picked
-        //Lay danh sach tai san theo picked
-        //Lay danh sach department
-        //Lay danh sach location theo department
-        //Lay danh sach don vi theo picked
-        // Document
-        // Project
-        //
         return null;
     }
 
-    private void createAssetDepartmentImport(Workbook workbook, List<FindAllDepartmentByCodeAndVisibleDto> dataDepartment) {
+    private void createDataGoalsUseGround(Workbook workbook, List<FindAllGoalsUseGroundDto> dataGoalsUseGround) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_GOALS_USE_GROUND);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataGoalsUseGround.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dataGoalsUseGround.get(i).getIdGoalsUseGround() + "." + dataGoalsUseGround.get(i).getNameGoalsUseGround();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_GOALS_USE_GROUND + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_GOALS_USE_GROUND + "!$" + prefix + "$1:" + "$" + prefix + dataGoalsUseGround.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 116, 116);
+            DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+        }
     }
 
-    private void createAssetCategoriesImport(Workbook workbook, Map<String, List<FindAllAssetCategoriesByCodeAndVisibleDto>> mapAssetCategory) {
-        Sheet sheetAssetCategories = workbook.createSheet(NAME_SHEET_DATA_ASSET_CATEGORY);
-        Iterator<String> keywords = mapAssetCategory.keySet().iterator();
+    private void createDataMedicineGroup(Workbook workbook, List<MedicineGroupDetailsDto> dataMedicineGroup) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_MEDICINE_GROUP);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataMedicineGroup.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dataMedicineGroup.get(i).getIdMedicineGroup() + "." + dataMedicineGroup.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_MEDICINE_GROUP + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_MEDICINE_GROUP + "!$" + prefix + "$1:" + "$" + prefix + dataMedicineGroup.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 92, 92);
+            DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+        }
+    }
+
+    private void createDataMedicineType(Workbook workbook, List<MedicineTypeDetailsDto> dataMedicineType) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_MEDICINE_TYPE);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataMedicineType.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dataMedicineType.get(i).getIdMedicineType() + "." + dataMedicineType.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_MEDICINE_TYPE + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_MEDICINE_TYPE + "!$" + prefix + "$1:" + "$" + prefix + dataMedicineType.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 91, 91);
+            DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+        }
+    }
+
+    private void createPositionName(Workbook workbook, List<FindAllPositionNameDto> dataPositionName) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_POSITION_NAME);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataPositionName.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dataPositionName.get(i).getIdPositionName() + "." + dataPositionName.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_POSITION_NAME + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_POSITION_NAME + "!$" + prefix + "$1:" + "$" + prefix + dataPositionName.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 62, 62);
+            DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+
+            CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 63, 63);
+            DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
+        }
+    }
+
+    private void createTypeUse(Workbook workbook, List<FindAllTypeUseDto> dataTypeUse) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_TYPE_USED);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataTypeUse.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dataTypeUse.get(i).getIdTypeUse() + "." + dataTypeUse.get(i).getNameTypeUse();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_TYPE_USED + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_TYPE_USED + "!$" + prefix + "$1:" + "$" + prefix + dataTypeUse.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 21, 21);
+            DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+
+
+            CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 61, 61);
+            DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
+
+            CellRangeAddressList categoryAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 80, 80);
+            DataValidation categoryValidation_2 = dvHelper.createValidation(categoryConstraint, categoryAddressList_2);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_2);
+
+
+            CellRangeAddressList categoryAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 83, 83);
+            DataValidation categoryValidation_3 = dvHelper.createValidation(categoryConstraint, categoryAddressList_3);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_3);
+
+
+            CellRangeAddressList categoryAddressList_4 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 90, 90);
+            DataValidation categoryValidation_4 = dvHelper.createValidation(categoryConstraint, categoryAddressList_4);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_4);
+        }
+    }
+
+    private void createGroundAsset(Workbook workbook, List<FindAllGroundAssetDto> dataGroundAsset) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_ASSET_GROUND);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataGroundAsset.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dataGroundAsset.get(i).getIdGroundAsset() + "." + dataGroundAsset.get(i).getNameGroundAsset();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_ASSET_GROUND + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_ASSET_GROUND + "!$" + prefix + "$1:" + "$" + prefix + dataGroundAsset.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 27, 27);
+            DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+
+            CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 35, 35);
+            DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
+        }
+    }
+
+    private void createUserUsed(Workbook workbook, Map<String, List<FindAllUserUsedDto>> dataUserUsed) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_USER_USED);
+        Iterator<String> keywords = dataUserUsed.keySet().iterator();
         int index = 0;
-        String[] assetCategories = new String[mapAssetCategory.size()];
+        String[] data = new String[dataUserUsed.size()];
         while (keywords.hasNext()){
             String keyword = keywords.next();
-            filledDataAssetCategory(sheetAssetCategories,mapAssetCategory.get(keyword), index, keyword);
-            assetCategories[index] = keyword;
+            filledDataUserUsed(sheet,dataUserUsed.get(keyword), index, keyword);
+            data[index] = keyword;
             ++index;
         }
 
         DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
-        DataValidationConstraint categoryConstraint = dvHelper.createExplicitListConstraint(assetCategories);
-        CellRangeAddressList categoryAddressList = new CellRangeAddressList(2, 1000, 0, 0);
-        DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
-        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
-
-        String formula = NAME_INDIRECT + "($A3)";
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $D4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
-        CellRangeAddressList productAddressList = new CellRangeAddressList(2, 1000, 1,1);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 20,20);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
-//        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ASSET_CATEGORY), true);
+
+
+        DataValidationHelper dvHelper_1 = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        String formula_1 = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $D4)";
+        DataValidationConstraint productConstraint_1 = dvHelper_1.createFormulaListConstraint(formula_1);
+        CellRangeAddressList productAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 60,60);
+        DataValidation productValidation_1 = dvHelper.createValidation(productConstraint_1, productAddressList_1);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_1);
+
+        DataValidationHelper dvHelper_2 = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        String formula_2 = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $D4)";
+        DataValidationConstraint productConstraint_2 = dvHelper_2.createFormulaListConstraint(formula_2);
+        CellRangeAddressList productAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 79,79);
+        DataValidation productValidation_2 = dvHelper.createValidation(productConstraint_2, productAddressList_2);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_2);
+
+
+        DataValidationHelper dvHelper_3 = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        String formula_3 = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $D4)";
+        DataValidationConstraint productConstraint_3 = dvHelper_3.createFormulaListConstraint(formula_3);
+        CellRangeAddressList productAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 89,89);
+        DataValidation productValidation_3 = dvHelper.createValidation(productConstraint_3, productAddressList_3);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_3);
+
     }
-    private void filledDataAssetCategory(Sheet sheetAssetCategories,
-                                         List<FindAllAssetCategoriesByCodeAndVisibleDto> dtos,
-                                         int index, String keywords) {
+
+    private void filledDataUserUsed(Sheet sheet, List<FindAllUserUsedDto> dtos, int index, String keyword) {
         Row row = null;
         for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
-            if (sheetAssetCategories.getRow(i) == null) {
-                row = sheetAssetCategories.createRow(i);
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
             } else {
-                row = sheetAssetCategories.getRow(i);
+                row = sheet.getRow(i);
             }
-            // 10.Car G63
-            String valueCell = dtos.get(i).getIdAssetCategory() + "." + dtos.get(i).getName();
+            String valueCell = dtos.get(i).getUserName() + "(" + dtos.get(i).getFullName() + ")";
             row.createCell(index).setCellValue(valueCell);
 
         }
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(index));
-            String prefix = cellReference.formatAsString().substring(0, 1);
-            Name electronicsRange = sheetAssetCategories.getWorkbook().createName();
-            electronicsRange.setNameName(keywords);
-            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_ASSET_CATEGORY
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_USER_USED + "!", "").
+                    replaceAll("\\d","");
+            Name electronicsRange = sheet.getWorkbook().createName();
+            electronicsRange.setNameName(PREFIX[8] + keyword);
+            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_ORIGINAL
                     + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
                     + ":$" + prefix + "$" + dtos.size());
         }
+    }
+
+    private void createCountryProducer(Workbook workbook, List<CountryProducer> dataCountryProducer) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_COUNTRY_PRODUCER);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataCountryProducer.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dataCountryProducer.get(i).getIdCountryProducer() + "." + dataCountryProducer.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_COUNTRY_PRODUCER + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_COUNTRY_PRODUCER + "!$" + prefix + "$1:" + "$" + prefix + dataCountryProducer.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 19, 19);
+            DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+
+            CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 40, 40);
+            DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
+
+            CellRangeAddressList categoryAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 54, 54);
+            DataValidation categoryValidation_2 = dvHelper.createValidation(categoryConstraint, categoryAddressList_2);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_2);
+
+            CellRangeAddressList categoryAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 73, 73);
+            DataValidation categoryValidation_3 = dvHelper.createValidation(categoryConstraint, categoryAddressList_3);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_3);
+
+            CellRangeAddressList categoryAddressList_4 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 88, 88);
+            DataValidation categoryValidation_4 = dvHelper.createValidation(categoryConstraint, categoryAddressList_4);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_4);
+
+            CellRangeAddressList categoryAddressList_5 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 82, 82);
+            DataValidation categoryValidation_5 = dvHelper.createValidation(categoryConstraint, categoryAddressList_5);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_5);
+        }
+    }
+
+    private void createOriginal(Workbook workbook, Map<String, List<FindAllOriginalDto>> dataOriginal) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_ORIGINAL);
+        Iterator<String> keywords = dataOriginal.keySet().iterator();
+        int index = 0;
+        String[] data = new String[dataOriginal.size()];
+        while (keywords.hasNext()){
+            String keyword = keywords.next();
+            filledDataOriginal(sheet,dataOriginal.get(keyword), index, keyword);
+            data[index] = keyword;
+            ++index;
+        }
+
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[2] + "\"" + " & $A4)";
+        DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 12,12);
+        DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
+    }
+
+    private void filledDataOriginal(Sheet sheet, List<FindAllOriginalDto> dtos, int index, String keyword) {
+        Row row = null;
+        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dtos.get(i).getIdOriginal() + "." + dtos.get(i).getName();
+            row.createCell(index).setCellValue(valueCell);
+
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(index));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_ORIGINAL + "!", "").
+                    replaceAll("\\d","");
+            Name electronicsRange = sheet.getWorkbook().createName();
+            electronicsRange.setNameName(PREFIX[2] + keyword);
+            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_ORIGINAL
+                    + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
+                    + ":$" + prefix + "$" + dtos.size());
+        }
+    }
+
+    private void createWards(Workbook workbook, Map<String, List<WardsDto>> dataWards) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_WARDS);
+        Iterator<String> keywords = dataWards.keySet().iterator();
+        int index = 0;
+        String[] data = new String[dataWards.size()];
+        while (keywords.hasNext()){
+            String keyword = keywords.next();
+            filledDataWards(sheet,dataWards.get(keyword), index, keyword);
+            data[index] = keyword;
+            ++index;
+        }
+
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[6] + "\"" + " & $X4)";
+        DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 24,24);
+        DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
+
+        DataValidationHelper dvHelper_1 = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        String formula_1 = NAME_INDIRECT + "(\"" + PREFIX[6] + "\"" + " & $AD4)";
+        DataValidationConstraint productConstraint_1 = dvHelper_1.createFormulaListConstraint(formula_1);
+        CellRangeAddressList productAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 30,30);
+        DataValidation productValidation_1 = dvHelper.createValidation(productConstraint_1, productAddressList_1);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_1);
+    }
+
+    private void filledDataWards(Sheet sheet, List<WardsDto> dtos, int index, String keyword) {
+        Row row = null;
+        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = "STT_" + dtos.get(i).getCodeWard() + "_" + ValueUtil.convertToVietnamese(dtos.get(i).getNameWard()).
+                    replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
+            row.createCell(index).setCellValue(valueCell);
+
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(index));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_WARDS + "!", "").
+                    replaceAll("\\d","");
+            Name electronicsRange = sheet.getWorkbook().createName();
+            electronicsRange.setNameName(PREFIX[6] + keyword);
+            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_WARDS
+                    + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
+                    + ":$" + prefix + "$" + dtos.size());
+        }
+    }
+
+    private void createAssetDepartment(Workbook workbook, List<FindAllDepartmentSDto> dataAssetDepartment) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_ASSET_DEPARTMENT);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataAssetDepartment.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dataAssetDepartment.get(i).getIdDepartment() + "." + dataAssetDepartment.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_ASSET_DEPARTMENT + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_ASSET_DEPARTMENT + "!$" + prefix + "$1:" + "$" + prefix + dataAssetDepartment.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList addressList_0 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 10, 10);
+            DataValidation categoryValidation_0 = dvHelper.createValidation(categoryConstraint, addressList_0);
+            categoryValidation_0.setShowErrorBox(true);
+            categoryValidation_0.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation_0.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_0.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation_0.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_0);
+        }
+    }
+
+    private void createDistrict(Workbook workbook, Map<String, List<DistrictsDto>> dataDistrict) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_DISTRICTS);
+        Iterator<String> keywords = dataDistrict.keySet().iterator();
+        int index = 0;
+        String[] data = new String[dataDistrict.size()];
+        while (keywords.hasNext()){
+            String keyword = keywords.next();
+
+            filledDataDistricts(sheet,dataDistrict.get(keyword), index, keyword);
+            data[index] = keyword;
+            ++index;
+        }
+
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[5] + "\"" + " & $W4)";
+        DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 23,23);
+        DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
+
+        DataValidationHelper dvHelper_1 = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        String formula_1 = NAME_INDIRECT + "(\"" + PREFIX[5] + "\"" + " & $AC4)";
+        DataValidationConstraint productConstraint_1 = dvHelper_1.createFormulaListConstraint(formula_1);
+        CellRangeAddressList productAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 29,29);
+        DataValidation productValidation_1 = dvHelper.createValidation(productConstraint_1, productAddressList_1);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_1);
+    }
+
+    private void filledDataDistricts(Sheet sheet, List<DistrictsDto> dtos, int index, String keyword) {
+        Row row = null;
+        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = "STT_" + dtos.get(i).getCode() + "_" + ValueUtil.convertToVietnamese(dtos.get(i).getNameDistrict()).
+                    replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
+            row.createCell(index).setCellValue(valueCell);
+
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(index));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_DISTRICTS + "!", "").replaceAll("\\d","");
+            Name electronicsRange = sheet.getWorkbook().createName();
+            electronicsRange.setNameName(PREFIX[5] + keyword);
+            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_DISTRICTS
+                    + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
+                    + ":$" + prefix + "$" + dtos.size());
+        }
+    }
+
+    private void createProvinces(Workbook workbook, List<ProvincesDto> dataProvinces) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_PROVINCES);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataProvinces.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = "STT_" + dataProvinces.get(i).getCodeProvince() + "_" +
+                    ValueUtil.convertToVietnamese(dataProvinces.get(i).getNameProvince()).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_PROVINCES + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_PROVINCES + "!$" + prefix + "$1:" + "$" + prefix + dataProvinces.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList addressList_0 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 22, 22);
+            DataValidation categoryValidation_0 = dvHelper.createValidation(categoryConstraint, addressList_0);
+            categoryValidation_0.setShowErrorBox(true);
+            categoryValidation_0.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation_0.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_0.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation_0.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_0);
+
+            CellRangeAddressList addressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 28, 28);
+            DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, addressList_1);
+            categoryValidation_1.setShowErrorBox(true);
+            categoryValidation_1.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation_1.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_1.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation_1.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
+        }
+    }
+
+    private void createProjects(Workbook workbook, List<FindAllProjectsDto> dataProjects) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_PROJECTS);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataProjects.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dataProjects.get(i).getIdProject() + "." + dataProjects.get(i).getShortName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_PROJECTS + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_PROJECTS + "!$" + prefix + "$1:" + "$" + prefix + dataProjects.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 7, 7);
+            DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+        }
+    }
+
+    private void createDocumentAttack(Workbook workbook, Map<String, List<FindAllLocationDto>> dataDepartment,
+                                      Map<String, List<FindAllDocumentAttackDto>> dataDocumentAttack) {
+        Sheet sheetDocumentAttack = workbook.createSheet(NAME_SHEET_DATA_DOCUMENT_ATTACK);
+        Iterator<String> keywords = dataDepartment.keySet().iterator();
+        int index = 0;
+        while (keywords.hasNext()){
+            String keyword = keywords.next();
+            if (!dataDocumentAttack.containsKey(keyword)) {
+                filledDataDocumentAttackDefault(sheetDocumentAttack,dataDocumentAttack.get("STT_100Macdinh"), index, keyword);
+            } else {
+                filledDataDocumentAttack(sheetDocumentAttack, dataDocumentAttack.get(keyword), index, keyword);
+            }
+            ++index;
+        }
+
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[4] + "\"" + " & $D4)";
+        DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 6,6);
+        DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
+    }
+
+    private void filledDataDocumentAttackDefault(Sheet sheetDocumentAttack, List<FindAllDocumentAttackDto> dtos,
+                                                 int index, String keyword) {
+        Row row = null;
+        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
+            if (sheetDocumentAttack.getRow(i) == null) {
+                row = sheetDocumentAttack.createRow(i);
+            } else {
+                row = sheetDocumentAttack.getRow(i);
+            }
+            String valueCell = dtos.get(i).getIdDocumentAttack() + "." + dtos.get(i).getName();
+            row.createCell(index).setCellValue(valueCell);
+
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(index));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_DOCUMENT_ATTACK + "!", "").replaceAll("\\d","");
+            Name electronicsRange = sheetDocumentAttack.getWorkbook().createName();
+            electronicsRange.setNameName(PREFIX[4] + keyword);
+            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_DOCUMENT_ATTACK
+                    + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
+                    + ":$" + prefix + "$" + dtos.size());
+        }
+    }
+
+    private void filledDataDocumentAttack(Sheet sheetDocumentAttack,
+                                          List<FindAllDocumentAttackDto> dtos, int index,
+                                          String keyword) {
+        Row row = null;
+        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
+            if (sheetDocumentAttack.getRow(i) == null) {
+                row = sheetDocumentAttack.createRow(i);
+            } else {
+                row = sheetDocumentAttack.getRow(i);
+            }
+            String valueCell = dtos.get(i).getIdDocumentAttack() + "." + dtos.get(i).getName();
+            row.createCell(index).setCellValue(valueCell);
+
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(index));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_DOCUMENT_ATTACK + "!", "").replaceAll("\\d","");
+            Name electronicsRange = sheetDocumentAttack.getWorkbook().createName();
+            electronicsRange.setNameName(PREFIX[4] + keyword);
+            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_DOCUMENT_ATTACK
+                    + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
+                    + ":$" + prefix + "$" + dtos.size());
+        }
+    }
+
+    private void createAssetUnits(Workbook workbook, Map<String, List<FindAllUnitsDto>> dataUnits) {
+        Sheet sheetUnit = workbook.createSheet(NAME_SHEET_DATA_UNITS);
+        Iterator<String> keywords = dataUnits.keySet().iterator();
+        int index = 0;
+        String[] units = new String[dataUnits.size()];
+        while (keywords.hasNext()){
+            String keyword = keywords.next();
+            filledDataUnits(sheetUnit,dataUnits.get(keyword), index, keyword);
+            units[index] = keyword;
+            ++index;
+        }
+
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[1] + "\"" + " & $A4)";
+        DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 5,5);
+        DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
+    }
+
+    private void filledDataUnits(Sheet sheetUnit, List<FindAllUnitsDto> dtos, int index, String keyword) {
+        Row row = null;
+        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
+            if (sheetUnit.getRow(i) == null) {
+                row = sheetUnit.createRow(i);
+            } else {
+                row = sheetUnit.getRow(i);
+            }
+            String valueCell = dtos.get(i).getIdUnit() + "." + dtos.get(i).getNameUnit();
+            row.createCell(index).setCellValue(valueCell);
+
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(index));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_UNITS + "!", "").replaceAll("\\d","");
+            Name electronicsRange = sheetUnit.getWorkbook().getName(keyword);
+            if (electronicsRange == null){
+                electronicsRange = sheetUnit.getWorkbook().createName();
+                electronicsRange.setNameName(PREFIX[1] + keyword);
+            }
+            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_UNITS
+                    + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
+                    + ":$" + prefix + "$" + dtos.size());
+        }
+    }
+
+    private void createAssetDepartmentImport(Workbook workbook, Map<String,List<FindAllLocationDto>> dataDepartment) {
+        Sheet sheetLocation = workbook.createSheet(NAME_SHEET_DATA_LOCATION);
+        Iterator<String> keywords = dataDepartment.keySet().iterator();
+        int index = 0;
+        String[] departments = new String[dataDepartment.size()];
+        while (keywords.hasNext()){
+            String keyword = keywords.next();
+            filledDataLocation(sheetLocation,dataDepartment.get(keyword), index, keyword);
+            departments[index] = keyword;
+            ++index;
+        }
+
+        if (workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY) == null) {
+            throw new IllegalArgumentException("Sheet " + NAME_SHEET_IMPORT_ASSET_CATEGORY + " does not exist.");
+        }
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        setDataDepartment(departments,workbook);
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[3] + "\"" + " & $D4)";
+        DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 4,4);
+        DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
+    }
+
+    private void setDataDepartment(String[] departments, Workbook workbook) {
+        Sheet sheetDepartment = workbook.createSheet(NAME_SHEET_DATA_DEPARTMENT);
+        Row row = null;
+        int indexCellDepartment = 0;
+        for (int i = 0; i< departments.length; i++){
+            if (sheetDepartment.getRow(i) == null) {
+                row = sheetDepartment.createRow(i);
+            } else {
+                row = sheetDepartment.getRow(i);
+            }
+            row.createCell(indexCellDepartment).setCellValue(departments[i]);
+        }
+        CellReference cellReference = new CellReference(row.getCell(indexCellDepartment));
+        String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_DEPARTMENT+"!", "").replaceAll("\\d","");
+//        String formula = "=Department!$A$1:$A$20"
+        String formula = "=" + NAME_SHEET_DATA_DEPARTMENT + "!$" + prefix + "$1:" + "$" + prefix + departments.length;
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 3, 3);
+        DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+        categoryValidation.setShowErrorBox(true);
+        categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        categoryValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+    }
+
+    private void filledDataLocation(Sheet sheetDepartment, List<FindAllLocationDto> dtos, int index, String keyword) {
+        Row row = null;
+        int indexStartFilled = INDEX_START_FILLED_DATA;
+        if (dtos.size() != 0) {
+            for (int i = 0; i < dtos.size() ; i++) {
+                if (sheetDepartment.getRow(indexStartFilled) == null) {
+                    row = sheetDepartment.createRow(indexStartFilled);
+                } else {
+                    row = sheetDepartment.getRow(indexStartFilled);
+                }
+                String valueCell = dtos.get(i).getIdLocation() + "." + dtos.get(i).getName();
+                row.createCell(index).setCellValue(valueCell);
+                ++indexStartFilled;
+            }
+            if (row != null) {
+                CellReference cellReference = new CellReference(row.getCell(index));
+                String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_LOCATION + "!", "").replaceAll("\\d","");
+                Name electronicsRange = sheetDepartment.getWorkbook().createName();
+                electronicsRange.setNameName(PREFIX[3] + keyword);
+                electronicsRange.setRefersToFormula(NAME_SHEET_DATA_LOCATION
+                        + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
+                        + ":$" + prefix + "$" + (INDEX_START_FILLED_DATA + dtos.size()));
+            }
+        } else {
+            if (sheetDepartment.getRow(indexStartFilled) == null) {
+                row = sheetDepartment.createRow(indexStartFilled);
+            } else {
+                row = sheetDepartment.getRow(indexStartFilled);
+            }
+            if (row != null) {
+                row.createCell(index).setCellValue("Không có");
+                CellReference cellReference = new CellReference(row.getCell(index));
+                String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_LOCATION + "!", "").replaceAll("\\d","");
+                Name electronicsRange = sheetDepartment.getWorkbook().createName();
+                electronicsRange.setNameName(PREFIX[3] + keyword);
+                electronicsRange.setRefersToFormula(NAME_SHEET_DATA_LOCATION
+                        + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
+                        + ":$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1 + dtos.size()));
+            }
+        }
+    }
+
+    private void createAssetCategoriesImport(Workbook workbook, Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory) {
+        Sheet sheetAssetCategories = workbook.createSheet(NAME_SHEET_DATA_ASSET_CATEGORY);
+        Iterator<String> keywords = mapAssetCategory.keySet().iterator();
+        int index = 0;
+        int indexFilledData = 0;
+        String[] assetCategories = new String[mapAssetCategory.size()];
+        while (keywords.hasNext()){
+            String keyword = keywords.next();
+            indexFilledData= filledDataAssetCategory(sheetAssetCategories,mapAssetCategory.get(keyword), indexFilledData, keyword);
+            assetCategories[index] = keyword;
+            ++index;
+            ++indexFilledData;
+        }
+
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
+        DataValidationConstraint categoryConstraint = dvHelper.createExplicitListConstraint(assetCategories);
+        CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 0, 0);
+        DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+        categoryValidation.setShowErrorBox(true);
+        categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        categoryValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[0] + "\"" + " & $A4)";
+        DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 1,1);
+        DataValidation subCategoryValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        subCategoryValidation.setShowErrorBox(true);
+        subCategoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        subCategoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        subCategoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        subCategoryValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(subCategoryValidation);
+
+        // SET DEPRECIATION
+        for (int rowIndex = TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW; rowIndex <= TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW; rowIndex++) {
+            Row row = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getRow(rowIndex);
+            if (row == null) {
+                row = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).createRow(rowIndex); // Create row if it doesn't exist
+            }
+            Cell cellMinDepreciation = row.createCell(139);
+            Cell cellMaxDepreciation = row.createCell(140);
+            Cell cellValueWearTear  = row.createCell(134);
+            Cell cellYearUsedWearTear = row.createCell(133);
+
+//            =IF(NOT(ISBLANK($B4)),VLOOKUP($B4,AssetCategories!$A:$E,5,0),"")
+
+            String formulaMinDepreciation = "IF(NOT(ISBLANK($B"+ (rowIndex + 1) + ")),VLOOKUP($B" + (rowIndex + 1) +"," + NAME_SHEET_DATA_ASSET_CATEGORY + "!$A:$E,2,0),\"\")";
+            String formulaMaxDepreciation = "IF(NOT(ISBLANK($B"+ (rowIndex + 1) + ")),VLOOKUP($B" + (rowIndex + 1) +"," + NAME_SHEET_DATA_ASSET_CATEGORY + "!$A:$E,3,0),\"\")";
+            String formulaValueWearTear = "IF(NOT(ISBLANK($B"+ (rowIndex + 1) + ")),VLOOKUP($B" + (rowIndex + 1) +"," + NAME_SHEET_DATA_ASSET_CATEGORY + "!$A:$E,4,0),\"\")";
+            String formulaYearUsedWearTear = "IF(NOT(ISBLANK($B"+ (rowIndex + 1) + ")),VLOOKUP($B" + (rowIndex + 1) +"," + NAME_SHEET_DATA_ASSET_CATEGORY + "!$A:$E,5,0),\"\")";
+            cellMinDepreciation.setCellFormula(formulaMinDepreciation);
+            cellMaxDepreciation.setCellFormula(formulaMaxDepreciation);
+            cellValueWearTear.setCellFormula(formulaValueWearTear);
+            cellYearUsedWearTear.setCellFormula(formulaYearUsedWearTear);
+        }
+//        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ASSET_CATEGORY), true);
+    }
+    private Integer filledDataAssetCategory(Sheet sheetAssetCategories,
+                                         List<FindAllAssetCategoriesToDownloadDto> dtos,
+                                         int index, String keywords) {
+        Row row = null;
+        int indexStart = 0;
+        int dtosLength = index + dtos.size();
+        for (int i = index; i < dtosLength; i++) {
+            if (sheetAssetCategories.getRow(i) == null) {
+                row = sheetAssetCategories.createRow(i);
+            } else {
+                row = sheetAssetCategories.getRow(i);
+            }
+            String valueCell = dtos.get(indexStart).getIdAssetCategory() + "." + dtos.get(indexStart).getName();
+            String minimumTimeDepreciation = dtos.get(indexStart).getMinimumTimeDepreciation();
+            String maximumTimeDepreciation = dtos.get(indexStart).getMaximumTimeDepreciation();
+            String valueWearTear = dtos.get(indexStart).getValueWearTear();
+            String yearWearTear = dtos.get(indexStart).getYearUsedWearTear();
+            row.createCell(0).setCellValue(valueCell);
+            row.createCell(1).setCellValue(minimumTimeDepreciation);
+            row.createCell(2).setCellValue(maximumTimeDepreciation);
+            row.createCell(3).setCellValue(valueWearTear);
+            row.createCell(4).setCellValue(yearWearTear);
+            ++indexStart;
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(0));
+            String prefix =  cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_ASSET_CATEGORY + "!", "").replaceAll("\\d","");
+            Name electronicsRange = sheetAssetCategories.getWorkbook().createName();
+            electronicsRange.setNameName(PREFIX[0] + keywords);
+            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_ASSET_CATEGORY
+                    + "!$" + prefix + "$" + (index + 1)
+                    + ":$" + prefix + "$" + dtosLength);
+        }
+        return dtosLength;
     }
 }

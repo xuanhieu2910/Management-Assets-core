@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.repository.asset.impl;
 
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
 import com.example.csvccdshustbe.dto.assetCategories.BluePrintAssetCategoryDto;
 import com.example.csvccdshustbe.dto.assetDepreciation.AssetDepreciationDto;
 import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
@@ -259,6 +260,29 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllGroundAsset(request));
+    }
+
+    @Override
+    public List<FindAllGroundAssetDto> findAllGroundAssetToDownload() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select asset.id_asset, asset.code_asset, asset.name    " +
+                "from asset asset  " +
+                "      inner join ground_module groundModule on  " +
+                "          asset.id_asset = groundModule.asset_id  " +
+                "where 1 = 1 ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        List<Object[]> result = query.getResultList();
+        List<FindAllGroundAssetDto> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FindAllGroundAssetDto groundAssetDto = new FindAllGroundAssetDto();
+                groundAssetDto.setIdGroundAsset(ValueUtil.getIntegerByObject(obj[0]));
+                groundAssetDto.setCodeGroundAsset(ValueUtil.getStringByObject(obj[1]));
+                groundAssetDto.setNameGroundAsset(ValueUtil.getStringByObject(obj[2]));
+                responses.add(groundAssetDto);
+            }
+        }
+        return responses;
     }
 
     private long countFindAllGroundAsset(FindAllGroundAssetRequest request) {

@@ -165,4 +165,9 @@ public class PositionNameServiceImpl implements PositionNameService {
         positionNameOptional.get().setStatus(request.getStatus());
         positionNameRepository.save(positionNameOptional.get());
     }
+
+    @Override
+    public List<FindAllPositionNameDto> findAllPositionNameToDownload() {
+        return positionNameRepository.findAllPositionNameToDownload();
+    }
 }

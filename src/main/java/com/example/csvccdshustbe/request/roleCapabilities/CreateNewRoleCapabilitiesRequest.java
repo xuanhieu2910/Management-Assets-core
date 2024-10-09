@@ -8,5 +8,5 @@ import lombok.Setter;
 public class CreateNewRoleCapabilitiesRequest {
 
     private Integer idCapability;
-    private Integer permission;
+    private Integer status;
 }

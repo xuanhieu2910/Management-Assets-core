@@ -1,16 +1,22 @@
 package com.example.csvccdshustbe.repository.role;
 
 import com.example.csvccdshustbe.entity.Role;
+import com.example.csvccdshustbe.request.role.FindAllRoleRequest;
+import com.example.csvccdshustbe.response.role.FindDetailsRoleCapabilitiesResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface RoleRepositoryCustom {
 
-    List<Role> findAllRole();
+    Page<Role> findAllRole(Pageable pageable, FindAllRoleRequest findAllRoleRequest);
     Optional<Role> findByTitleRole(String titleRole);
+    Optional<Role> findByShortNameRole(String shortName);
     Optional<Role> findByIdRole(Integer idRole);
     Optional<Role> findRoleByTitleOrShortName(String title, String shortName);
     List<Role> findRestRoleWithoutCurrentRole(Role role);
     List<Role> findRolesByIds(List<Integer> ids);
+    FindDetailsRoleCapabilitiesResponse findDetailsRoleCapabilitiesByIdRole(Integer idRole);
 }

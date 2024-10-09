@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.typeUse;
 
 
+import com.example.csvccdshustbe.dto.typeUse.FindAllTypeUseDto;
 import com.example.csvccdshustbe.entity.TypeUse;
 import com.example.csvccdshustbe.request.typeUse.FindAllTypeUseRequest;
 import org.springframework.data.domain.Page;
@@ -17,5 +18,5 @@ public interface TypeUseRepositoryCustom {
 
     Optional<TypeUse> findTypeUseById(Integer idTypeUse);
 
-    List<TypeUse> findAllTypeUseByIds(List<Integer> typeUseIds);
+    List<FindAllTypeUseDto> findAllTypeUserDtoToDownload();
 }

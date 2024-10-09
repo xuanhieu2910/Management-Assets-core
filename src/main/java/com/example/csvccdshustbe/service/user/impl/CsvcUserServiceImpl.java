@@ -31,10 +31,7 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,7 +57,14 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         if (!user.get().isAccountNonLocked()){
             throw new UsernameNotFoundException("User is locked!");
         }
+        setIdsDepartment(user.get());
         return user.get();
+    }
+
+    private void setIdsDepartment(CsvcUser csvcUser) {
+        DepartmentUserRoleDto departmentUserRoleDto = userRoleService.getDepartmentCurrentUserRoleByCodeUser(csvcUser.getCodeUser());
+        List<Integer> idsDepartment = departmentService.findIdsStructureDepartment(departmentUserRoleDto.getIdDepartment());
+        csvcUser.setIdsDepartmentCurrent(idsDepartment);
     }
 
     @Override
@@ -98,6 +102,8 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     @Override
     public Page<FindAllUserUsedResponse> findAllUserUsedResponse(FindAllUserUsedRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartment(csvcUser.getIdsDepartmentCurrent());
         Page<FindAllUserUsedDto> allUserUsedDtos = csvcUserRepository.findAllUserUsedDto(request, pageable);
         return new PageImpl<>(convertToFindAllUserUsedResponse(allUserUsedDtos.get().collect(Collectors.toList()),
                 pageable, allUserUsedDtos.getTotalElements()));
@@ -200,6 +206,12 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         }
         Department department = departmentService.findDepartmentByIdDepartmentAndStatus(request.getIdDepartment(), Constants.DEPARTMENT_ACTIVE_STATUS);
         userRoleService.removeUserByIdDepartmentAndIdUser(department.getIdDepartment(), user.get().getIdUser());
+    }
+
+    @Override
+    public Map<String, List<FindAllUserUsedDto>> findAllUserUsedToDownload() {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return csvcUserRepository.findAllUserUsedToDownloadByIdsDepartment(csvcUser.getIdsDepartmentCurrent());
     }
 
     private void setIdsDepartmentFindDetailsRequest(FindDetailsUserRequest request) {

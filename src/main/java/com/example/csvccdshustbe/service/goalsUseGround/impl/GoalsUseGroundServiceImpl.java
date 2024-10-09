@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.goalsUseGround.impl;
 
+import com.example.csvccdshustbe.dto.goalsUseGround.FindAllGoalsUseGroundDto;
 import com.example.csvccdshustbe.entity.GoalsUseGround;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.goalsUseGround.GoalsUseGroundRepository;
@@ -116,6 +117,11 @@ public class GoalsUseGroundServiceImpl implements GoalsUseGroundService {
             throw new NotFoundException("Don't exits goals use ground by id!");
         }
         goalsUseGroundRepository.delete(goalsUseGroundOptional.get());
+    }
+
+    @Override
+    public List<FindAllGoalsUseGroundDto> findAllGoalsUseGroundToDownload() {
+        return goalsUseGroundRepository.findAllGoalsUseGroundToDownload();
     }
 
 }

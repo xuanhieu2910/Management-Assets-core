@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
 
@@ -31,8 +30,9 @@ public class AssetCategoriesController {
     @GetMapping("/find-all-picked")
     public ResponseEntity<?> findAllAssetsCategoriesIsPickedAndVisible(){
         try {
-            return ApiResponseDto.createdWithState(assetCategoriesService.findAllAssetCategoriesIsPicked(), "Find all asset categories success!", HttpStatus.OK);
-        }catch (Exception e){
+            return ApiResponseDto.createdWithState(assetCategoriesService.findAllAssetCategoriesIsPicked(),
+                    "Find all asset categories success!", HttpStatus.OK);
+        }catch (Exception e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

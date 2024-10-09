@@ -1,8 +1,11 @@
 package com.example.csvccdshustbe.service.documentAttack.impl;
 
 import com.example.csvccdshustbe.dto.documentAttack.FindAllDocumentAttackDto;
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.DocumentAttack;
+import com.example.csvccdshustbe.entity.Role;
+import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.department.DepartmentRepository;
 import com.example.csvccdshustbe.repository.documentAttack.DocumentAttackRepository;
@@ -10,6 +13,7 @@ import com.example.csvccdshustbe.request.documentAttack.*;
 import com.example.csvccdshustbe.response.documentAttack.FindAllDocumentAttackResponse;
 import com.example.csvccdshustbe.response.documentAttack.FindAllDocumentAttackVisibleResponse;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
+import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -18,13 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -111,7 +113,13 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
     private DocumentAttack contructDocumentAttack(CreateDocumentAttackRequest request) {
         DocumentAttack documentAttack = new DocumentAttack();
         documentAttack.setName(request.getName());
-        documentAttack.setIdDepartment(request.getIdDepartment());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Role> roles = new ArrayList<>(csvcUser.getRole());
+        if (roles.get(0).getTitle().equals(RolePattern.SuperAdmin.name())){
+            documentAttack.setIdDepartment((Constants.DEFAULT_ASSET_CATEGORY));
+        } else {
+            documentAttack.setIdDepartment(request.getIdDepartment());
+        }
         documentAttack.setCode(request.getCode());
         documentAttack.setDateDeterminationDocument(request.getDateDeterminationDocument());
         documentAttack.setStatus(request.getStatus());
@@ -139,7 +147,13 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
     }
     private DocumentAttack editDocumentAttack(DocumentAttack documentAttack, UpdateDocumentAttackRequest request) {
         documentAttack.setName(request.getName());
-        documentAttack.setIdDepartment(request.getIdDepartment());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Role> roles = new ArrayList<>(csvcUser.getRole());
+        if (roles.get(0).getTitle().equals(RolePattern.SuperAdmin.name())){
+            documentAttack.setIdDepartment((Constants.DEFAULT_ASSET_CATEGORY));
+        } else {
+            documentAttack.setIdDepartment(request.getIdDepartment());
+        }
         documentAttack.setCode(request.getCode());
         documentAttack.setDateDeterminationDocument(request.getDateDeterminationDocument());
         documentAttack.setStatus(request.getStatus());
@@ -181,5 +195,13 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
         }
         documentAttack.get().setStatus(request.getStatus());
         documentAttackRepository.save(documentAttack.get());
+    }
+
+    @Override
+    public Map<String, List<FindAllDocumentAttackDto>> findAllDocumentAttackToDownload() {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Integer> idsDepartment = csvcUser.getIdsDepartmentCurrent();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        return documentAttackRepository.findAllDocumentAttackToDownloadByIdsDepartment(idsDepartment);
     }
 }

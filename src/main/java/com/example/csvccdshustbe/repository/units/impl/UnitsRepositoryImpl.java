@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.units.impl;
 
+import com.example.csvccdshustbe.dto.unit.FindAllUnitsDto;
 import com.example.csvccdshustbe.entity.Units;
 import com.example.csvccdshustbe.repository.units.UnitsRepositoryCustom;
 import com.example.csvccdshustbe.request.units.FindAllUnitsByAssetCategoryRequest;
@@ -15,9 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
 
@@ -189,30 +188,62 @@ public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
         }
         return Optional.empty();
     }
+
     @Override
-    public List<Units> findAllUnitsById(List<Integer> idUnit) {
+    public Map<String, List<FindAllUnitsDto>> findAllUnitsToDownload() {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select units.id_unit, units.name, units.time_created, " +
-                "       units.time_modified, units.id_asset_category,  " +
-                " units.status " +
-                "from units " +
-        "where units.id_unit in :idUnit ");
+        sb.append(" select ac.id_asset_category, ac.name assetName,  " +
+                "       un.id_unit, un.name, un.time_created, un.time_modified, " +
+                "       un.status " +
+                "from units un " +
+                "    inner join asset_categories ac on un.id_asset_category = ac.id_asset_category " +
+                "where ac.is_pick = :isPick " +
+                "and un.status = :status and ac.visible = :visible ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("idUnit", idUnit);
+        query.setParameter("isPick", Constants.ASSET_CATEGORY_IS_PICK);
+        query.setParameter("status", Constants.UNITS_IS_ACTIVE);
+        query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
         List<Object[]> result = query.getResultList();
-        List<Units> units = new ArrayList<>();
+        Map<String, List<FindAllUnitsDto>> responses = new HashMap<>();
         if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj: result){
-                Units unit = new Units();
-                unit.setIdUnit(ValueUtil.getIntegerByObject(obj[0]));
-                unit.setName(ValueUtil.getStringByObject(obj[1]));
-                unit.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
-                unit.setTimeModified(ValueUtil.getStringByObject(obj[3]));
-                unit.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[4]));
-                unit.setStatus(ValueUtil.getIntegerByObject(obj[5]));
-                units.add(unit);
+            String keyword = null;
+            Integer idAssetCategory = null;
+            String nameAssetCategory = null;
+            for (Object[] obj : result){
+                idAssetCategory = ValueUtil.getIntegerByObject(obj[0]);
+                nameAssetCategory = ValueUtil.getStringByObject(obj[1]);
+                keyword = "STT_" + idAssetCategory + "_" + nameAssetCategory;
+                keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
+                if (responses.containsKey(keyword)){
+                    responses.get(keyword).add(constructUnit(obj));
+                } else {
+                    responses.put(keyword, constructUnits(obj));
+                }
             }
         }
-        return units;
+        return responses;
     }
+
+    private List<FindAllUnitsDto> constructUnits(Object[] obj) {
+        List<FindAllUnitsDto> dtos = new ArrayList<>();
+        FindAllUnitsDto findAllUnitsDto = new FindAllUnitsDto();
+        findAllUnitsDto.setIdUnit(ValueUtil.getIntegerByObject(obj[2]));
+        findAllUnitsDto.setNameUnit(ValueUtil.getStringByObject(obj[3]));
+        findAllUnitsDto.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+        findAllUnitsDto.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+        findAllUnitsDto.setStatus(ValueUtil.getIntegerByObject(obj[6]));
+        dtos.add(findAllUnitsDto);
+        return dtos;
+    }
+
+    private FindAllUnitsDto constructUnit(Object[] obj) {
+        FindAllUnitsDto findAllUnitsDto = new FindAllUnitsDto();
+        findAllUnitsDto.setIdUnit(ValueUtil.getIntegerByObject(obj[2]));
+        findAllUnitsDto.setNameUnit(ValueUtil.getStringByObject(obj[3]));
+        findAllUnitsDto.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+        findAllUnitsDto.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+        findAllUnitsDto.setStatus(ValueUtil.getIntegerByObject(obj[6]));
+        return findAllUnitsDto;
+    }
+
 }

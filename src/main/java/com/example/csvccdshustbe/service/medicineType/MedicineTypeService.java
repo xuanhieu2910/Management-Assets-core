@@ -1,10 +1,13 @@
 package com.example.csvccdshustbe.service.medicineType;
 
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineType.MedicineTypeDetailsDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.medicineType.*;
 import com.example.csvccdshustbe.response.medicineType.FindAllMedicineTypeResponse;
 import com.example.csvccdshustbe.response.medicineType.FindAllMedicineTypeVisibleResponse;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface MedicineTypeService {
 
@@ -18,4 +21,6 @@ public interface MedicineTypeService {
     void deleteMedicineTypeByIdMedicineType(Integer idMedicineType);
 
     void updateStatusMedicine(UpdateMedicineStatusRequest request) throws ValidateFiledException;
+
+    List<MedicineTypeDetailsDto> findAllMedicineTypeToDownload();
 }

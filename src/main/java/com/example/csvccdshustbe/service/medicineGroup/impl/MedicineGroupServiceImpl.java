@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.medicineGroup.impl;
 
 
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineGroup.MedicineGroupDetailsDto;
 import com.example.csvccdshustbe.entity.MedicineGroup;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.medicineGroup.MedicineGroupRepository;
@@ -77,6 +78,12 @@ public class MedicineGroupServiceImpl implements MedicineGroupService {
         }
         medicineGroupRepository.delete(medicineGroupOptional.get());
     }
+
+    @Override
+    public List<MedicineGroupDetailsDto> findAllMedicineGroupToDownload() {
+        return medicineGroupRepository.findAllMedicineGroupToDownload();
+    }
+
     private void validateDataCreateMedicineGroup(CreateMedicineGroupRequest request) throws ValidateFiledException {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");

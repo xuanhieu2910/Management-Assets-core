@@ -8,4 +8,7 @@ public interface RoleCapabilitiesService {
 
     void saveAllRoleCapabilities(List<RoleCapabilities> roleCapabilitiesList);
 
+    void deleteRoleCapabilitiesByIdRole(Integer idRole);
+
+    List<RoleCapabilities> findAllRoleCapabilitiesByIdRole(Integer idRole);
 }

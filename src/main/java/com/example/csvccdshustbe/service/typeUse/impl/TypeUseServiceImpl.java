@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.typeUse.impl;
 
+import com.example.csvccdshustbe.dto.typeUse.FindAllTypeUseDto;
 import com.example.csvccdshustbe.entity.TypeUse;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.typeUse.TypeUseRepository;
@@ -66,6 +67,11 @@ public class TypeUseServiceImpl implements TypeUseService{
             throw new NotFoundException("Don't exits Type use by id type use!");
         }
         typeUseRepository.delete(typeUseOptional.get());
+    }
+
+    @Override
+    public List<FindAllTypeUseDto> findAllTypeUseToDownload() {
+        return typeUseRepository.findAllTypeUserDtoToDownload();
     }
 
     private void validateDataCreateTypeUse(CreateTypeUseRequest request) throws ValidateFiledException {

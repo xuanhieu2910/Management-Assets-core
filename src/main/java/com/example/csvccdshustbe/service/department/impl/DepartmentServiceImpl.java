@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.department.impl;
 
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
+import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -67,6 +68,12 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public Map<String, List<FindAllLocationDto>> findAllDepartmentLocationVisibleToDownload() {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return departmentRepository.findAllDepartmentLocationToDownloadByIdsDepartment(csvcUser.getIdsDepartmentCurrent());
+    }
+
+    @Override
     public Department findDepartmentByIdDepartmentAndStatus(Integer idDepartment, Integer status) {
         Optional<Department> departmentOptional = departmentRepository.findDepartmentByIdDepartmentAndStatus(idDepartment, status);
         if (departmentOptional.isEmpty()){
@@ -114,6 +121,10 @@ public class DepartmentServiceImpl implements DepartmentService {
         return idsStructureDepartment;
     }
 
+    @Override
+    public List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload() {
+        return departmentRepository.findAllAssetDepartmentToDownload();
+    }
 
 
     @Override

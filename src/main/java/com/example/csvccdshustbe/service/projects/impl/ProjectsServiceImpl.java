@@ -117,6 +117,12 @@ public class ProjectsServiceImpl implements ProjectsService {
         projectsRepository.save(projects.get());
     }
 
+    @Override
+    public List<FindAllProjectsDto> findAllProjectToDownload() {
+        List<FindAllProjectsDto> findAllProjectsDtos = projectsRepository.findAllProjectsToDownload();
+        return findAllProjectsDtos;
+    }
+
     private void validateDataCreateProjects(CreateProjectsRequest request) throws ValidateFiledException{
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");

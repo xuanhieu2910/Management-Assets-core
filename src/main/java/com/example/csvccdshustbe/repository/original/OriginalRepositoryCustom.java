@@ -7,14 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface OriginalRepositoryCustom {
 
     Page<FindAllOriginalDto> findAllOriginalDtoByIdAssetCategory(FindAllOriginalVisibleRequest request, Pageable pageable);
-
     Optional<Original> findOriginalByHardCodeAndStatus(String hardCode, Integer status);
-    Optional<Original> findOriginalByName(String name);
-
-    List<Original> findAllOriginalById(List<Integer> idOriginal);
+    Map<String, List<FindAllOriginalDto>> findAllOriginalToDownload();
 }

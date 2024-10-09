@@ -24,7 +24,5 @@ public interface ProjectsRepositoryCustom {
     boolean checkExitsProjectByNameOrCodeOrShortName(String name, String shortName);
 
     boolean isExitsAssetByIdProject(Integer idProject);
-
-    List<Projects> findAllProjectById(List<Integer>idProjects);
-
+    List<FindAllProjectsDto> findAllProjectsToDownload();
 }

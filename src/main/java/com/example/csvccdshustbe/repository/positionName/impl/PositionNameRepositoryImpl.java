@@ -1,12 +1,10 @@
 package com.example.csvccdshustbe.repository.positionName.impl;
 
 import com.example.csvccdshustbe.dto.positionName.FindAllPositionNameDto;
-import com.example.csvccdshustbe.entity.CountryProducer;
 import com.example.csvccdshustbe.entity.PositionName;
 import com.example.csvccdshustbe.repository.positionName.PositionNameRepositoryCustom;
 import com.example.csvccdshustbe.request.positionName.FindAllPositionNameRequest;
 import com.example.csvccdshustbe.request.positionName.FindAllPositionNameVisibleRequest;
-import com.example.csvccdshustbe.response.positionName.FindAllPositionNameVisibleResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -205,27 +203,28 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
     }
 
     @Override
-    public List<PositionName> findPositionNameByListId(List<Integer> idPositionName) {
+    public List<FindAllPositionNameDto> findAllPositionNameToDownload() {
         StringBuilder sb = new StringBuilder();
-        sb.append("select pn.id_position_name, pn.name, pn.status, " +
-                "pn.time_created, pn.time_modified " +
-                "from position_name pn " +
-                "where 1=1 and pn.id_position_name in :idPositionName ");
+        sb.append(" select id_position_name, name,  " +
+                "       time_created, time_modified,  " +
+                "       status " +
+                "from position_name " +
+                "where status = :status ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("idPositionName", idPositionName);
+        query.setParameter("status", Constants.POSITION_NAME_ACTIVE_STATUS);
         List<Object[]> result = query.getResultList();
-        List<PositionName>positionNameList= new ArrayList<>();
+        List<FindAllPositionNameDto> responses = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj: result){
-                PositionName positionName = new PositionName();
-                positionName.setIdPositionName(ValueUtil.getIntegerByObject(obj[0]));
-                positionName.setName(ValueUtil.getStringByObject(obj[1]));
-                positionName.setStatus(ValueUtil.getIntegerByObject(obj[2]));
-                positionName.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
-                positionName.setTimeModified(ValueUtil.getStringByObject(obj[4]));
-                positionNameList.add(positionName);
+            for (Object[] obj : result){
+                FindAllPositionNameDto dto = new FindAllPositionNameDto();
+                dto.setIdPositionName(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                dto.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
+                dto.setTimeModified(ValueUtil.getStringByObject(obj[3]));
+                dto.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                responses.add(dto);
             }
         }
-        return positionNameList;
+        return responses;
     }
 }

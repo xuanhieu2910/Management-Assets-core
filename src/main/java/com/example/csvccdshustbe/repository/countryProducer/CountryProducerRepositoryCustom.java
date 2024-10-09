@@ -16,5 +16,5 @@ public interface CountryProducerRepositoryCustom {
 
     Optional<CountryProducer> findCountryProducerByNameAndStatus(String name, Integer status);
     Optional<CountryProducer> findCountryProducerById(Integer idCountryProducer);
-    List<CountryProducer> findAllCountryProducerById(List<Integer> CountryProducerId);
+    List<CountryProducer> findAllCountryProducerToDownload();
 }

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.medicineGroup.impl;
 
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineGroup.MedicineGroupDetailsDto;
 import com.example.csvccdshustbe.entity.MedicineGroup;
 import com.example.csvccdshustbe.repository.medicineGroup.MedicineGroupRepositoryCustom;
 import com.example.csvccdshustbe.request.medicineGroup.FindAllMedicineGroupRequest;
@@ -135,31 +136,25 @@ public class MedicineGroupRepositoryImpl implements MedicineGroupRepositoryCusto
         }
         return Optional.empty();
     }
+
     @Override
-    public List<MedicineGroup> findMedicineGroupByAllId(List<Integer> idMedicineType) {
+    public List<MedicineGroupDetailsDto> findAllMedicineGroupToDownload() {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select mg.id_medicine_group, mg.name, " +
-                "mg.short_name, mg.description, " +
-                "mg.time_created, mg.time_modified, mg.status " +
-                "from medicine_group mg " +
-                "where mg.id_medicine_group in :idMedicineType ");
+        sb.append(" select medicineGroup.id_medicine_group, medicineGroup.name " +
+                "   from medicine_group medicineGroup    " +
+                "   where medicineGroup.status = :status  ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("idMedicineType", idMedicineType);
+        query.setParameter("status", Constants.MEDICINE_GROUP_ACTIVE_STATUS);
         List<Object[]> result = query.getResultList();
-        List<MedicineGroup> medicineGroupList = new ArrayList<>();
+        List<MedicineGroupDetailsDto> responses = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj: result){
-                MedicineGroup medicineGroup = new MedicineGroup();
-                medicineGroup.setIdMedicineGroup(ValueUtil.getIntegerByObject(obj[0]));
-                medicineGroup.setName(ValueUtil.getStringByObject(obj[1]));
-                medicineGroup.setShortName(ValueUtil.getStringByObject(obj[2]));
-                medicineGroup.setDescription(ValueUtil.getStringByObject(obj[3]));
-                medicineGroup.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
-                medicineGroup.setTimeModified(ValueUtil.getStringByObject(obj[5]));
-                medicineGroup.setStatus(ValueUtil.getIntegerByObject(obj[6]));
-                medicineGroupList.add(medicineGroup);
+            for (Object[] obj : result){
+                MedicineGroupDetailsDto dto = new MedicineGroupDetailsDto();
+                dto.setIdMedicineGroup(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setName(ValueUtil.getStringByObject(obj[1]));
+                responses.add(dto);
             }
         }
-        return medicineGroupList;
+        return responses;
     }
 }

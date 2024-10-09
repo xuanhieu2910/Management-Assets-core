@@ -16,6 +16,7 @@ public interface PositionNameRepositoryCustom {
     Optional<PositionName> findPositionNameByName(String name);
     Optional<PositionName> findPositionNameById(Integer idPositionName);
     boolean isCheckExitsAssetByIdPositionName(Integer idPositionName);
+    List<FindAllPositionNameDto> findAllPositionNameToDownload();
 
     List<PositionName> findPositionNameByListId(List<Integer> idPositionName);
 

@@ -16,9 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class OriginalRepositoryImpl implements OriginalRepositoryCustom {
 
@@ -126,6 +124,77 @@ public class OriginalRepositoryImpl implements OriginalRepositoryCustom {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Map<String, List<FindAllOriginalDto>> findAllOriginalToDownload() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH RECURSIVE cte_asset_categories as (  " +
+                "      select assetCategires.id_asset_category,assetCategires.name,  " +
+                "             assetCategires.code_name, assetCategires.short_name,  " +
+                "             assetCategires.description, assetCategires.parent,  " +
+                "             assetCategires.sort_order, assetCategires.asset_count,  " +
+                "             assetCategires.visible, assetCategires.time_created,  " +
+                "             assetCategires.time_modified, assetCategires.is_pick,  " +
+                "             1 as depth,  " +
+                "             CAST(assetCategires.id_asset_category as NCHAR ) as path,  " +
+                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,  " +
+                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
+                "             assetCategires.id_department_original  " +
+                "      from asset_categories assetCategires  " +
+                "      where parent is null  " +
+                "      union all  " +
+                "      select assetCategires.id_asset_category,assetCategires.name,  " +
+                "             assetCategires.code_name, assetCategires.short_name,  " +
+                "             assetCategires.description, assetCategires.parent,  " +
+                "             assetCategires.sort_order, assetCategires.asset_count,  " +
+                "             assetCategires.visible, assetCategires.time_created,  " +
+                "             assetCategires.time_modified, assetCategires.is_pick,  " +
+                "             cte.depth + 1 as depth,  " +
+                "             concat_ws('/',cte.path,CAST(assetCategires.id_asset_category as NCHAR)) as path,  " +
+                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,  " +
+                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
+                "             assetCategires.id_department_original  " +
+                "      from asset_categories assetCategires  " +
+                "               INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category  " +
+                "      )  " +
+                "select cte.id_asset_category, cte.name,ori.id_original, ori.name  " +
+                "from cte_asset_categories cte  " +
+                "    inner join asset_categories ac on cte.parent = ac.id_asset_category  " +
+                "    inner join original ori on ori.id_asset_category = ac.id_asset_category  " +
+                "where 1 = 1 and cte.visible = :visible  " +
+                "      and cte.is_pick = 1  " +
+                "      and cte.parent is not null  " +
+                "order by id_asset_category, id_original ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
+        List<Object[]> result = query.getResultList();
+        Map<String, List<FindAllOriginalDto>> responses = new HashMap<>();
+        if (!CollectionUtils.isEmpty(result)){
+            String keyword;
+            Integer idAssetCategory;
+            String nameAssetCategory;
+            for (Object[] obj : result){
+                idAssetCategory = ValueUtil.getIntegerByObject(obj[0]);
+                nameAssetCategory = ValueUtil.getStringByObject(obj[1]);
+                keyword = "STT_" + idAssetCategory + "_" + nameAssetCategory;
+                keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
+                if (responses.containsKey(keyword)){
+                    FindAllOriginalDto findAllOriginalDto = new FindAllOriginalDto();
+                    findAllOriginalDto.setIdOriginal(ValueUtil.getIntegerByObject(obj[2]));
+                    findAllOriginalDto.setName(ValueUtil.getStringByObject(obj[3]));
+                    responses.get(keyword).add(findAllOriginalDto);
+                } else {
+                    List<FindAllOriginalDto> allOriginalDtos = new ArrayList<>();
+                    FindAllOriginalDto findAllOriginalDto = new FindAllOriginalDto();
+                    findAllOriginalDto.setIdOriginal(ValueUtil.getIntegerByObject(obj[2]));
+                    findAllOriginalDto.setName(ValueUtil.getStringByObject(obj[3]));
+                    allOriginalDtos.add(findAllOriginalDto);
+                    responses.put(keyword, allOriginalDtos);
+                }
+            }
+        }
+        return responses;
     }
 
     private void setParameterFindAllVisibleOriginalByIdAsssetCategory(FindAllOriginalVisibleRequest request, Query query) {

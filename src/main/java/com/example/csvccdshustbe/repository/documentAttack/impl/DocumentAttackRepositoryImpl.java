@@ -17,10 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCustom {
     @PersistenceContext
@@ -256,33 +253,65 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
     }
 
     @Override
-    public List<DocumentAttack> findAllDocumentAttackId(List<Integer>idDocumentAttack) {
+    public Map<String, List<FindAllDocumentAttackDto>>
+    findAllDocumentAttackToDownloadByIdsDepartment(List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select document_attack.id_document_attack, " +
-                "document_attack.name, document_attack.code, document_attack.id_department, " +
-                " document_attack.date_determination_document, document_attack.status, " +
-                " document_attack.time_created, document_attack.time_modified " +
-                "from document_attack " +
-                "where document_attack.id_document_attack in :idDocumentAttack ");
+        sb.append("select documentAttack.id_document_attack, " +
+                "        documentAttack.name, documentAttack.code, documentAttack.id_department,  " +
+                "        documentAttack.date_determination_document, documentAttack.status,  " +
+                "        documentAttack.time_created, documentAttack.time_modified,  " +
+                "        de.name nameDepartment  " +
+                "from document_attack documentAttack  " +
+                "     left join department de on documentAttack.id_department = de.id_department  " +
+                "where documentAttack.id_department in (:idsDepartment)  " +
+                "and documentAttack.status = :status ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("idDocumentAttack", idDocumentAttack);
+        query.setParameter("idsDepartment", idsDepartment);
+        query.setParameter("status", Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
         List<Object[]> result = query.getResultList();
-        List<DocumentAttack>documentAttackList=new ArrayList<>();
+        Map<String,List<FindAllDocumentAttackDto>> responses = new HashMap<>();
         if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj: result){
-                DocumentAttack documentAttack=new DocumentAttack();
-                documentAttack.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[0]));
-                documentAttack.setName(ValueUtil.getStringByObject(obj[1]));
-                documentAttack.setCode(ValueUtil.getStringByObject(obj[2]));
-                documentAttack.setIdDepartment(ValueUtil.getIntegerByObject(obj[3]));
-                documentAttack.setDateDeterminationDocument(ValueUtil.getStringByObject(obj[4]));
-                documentAttack.setStatus(ValueUtil.getIntegerByObject(obj[5]));
-                documentAttack.setTimeCreated((ValueUtil.getStringByObject(obj[6])));
-                documentAttack.setTimeModified(ValueUtil.getStringByObject(obj[7]));
-                documentAttackList.add(documentAttack);
+            String keyword = null;
+            Integer idDepartment = null;
+            String nameDepartment = null;
+            for (Object[] obj : result){
+                idDepartment = ValueUtil.getIntegerByObject(obj[3]);
+                if (idDepartment.equals(Constants.DEFAULT_ASSET_CATEGORY)){
+                nameDepartment = "Mặc định";
+                } else {
+                    nameDepartment = ValueUtil.getStringByObject(obj[8]);
+                }
+                keyword = "STT_" + Math.abs(idDepartment) + nameDepartment;
+                keyword =  ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore,"");
+                if (responses.containsKey(keyword)){
+                    FindAllDocumentAttackDto findAllDocumentAttackDto = new FindAllDocumentAttackDto();
+                    findAllDocumentAttackDto.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[0]));
+                    findAllDocumentAttackDto.setName(ValueUtil.getStringByObject(obj[1]));
+                    findAllDocumentAttackDto.setCode(ValueUtil.getStringByObject(obj[2]));
+                    findAllDocumentAttackDto.setIdDepartment(ValueUtil.getIntegerByObject(3));
+                    findAllDocumentAttackDto.setDateDeterminationDocument(ValueUtil.getStringByObject(obj[4]));
+                    findAllDocumentAttackDto.setStatus(ValueUtil.getIntegerByObject(obj[5]));
+                    findAllDocumentAttackDto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                    findAllDocumentAttackDto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                    findAllDocumentAttackDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
+                    responses.get(keyword).add(findAllDocumentAttackDto);
+                } else {
+                    List<FindAllDocumentAttackDto> findAllDocumentAttackDtos = new ArrayList<>();
+                    FindAllDocumentAttackDto findAllDocumentAttackDto = new FindAllDocumentAttackDto();
+                    findAllDocumentAttackDto.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[0]));
+                    findAllDocumentAttackDto.setName(ValueUtil.getStringByObject(obj[1]));
+                    findAllDocumentAttackDto.setCode(ValueUtil.getStringByObject(obj[2]));
+                    findAllDocumentAttackDto.setIdDepartment(ValueUtil.getIntegerByObject(3));
+                    findAllDocumentAttackDto.setDateDeterminationDocument(ValueUtil.getStringByObject(obj[4]));
+                    findAllDocumentAttackDto.setStatus(ValueUtil.getIntegerByObject(obj[5]));
+                    findAllDocumentAttackDto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                    findAllDocumentAttackDto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                    findAllDocumentAttackDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
+                    findAllDocumentAttackDtos.add(findAllDocumentAttackDto);
+                    responses.put(keyword,findAllDocumentAttackDtos);
+                }
             }
         }
-        return documentAttackList;
+        return responses;
     }
-
 }

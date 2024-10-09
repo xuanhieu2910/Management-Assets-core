@@ -119,6 +119,14 @@ public class UserRoleServiceImpl implements UserRoleService {
         storeUserRole(request, user.get());
     }
 
+    @Override
+    public void deleteUserRoleByIdRole(Integer idRole) {
+        List<UserRole> userRoles = userRoleRepository.findUserRoleByIdRole(idRole);
+        if (!CollectionUtils.isEmpty(userRoles)) {
+            userRoleRepository.deleteAll(userRoles);
+        }
+    }
+
     private void storeUserRole(AddNewRoleDepartmentUserRequest request, CsvcUser user) {
         List<UserRole> userRoles = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());

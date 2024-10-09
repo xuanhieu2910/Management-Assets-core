@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.user;
 
+import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -30,4 +32,5 @@ public interface CsvcUserService extends UserDetailsService {
     Page<FindAllUserResponse> findAllUserResponse(FindAllUserRequest request);
     FindDetailsUserResponse findDetailsUserResponse(FindDetailsUserRequest request);
     void removeUserByDepartmentAndCodeUser(RemoveUserDepartmentRequest request);
+    Map<String, List<FindAllUserUsedDto>> findAllUserUsedToDownload();
 }

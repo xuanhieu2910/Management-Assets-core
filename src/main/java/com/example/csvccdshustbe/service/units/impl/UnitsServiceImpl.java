@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.units.impl;
 
 
+import com.example.csvccdshustbe.dto.unit.FindAllUnitsDto;
 import com.example.csvccdshustbe.entity.Units;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.units.UnitsRepository;
@@ -21,10 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,6 +88,11 @@ public class UnitsServiceImpl implements UnitsService {
             throw new NotFoundException("Don't exits units!");
         }
         return units.get();
+    }
+
+    @Override
+    public Map<String, List<FindAllUnitsDto>> findAllUnitsToDownload() {
+        return unitsRepository.findAllUnitsToDownload();
     }
 
     private void validateDataCreateUnit(CreateUnitsRequest request) throws ValidateFiledException{

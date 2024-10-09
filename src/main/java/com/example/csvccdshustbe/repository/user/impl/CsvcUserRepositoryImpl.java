@@ -169,12 +169,15 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
     @Override
     public Page<FindAllUserUsedDto> findAllUserUsedDto(FindAllUserUsedRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select csvcUser.user_name, " +
-                "       csvcUser.code_user, " +
-                "       csvcUser.full_name " +
-                "from csvc_user csvcUser " +
-                "where 1 = 1 " +
-                "and csvcUser.is_actived = :isActive ");
+        sb.append("select csvcUser.user_name,    " +
+                "       csvcUser.code_user,    " +
+                "       csvcUser.full_name    " +
+                "from csvc_user csvcUser  " +
+                "    inner join user_role userRole on csvcUser.id_user = userRole.id_user  " +
+                "    inner join department de on userRole.id_department = de.id_department  " +
+                "where 1 = 1    " +
+                "and csvcUser.is_actived = :isActive   " +
+                "and de.id_department in (:idsDepartment) ");
         setConditionFindAllUserUsedDto(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllUserUsedDto(request, query);
@@ -318,18 +321,64 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
             setFindDetailsUser(response, result.get(0));
             for (Object[] obj : result){
                 FindAllUserRoleDepartmentResponse roleDepartment = new FindAllUserRoleDepartmentResponse();
-                roleDepartment.setIdUserRole(ValueUtil.getIntegerByObject(obj[6]));
-                roleDepartment.setIdDepartment(ValueUtil.getIntegerByObject(obj[7]));
-                roleDepartment.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
-                roleDepartment.setCodeDepartment(ValueUtil.getStringByObject(obj[9]));
-                roleDepartment.setIdRole(ValueUtil.getIntegerByObject(obj[10]));
-                roleDepartment.setNameRole(ValueUtil.getStringByObject(obj[11]));
+                roleDepartment.setIdUserRole(ValueUtil.getIntegerByObject(obj[5]));
+                roleDepartment.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
+                roleDepartment.setNameDepartment(ValueUtil.getStringByObject(obj[7]));
+                roleDepartment.setCodeDepartment(ValueUtil.getStringByObject(obj[8]));
+                roleDepartment.setIdRole(ValueUtil.getIntegerByObject(obj[9]));
+                roleDepartment.setNameRole(ValueUtil.getStringByObject(obj[10]));
                 roleDepartmentResponseList.add(roleDepartment);
             }
             response.setUserRoleDepartment(roleDepartmentResponseList);
             return Optional.of(response);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Map<String, List<FindAllUserUsedDto>>
+    findAllUserUsedToDownloadByIdsDepartment(List<Integer> idsDepartmentCurrent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select de.id_department, de.name,  " +
+                "       csvcUser.code_user, csvcUser.user_name, csvcUser.full_name " +
+                "from csvc_user csvcUser " +
+                "    inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
+                "    inner join department de on userRole.id_department = de.id_department " +
+                "where csvcUser.is_actived = :isActive " +
+                "and de.id_department in (:idsDepartment) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("isActive", Constants.ACCOUNT_IS_UN_LOCK);
+        query.setParameter("idsDepartment", idsDepartmentCurrent);
+        List<Object[]> result = query.getResultList();
+        Map<String, List<FindAllUserUsedDto>> responses = new HashMap<>();
+        if (!CollectionUtils.isEmpty(result)){
+            String keyword;
+            Integer idDepartment;
+            String nameDepartment;
+            for (Object[] obj : result){
+                idDepartment = ValueUtil.getIntegerByObject(obj[0]);
+                nameDepartment = ValueUtil.getStringByObject(obj[1]);
+                keyword = "STT_" + idDepartment + nameDepartment;
+                keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore,
+                        "");
+                if (responses.containsKey(keyword)) {
+                    FindAllUserUsedDto findAllUserUsedDto = new FindAllUserUsedDto();
+                    findAllUserUsedDto.setCodeUser(ValueUtil.getStringByObject(obj[2]));
+                    findAllUserUsedDto.setUserName(ValueUtil.getStringByObject(obj[3]));
+                    findAllUserUsedDto.setFullName(ValueUtil.getStringByObject(obj[4]));
+                    responses.get(keyword).add(findAllUserUsedDto);
+                } else {
+                    List<FindAllUserUsedDto> findAllUserUsedDtos = new ArrayList<>();
+                    FindAllUserUsedDto findAllUserUsedDto = new FindAllUserUsedDto();
+                    findAllUserUsedDto.setCodeUser(ValueUtil.getStringByObject(obj[2]));
+                    findAllUserUsedDto.setUserName(ValueUtil.getStringByObject(obj[3]));
+                    findAllUserUsedDto.setFullName(ValueUtil.getStringByObject(obj[4]));
+                    findAllUserUsedDtos.add(findAllUserUsedDto);
+                    responses.put(keyword, findAllUserUsedDtos);
+                }
+            }
+        }
+        return responses;
     }
 
     private void setFindDetailsUser(FindDetailsUserResponse response, Object[] obj) {
@@ -430,6 +479,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
 
     private void setParameterFindAllUserUsedDto(FindAllUserUsedRequest request, Query query) {
         query.setParameter("isActive", Constants.ACCOUNT_IS_UN_LOCK);
+        query.setParameter("idsDepartment", request.getIdsDepartment());
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
         }
