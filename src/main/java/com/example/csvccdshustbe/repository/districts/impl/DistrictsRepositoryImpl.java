@@ -54,7 +54,7 @@ public class DistrictsRepositoryImpl implements DistrictsRepositoryCustom {
     @Override
     public Map<String, List<DistrictsDto>> findAllDistrictsToDownload() {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select provinces.code codeProvinces,  " +
+        sb.append(" select provinces.code codeProvinces, provinces.name,  " +
                 "       districts.code codeDistrict, districts.name " +
                 "from districts " +
                 "    inner join provinces on districts.province_code = provinces.code ");
@@ -63,18 +63,23 @@ public class DistrictsRepositoryImpl implements DistrictsRepositoryCustom {
         Map<String, List<DistrictsDto>> responses = new HashMap<>();
         if (!CollectionUtils.isEmpty(result)){
             String keyword;
+            String codeProvinces;
+            String nameProvinces;
             for (Object[] obj : result){
-                keyword = ValueUtil.getStringByObject(obj[0]);
+                codeProvinces = ValueUtil.getStringByObject(obj[0]);
+                nameProvinces = ValueUtil.getStringByObject(obj[1]);
+                keyword = "STT_" + codeProvinces + "_" + ValueUtil.convertToVietnamese(nameProvinces).
+                        replaceAll(ValueUtil.REGEX_letter_digit_period_underscore,"");
                 if (responses.containsKey(keyword)){
                     DistrictsDto districtsDto = new DistrictsDto();
-                    districtsDto.setCode(ValueUtil.getStringByObject(obj[1]));
-                    districtsDto.setNameDistrict(ValueUtil.getStringByObject(obj[2]));
+                    districtsDto.setCode(ValueUtil.getStringByObject(obj[2]));
+                    districtsDto.setNameDistrict(ValueUtil.getStringByObject(obj[3]));
                     responses.get(keyword).add(districtsDto);
                 } else {
                     List<DistrictsDto> districtsDtos = new ArrayList<>();
                     DistrictsDto districtsDto = new DistrictsDto();
-                    districtsDto.setCode(ValueUtil.getStringByObject(obj[1]));
-                    districtsDto.setNameDistrict(ValueUtil.getStringByObject(obj[2]));
+                    districtsDto.setCode(ValueUtil.getStringByObject(obj[2]));
+                    districtsDto.setNameDistrict(ValueUtil.getStringByObject(obj[3]));
                     districtsDtos.add(districtsDto);
                     responses.put(keyword, districtsDtos);
                 }

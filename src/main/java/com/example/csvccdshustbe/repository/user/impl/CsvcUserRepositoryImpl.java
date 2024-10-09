@@ -340,7 +340,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
     findAllUserUsedToDownloadByIdsDepartment(List<Integer> idsDepartmentCurrent) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select de.id_department, de.name,  " +
-                "       csvcUser.code_user, csvcUser.user_name, csvcUser.full_name, " +
+                "       csvcUser.code_user, csvcUser.user_name, csvcUser.full_name " +
                 "from csvc_user csvcUser " +
                 "    inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
                 "    inner join department de on userRole.id_department = de.id_department " +

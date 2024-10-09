@@ -56,7 +56,7 @@ public class WardsRepositoryImpl implements WardsRepositoryCustom {
     @Override
     public Map<String, List<WardsDto>> findAllWardsToDownload() {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select districts.code, wards.code, wards.name " +
+        sb.append(" select districts.code,districts.name , wards.code, wards.name " +
                 "from wards " +
                 "    inner join districts on wards.district_code = districts.code ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -64,18 +64,23 @@ public class WardsRepositoryImpl implements WardsRepositoryCustom {
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)){
             String keyword;
+            String codeDistrict;
+            String nameDistrict;
             for (Object[] obj : result){
-                keyword = ValueUtil.getStringByObject(obj[0]);
+                codeDistrict = ValueUtil.getStringByObject(obj[0]);
+                nameDistrict = ValueUtil.getStringByObject(obj[1]);
+                keyword = "STT_" + codeDistrict + "_" + ValueUtil.convertToVietnamese(nameDistrict).
+                        replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
                 if (responses.containsKey(keyword)){
                     WardsDto wardsDto = new WardsDto();
-                    wardsDto.setCodeWard(ValueUtil.getStringByObject(obj[1]));
-                    wardsDto.setNameWard(ValueUtil.getStringByObject(obj[2]));
+                    wardsDto.setCodeWard(ValueUtil.getStringByObject(obj[2]));
+                    wardsDto.setNameWard(ValueUtil.getStringByObject(obj[3]));
                     responses.get(keyword).add(wardsDto);
                 } else {
                     List<WardsDto> dtos = new ArrayList<>();
                     WardsDto wardsDto = new WardsDto();
-                    wardsDto.setCodeWard(ValueUtil.getStringByObject(obj[1]));
-                    wardsDto.setNameWard(ValueUtil.getStringByObject(obj[2]));
+                    wardsDto.setCodeWard(ValueUtil.getStringByObject(obj[2]));
+                    wardsDto.setNameWard(ValueUtil.getStringByObject(obj[3]));
                     dtos.add(wardsDto);
                     responses.put(keyword,dtos);
                 }
