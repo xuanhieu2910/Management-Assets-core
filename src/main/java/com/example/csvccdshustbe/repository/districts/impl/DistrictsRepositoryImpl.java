@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.districts.impl;
 
+import com.example.csvccdshustbe.dto.districts.DistrictsDto;
 import com.example.csvccdshustbe.repository.districts.DistrictsRepositoryCustom;
 import com.example.csvccdshustbe.request.districts.FindAllDistrictsRequest;
 import com.example.csvccdshustbe.response.districts.FindAllDistrictsResponse;
@@ -14,7 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DistrictsRepositoryImpl implements DistrictsRepositoryCustom {
 
@@ -46,6 +49,38 @@ public class DistrictsRepositoryImpl implements DistrictsRepositoryCustom {
         }
 
         return new PageImpl<>(responses, pageable, countFindAllDistrictsResponse(request));
+    }
+
+    @Override
+    public Map<String, List<DistrictsDto>> findAllDistrictsToDownload() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select provinces.code codeProvinces,  " +
+                "       districts.code codeDistrict, districts.name " +
+                "from districts " +
+                "    inner join provinces on districts.province_code = provinces.code ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        List<Object[]> result = query.getResultList();
+        Map<String, List<DistrictsDto>> responses = new HashMap<>();
+        if (!CollectionUtils.isEmpty(result)){
+            String keyword;
+            for (Object[] obj : result){
+                keyword = ValueUtil.getStringByObject(obj[0]);
+                if (responses.containsKey(keyword)){
+                    DistrictsDto districtsDto = new DistrictsDto();
+                    districtsDto.setCode(ValueUtil.getStringByObject(obj[1]));
+                    districtsDto.setNameDistrict(ValueUtil.getStringByObject(obj[2]));
+                    responses.get(keyword).add(districtsDto);
+                } else {
+                    List<DistrictsDto> districtsDtos = new ArrayList<>();
+                    DistrictsDto districtsDto = new DistrictsDto();
+                    districtsDto.setCode(ValueUtil.getStringByObject(obj[1]));
+                    districtsDto.setNameDistrict(ValueUtil.getStringByObject(obj[2]));
+                    districtsDtos.add(districtsDto);
+                    responses.put(keyword, districtsDtos);
+                }
+            }
+        }
+        return responses;
     }
 
 

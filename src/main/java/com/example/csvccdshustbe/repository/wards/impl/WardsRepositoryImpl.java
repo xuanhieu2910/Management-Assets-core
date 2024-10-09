@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.wards.impl;
 
+import com.example.csvccdshustbe.dto.wards.WardsDto;
 import com.example.csvccdshustbe.repository.wards.WardsRepositoryCustom;
 import com.example.csvccdshustbe.request.wards.FindAllWardsRequest;
 import com.example.csvccdshustbe.response.wards.FindAllWardsResponse;
@@ -15,7 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WardsRepositoryImpl implements WardsRepositoryCustom {
 
@@ -48,6 +51,29 @@ public class WardsRepositoryImpl implements WardsRepositoryCustom {
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllWardsResponse(request));
+    }
+
+    @Override
+    public Map<String, List<WardsDto>> findAllWardsToDownload() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select districts.code, wards.code, wards.name " +
+                "from wards " +
+                "    inner join districts on wards.district_code = districts.code ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        Map<String, List<WardsDto>> responses = new HashMap<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            String keyword;
+            for (Object[] obj : result){
+                keyword = ValueUtil.getStringByObject(obj[0]);
+                if (responses.containsKey(keyword)){
+                    List<>
+                } else {
+
+                }
+            }
+        }
+        return null;
     }
 
 

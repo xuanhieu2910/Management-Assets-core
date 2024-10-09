@@ -1,18 +1,24 @@
 package com.example.csvccdshustbe.service.upload.impl;
 
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesToDownloadDto;
+import com.example.csvccdshustbe.dto.districts.DistrictsDto;
 import com.example.csvccdshustbe.dto.documentAttack.FindAllDocumentAttackDto;
 import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
+import com.example.csvccdshustbe.dto.provinces.ProvincesDto;
 import com.example.csvccdshustbe.dto.unit.FindAllUnitsDto;
+import com.example.csvccdshustbe.entity.Provinces;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
+import com.example.csvccdshustbe.service.districts.DistrictsService;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
+import com.example.csvccdshustbe.service.province.ProvinceService;
 import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
+import com.example.csvccdshustbe.service.wards.WardsService;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.FileUtil;
 import com.example.csvccdshustbe.utility.PropertiesUtil;
@@ -56,6 +62,7 @@ public class FileUploadService implements FilesStorageService {
     private static final String NAME_SHEET_DATA_UNITS = "Units";
     private static final String NAME_SHEET_DATA_DOCUMENT_ATTACK = "DocumentAttacks";
     private static final String NAME_SHEET_DATA_PROJECTS = "Projects";
+    private static final String NAME_SHEET_DATA_PROVINCES = "Provinces";
     private static final String NAME_INDIRECT = "INDIRECT";
     private static final String VLOOKUP = "VLOOKUP";
 
@@ -73,6 +80,13 @@ public class FileUploadService implements FilesStorageService {
     DocumentAttackService documentAttackService;
     @Autowired
     ProjectsService projectsService;
+    @Autowired
+    ProvinceService provinceService;
+    @Autowired
+    DistrictsService districtsService;
+    @Autowired
+    WardsService wardsService;
+
 
 
     @Override
@@ -229,15 +243,17 @@ public class FileUploadService implements FilesStorageService {
         Map<String,List<FindAllDocumentAttackDto>> dataDocumentAttack =
                 documentAttackService.findAllDocumentAttackToDownload();
         List<FindAllProjectsDto> dataProjects = projectsService.findAllProjectToDownload();
-
-
-
+        List<ProvincesDto> dataProvinces = provinceService.findAllProvinceToDownload();
+        Map<String, List<DistrictsDto>> dataDistrict = districtsService.findAllDistrictToDownload();
+        Map<String, List<WardsDto>> dataWards =
         Workbook workbook = new XSSFWorkbook(file);
         createAssetCategoriesImport(workbook, mapAssetCategory);
         createAssetDepartmentImport(workbook, dataDepartment);
         createAssetUnits(workbook, dataUnits);
         createDocumentAttack(workbook, dataDepartment, dataDocumentAttack);
         createProjects(workbook, dataProjects);
+        createProvinces(workbook, dataProvinces);
+        createDistrict(workbook, dataDistrict);
         String filePathOutput = "C:\\Users\\hieux\\Desktop\\DEF.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
@@ -260,6 +276,14 @@ public class FileUploadService implements FilesStorageService {
         // Project
         //
         return null;
+    }
+
+    private void createDistrict(Workbook workbook, Map<String, List<DistrictsDto>> dataDistrict) {
+
+    }
+
+    private void createProvinces(Workbook workbook, List<ProvincesDto> dataProvinces) {
+
     }
 
     private void createProjects(Workbook workbook, List<FindAllProjectsDto> dataProjects) {

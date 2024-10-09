@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.province.impl;
 
+import com.example.csvccdshustbe.dto.provinces.ProvincesDto;
 import com.example.csvccdshustbe.repository.province.ProvinceRepository;
 import com.example.csvccdshustbe.request.province.FindAllProvinceRequest;
 import com.example.csvccdshustbe.response.province.FindAllProvinceResponse;
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProvinceServiceImpl implements ProvinceService {
@@ -21,5 +25,10 @@ public class ProvinceServiceImpl implements ProvinceService {
     public Page<FindAllProvinceResponse> findAllProvinceResponse(FindAllProvinceRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         return provinceRepository.findAllProvinceResponse(request, pageable);
+    }
+
+    @Override
+    public List<ProvincesDto> findAllProvinceToDownload() {
+        return provinceRepository.findAllProvincesDto();
     }
 }
