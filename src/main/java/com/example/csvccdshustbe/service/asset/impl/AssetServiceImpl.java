@@ -1650,7 +1650,6 @@ public class AssetServiceImpl implements AssetService {
 
 
         }
-
         return declareData;
     }
     public String extractNameValueFromExcel(String input) {
