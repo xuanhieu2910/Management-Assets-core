@@ -49,7 +49,7 @@ public class AssetController {
         try {
             assetService.updateAsset(updateAssetRequest);
             return ApiResponseDto.createdWithMessage("Update asset success!", HttpStatus.OK);
-        }catch (ValidateFiledException | JsonProcessingException e){
+        }catch (ValidateFiledException | JsonProcessingException | NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
