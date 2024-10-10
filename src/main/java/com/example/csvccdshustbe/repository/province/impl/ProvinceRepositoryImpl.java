@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.province.impl;
 
 import com.example.csvccdshustbe.dto.provinces.ProvincesDto;
+import com.example.csvccdshustbe.entity.Provinces;
 import com.example.csvccdshustbe.repository.province.ProvinceRepositoryCustom;
 import com.example.csvccdshustbe.request.province.FindAllProvinceRequest;
 import com.example.csvccdshustbe.response.province.FindAllProvinceResponse;
@@ -16,9 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ProvinceRepositoryImpl implements ProvinceRepositoryCustom {
 
@@ -89,5 +88,26 @@ public class ProvinceRepositoryImpl implements ProvinceRepositoryCustom {
         if (StringUtils.isNotBlank(request.getKeyword())){
             sb.append(" and (pro.name REGEXP  :keyword ) ");
         }
+    }
+
+    @Override
+    public List<Provinces> findAllProvincesByCodes(List<String> codeProvinces) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select code, name " +
+                "from provinces " +
+                "where provinces.code in :codeProvinces ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeProvinces", codeProvinces);
+        List<Object[]> result = query.getResultList();
+        List<Provinces> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                Provinces provincesDto = new Provinces();
+                provincesDto.setCode(ValueUtil.getStringByObject(obj[0]));
+                provincesDto.setName(ValueUtil.getStringByObject(obj[1]));
+                responses.add(provincesDto);
+            }
+        }
+        return responses;
     }
 }

@@ -3,7 +3,6 @@ package com.example.csvccdshustbe.service.asset.impl;
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
-import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
 import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
 import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
@@ -1167,6 +1166,9 @@ public class AssetServiceImpl implements AssetService {
                     throw new RuntimeException("You need update new file temple Upload Asset");
                 }
                 if (originalList.size() != originalListExcel.size()) {
+                    throw new RuntimeException("You need update new file temple Upload Asset");
+                }
+                if (countryProducerList.size() != countryProducerListExcel.size()) {
                     throw new RuntimeException("You need update new file temple Upload Asset");
                 }
                 if (typeUseList.size() != typeUseListExcel.size()) {

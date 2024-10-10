@@ -21,4 +21,6 @@ public interface UnitsRepositoryCustom {
     Optional<Units> findUnitByIdUnitAndStatus(Integer idUnit, Integer status);
 
     Map<String, List<FindAllUnitsDto>> findAllUnitsToDownload();
+
+    List<Units> findAllUnitsById(List<Integer> idUnit);
 }

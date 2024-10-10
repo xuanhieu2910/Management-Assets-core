@@ -17,4 +17,6 @@ public interface MedicineGroupRepositoryCustom {
     Optional<MedicineGroup> findMedicineGroupById(Integer idMedicineType);
     List<MedicineGroupDetailsDto> findAllMedicineGroupToDownload();
 
+    List<MedicineGroup> findMedicineGroupByAllId(List<Integer> idMedicineType);
+
 }

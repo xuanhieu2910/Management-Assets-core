@@ -19,4 +19,6 @@ public interface TypeUseRepositoryCustom {
     Optional<TypeUse> findTypeUseById(Integer idTypeUse);
 
     List<FindAllTypeUseDto> findAllTypeUserDtoToDownload();
+
+    List<TypeUse> findAllTypeUseByIds(List<Integer> idTypeUse);
 }

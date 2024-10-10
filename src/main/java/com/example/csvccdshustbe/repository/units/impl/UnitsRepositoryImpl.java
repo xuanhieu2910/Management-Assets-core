@@ -246,4 +246,30 @@ public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
         return findAllUnitsDto;
     }
 
+    @Override
+    public  List<Units> findAllUnitsById(List<Integer> idUnit){
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select ut.id_unit, ut.name, " +
+                "ut.time_created, ut.time_modified, ut.id_asset_category ,ut.status " +
+                "from units ut " +
+                "where ut.id_unit in :idUnit ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idUnit", idUnit);
+        List<Object[]> result = query.getResultList();
+        List<Units> unitsList= new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                Units units = new Units();
+                units.setIdUnit(ValueUtil.getIntegerByObject(obj[0]));
+                units.setName(ValueUtil.getStringByObject(obj[1]));
+                units.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
+                units.setTimeModified(ValueUtil.getStringByObject(obj[3]));
+                units.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                units.setStatus(ValueUtil.getIntegerByObject(obj[5]));
+                unitsList.add(units);
+
+            }
+        }
+        return unitsList;
+    }
 }

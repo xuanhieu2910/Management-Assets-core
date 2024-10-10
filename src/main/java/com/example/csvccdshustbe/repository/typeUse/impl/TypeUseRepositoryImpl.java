@@ -12,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -146,5 +147,30 @@ public class TypeUseRepositoryImpl implements TypeUseRepositoryCustom {
             }
         }
         return responses;
+    }
+
+    @Override
+    public  List<TypeUse> findAllTypeUseByIds(List<Integer> idTypeUse) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select ty.id_type_use, ty.name, " +
+                "       ty.time_created, ty.time_modified, ty.status " +
+                "from type_use ty " +
+                "where ty.id_type_use in :idTypeUse ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idTypeUse", idTypeUse);
+        List<TypeUse> typeUseList= new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                TypeUse typeUse = new TypeUse();
+                typeUse.setIdTypeUse(ValueUtil.getIntegerByObject(obj[0]));
+                typeUse.setName(ValueUtil.getStringByObject(obj[1]));
+                typeUse.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
+                typeUse.setTimeModified(ValueUtil.getStringByObject(obj[3]));
+                typeUse.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                typeUseList.add (typeUse);
+            }
+        }
+        return typeUseList;
     }
 }
