@@ -281,7 +281,7 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
                 } else {
                     nameDepartment = ValueUtil.getStringByObject(obj[8]);
                 }
-                keyword = "STT_" + Math.abs(idDepartment) + nameDepartment;
+                keyword = "STT_" + Math.abs(idDepartment) + "_" + nameDepartment;
                 keyword =  ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore,"");
                 if (responses.containsKey(keyword)){
                     FindAllDocumentAttackDto findAllDocumentAttackDto = new FindAllDocumentAttackDto();

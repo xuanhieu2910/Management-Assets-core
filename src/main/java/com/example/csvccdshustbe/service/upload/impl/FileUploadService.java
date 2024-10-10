@@ -285,7 +285,7 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public Resource downLoadFileImportAsset() throws IOException {
-        String fileExcel = "D:\\CompanyBk\\CSVC\\csvc-hust\\src\\main\\resources\\static\\ABC.xlsx";
+        String fileExcel = "C:\\Users\\hieux\\Desktop\\Projects\\src\\main\\resources\\static\\Final.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
 
         Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory =
@@ -331,8 +331,7 @@ public class FileUploadService implements FilesStorageService {
         createDataGoalsUseGround(workbook, dataGoalsUseGround);
 
 
-        
-        String filePathOutput = "D:\\CompanyBk\\CSVC\\csvc-hust\\DEF.xlsx";
+        String filePathOutput = "C:\\Users\\hieux\\Desktop\\DEF.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
         } catch (IOException e) {
@@ -342,7 +341,6 @@ public class FileUploadService implements FilesStorageService {
         workbook.close();
         return null;
     }
-
     private void createDataGoalsUseGround(Workbook workbook, List<FindAllGoalsUseGroundDto> dataGoalsUseGround) {
         Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_GOALS_USE_GROUND);
         Row row = null;
@@ -353,7 +351,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheet.getRow(i);
             }
-            String valueCell = dataGoalsUseGround.get(i).getIdGoalsUseGround() + "." + dataGoalsUseGround.get(i).getNameGoalsUseGround();
+            String valueCell = dataGoalsUseGround.get(i).getIdGoalsUseGround() + "_" + dataGoalsUseGround.get(i).getNameGoalsUseGround();
             row.createCell(indexCell).setCellValue(valueCell);
         }
         if (row != null) {
@@ -364,15 +362,16 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 116, 116);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 119, 119);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
         }
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_GOALS_USE_GROUND), true);
     }
 
     private void createDataMedicineGroup(Workbook workbook, List<MedicineGroupDetailsDto> dataMedicineGroup) {
@@ -385,7 +384,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheet.getRow(i);
             }
-            String valueCell = dataMedicineGroup.get(i).getIdMedicineGroup() + "." + dataMedicineGroup.get(i).getName();
+            String valueCell = dataMedicineGroup.get(i).getIdMedicineGroup() + "_" + dataMedicineGroup.get(i).getName();
             row.createCell(indexCell).setCellValue(valueCell);
         }
         if (row != null) {
@@ -396,15 +395,16 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 92, 92);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 94, 94);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
         }
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_MEDICINE_GROUP), true);
     }
 
     private void createDataMedicineType(Workbook workbook, List<MedicineTypeDetailsDto> dataMedicineType) {
@@ -417,7 +417,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheet.getRow(i);
             }
-            String valueCell = dataMedicineType.get(i).getIdMedicineType() + "." + dataMedicineType.get(i).getName();
+            String valueCell = dataMedicineType.get(i).getIdMedicineType() + "_" + dataMedicineType.get(i).getName();
             row.createCell(indexCell).setCellValue(valueCell);
         }
         if (row != null) {
@@ -428,15 +428,16 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 91, 91);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 93, 93);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "PVui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
         }
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_MEDICINE_TYPE), true);
     }
 
     private void createPositionName(Workbook workbook, List<FindAllPositionNameDto> dataPositionName) {
@@ -449,7 +450,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheet.getRow(i);
             }
-            String valueCell = dataPositionName.get(i).getIdPositionName() + "." + dataPositionName.get(i).getName();
+            String valueCell = dataPositionName.get(i).getIdPositionName() + "_" + dataPositionName.get(i).getName();
             row.createCell(indexCell).setCellValue(valueCell);
         }
         if (row != null) {
@@ -460,25 +461,36 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 62, 62);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 63, 63);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
 
             CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 63, 63);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 64, 64);
             DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
+
+            CellRangeAddressList categoryAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 82, 82);
+            DataValidation categoryValidation_2 = dvHelper.createValidation(categoryConstraint, categoryAddressList_2);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_2);
         }
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_POSITION_NAME), true);
     }
 
     private void createTypeUse(Workbook workbook, List<FindAllTypeUseDto> dataTypeUse) {
@@ -491,7 +503,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheet.getRow(i);
             }
-            String valueCell = dataTypeUse.get(i).getIdTypeUse() + "." + dataTypeUse.get(i).getNameTypeUse();
+            String valueCell = dataTypeUse.get(i).getIdTypeUse() + "_" + dataTypeUse.get(i).getNameTypeUse();
             row.createCell(indexCell).setCellValue(valueCell);
         }
         if (row != null) {
@@ -502,58 +514,59 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 21, 21);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 22, 22);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
 
 
             CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 61, 61);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 62, 62);
             DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
 
             CellRangeAddressList categoryAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 80, 80);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 81, 81);
             DataValidation categoryValidation_2 = dvHelper.createValidation(categoryConstraint, categoryAddressList_2);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_2);
 
 
             CellRangeAddressList categoryAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 83, 83);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 85, 85);
             DataValidation categoryValidation_3 = dvHelper.createValidation(categoryConstraint, categoryAddressList_3);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_3);
 
 
             CellRangeAddressList categoryAddressList_4 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 90, 90);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 92, 92);
             DataValidation categoryValidation_4 = dvHelper.createValidation(categoryConstraint, categoryAddressList_4);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_4);
         }
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_TYPE_USED), true);
     }
 
     private void createGroundAsset(Workbook workbook, List<FindAllGroundAssetDto> dataGroundAsset) {
@@ -566,7 +579,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheet.getRow(i);
             }
-            String valueCell = dataGroundAsset.get(i).getIdGroundAsset() + "." + dataGroundAsset.get(i).getNameGroundAsset();
+            String valueCell = dataGroundAsset.get(i).getIdGroundAsset() + "_" + dataGroundAsset.get(i).getNameGroundAsset();
             row.createCell(indexCell).setCellValue(valueCell);
         }
         if (row != null) {
@@ -577,25 +590,26 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 27, 27);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 28, 28);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
 
             CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 35, 35);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 36, 36);
             DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
         }
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ASSET_GROUND), true);
     }
 
     private void createUserUsed(Workbook workbook, Map<String, List<FindAllUserUsedDto>> dataUserUsed) {
@@ -614,12 +628,12 @@ public class FileUploadService implements FilesStorageService {
         String formula = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $D4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
         CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 20,20);
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 21,21);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
 
@@ -628,12 +642,12 @@ public class FileUploadService implements FilesStorageService {
         String formula_1 = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $D4)";
         DataValidationConstraint productConstraint_1 = dvHelper_1.createFormulaListConstraint(formula_1);
         CellRangeAddressList productAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 60,60);
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 61,61);
         DataValidation productValidation_1 = dvHelper.createValidation(productConstraint_1, productAddressList_1);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_1);
 
@@ -641,12 +655,12 @@ public class FileUploadService implements FilesStorageService {
         String formula_2 = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $D4)";
         DataValidationConstraint productConstraint_2 = dvHelper_2.createFormulaListConstraint(formula_2);
         CellRangeAddressList productAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 79,79);
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 80,80);
         DataValidation productValidation_2 = dvHelper.createValidation(productConstraint_2, productAddressList_2);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_2);
 
@@ -655,15 +669,15 @@ public class FileUploadService implements FilesStorageService {
         String formula_3 = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $D4)";
         DataValidationConstraint productConstraint_3 = dvHelper_3.createFormulaListConstraint(formula_3);
         CellRangeAddressList productAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 89,89);
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 91,91);
         DataValidation productValidation_3 = dvHelper.createValidation(productConstraint_3, productAddressList_3);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_3);
-
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_USER_USED), true);
     }
 
     private void filledDataUserUsed(Sheet sheet, List<FindAllUserUsedDto> dtos, int index, String keyword) {
@@ -700,7 +714,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheet.getRow(i);
             }
-            String valueCell = dataCountryProducer.get(i).getIdCountryProducer() + "." + dataCountryProducer.get(i).getName();
+            String valueCell = dataCountryProducer.get(i).getIdCountryProducer() + "_" + dataCountryProducer.get(i).getName();
             row.createCell(indexCell).setCellValue(valueCell);
         }
         if (row != null) {
@@ -711,64 +725,65 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 19, 19);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 20, 20);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
 
             CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 40, 40);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 41, 41);
             DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
 
             CellRangeAddressList categoryAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 54, 54);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 55, 55);
             DataValidation categoryValidation_2 = dvHelper.createValidation(categoryConstraint, categoryAddressList_2);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_2);
 
             CellRangeAddressList categoryAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 73, 73);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 74, 74);
             DataValidation categoryValidation_3 = dvHelper.createValidation(categoryConstraint, categoryAddressList_3);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_3);
 
             CellRangeAddressList categoryAddressList_4 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 88, 88);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 90, 90);
             DataValidation categoryValidation_4 = dvHelper.createValidation(categoryConstraint, categoryAddressList_4);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_4);
 
             CellRangeAddressList categoryAddressList_5 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 82, 82);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 84, 84);
             DataValidation categoryValidation_5 = dvHelper.createValidation(categoryConstraint, categoryAddressList_5);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_5);
+            workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_COUNTRY_PRODUCER), true);
         }
     }
 
@@ -791,11 +806,12 @@ public class FileUploadService implements FilesStorageService {
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 12,12);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ORIGINAL), true);
     }
 
     private void filledDataOriginal(Sheet sheet, List<FindAllOriginalDto> dtos, int index, String keyword) {
@@ -806,7 +822,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheet.getRow(i);
             }
-            String valueCell = dtos.get(i).getIdOriginal() + "." + dtos.get(i).getName();
+            String valueCell = dtos.get(i).getIdOriginal() + "_" + dtos.get(i).getName();
             row.createCell(index).setCellValue(valueCell);
 
         }
@@ -835,30 +851,31 @@ public class FileUploadService implements FilesStorageService {
         }
 
         DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
-        String formula = NAME_INDIRECT + "(\"" + PREFIX[6] + "\"" + " & $X4)";
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[6] + "\"" + " & $Y4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
         CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 24,24);
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 25,25);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
 
         DataValidationHelper dvHelper_1 = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
-        String formula_1 = NAME_INDIRECT + "(\"" + PREFIX[6] + "\"" + " & $AD4)";
+        String formula_1 = NAME_INDIRECT + "(\"" + PREFIX[6] + "\"" + " & $AE4)";
         DataValidationConstraint productConstraint_1 = dvHelper_1.createFormulaListConstraint(formula_1);
         CellRangeAddressList productAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 30,30);
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 31,31);
         DataValidation productValidation_1 = dvHelper.createValidation(productConstraint_1, productAddressList_1);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_1);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_WARDS), true);
     }
 
     private void filledDataWards(Sheet sheet, List<WardsDto> dtos, int index, String keyword) {
@@ -896,7 +913,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheet.getRow(i);
             }
-            String valueCell = dataAssetDepartment.get(i).getIdDepartment() + "." + dataAssetDepartment.get(i).getName();
+            String valueCell = dataAssetDepartment.get(i).getIdDepartment() + "_" + dataAssetDepartment.get(i).getName();
             row.createCell(indexCell).setCellValue(valueCell);
         }
         if (row != null) {
@@ -910,11 +927,12 @@ public class FileUploadService implements FilesStorageService {
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 10, 10);
             DataValidation categoryValidation_0 = dvHelper.createValidation(categoryConstraint, addressList_0);
             categoryValidation_0.setShowErrorBox(true);
-            categoryValidation_0.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation_0.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation_0.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation_0.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation_0.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation_0.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_0);
+            workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ASSET_DEPARTMENT), true);
         }
     }
 
@@ -932,30 +950,31 @@ public class FileUploadService implements FilesStorageService {
         }
 
         DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
-        String formula = NAME_INDIRECT + "(\"" + PREFIX[5] + "\"" + " & $W4)";
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[5] + "\"" + " & $X4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
         CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 23,23);
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 24,24);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
 
         DataValidationHelper dvHelper_1 = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
-        String formula_1 = NAME_INDIRECT + "(\"" + PREFIX[5] + "\"" + " & $AC4)";
+        String formula_1 = NAME_INDIRECT + "(\"" + PREFIX[5] + "\"" + " & $AD4)";
         DataValidationConstraint productConstraint_1 = dvHelper_1.createFormulaListConstraint(formula_1);
         CellRangeAddressList productAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 29,29);
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 30,30);
         DataValidation productValidation_1 = dvHelper.createValidation(productConstraint_1, productAddressList_1);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_1);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_DISTRICTS), true);
     }
 
     private void filledDataDistricts(Sheet sheet, List<DistrictsDto> dtos, int index, String keyword) {
@@ -1004,24 +1023,25 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList addressList_0 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 22, 22);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 23, 23);
             DataValidation categoryValidation_0 = dvHelper.createValidation(categoryConstraint, addressList_0);
             categoryValidation_0.setShowErrorBox(true);
-            categoryValidation_0.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation_0.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation_0.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation_0.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation_0.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation_0.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_0);
 
             CellRangeAddressList addressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 28, 28);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 29, 29);
             DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, addressList_1);
             categoryValidation_1.setShowErrorBox(true);
-            categoryValidation_1.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation_1.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation_1.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation_1.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation_1.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation_1.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
+            workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_PROVINCES), true);
         }
     }
 
@@ -1035,7 +1055,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheet.getRow(i);
             }
-            String valueCell = dataProjects.get(i).getIdProject() + "." + dataProjects.get(i).getShortName();
+            String valueCell = dataProjects.get(i).getIdProject() + "_" + dataProjects.get(i).getShortName();
             row.createCell(indexCell).setCellValue(valueCell);
         }
         if (row != null) {
@@ -1049,11 +1069,12 @@ public class FileUploadService implements FilesStorageService {
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 7, 7);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+            workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_PROJECTS), true);
         }
     }
 
@@ -1065,7 +1086,7 @@ public class FileUploadService implements FilesStorageService {
         while (keywords.hasNext()){
             String keyword = keywords.next();
             if (!dataDocumentAttack.containsKey(keyword)) {
-                filledDataDocumentAttackDefault(sheetDocumentAttack,dataDocumentAttack.get("STT_100Macdinh"), index, keyword);
+                filledDataDocumentAttackDefault(sheetDocumentAttack,dataDocumentAttack.get("STT_100_Macdinh"), index, keyword);
             } else {
                 filledDataDocumentAttack(sheetDocumentAttack, dataDocumentAttack.get(keyword), index, keyword);
             }
@@ -1079,11 +1100,12 @@ public class FileUploadService implements FilesStorageService {
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 6,6);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_DOCUMENT_ATTACK), true);
     }
 
     private void filledDataDocumentAttackDefault(Sheet sheetDocumentAttack, List<FindAllDocumentAttackDto> dtos,
@@ -1095,7 +1117,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheetDocumentAttack.getRow(i);
             }
-            String valueCell = dtos.get(i).getIdDocumentAttack() + "." + dtos.get(i).getName();
+            String valueCell = dtos.get(i).getIdDocumentAttack() + "_" + dtos.get(i).getName();
             row.createCell(index).setCellValue(valueCell);
 
         }
@@ -1120,7 +1142,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheetDocumentAttack.getRow(i);
             }
-            String valueCell = dtos.get(i).getIdDocumentAttack() + "." + dtos.get(i).getName();
+            String valueCell = dtos.get(i).getIdDocumentAttack() + "_" + dtos.get(i).getName();
             row.createCell(index).setCellValue(valueCell);
 
         }
@@ -1154,11 +1176,12 @@ public class FileUploadService implements FilesStorageService {
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 5,5);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_UNITS), true);
     }
 
     private void filledDataUnits(Sheet sheetUnit, List<FindAllUnitsDto> dtos, int index, String keyword) {
@@ -1169,7 +1192,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheetUnit.getRow(i);
             }
-            String valueCell = dtos.get(i).getIdUnit() + "." + dtos.get(i).getNameUnit();
+            String valueCell = dtos.get(i).getIdUnit() + "_" + dtos.get(i).getNameUnit();
             row.createCell(index).setCellValue(valueCell);
 
         }
@@ -1210,11 +1233,12 @@ public class FileUploadService implements FilesStorageService {
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 4,4);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_LOCATION), true);
     }
 
     private void setDataDepartment(String[] departments, Workbook workbook) {
@@ -1231,7 +1255,6 @@ public class FileUploadService implements FilesStorageService {
         }
         CellReference cellReference = new CellReference(row.getCell(indexCellDepartment));
         String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_DEPARTMENT+"!", "").replaceAll("\\d","");
-//        String formula = "=Department!$A$1:$A$20"
         String formula = "=" + NAME_SHEET_DATA_DEPARTMENT + "!$" + prefix + "$1:" + "$" + prefix + departments.length;
         DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
         DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
@@ -1239,11 +1262,12 @@ public class FileUploadService implements FilesStorageService {
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 3, 3);
         DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
         categoryValidation.setShowErrorBox(true);
-        categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         categoryValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_DEPARTMENT), true);
     }
 
     private void filledDataLocation(Sheet sheetDepartment, List<FindAllLocationDto> dtos, int index, String keyword) {
@@ -1256,7 +1280,7 @@ public class FileUploadService implements FilesStorageService {
                 } else {
                     row = sheetDepartment.getRow(indexStartFilled);
                 }
-                String valueCell = dtos.get(i).getIdLocation() + "." + dtos.get(i).getName();
+                String valueCell = dtos.get(i).getIdLocation() + "_" + dtos.get(i).getName();
                 row.createCell(index).setCellValue(valueCell);
                 ++indexStartFilled;
             }
@@ -1301,43 +1325,47 @@ public class FileUploadService implements FilesStorageService {
             ++index;
             ++indexFilledData;
         }
-
+        /**
+         *  Cột danh mục tài sản
+         * */
         DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
         DataValidationConstraint categoryConstraint = dvHelper.createExplicitListConstraint(assetCategories);
         CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 0, 0);
         DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
         categoryValidation.setShowErrorBox(true);
-        categoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        categoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         categoryValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
-
+        /**
+         *  Cột loại tài sản
+         * */
         String formula = NAME_INDIRECT + "(\"" + PREFIX[0] + "\"" + " & $A4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
         CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 1,1);
         DataValidation subCategoryValidation = dvHelper.createValidation(productConstraint, productAddressList);
         subCategoryValidation.setShowErrorBox(true);
-        subCategoryValidation.createErrorBox(ERROR, "Custom text not allowed, please select from the drop-down list.");
+        subCategoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
         subCategoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        subCategoryValidation.createPromptBox(PROMPT, "Please click the drop-down item.");
+        subCategoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         subCategoryValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(subCategoryValidation);
 
-        // SET DEPRECIATION
+        /**
+         *  Cột khấu hao và hao mòn
+         * */
         for (int rowIndex = TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW; rowIndex <= TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW; rowIndex++) {
             Row row = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getRow(rowIndex);
             if (row == null) {
                 row = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).createRow(rowIndex); // Create row if it doesn't exist
             }
-            Cell cellMinDepreciation = row.createCell(139);
-            Cell cellMaxDepreciation = row.createCell(140);
-            Cell cellValueWearTear  = row.createCell(134);
-            Cell cellYearUsedWearTear = row.createCell(133);
-
-//            =IF(NOT(ISBLANK($B4)),VLOOKUP($B4,AssetCategories!$A:$E,5,0),"")
+            Cell cellMinDepreciation = row.createCell(142);
+            Cell cellMaxDepreciation = row.createCell(143);
+            Cell cellValueWearTear  = row.createCell(137);
+            Cell cellYearUsedWearTear = row.createCell(136);
 
             String formulaMinDepreciation = "IF(NOT(ISBLANK($B"+ (rowIndex + 1) + ")),VLOOKUP($B" + (rowIndex + 1) +"," + NAME_SHEET_DATA_ASSET_CATEGORY + "!$A:$E,2,0),\"\")";
             String formulaMaxDepreciation = "IF(NOT(ISBLANK($B"+ (rowIndex + 1) + ")),VLOOKUP($B" + (rowIndex + 1) +"," + NAME_SHEET_DATA_ASSET_CATEGORY + "!$A:$E,3,0),\"\")";
@@ -1348,7 +1376,7 @@ public class FileUploadService implements FilesStorageService {
             cellValueWearTear.setCellFormula(formulaValueWearTear);
             cellYearUsedWearTear.setCellFormula(formulaYearUsedWearTear);
         }
-//        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ASSET_CATEGORY), true);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ASSET_CATEGORY), true);
     }
     private Integer filledDataAssetCategory(Sheet sheetAssetCategories,
                                          List<FindAllAssetCategoriesToDownloadDto> dtos,
@@ -1362,7 +1390,7 @@ public class FileUploadService implements FilesStorageService {
             } else {
                 row = sheetAssetCategories.getRow(i);
             }
-            String valueCell = dtos.get(indexStart).getIdAssetCategory() + "." + dtos.get(indexStart).getName();
+            String valueCell = dtos.get(indexStart).getIdAssetCategory() + "_" + dtos.get(indexStart).getName();
             String minimumTimeDepreciation = dtos.get(indexStart).getMinimumTimeDepreciation();
             String maximumTimeDepreciation = dtos.get(indexStart).getMaximumTimeDepreciation();
             String valueWearTear = dtos.get(indexStart).getValueWearTear();

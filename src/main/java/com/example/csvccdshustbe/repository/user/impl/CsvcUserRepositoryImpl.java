@@ -358,7 +358,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
             for (Object[] obj : result){
                 idDepartment = ValueUtil.getIntegerByObject(obj[0]);
                 nameDepartment = ValueUtil.getStringByObject(obj[1]);
-                keyword = "STT_" + idDepartment + nameDepartment;
+                keyword = "STT_" + idDepartment + "_" + nameDepartment;
                 keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore,
                         "");
                 if (responses.containsKey(keyword)) {

@@ -891,9 +891,7 @@ public class AssetServiceImpl implements AssetService {
         return filesStorageService.downLoadFileImportAsset();
     }
 
-
-    //Upload File CSV Sample
-    public void uploadFileAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException {
+    public void uploadFileImportAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException {
     ValidateExcelUtils.checkFileExcel(file);
     List<Map<String, Object>> assetRequests = handleUploadFileAsset(file);
     for (Map<String, Object> createAssetRequest : assetRequests) {

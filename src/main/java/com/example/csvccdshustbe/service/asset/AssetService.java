@@ -30,7 +30,6 @@ public interface AssetService {
     String uploadFile(MultipartFile multipartFile) throws FileException, IOException, FileExcelException;
     void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException;
     Resource downloadFileTemplateImportAsset() throws IOException;
-
-    void uploadFileAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException;
+    void uploadFileImportAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException;
 
 }

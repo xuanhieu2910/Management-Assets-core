@@ -153,7 +153,7 @@ public class AssetController {
     @PostMapping("/upload-file")
     public ResponseEntity<?> uploadFileAssetToSystem(@RequestParam("file")MultipartFile file){
         try {
-            assetService.uploadFileAsset(file);
+            assetService.uploadFileImportAsset(file);
             return ApiResponseDto.createdWithMessage("Upload file asset success!", HttpStatus.OK);
         }catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
