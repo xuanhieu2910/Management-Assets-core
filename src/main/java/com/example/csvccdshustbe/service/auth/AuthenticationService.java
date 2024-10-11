@@ -8,7 +8,6 @@ import com.example.csvccdshustbe.response.user.UserAuthenticationResponse;
 public interface AuthenticationService {
 
     UserAuthenticationDto register(UserRegisterAccountRequest request) throws Exception;
-
     UserAuthenticationDto authenticate(UserAuthenticationRequest request) throws Exception;
     UserAuthenticationResponse convertToAuthenticationResponse(UserAuthenticationDto authenticationDto);
 
