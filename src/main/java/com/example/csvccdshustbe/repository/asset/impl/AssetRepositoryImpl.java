@@ -60,7 +60,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "    inner join asset_categories assetCategories " +
                 "            on asset.id_asset_category = assetCategories.id_asset_category " +
                 "    inner join department de on asset.id_department = de.id_department " +
-                "    inner join location lo on asset.id_location = lo.id_location " +
+                "    left join location lo on asset.id_location = lo.id_location " +
                 "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal) ");
         setConditionFindAllAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
