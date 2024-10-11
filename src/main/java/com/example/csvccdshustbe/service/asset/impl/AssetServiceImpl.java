@@ -1509,9 +1509,9 @@ public class AssetServiceImpl implements AssetService {
         String medicineType = (String)ExcelUtil.convertValue(row.getCell(93), CellType.STRING);
         String medicineGroup = (String)ExcelUtil.convertValue(row.getCell(94), CellType.STRING);
         if (medicineType == null && medicineGroup == null){
-            for (Modules modules : ModulesArray){
-                if (modules.getHardCode().equals("MedicineModule")){
-                    ModulesArray.remove(modules);
+            for (int i = 0 ; i< ModulesArray.size(); i++){
+                if (ModulesArray.get(i).getHardCode().equals("MedicineModule")) {
+                    ModulesArray.remove(i);
                 }
             }
         }
