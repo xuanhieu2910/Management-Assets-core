@@ -120,7 +120,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "     inner join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category             " +
                 "     inner join department de on asset.id_department = de.id_department             " +
                 "     inner join document_attack documentAttack on asset.id_document_attack = documentAttack.id_document_attack             " +
-                "     inner join location location on asset.id_location = location.id_location             " +
+                "     left join location location on asset.id_location = location.id_location             " +
                 "     inner join units unit on asset.id_unit = unit.id_unit             " +
                 "     inner join projects project on asset.id_projects = project.id_project             " +
                 "     left join department departmentDefault on asset.id_department_default = departmentDefault.id_department             " +
@@ -434,7 +434,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "    inner join asset_categories assetCategories " +
                 "            on asset.id_asset_category = assetCategories.id_asset_category " +
                 "    inner join department de on asset.id_department = de.id_department " +
-                "    inner join location lo on asset.id_location = lo.id_location " +
+                "    left join location lo on asset.id_location = lo.id_location " +
                 "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal) ");
         setConditionFindAllAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
