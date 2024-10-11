@@ -242,7 +242,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" select asset.id_asset, asset.code_asset, asset.name " +
                 "from asset asset " +
-                "    inner join ground_module groundModule on asset.id_asset = groundModule.asset_id " +
+                "    inner join ground_module groundModule on asset.id_asset = groundModule.id_asset " +
                 "where 1 = 1 ");
         setConditionFindAllGroundAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -268,7 +268,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         sb.append(" select asset.id_asset, asset.code_asset, asset.name    " +
                 "from asset asset  " +
                 "      inner join ground_module groundModule on  " +
-                "          asset.id_asset = groundModule.asset_id  " +
+                "          asset.id_asset = groundModule.id_asset  " +
                 "where 1 = 1 ");
         Query query = entityManager.createNativeQuery(sb.toString());
         List<Object[]> result = query.getResultList();
@@ -289,7 +289,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) " +
                 "from asset asset " +
-                "    inner join ground_module groundModule on asset.id_asset = groundModule.asset_id " +
+                "    inner join ground_module groundModule on asset.id_asset = groundModule.id_asset " +
                 "where 1 = 1 ");
         setConditionFindAllGroundAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());

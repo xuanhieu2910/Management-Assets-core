@@ -156,6 +156,7 @@ public class AssetController {
             assetService.uploadFileImportAsset(file);
             return ApiResponseDto.createdWithMessage("Upload file asset success!", HttpStatus.OK);
         }catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

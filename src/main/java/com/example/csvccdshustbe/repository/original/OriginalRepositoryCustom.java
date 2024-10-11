@@ -16,5 +16,6 @@ public interface OriginalRepositoryCustom {
     Optional<Original> findOriginalByHardCodeAndStatus(String hardCode, Integer status);
     Map<String, List<FindAllOriginalDto>> findAllOriginalToDownload();
     Optional<Original> findOriginalByName(String name);
+    Optional<Original> findOriginalById(Integer idOriginal);
     List<Original> findAllOriginalById(List<Integer> idOriginal);
 }

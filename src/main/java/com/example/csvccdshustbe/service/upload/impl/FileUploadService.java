@@ -285,7 +285,7 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public Resource downLoadFileImportAsset() throws IOException {
-        String fileExcel = "C:\\Users\\hieux\\Desktop\\Projects\\src\\main\\resources\\static\\Final.xlsx";
+        String fileExcel = "D:\\CompanyBk\\CSVC\\csvc-hust\\src\\main\\resources\\static\\Final.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
 
         Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory =
@@ -331,7 +331,7 @@ public class FileUploadService implements FilesStorageService {
         createDataGoalsUseGround(workbook, dataGoalsUseGround);
 
 
-        String filePathOutput = "C:\\Users\\hieux\\Desktop\\DEF.xlsx";
+        String filePathOutput = "D:\\CompanyBk\\CSVC\\csvc-hust\\DEF.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
         } catch (IOException e) {

@@ -22,7 +22,7 @@ public class GroundModuleRepositoryImpl implements GroundModuleRepositoryCustom 
     @Override
     public Optional<GroundModulesDetailsDto> findGroundModuleDetailsDtoByIdGroundModule(Integer idGroundModule) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select groundModule.id_ground_module, groundModule.asset_id, groundModule.province_code,   " +
+        sb.append("select groundModule.id_ground_module, groundModule.id_asset, groundModule.province_code,   " +
                 "       groundModule.district_code, groundModule.ward_code, groundModule.address_detail, " +
                 "       pr.name nameProvinces, dis.name nameDistricts, wa.name nameWards " +
                 "from ground_module groundModule   " +
@@ -67,7 +67,7 @@ public class GroundModuleRepositoryImpl implements GroundModuleRepositoryCustom 
     @Override
     public Optional<GroundModule> findGroundModuleByIdGroundModule(Integer idInstance) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select ground.id_ground_module, ground.asset_id, ground.province_code, " +
+        sb.append(" select ground.id_ground_module, ground.id_asset, ground.province_code, " +
                 "       ground.district_code, ground.ward_code, ground.address_detail " +
                 "from ground_module ground " +
                 "where ground.id_ground_module = :idGroundModule ");
