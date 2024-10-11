@@ -975,7 +975,6 @@ public class AssetServiceImpl implements AssetService {
         List<Map<String, Object>> assetRequests = new ArrayList<>();
         int indexSheet = 0;
         int indexRowStartToReadData = 3;
-
         try {
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(indexSheet);
@@ -984,15 +983,12 @@ public class AssetServiceImpl implements AssetService {
                 totalRow=2000;
             }
             List<XSSFRow> allRows = new ArrayList<>();
-
             for (int i = indexRowStartToReadData; i <= totalRow; i++) {
                 XSSFRow row = xssfSheet.getRow(i);
                 if (row != null && hasDataInRow(row,5)) {
                     allRows.add(row);
                 }
             }
-
-
             int batchSize = Constants.SIZE_HANDLE;
             for (int start = 0; start < allRows.size(); start += batchSize) {
                 List<Integer> instanceCategoryListExcel= new ArrayList<>();
@@ -1016,7 +1012,6 @@ public class AssetServiceImpl implements AssetService {
                 for (OriginalOfFormation original : originalOfFormationList) {
                     originalOfFormationIds.add(original.getIdOriginalOfFormation());
                 }
-
                 for (int i = start; i < Math.min(start + batchSize, allRows.size()); i++) {
                     XSSFRow row = allRows.get(i);
                     String idInstanceCategoryExcel = (String) ExcelUtil.convertValue(row.getCell(0), CellType.STRING);
@@ -1111,7 +1106,6 @@ public class AssetServiceImpl implements AssetService {
                     if (idTypeUseOtherAssetExcel != null) {
                         typeUseListExcel.add(extractIdValueFromExcel(idTypeUseOtherAssetExcel));
                     }
-
                     if (idProvincesGroundExcel != null) {
                         provincesListExcel.add(extractCodeValueFromExcel(idProvincesGroundExcel));
                     }
@@ -1145,7 +1139,6 @@ public class AssetServiceImpl implements AssetService {
                     if (idMedicineGroupExcel != null) {
                         medicineGroupListExcel.add(extractIdValueFromExcel(idMedicineGroupExcel));
                     }
-
                 }
                 Set<Integer> uniqueInstanceCategorySet = new HashSet<>(instanceCategoryListExcel);
                 instanceCategoryListExcel = new ArrayList<>(uniqueInstanceCategorySet);
@@ -1180,11 +1173,6 @@ public class AssetServiceImpl implements AssetService {
                 Set<Integer> uniqueMedicineGroupSet = new HashSet<>(medicineGroupListExcel);
                 medicineGroupListExcel = new ArrayList<>(uniqueMedicineGroupSet);
 
-
-
-
-
-
                 List<AssetCategories> assetInstanceCategoryNamesList = assetCategoriesRepository.findAllAssetCategoriesByIdIn(instanceCategoryListExcel);
                 List<AssetCategories> assetCategoriesList = assetCategoriesRepository.findAllAssetCategoriesByIdIn(categoryListExcel);
                 List<OriginalOfFormation> ofFormationList = originalOfFormationRepository.findAllOriginalOfFormationById(originalOfFormationIds);
@@ -1213,8 +1201,6 @@ public class AssetServiceImpl implements AssetService {
                 ||medicineGroupList.size() != medicineGroupListExcel.size() || instanceCategoryListExcel.size() != assetInstanceCategoryNamesList.size()) {
                     throw new RuntimeException("You need update new file temple Upload Asset");
                 }
-
-
 
                 Map<String, OriginalOfFormation> originalOfFormationMap = ofFormationList.stream()
                         .collect(Collectors.toMap(OriginalOfFormation::getName, Function.identity(), (existing, replacement) -> existing));
@@ -1332,17 +1318,14 @@ public class AssetServiceImpl implements AssetService {
 
     private List<Map<String, Object>> processModulesData(XSSFRow row, Map<String, Object> commonData) {
         List<Map<String, Object>> modulesDataAsset = new ArrayList<>();
-
 //        Optional<AssetCategories> assetCategoriesInstanceOptional = assetCategoriesRepository.findAssetCategoryById((Integer) commonData.get("idInstance"));
         List<Modules> ModulesArray = modulesRepository.findAllModulesByIdAssetCategoryAndStatus((Integer) commonData.get("idInstance"), 1);
-
+        handleModulesArray(row,ModulesArray);
         for (Modules modules : ModulesArray) {
             String typeModules = modules.getHardCode();
             Map<String, Object> moduleDataDetails = new HashMap<>();
             moduleDataDetails.put("typeModules", typeModules);
             moduleDataDetails.put("idModule", modules.getIdModule());
-
-
 
             switch (typeModules) {
                 case "MachineModule":
@@ -1359,9 +1342,7 @@ public class AssetServiceImpl implements AssetService {
                     moduleDataDetails.put("idCountryProducer",  extractIdValueFromExcel(countryProducer));
                     moduleDataDetails.put("codeUser",  userOptionalMachine.isPresent() ? userOptionalMachine.get().getCodeUser() : null);
                     moduleDataDetails.put("idTypeUse", extractIdValueFromExcel(typeUse));
-
                     break;
-
                 case "GroundModule":
                     String provinceGround = (String)ExcelUtil.convertValue(row.getCell(23), CellType.STRING);
                     String districtGround = (String)ExcelUtil.convertValue(row.getCell(24), CellType.STRING);
@@ -1386,7 +1367,6 @@ public class AssetServiceImpl implements AssetService {
                         moduleDataDetails.put("isManageGround", -1);
                         moduleDataDetails.put("idInstance", null);
                     }
-
                     moduleDataDetails.put("provinceCode", extractCodeValueFromExcel(provinceHouse));
                     moduleDataDetails.put("districtCode", extractCodeValueFromExcel(districtHouse));
                     moduleDataDetails.put("wardCode", extractCodeValueFromExcel(wardHouse));
@@ -1426,8 +1406,6 @@ public class AssetServiceImpl implements AssetService {
                         moduleDataDetails.put("isFreeTax", -1);
                         moduleDataDetails.put("valueTax",null);
                     }
-
-
                     moduleDataDetails.put("licensePlate", ExcelUtil.convertValue(row.getCell(44), CellType.STRING));
                     moduleDataDetails.put("labelCar", ExcelUtil.convertValue(row.getCell(45), CellType.STRING));
                     moduleDataDetails.put("typeCar", ExcelUtil.convertValue(row.getCell(46), CellType.STRING));
@@ -1509,7 +1487,6 @@ public class AssetServiceImpl implements AssetService {
 //                    Optional<MedicineType> medicineTypeOptional=medicineTypeRepository.findMedicineTypeByName(medicineType);
                     String medicineGroup = (String)ExcelUtil.convertValue(row.getCell(94), CellType.STRING);
 //                    Optional<MedicineGroup> medicineGroupOptional=medicineGroupRepository.findMedicineGroupByName(medicineGroup);
-
                     moduleDataDetails.put("idMedicineType", extractIdValueFromExcel(medicineType));
                     moduleDataDetails.put("idMedicineGroup", extractIdValueFromExcel(medicineGroup));
                     moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(95), CellType.STRING));
@@ -1527,6 +1504,19 @@ public class AssetServiceImpl implements AssetService {
 
         return modulesDataAsset;
     }
+
+    private void handleModulesArray(XSSFRow row, List<Modules> ModulesArray) {
+        String medicineType = (String)ExcelUtil.convertValue(row.getCell(93), CellType.STRING);
+        String medicineGroup = (String)ExcelUtil.convertValue(row.getCell(94), CellType.STRING);
+        if (medicineType != null && medicineGroup != null){
+            for (Modules modules : ModulesArray){
+                if (modules.getHardCode().equals("MedicineModule")){
+                    ModulesArray.remove(modules);
+                }
+            }
+        }
+    }
+
     private Integer getIdForCurrentUsage(String usageType) {
         Optional<CurrentUsage> currentUsage=currentUsageRepository.findCurrentUsageByName(usageType);
         return currentUsage.get().getIdCurrentUsage();
