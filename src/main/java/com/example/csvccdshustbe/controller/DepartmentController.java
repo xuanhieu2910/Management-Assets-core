@@ -62,6 +62,24 @@ public class DepartmentController {
         }
     }
 
+    @GetMapping("/find-all-source")
+    public ResponseEntity<?> findAllDepartmentSource(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllDepartmentVisibleRequest findAllDepartmentRequest){
+        try {
+            Page<FindAllDepartmentVisibleResponse> responses =
+                    departmentService.findAllDepartmentSource(findAllDepartmentRequest);
+            return ApiResponseDto.createdWithState(responses, "Find all asset categories by code success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
     @PostMapping("/create")
     public ResponseEntity<?> createDepartment(@RequestBody CreateDepartmentRequest request){
         try {

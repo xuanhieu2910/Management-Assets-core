@@ -136,6 +136,15 @@ public class DepartmentServiceImpl implements DepartmentService {
                 pageable, dtos.getTotalElements());
     }
 
+    @Override
+    public Page<FindAllDepartmentVisibleResponse> findAllDepartmentSource(FindAllDepartmentVisibleRequest  request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<FindAllDepartmentByCodeAndVisibleDto> department =
+                departmentRepository.findAllDepartmentSource(pageable, request);
+        return new PageImpl<>(convertToFindAllDepartmentVisibleByCodeAndVisible(department.get().collect(Collectors.toList())),
+                pageable, department.getTotalElements());
+    }
+
     private void setIdsDepartmentFindAllDepartment(FindAllDepartmentRequest request) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer idDepartment = userRoleService.getDepartmentCurrentUserRoleByCodeUser(csvcUser.getCodeUser()).getIdDepartment();

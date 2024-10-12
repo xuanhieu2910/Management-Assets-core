@@ -14,27 +14,33 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface DepartmentRepositoryCustom {
-    Page<FindAllDepartmentByCodeAndVisibleDto>
-    findAllDepartmentByCodeAndVisible(Pageable pageable, FindAllDepartmentVisibleRequest request);
+  Page<FindAllDepartmentByCodeAndVisibleDto>
+  findAllDepartmentByCodeAndVisible(Pageable pageable, FindAllDepartmentVisibleRequest request);
+
   List<FindAllDepartmentByCodeAndVisibleDto> findAllDepartmentByCodeAndVisible();
+
   List<FindAllDepartmentByCodeAndVisibleDto> findAllStructDepartmentByIdDepartment(Integer idDepartment);
 
-    Page<FindAllDepartmentSDto> findAllDepartment(Pageable pageable, FindAllDepartmentRequest request);
+  Page<FindAllDepartmentSDto> findAllDepartment(Pageable pageable, FindAllDepartmentRequest request);
 
-    Optional<Department> findDepartmentByName(String name);
+  Page<FindAllDepartmentByCodeAndVisibleDto> findAllDepartmentSource(Pageable pageable, FindAllDepartmentVisibleRequest request);
 
-    Optional<Department> findDepartmentByIdParent(Integer idParent);
+  Optional<Department> findDepartmentByName(String name);
 
-    Optional<Department> findDepartmentById(Integer idDepartment);
+  Optional<Department> findDepartmentByIdParent(Integer idParent);
 
-    Optional<Department> findDepartmentByIdDepartmentAndStatus(Integer idDepartment, Integer status);
+  Optional<Department> findDepartmentById(Integer idDepartment);
 
-    boolean checkExitsDepartmentByNameOrCodeOrShortName(String name, String code, String shortName);
+  Optional<Department> findDepartmentByIdDepartmentAndStatus(Integer idDepartment, Integer status);
 
-    boolean isExitsAssetByIdDepartment(Integer idDepartment);
+  boolean checkExitsDepartmentByNameOrCodeOrShortName(String name, String code, String shortName);
 
-    List<Department> findDepartmentByIds(List<Integer> ids);
-    Map<String, List<FindAllLocationDto>>
-    findAllDepartmentLocationToDownloadByIdsDepartment(List<Integer> idsDepartment);
-    List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload();
+  boolean isExitsAssetByIdDepartment(Integer idDepartment);
+
+  List<Department> findDepartmentByIds(List<Integer> ids);
+
+  Map<String, List<FindAllLocationDto>>
+  findAllDepartmentLocationToDownloadByIdsDepartment(List<Integer> idsDepartment);
+
+  List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload();
 }

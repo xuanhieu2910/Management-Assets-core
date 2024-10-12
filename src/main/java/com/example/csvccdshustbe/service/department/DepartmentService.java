@@ -17,6 +17,7 @@ import java.util.Map;
 public interface DepartmentService {
 
     Page<FindAllDepartmentSResponse> findAllDepartment(FindAllDepartmentRequest request);
+    Page<FindAllDepartmentVisibleResponse> findAllDepartmentSource(FindAllDepartmentVisibleRequest request);
     void createDepartment(CreateDepartmentRequest request) throws ValidateFiledException;
     void updateDepartment(UpdateDepartmentRequest request) throws ValidateFiledException;
     void deleteDepartmentByIdDepartment(Integer idDepartment) throws ValidateFiledException;
