@@ -83,13 +83,10 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
 
     private long countFindAllPositionNameStatus(FindAllPositionNameVisibleRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_position as (      " +
-                        "select pn.id_position_name, pn.name, pn.status, " +
-                        "pn.time_created, pn.time_modified " +
-                        "from position_name pn)   " +
-                "   select count(cte.id_position_name) count   " +
-                "   from cte_position cte      " +
-                "   where 1 = 1 and cte.status = :status  ");
+        sb.append("select count(0) count " +
+                "from position_name pn " +
+                "where 1 = 1 " +
+                "  and pn.status = :status  ");
         setConditionFindAllPositionNameByStatus(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllPositionNameByStatus(request, query);
@@ -98,13 +95,9 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
 
     private long countFindAllPositionName(FindAllPositionNameRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_position as (      " +
-                "select pn.id_position_name, pn.name, pn.status, " +
-                "pn.time_created, pn.time_modified " +
-                "from position_name pn)   " +
-                "   select count(cte.id_position_name) count   " +
-                "   from cte_position cte      " +
-                "   where 1 = 1 ");
+        sb.append("select count(0) count " +
+                "from position_name pn " +
+                "where 1 = 1 ");
         setConditionFindAllPositionName(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllPositionName(request, query);
@@ -129,16 +122,16 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
     }
     private void setConditionFindAllPositionNameByStatus(FindAllPositionNameVisibleRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())) {
-            sb.append(" and (cte.name REGEXP :keyword) ");
+            sb.append(" and (pn.name REGEXP :keyword) ");
         }
     }
 
     private void setConditionFindAllPositionName(FindAllPositionNameRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())) {
-            sb.append(" and (cte.name REGEXP :keyword) ");
+            sb.append(" and (pn.name REGEXP :keyword) ");
         }
         if (!Objects.isNull(request.getStatus())){
-            sb.append(" and cte.status = :status ");
+            sb.append(" and pn.status = :status ");
         }
     }
     @Override
