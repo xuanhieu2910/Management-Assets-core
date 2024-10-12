@@ -64,7 +64,9 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     findAllAssetCategoriesVisible(FindAllAssetCategoriesVisibleRequest request){
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        request.setIdsDepartment(csvcUser.getIdsDepartmentCurrent());
+        List<Integer> idsDepartment = csvcUser.getIdsDepartmentCurrent();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        request.setIdsDepartment(idsDepartment);
         Page<FindAllAssetCategoriesByCodeAndVisibleDto> categories =
                 assetCategoriesRepository.findAllAssetCategoriesVisible(pageable, request);
         return new PageImpl<>(convertToFindAllAssetCategoriesByCodeAndVisible(categories.get().collect(Collectors.toList())),
@@ -76,6 +78,8 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             throw new ValidateFiledException("Validate data");
         }
         CsvcUser user = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Integer> idsDepartment = user.getIdsDepartmentCurrent();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
         request.setIdsDepartment(user.getIdsDepartmentCurrent());
     }
 
