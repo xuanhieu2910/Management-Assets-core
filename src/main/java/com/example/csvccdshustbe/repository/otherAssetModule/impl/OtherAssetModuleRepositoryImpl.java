@@ -81,7 +81,7 @@ public class OtherAssetModuleRepositoryImpl implements OtherAssetModuleRepositor
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idOtherAssetModule", idInstance);
         List<Object[]> result = query.getResultList();
-        if (CollectionUtils.isEmpty(result)) {
+        if (!CollectionUtils.isEmpty(result)) {
           for (Object[] obj : result){
               OtherAssetModule assetModule = new OtherAssetModule();
               assetModule.setIdOtherAssetModule(ValueUtil.getIntegerByObject(obj[0]));
