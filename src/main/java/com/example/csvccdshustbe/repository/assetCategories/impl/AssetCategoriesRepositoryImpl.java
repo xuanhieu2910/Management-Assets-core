@@ -318,7 +318,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "         cte.is_pick, cte.depth, cte.path,      " +
                 "         cte.value_wear_tear, cte.year_used_wear_tear,      " +
                 "         cte.minimum_time_depreciation, cte.maximum_time_depreciation,    " +
-                "         cte.nameParent    " +
+                "         cte.nameParent, cte.id_department_original    " +
                 "from cte_asset_categories cte " +
                 "where 1 = 1 and cte.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllAssetCategories(request, sb);
@@ -349,6 +349,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 dto.setMinimumTimeDepreciation(ValueUtil.getStringByObject(obj[16]));
                 dto.setMaximumTimeDepreciation(ValueUtil.getStringByObject(obj[17]));
                 dto.setNameParent(ValueUtil.getStringByObject(obj[18]));
+                dto.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[19]));
                 dtos.add(dto);
             }
         }

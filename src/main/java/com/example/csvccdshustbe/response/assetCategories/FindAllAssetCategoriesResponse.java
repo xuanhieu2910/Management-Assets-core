@@ -37,4 +37,6 @@ public class FindAllAssetCategoriesResponse {
     private Integer visible;
     @JsonProperty("short_name")
     private String shortName;
+    @JsonProperty("is_default")
+    private Integer isDefault;
 }

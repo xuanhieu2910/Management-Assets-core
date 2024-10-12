@@ -303,6 +303,11 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             response.setNameParent(categorie.getNameParent());
             response.setVisible(categorie.getVisible());
             response.setShortName(categorie.getShortName());
+            if (categorie.getIdDepartmentOriginal().equals(Constants.DEFAULT_ASSET_CATEGORY)){
+                response.setIsDefault(Constants.IS_DEFAULT);
+            } else {
+                response.setIsDefault(Constants.NOT_IS_DEFAULT);
+            }
             responses.add(response);
         }
         return responses;
