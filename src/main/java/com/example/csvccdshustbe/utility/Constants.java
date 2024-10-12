@@ -146,7 +146,7 @@ public class Constants {
     public static final Integer ASSET_CATEGORY_UN_PICK = -1;
     public static final Integer DEFAULT_ASSET_CATEGORY = -100;
     public static final Integer IS_DEFAULT = 1;
-    public static final Integer NOT_IS_DEFAULT = 1;
+    public static final Integer NOT_IS_DEFAULT = -1;
     /*----------------------------------------------------*/
 
     /*----------------------------------------------------*/
