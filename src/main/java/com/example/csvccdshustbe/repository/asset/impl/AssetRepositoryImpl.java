@@ -450,7 +450,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
             query.setParameter("idAssetCategory", request.getIdAssetCategory());
         }
-        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             query.setParameter("idDepartment", request.getIdDepartment());
         }
     }
