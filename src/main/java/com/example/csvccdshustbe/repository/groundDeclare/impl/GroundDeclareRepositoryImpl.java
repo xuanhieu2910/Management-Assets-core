@@ -74,6 +74,7 @@ public class GroundDeclareRepositoryImpl implements GroundDeclareRepositoryCusto
                 detailsDto.setDateNumberDecisionRentGround(ValueUtil.getStringByObject(obj[27]));
                 detailsDto.setNameTypeDeclareAsset(ValueUtil.getStringByObject(obj[28]));
                 detailsDto.setNameGoalUseGround(ValueUtil.getStringByObject(obj[29]));
+                return Optional.of(detailsDto);
             }
         }
         return Optional.empty();
