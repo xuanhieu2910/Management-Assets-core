@@ -13,6 +13,7 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -401,11 +402,17 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
         }
+        if (ObjectUtils.isNotEmpty(request.getStatus())){
+            query.setParameter("visible", request.getStatus());
+        }
     }
 
     private void setConditionFindAllAssetCategories(FindAllDocumentAssetCategoriesRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())){
             sb.append(" and (cte.name REGEXP :keyword ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatus())){
+            sb.append(" and and cte.visible = :visible ");
         }
         sb.append(" ORDER BY path ");
     }

@@ -13,5 +13,6 @@ import java.util.List;
 public class FindAllDocumentAssetCategoriesRequest extends RequestPageBase {
 
     private List<Integer> idsDepartmentOriginal;
+    private Integer status;
 
 }
