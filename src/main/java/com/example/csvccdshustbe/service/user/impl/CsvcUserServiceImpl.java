@@ -148,18 +148,18 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     @Override
     public void hasCapability(String servletPath, String method) throws ServletException {
         CsvcUser user =  (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        Set<Capabilities> capabilities = new HashSet<>();
-//        user.getRole().stream().forEach(role -> capabilities.addAll(role.getCapabilities()));
-//        boolean isExitsRoleCapability = false;
-//        for (Capabilities capability : capabilities) {
-//            if(compareCapability(servletPath, method, capability)){
-//                isExitsRoleCapability = true;
-//                break;
-//            }
-//        }
-//        if (!isExitsRoleCapability){
-//            throw new ServletException("Don't Permission");
-//        }
+        Set<Capabilities> capabilities = new HashSet<>();
+        user.getRole().stream().forEach(role -> capabilities.addAll(role.getCapabilities()));
+        boolean isExitsRoleCapability = false;
+        for (Capabilities capability : capabilities) {
+            if(compareCapability(servletPath, method, capability)){
+                isExitsRoleCapability = true;
+                break;
+            }
+        }
+        if (!isExitsRoleCapability){
+            throw new ServletException("Don't Permission");
+        }
     }
 
     @Override
