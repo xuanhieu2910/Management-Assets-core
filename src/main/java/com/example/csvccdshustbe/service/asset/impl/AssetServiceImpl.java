@@ -610,7 +610,11 @@ public class AssetServiceImpl implements AssetService {
         assetRepository.save(asset);
     }
 
-    private void validateDataUpdateAsset(Map<String, Object> dataCreateAssetRequest) {
+    private void validateDataUpdateAsset(Map<String, Object> dataCreateAssetRequest) throws ValidateFiledException {
+        validateDataCommonUpdateAsset(dataCreateAssetRequest);
+        validateDataModuleUpdateAsset(dataCreateAssetRequest);
+        validateDataOriginalUpdateAsset(dataCreateAssetRequest);
+        validateDataDeclareUpdateAsset(dataCreateAssetRequest);
     }
 
     private FindDetailsAssetResponse convertToFindDetailsAssetResponse(AssetBluePrintDto assetBluePrintDto) {
@@ -714,15 +718,43 @@ public class AssetServiceImpl implements AssetService {
         declareServiceFactory.validateDataDeclare((Map<String, Object>) createAssetRequest.get(Constants.KEY_DECLARE_ASSET));
     }
 
+    private void validateDataDeclareUpdateAsset(Map<String, Object> createAssetRequest) {
+        declareServiceFactory.validateDataDeclare((Map<String, Object>) createAssetRequest.get(Constants.KEY_DECLARE_ASSET));
+    }
+
     private void validateDataOriginalCreateAsset(Map<String, Object> createAssetRequest) {
        originalServiceFactory.validateDataOriginal((Map<String, Object>) createAssetRequest.get(Constants.KEY_ORIGINAL_ASSET));
+    }
+
+    private void validateDataOriginalUpdateAsset(Map<String, Object> createAssetRequest) {
+        originalServiceFactory.validateDataOriginal((Map<String, Object>) createAssetRequest.get(Constants.KEY_ORIGINAL_ASSET));
     }
 
     private void validateDataModuleCreateAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
         modulesServiceFactory.validateDataModules((List<Map<String,Object>>) createAssetRequest.get(Constants.KEY_MODULE));
     }
 
+    private void validateDataModuleUpdateAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
+        modulesServiceFactory.validateDataModules((List<Map<String,Object>>) createAssetRequest.get(Constants.KEY_MODULE));
+    }
+
     private void validateDataCommonCreateAsset(Map<String, Object> createAssetRequest) {
+        Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_COMMON);
+        Integer idDepartment = ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment"));
+        departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
+        Integer idLocation = ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation"));
+        locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
+        Integer idAssetCategory = ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory"));
+        assetCategoriesService.findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, Constants.ASSET_CATEGORY_IS_VISIBLE);
+        Integer idUnit = ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit"));
+        unitsService.findUnitsByIdUnitAndStatus(idUnit, Constants.UNITS_IS_ACTIVE);
+        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
+        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
+        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
+        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
+    }
+
+    private void validateDataCommonUpdateAsset(Map<String, Object> createAssetRequest) {
         Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_COMMON);
         Integer idDepartment = ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment"));
         departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);

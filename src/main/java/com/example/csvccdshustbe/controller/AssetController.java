@@ -63,8 +63,10 @@ public class AssetController {
             return ApiResponseDto.createdWithState(assetService.findDetailsAssetByCodeAsset(codeAsset),
                     "Find asset details success!", HttpStatus.OK);
         } catch (NotFoundException e) {
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
