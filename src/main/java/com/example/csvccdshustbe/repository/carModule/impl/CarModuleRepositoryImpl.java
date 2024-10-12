@@ -38,7 +38,7 @@ public class CarModuleRepositoryImpl implements CarModuleRepositoryCustom {
                 "      left join csvc_user us on carModule.id_user = us.id_user        " +
                 "      left join type_use ty on carModule.id_type_use = ty.id_type_use        " +
                 "      left join position_name positionName on carModule.id_position_name = positionName.id_position_name  " +
-                "      left join position_name positionNameOther on carModule.id_position_name_other = positionName.id_position_name        " +
+                "      left join position_name positionNameOther on carModule.id_position_name_other = positionNameOther.id_position_name        " +
                 "where carModule.id_car_module = :idCarModule  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idCarModule", idCarModule);
