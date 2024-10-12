@@ -7,12 +7,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllAssetCategoriesByCodeRequest extends RequestPageBase {
+public class FindAllAssetCategoriesVisibleRequest extends RequestPageBase {
 
     @NotNull
-    @JsonProperty(namespace = "codeName", required = true)
+    @JsonProperty(namespace = "codeName")
     private String codeName;
+    private List<Integer> idsDepartment;
 }

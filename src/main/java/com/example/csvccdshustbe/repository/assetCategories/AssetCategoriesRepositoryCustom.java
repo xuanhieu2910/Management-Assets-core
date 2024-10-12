@@ -2,7 +2,7 @@ package com.example.csvccdshustbe.repository.assetCategories;
 
 import com.example.csvccdshustbe.dto.assetCategories.*;
 import com.example.csvccdshustbe.entity.AssetCategories;
-import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesByCodeRequest;
+import com.example.csvccdshustbe.request.assetCategories.FindAllAssetCategoriesVisibleRequest;
 import com.example.csvccdshustbe.request.assetCategories.FindAllDocumentAssetCategoriesRequest;
 import com.example.csvccdshustbe.response.assetCategories.FindAssetCategoryDetailsResponse;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,11 @@ public interface AssetCategoriesRepositoryCustom {
 
     List<FindAllAssetCategoriesPickedDto> findAllAssetCategoriesIsPickedAndVisible();
     Page<FindAllAssetCategoriesByCodeAndVisibleDto>
-    findAllAssetCategoriesByCodeAndVisible(Pageable pageable, FindAllAssetCategoriesByCodeRequest request);
+    findAllAssetCategoriesByCodeAndVisible(Pageable pageable, FindAllAssetCategoriesVisibleRequest request);
+
+    Page<FindAllAssetCategoriesByCodeAndVisibleDto>
+    findAllAssetCategoriesVisible(Pageable pageable, FindAllAssetCategoriesVisibleRequest request);
+
     Page<FindAllAssetCategoryDto>
     findAllAssetCategories(Pageable pageable, FindAllDocumentAssetCategoriesRequest request);
     Optional<AssetCategories> findAssetCategoriesVisibleByCodeName(String codeName);

@@ -20,7 +20,14 @@ public interface AssetCategoriesService {
 
     List<FindAllAssetCategoriesPickedResponse> findAllAssetCategoriesIsPicked();
 
-    Page<FindAllAssetCategoriesVisibleResponse> findAllAssetCategoriesByCodeNameAndVisible(FindAllAssetCategoriesByCodeRequest request);
+    Page<FindAllAssetCategoriesVisibleResponse>
+    findAllAssetCategoriesVisibleByCodeAssetCategories(FindAllAssetCategoriesVisibleRequest request)
+            throws ValidateFiledException;
+
+    Page<FindAllAssetCategoriesVisibleResponse>
+    findAllAssetCategoriesVisible(FindAllAssetCategoriesVisibleRequest request)
+            throws ValidateFiledException;
+
     Page<FindAllAssetCategoriesResponse> findAllAssetCategories(FindAllDocumentAssetCategoriesRequest request);
 
     AssetCategories findAssetCategoriesVisibleByCodeName(String codeName) throws Exception;

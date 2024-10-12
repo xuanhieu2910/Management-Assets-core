@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -37,15 +38,33 @@ public class AssetCategoriesController {
         }
     }
 
+    @GetMapping("/find-all-by-parent")
+    public ResponseEntity<?> findAllAssetCategoriesVisibleByCodeParent(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetCategoriesVisibleRequest findAllAssetCategoriesRequest){
+        try {
+            Page<FindAllAssetCategoriesVisibleResponse> responses =
+                    assetCategoriesService.findAllAssetCategoriesVisibleByCodeAssetCategories(findAllAssetCategoriesRequest);
+            return ApiResponseDto.createdWithState(responses, "Find all asset categories by code success!",
+                    HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
     @GetMapping("/find-all-visible")
     public ResponseEntity<?> findAllAssetCategoriesIsVisibleByCodeAndVisible(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
-    }) FindAllAssetCategoriesByCodeRequest findAllAssetCategoriesRequest){
+    }) FindAllAssetCategoriesVisibleRequest findAllAssetCategoriesRequest){
         try {
             Page<FindAllAssetCategoriesVisibleResponse> responses =
-                    assetCategoriesService.findAllAssetCategoriesByCodeNameAndVisible(findAllAssetCategoriesRequest);
+                    assetCategoriesService.findAllAssetCategoriesVisible(findAllAssetCategoriesRequest);
             return ApiResponseDto.createdWithState(responses, "Find all asset categories by code success!",
                     HttpStatus.OK);
         } catch (NotFoundException e){

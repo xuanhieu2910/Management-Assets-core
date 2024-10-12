@@ -49,12 +49,34 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     }
 
     @Override
-    public Page<FindAllAssetCategoriesVisibleResponse> findAllAssetCategoriesByCodeNameAndVisible(
-            FindAllAssetCategoriesByCodeRequest request) {
+    public Page<FindAllAssetCategoriesVisibleResponse> findAllAssetCategoriesVisibleByCodeAssetCategories(
+            FindAllAssetCategoriesVisibleRequest request) throws ValidateFiledException {
+        validateFindAllAssetCategoriesByCodeAssetCategories(request);
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllAssetCategoriesByCodeAndVisibleDto> categories =
                 assetCategoriesRepository.findAllAssetCategoriesByCodeAndVisible(pageable, request);
-        return new PageImpl<>(convertToFindAllAssetCategoriesByCodeAndVisible(categories.get().collect(Collectors.toList())), pageable, categories.getTotalElements());
+        return new PageImpl<>(convertToFindAllAssetCategoriesByCodeAndVisible(categories.get().collect(Collectors.toList())),
+                pageable, categories.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllAssetCategoriesVisibleResponse>
+    findAllAssetCategoriesVisible(FindAllAssetCategoriesVisibleRequest request){
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartment(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllAssetCategoriesByCodeAndVisibleDto> categories =
+                assetCategoriesRepository.findAllAssetCategoriesVisible(pageable, request);
+        return new PageImpl<>(convertToFindAllAssetCategoriesByCodeAndVisible(categories.get().collect(Collectors.toList())),
+                pageable, categories.getTotalElements());
+    }
+
+    private void validateFindAllAssetCategoriesByCodeAssetCategories(FindAllAssetCategoriesVisibleRequest request) throws ValidateFiledException {
+        if (StringUtils.isBlank(request.getCodeName())){
+            throw new ValidateFiledException("Validate data");
+        }
+        CsvcUser user = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartment(user.getIdsDepartmentCurrent());
     }
 
     @Override
