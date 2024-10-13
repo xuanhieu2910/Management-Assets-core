@@ -50,6 +50,7 @@ public class ShapeOriginalAssetConnectActorRepositoryImpl implements ShapeOrigin
         sb.append(" delete from s_original_asset_connect_actor  " +
                 "where s_original_asset_connect_actor.id_s_original_asset_connect_actor = :idsactor ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsactor", idInstance);
         query.executeUpdate();
     }
 
