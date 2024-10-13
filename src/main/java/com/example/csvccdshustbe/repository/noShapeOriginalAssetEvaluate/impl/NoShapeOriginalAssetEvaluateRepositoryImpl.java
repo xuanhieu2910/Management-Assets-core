@@ -55,6 +55,7 @@ public class NoShapeOriginalAssetEvaluateRepositoryImpl implements NoShapeOrigin
         sb.append(" delete from ns_original_asset_evaluate  " +
                 "where ns_original_asset_evaluate.id_ns_original_asset_evaluate = :idNsEva ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idNsEva", idInstance);
         query.executeUpdate();
     }
 

@@ -177,6 +177,7 @@ public class RoleAllowAssignRepositoryImpl implements RoleAllowAssignRepositoryC
                 "from role_allow_assign " +
                 "where id_role = :idRole or allow_assign = :idRole ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idRole", roleId);
         query.executeUpdate();
     }
 

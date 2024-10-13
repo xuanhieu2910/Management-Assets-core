@@ -248,7 +248,6 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
 
 
     @Override
-
     public Optional<OriginalOfFormation> findOriginalOfFormationByName(String name) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select oof.id_original_of_formation, oof.name, " +
@@ -273,7 +272,6 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
                 originalOfFormation.setVisible(ValueUtil.getIntegerByObject(obj[7]));
                 originalOfFormation.setTimeCreated(ValueUtil.getStringByObject(obj[8]));
                 originalOfFormation.setTimeModified(ValueUtil.getStringByObject(obj[9]));
-
                 return Optional.of(originalOfFormation);
             }
         }
@@ -281,7 +279,6 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
     }
 
     @Override
-
     public Optional<OriginalOfFormation> findOriginalOfFormationByIdParent(Integer idParent) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select oof.id_original_of_formation, oof.name, " +
@@ -314,7 +311,6 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
     }
 
     @Override
-
     public Optional<OriginalOfFormation> findOriginalOfFormationById(Integer idOriginalOfFormation) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select oof.id_original_of_formation, oof.name, " +
@@ -339,7 +335,6 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
                 originalOfFormation.setVisible(ValueUtil.getIntegerByObject(obj[7]));
                 originalOfFormation.setTimeCreated(ValueUtil.getStringByObject(obj[8]));
                 originalOfFormation.setTimeModified(ValueUtil.getStringByObject(obj[9]));
-
                 return Optional.of(originalOfFormation);
             }
         }
@@ -389,7 +384,6 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
     }
 
     @Override
-
     public List<OriginalOfFormation> findAllOriginalOfFormationById(List<Integer> OriginalOfFormationIds) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select oof.id_original_of_formation, oof.name, " +
@@ -415,7 +409,6 @@ public class OriginalOfFormationRepositoryImpl implements OriginalOfFormationRep
                 originalOfFormation.setVisible(ValueUtil.getIntegerByObject(obj[7]));
                 originalOfFormation.setTimeCreated(ValueUtil.getStringByObject(obj[8]));
                 originalOfFormation.setTimeModified(ValueUtil.getStringByObject(obj[9]));
-
                 originalOfFormationList.add(originalOfFormation);
             }
         }
