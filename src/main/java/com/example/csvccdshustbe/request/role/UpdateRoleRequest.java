@@ -15,8 +15,8 @@ public class UpdateRoleRequest {
 
     @NonNull
     private Integer idRole;
-    private String nameRole;
+    private String shortName;
     private String description;
     private Integer status;
-    private List<UpdateRoleCapabilitiesRequest> roleCapabilities;
+    private List<UpdateRoleCapabilitiesRequest> capabilities;
 }

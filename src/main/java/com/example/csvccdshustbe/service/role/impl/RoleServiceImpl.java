@@ -119,11 +119,11 @@ public class RoleServiceImpl implements RoleService {
         validateDataUpdateRole(request);
         List<RoleCapabilities> roleCapabilitiesList =
                 roleCapabilitiesService.findAllRoleCapabilitiesByIdRole(request.getIdRole());
-        if (roleCapabilitiesList.size() != request.getRoleCapabilities().size()){
+        if (roleCapabilitiesList.size() != request.getCapabilities().size()){
             throw new ValidateFiledException("Validate data role capabilities!");
         }
         updateDataRole(request, role.get());
-        updateDataRoleCapabilities(roleCapabilitiesList, request.getRoleCapabilities());
+        updateDataRoleCapabilities(roleCapabilitiesList, request.getCapabilities());
     }
 
     private void updateDataRoleCapabilities(List<RoleCapabilities> roleCapabilitiesList,
@@ -144,7 +144,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private void updateDataRole(UpdateRoleRequest request, Role role) {
-        role.setShortName(request.getNameRole());
+        role.setShortName(request.getShortName());
         role.setDescription(request.getDescription());
         role.setStatus(request.getStatus());
         role.setTimeModified(String.valueOf(new Date().getTime()));
@@ -152,10 +152,10 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private void validateDataUpdateRole(UpdateRoleRequest request) throws ValidateFiledException {
-        if (StringUtils.isBlank(request.getNameRole())){
+        if (StringUtils.isBlank(request.getShortName())){
             throw new ValidateFiledException("Validate name role!");
         }
-        Optional<Role> role = roleRepository.findByShortNameRole(request.getNameRole());
+        Optional<Role> role = roleRepository.findByShortNameRole(request.getShortName());
         if (role.isPresent()){
             throw new ValidateFiledException("Validate name role!");
         }
