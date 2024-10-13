@@ -24,7 +24,7 @@ public class HouseModuleDetailsDto {
     @JsonProperty("address_detail")
     private String addressDetail;
     @JsonProperty("floors_number")
-    private int floorsNumber;
+    private Integer floorsNumber;
     @JsonProperty("acreage")
     private Double acreage;
     @JsonProperty("publish_year")
