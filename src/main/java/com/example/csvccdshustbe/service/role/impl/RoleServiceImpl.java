@@ -229,7 +229,7 @@ public class RoleServiceImpl implements RoleService {
         if (roleRepository.findRoleByTitleOrShortName(request.getTitle(), request.getShortName()).isPresent()) {
             throw new ValidateFiledException("Exits role by title or short name, please choice another role!");
         }
-        if (!request.getStatus().equals(Constants.ROLE_STATUS) ||
+        if (!request.getStatus().equals(Constants.ROLE_STATUS) &&
             !request.getStatus().equals(Constants.ROLE_UN_STATUS))   {
             throw new ValidateFiledException("Validate data!");
         }

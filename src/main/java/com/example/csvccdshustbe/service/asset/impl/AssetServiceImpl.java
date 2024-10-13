@@ -1756,7 +1756,6 @@ public class AssetServiceImpl implements AssetService {
         if (amountMonthsDepreciation != null && !amountMonthsDepreciation.isEmpty()) {
                 amountMonthsDepreciationNumber = Integer.parseInt(amountMonthsDepreciation);
         }
-
         Double cumulative = convertStringToDouble(ExcelUtil.convertValue(row.getCell(144), CellType.STRING));
         if (cumulative == null) {
             cumulative = 0.0;
@@ -1787,16 +1786,10 @@ public class AssetServiceImpl implements AssetService {
                     break;
             }
         }
-
-
         depreciationInFor.put("timeBuy", timeBuy);      // thời gian mua
         depreciationInFor.put("timeStartedUsed", timeStartedUsed); // bắt đầu sử dụng
         depreciationInFor.put("timeStartedIncrease", timeStartedIncrease); //bắt đầu ghi tăng
         depreciationInFor.put("timeYearTracking", String.valueOf(Year.now())); //năm theo dõi
-
-
-
-
         String valueDepreciation = (String) ExcelUtil.convertValue(row.getCell(14), CellType.STRING);
         double totalDepreciation = 0;
         if (valueDepreciation != null && !valueDepreciation.isEmpty()) {
@@ -1806,7 +1799,6 @@ public class AssetServiceImpl implements AssetService {
             }
         }
         depreciationInFor.put("valueDepreciation", String.valueOf(totalDepreciation)); //giá trị tổng original
-
         Object valueTypeDepreciation = (String) ExcelUtil.convertValue(row.getCell(140), CellType.STRING); // loại kỳ tích khấu hao
         if (valueTypeDepreciation != null && amountMonthsDepreciationNumber !=null) {
             if (valueTypeDepreciation.equals("Năm")) {
@@ -1825,9 +1817,6 @@ public class AssetServiceImpl implements AssetService {
                 }
             }
         }
-
-
-
         depreciationInFor.put("cumulative", String.valueOf(cumulative));
         depreciationInFor.put("restValue", String.valueOf(totalDepreciation - cumulative)); // giá trị còn lại
         return depreciationInFor;
