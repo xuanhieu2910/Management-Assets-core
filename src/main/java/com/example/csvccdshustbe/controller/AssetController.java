@@ -38,8 +38,10 @@ public class AssetController {
             assetService.createAsset(createAssetRequest);
             return ApiResponseDto.createdWithMessage("Create asset success!", HttpStatus.OK);
         } catch (ValidateFiledException | JsonProcessingException e ){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

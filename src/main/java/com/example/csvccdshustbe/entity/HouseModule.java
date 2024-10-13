@@ -28,7 +28,7 @@ public class HouseModule implements IModules{
     @Column(name = "address_detail")
     private String addressDetail;
     @Column(name = "floors_number")
-    private int floorsNumber;
+    private Integer floorsNumber;
     @Column(name = "acreage")
     private Double acreage;
     @Column(name = "publish_year")

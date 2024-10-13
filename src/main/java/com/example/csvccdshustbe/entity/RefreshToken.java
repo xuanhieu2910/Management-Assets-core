@@ -24,5 +24,5 @@ public class RefreshToken {
     @Column(name = "expire_date")
     private String expireDate;
     @Column(name = "revoked")
-    private boolean revoked;
+    private Boolean revoked;
 }
