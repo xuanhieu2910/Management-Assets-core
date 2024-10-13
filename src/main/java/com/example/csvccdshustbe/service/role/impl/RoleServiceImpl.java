@@ -226,7 +226,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private void validateCreateNewRole(CreateNewRoleRequest request) throws ValidateFiledException {
-        if (roleRepository.findRoleByTitleOrShortName(request.getTitle(), request.getShortName()).isEmpty()) {
+        if (roleRepository.findRoleByTitleOrShortName(request.getTitle(), request.getShortName()).isPresent()) {
             throw new ValidateFiledException("Exits role by title or short name, please choice another role!");
         }
         if (!request.getStatus().equals(Constants.ROLE_STATUS) ||
