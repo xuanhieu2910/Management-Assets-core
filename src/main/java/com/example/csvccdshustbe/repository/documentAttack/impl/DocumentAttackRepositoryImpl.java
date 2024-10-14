@@ -59,14 +59,14 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
     public Page<FindAllDocumentAttackDto>
     findAllDocumentAttackResponse(FindAllDocumentAttackRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select  document_attack.id_document_attack,   " +
+        sb.append("select  document_attack.id_document_attack,         " +
                 "        document_attack.name, document_attack.code, document_attack.id_department,   " +
                 "        document_attack.date_determination_document, document_attack.status,   " +
-                "        document_attack.time_created, document_attack.time_modified, " +
-                "        de.name nameDepartment " +
-                "from document_attack    " +
-                "    left join department de on document_attack.id_department = de.id_department " +
-                "where 1 = 1  ");
+                "        document_attack.time_created, document_attack.time_modified,   " +
+                "        de.name nameDepartment   " +
+                "from document_attack   " +
+                "    inner join department de on document_attack.id_department = de.id_department   " +
+                " where 1 = 1 and de.id_department in (:idsDepartment) ");
         setConditionFindAllDocumentAttack(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDocumentAttack(request, query);
@@ -105,10 +105,10 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
 
     private long countFindAllDocumentAttack(FindAllDocumentAttackRequest request){
         StringBuilder sb = new StringBuilder();
-        sb.append("select  count(0) count " +
+        sb.append("select count(0) count " +
                 "from document_attack " +
-                "    left join department de on document_attack.id_department = de.id_department " +
-                "where 1 = 1  ");
+                "    inner join department de on document_attack.id_department = de.id_department " +
+                " where 1 = 1 and de.id_department in (:idsDepartment) ");
         setConditionFindAllDocumentAttack(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDocumentAttack(request, query);
@@ -124,6 +124,7 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
     }
 
     private void setParameterFindAllDocumentAttack(FindAllDocumentAttackRequest request, Query query) {
+        query.setParameter("idsDepartment", request.getIdsDepartment());
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
         }

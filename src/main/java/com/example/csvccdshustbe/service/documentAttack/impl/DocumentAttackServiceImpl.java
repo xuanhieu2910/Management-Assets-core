@@ -50,9 +50,17 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
     @Override
     public Page<FindAllDocumentAttackResponse> findAllDocumentAttackResponse(FindAllDocumentAttackRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        setIdsDepartmentFindAllDocumentAttack(request);
         Page<FindAllDocumentAttackDto> documentAttacks = documentAttackRepository.findAllDocumentAttackResponse(request, pageable);
         return new PageImpl<>(convertToFindAllDocumentAttack(documentAttacks.get().collect(Collectors.toList())),
                 pageable, documentAttacks.getTotalElements());
+    }
+
+    private void setIdsDepartmentFindAllDocumentAttack(FindAllDocumentAttackRequest request) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Integer> idsDepartment = csvcUser.getIdsDepartmentCurrent();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        request.setIdsDepartment(idsDepartment);
     }
 
     private List<FindAllDocumentAttackVisibleResponse> convertToFindAllDocumentAttackVisible(List<DocumentAttack> allDocumentAttackByStatus) {
@@ -74,7 +82,9 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
             response.setIdDocumentAttack(documentAttack.getIdDocumentAttack());
             response.setName(documentAttack.getName());
             response.setCode(documentAttack.getCode());
-            response.setNameDepartment(documentAttack.getNameDepartment());
+            if (documentAttack.getIdDocumentAttack().equals(Constants.DEFAULT_ASSET_CATEGORY)) {
+                response.setNameDepartment("Đại học Bách Khoa Hà Nội");
+            }
             response.setDateDeterminationDocument(documentAttack.getDateDeterminationDocument());
             response.setStatus(documentAttack.getStatus());
             response.setIdDepartment(documentAttack.getIdDepartment());
