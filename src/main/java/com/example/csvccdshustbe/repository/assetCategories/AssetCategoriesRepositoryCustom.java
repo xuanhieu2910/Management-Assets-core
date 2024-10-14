@@ -32,9 +32,8 @@ public interface AssetCategoriesRepositoryCustom {
     Optional<BluePrintParentAssetCategoryDto> findBluePrintAssetCategoryDtoById(Integer idAssetCategory);
     Optional<FindAssetCategoryDetailsResponse> findAssetCategoryDetailsPickedResponseByCode(String code);
     boolean isCheckExitsAssetByIdAssetCategory(Integer idAssetCategory);
-    Map<String, List<FindAllAssetCategoriesToDownloadDto>> findAllAssetCategoriesByVisibleToDownload(List<Integer> idsDepartment);
-
-
+    List<FindAllAssetCategoriesToDownloadDto>
+    findAllAssetCategoriesByCodeParentVisibleToDownload(List<Integer> idsDepartment, String code);
     Optional<AssetCategories> findAssetCategoryByName(String name);
     List<AssetCategories> findAllAssetCategoriesByIdIn(List<Integer> idCategory);
 }

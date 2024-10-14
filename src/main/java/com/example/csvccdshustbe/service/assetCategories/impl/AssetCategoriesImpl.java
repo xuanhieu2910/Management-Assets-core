@@ -19,6 +19,7 @@ import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -215,10 +216,18 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
 
     @Override
     public Map<String, List<FindAllAssetCategoriesToDownloadDto>> findAllAssetCategoriesVisibleResponseToDownload() {
+        List<FindAllAssetCategoriesPickedResponse> assetCategoriesIsPicked = findAllAssetCategoriesIsPicked();
         Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
         List<Integer> idsDepartment = departmentService.findIdsStructureDepartment(idDepartment);
         idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
-        return assetCategoriesRepository.findAllAssetCategoriesByVisibleToDownload(idsDepartment);
+        Map<String, List<FindAllAssetCategoriesToDownloadDto>> responses = new HashMap<>();
+        String keyword;
+        for (FindAllAssetCategoriesPickedResponse assetPicked : assetCategoriesIsPicked){
+            keyword = "STT_" + assetPicked.getIdAssetCategory() + "_" + assetPicked.getName();
+            keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
+            responses.put(keyword, assetCategoriesRepository.findAllAssetCategoriesByCodeParentVisibleToDownload(idsDepartment, assetPicked.getCodeName()));
+        }
+        return responses;
     }
 
     private AssetCategories createAssetCategoryRequest(CreateAssetCategoryRequest request) {
