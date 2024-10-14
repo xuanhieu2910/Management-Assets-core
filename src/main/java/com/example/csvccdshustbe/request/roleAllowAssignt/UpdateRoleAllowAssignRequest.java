@@ -11,6 +11,6 @@ public class UpdateRoleAllowAssignRequest {
 
 
     private Integer idSourceRoleAssign;
-    private Integer nameSourceRoleAssign;
+    private String nameSourceRoleAssign;
     private List<ListDestinationRoleAssignRequest> destinationRoleAssign;
 }
