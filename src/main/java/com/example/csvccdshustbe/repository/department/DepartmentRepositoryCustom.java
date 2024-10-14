@@ -21,7 +21,7 @@ public interface DepartmentRepositoryCustom {
 
   List<FindAllDepartmentByCodeAndVisibleDto> findAllStructDepartmentByIdDepartment(Integer idDepartment);
 
-  Page<FindAllDepartmentSDto> findAllDepartment(Pageable pageable, FindAllDepartmentRequest request);
+  Page<FindAllDepartmentSDto> findAllDepartmentByIdDepartment(Pageable pageable, FindAllDepartmentRequest request);
 
   Page<FindAllDepartmentByCodeAndVisibleDto> findAllDepartmentSource(Pageable pageable, FindAllDepartmentVisibleRequest request);
 

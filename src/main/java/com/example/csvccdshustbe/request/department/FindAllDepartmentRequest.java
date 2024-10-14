@@ -16,5 +16,5 @@ public class FindAllDepartmentRequest extends RequestPageBase {
     private Integer status;
     private String code;
     private String shortName;
-    private List<Integer> idsDepartment;
+    private Integer idDepartment;
 }

@@ -200,37 +200,37 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
     }
 
     @Override
-    public Page<FindAllDepartmentSDto> findAllDepartment(Pageable pageable, FindAllDepartmentRequest request) {
+    public Page<FindAllDepartmentSDto> findAllDepartmentByIdDepartment(Pageable pageable, FindAllDepartmentRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append("WITH RECURSIVE cte_asset_categories as (        " +
-                "      select department.id_department,department.name,        " +
-                "             department.code, department.short_name,        " +
-                "             department.description, department.parent,        " +
-                "              department.time_created,department.status,        " +
-                "             department.time_modified,        " +
-                "             1 as depth,   CAST(department.id_department as NCHAR ) as path,  " +
-                "             case when department.parent is not null then department.name end nameParent  " +
-                "      from department        " +
-                "      where department.parent is null        " +
-                "      union all        " +
-                "      select department.id_department,department.name,        " +
-                "             department.code, department.short_name,        " +
-                "             department.description, department.parent,        " +
-                "             department.time_created,department.status,        " +
-                "             department.time_modified,        " +
-                "             cte.depth + 1 as depth,        " +
-                "             concat_ws('/',cte.path,CAST(department.id_department as NCHAR)) as path,  " +
-                "             cte.name nameParent  " +
-                "                 from department     " +
-                "               INNER JOIN cte_asset_categories cte ON department.parent = cte.id_department        " +
-                "  )        " +
-                "select cte.id_department, cte.name,  " +
-                "cte.code, cte.short_name, cte.description,  " +
-                "cte.parent,  " +
-                "cte.time_created, cte.time_modified,  " +
-                "cte.depth, cte.status, cte.path, cte.nameParent  " +
-                "from cte_asset_categories cte  " +
-                "where 1 = 1 and cte.id_department in (:idsDepartment) ");
+        sb.append("WITH RECURSIVE cte_asset_categories as (  " +
+                "       select department.id_department,department.name,  " +
+                "              department.code, department.short_name,  " +
+                "              department.description, department.parent,  " +
+                "               department.time_created,department.status,  " +
+                "              department.time_modified,  " +
+                "              1 as depth,   CAST(department.id_department as NCHAR ) as path,  " +
+                "              case when department.parent is not null then department.name end nameParent  " +
+                "       from department  " +
+                "       where department.id_department = :idDepartment  " +
+                "       union all  " +
+                "       select department.id_department,department.name,  " +
+                "              department.code, department.short_name,  " +
+                "              department.description, department.parent,  " +
+                "              department.time_created,department.status,  " +
+                "              department.time_modified,  " +
+                "              cte.depth + 1 as depth,  " +
+                "              concat_ws('/',cte.path,CAST(department.id_department as NCHAR)) as path,  " +
+                "              cte.name nameParent  " +
+                "  from department  " +
+                "                INNER JOIN cte_asset_categories cte ON department.parent = cte.id_department  " +
+                "   )  " +
+                "  select cte.id_department, cte.name,  " +
+                "  cte.code, cte.short_name, cte.description,  " +
+                "  cte.parent,  " +
+                "  cte.time_created, cte.time_modified,  " +
+                "  cte.depth, cte.status, cte.path, cte.nameParent  " +
+                "  from cte_asset_categories cte  " +
+                "  where 1 = 1 ");
         setConditionFindAllDepartment(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDepartment(request, query);
@@ -650,7 +650,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
 
 
     private void setParameterFindAllDepartment(FindAllDepartmentRequest request, Query query) {
-        query.setParameter("idsDepartment", request.getIdsDepartment());
+        query.setParameter("idDepartment", request.getIdDepartment());
         if (StringUtils.isNotBlank(request.getKeyword())){
           query.setParameter("keyword", request.getKeyword());
         }
@@ -724,31 +724,31 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
 
     private long countFindAllDepartment(FindAllDepartmentRequest request){
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_asset_categories as (        " +
-                "      select department.id_department,department.name,        " +
-                "             department.code, department.short_name,        " +
-                "             department.description, department.parent,        " +
-                "              department.time_created,department.status,        " +
-                "             department.time_modified,        " +
-                "             1 as depth,   CAST(department.id_department as NCHAR ) as path,  " +
-                "             case when department.parent is not null then department.name end nameParent  " +
-                "      from department        " +
-                "      where department.parent is null        " +
-                "      union all        " +
-                "      select department.id_department,department.name,        " +
-                "             department.code, department.short_name,        " +
-                "             department.description, department.parent,        " +
-                "             department.time_created,department.status,        " +
-                "             department.time_modified,        " +
-                "             cte.depth + 1 as depth,        " +
-                "             concat_ws('/',cte.path,CAST(department.id_department as NCHAR)) as path,  " +
-                "             cte.name nameParent  " +
-                "                 from department     " +
-                "               INNER JOIN cte_asset_categories cte ON department.parent = cte.id_department        " +
-                "  )        " +
-                "select count(cte.id_department) count  " +
-                "from cte_asset_categories cte  " +
-                "where 1 = 1 and cte.id_department in (:idsDepartment)  ");
+        sb.append("WITH RECURSIVE cte_asset_categories as (   " +
+                "       select department.id_department,department.name,   " +
+                "              department.code, department.short_name,   " +
+                "              department.description, department.parent,   " +
+                "               department.time_created,department.status,   " +
+                "              department.time_modified,   " +
+                "              1 as depth,   CAST(department.id_department as NCHAR ) as path,   " +
+                "              case when department.parent is not null then department.name end nameParent   " +
+                "       from department   " +
+                "       where department.id_department = :idDepartment   " +
+                "       union all   " +
+                "       select department.id_department,department.name,   " +
+                "              department.code, department.short_name,   " +
+                "              department.description, department.parent,   " +
+                "              department.time_created,department.status,   " +
+                "              department.time_modified,   " +
+                "              cte.depth + 1 as depth,   " +
+                "              concat_ws('/',cte.path,CAST(department.id_department as NCHAR)) as path,   " +
+                "              cte.name nameParent   " +
+                "  from department   " +
+                "                INNER JOIN cte_asset_categories cte ON department.parent = cte.id_department   " +
+                "   )   " +
+                "  select count(0) count   " +
+                "  from cte_asset_categories cte   " +
+                "  where 1 = 1 ");
         setConditionFindAllDepartment(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDepartment(request, query);

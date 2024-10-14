@@ -129,9 +129,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Page<FindAllDepartmentSResponse> findAllDepartment(FindAllDepartmentRequest request) {
-        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-        setIdsDepartmentFindAllDepartment(request);
-        Page<FindAllDepartmentSDto> dtos = departmentRepository.findAllDepartment(pageable, request);
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());;
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer idDepartment = userRoleService.getDepartmentCurrentUserRoleByCodeUser(csvcUser.getCodeUser()).getIdDepartment();
+        request.setIdDepartment(idDepartment);
+        Page<FindAllDepartmentSDto> dtos = departmentRepository.findAllDepartmentByIdDepartment(pageable, request);
         return new PageImpl<>(convertToFindAllDepartment(dtos.stream().collect(Collectors.toList())),
                 pageable, dtos.getTotalElements());
     }
@@ -145,11 +147,6 @@ public class DepartmentServiceImpl implements DepartmentService {
                 pageable, department.getTotalElements());
     }
 
-    private void setIdsDepartmentFindAllDepartment(FindAllDepartmentRequest request) {
-        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Integer idDepartment = userRoleService.getDepartmentCurrentUserRoleByCodeUser(csvcUser.getCodeUser()).getIdDepartment();
-        request.setIdsDepartment(findIdsStructureDepartment(idDepartment));
-    }
 
     @Override
     public void createDepartment(CreateDepartmentRequest request) throws ValidateFiledException {
