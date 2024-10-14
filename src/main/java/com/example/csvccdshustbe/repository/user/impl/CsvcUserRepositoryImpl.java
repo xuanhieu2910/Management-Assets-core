@@ -449,6 +449,9 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
         if (StringUtils.isNotBlank(request.getNameRole())){
             query.setParameter("shortNameRole", request.getNameRole());
         }
+        if (StringUtils.isNotBlank(request.getKeyword())){
+            query.setParameter("keyword", request.getKeyword());
+        }
     }
 
     private void setConditionFindAllUser(FindAllUserRequest request, StringBuilder sb) {
@@ -460,6 +463,9 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
         }
         if (StringUtils.isNotBlank(request.getNameRole())){
             sb.append(" and ( role.short_name REGEXP  :shortNameRole ) ");
+        }
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            sb.append(" and (csvcUser.user_name REGEXP  :keyword) ");
         }
         sb.append(" group by csvcUser.code_user, csvcUser.user_name, csvcUser.full_name, " +
                 "         de.id_department, de.name ");
