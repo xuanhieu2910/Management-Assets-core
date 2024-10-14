@@ -26,12 +26,14 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
     public Page<DocumentAttack> findAllDocumentAttackVisibleResponse(
             FindAllDocumentAttackVisibleRequest request, Pageable pageable){
         StringBuilder sb = new StringBuilder();
-        sb.append("select document_attack.id_document_attack, " +
-                "document_attack.name, document_attack.code, document_attack.id_department, " +
-                " document_attack.date_determination_document, document_attack.status, " +
-                " document_attack.time_created, document_attack.time_modified " +
-                "from document_attack " +
-                "where 1=1 and document_attack.status = :status ");
+        sb.append("select document_attack.id_document_attack,       " +
+                "       document_attack.name, document_attack.code, document_attack.id_department,   " +
+                "       document_attack.date_determination_document, document_attack.status,   " +
+                "       document_attack.time_created, document_attack.time_modified   " +
+                "from document_attack   " +
+                "    left join department on document_attack.id_department = department.id_department   " +
+                "where 1 = 1 and document_attack.status = :status   " +
+                "and document_attack.id_department in (:idsDepartment) ");
         setConditionFindAllDocumentAttackVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDocumentAttackVisible(request, query);
@@ -65,8 +67,8 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
                 "        document_attack.time_created, document_attack.time_modified,   " +
                 "        de.name nameDepartment   " +
                 "from document_attack   " +
-                "    inner join department de on document_attack.id_department = de.id_department   " +
-                " where 1 = 1 and de.id_department in (:idsDepartment) ");
+                "    left join department de on document_attack.id_department = de.id_department   " +
+                " where 1 = 1 and document_attack.id_department in (:idsDepartment) ");
         setConditionFindAllDocumentAttack(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDocumentAttack(request, query);
@@ -93,10 +95,11 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
 
     private long countFindAllDocumentAttackActive(FindAllDocumentAttackVisibleRequest request){
         StringBuilder sb = new StringBuilder();
-        sb.append(" select count(0) " +
-                "from document_attack " +
-                "where 1 = 1 " +
-                "  and document_attack.status = :status ");
+        sb.append("select count(0) count   " +
+                "from document_attack   " +
+                "    inner join department on document_attack.id_department = department.id_department   " +
+                "where 1 = 1 and document_attack.status = :status   " +
+                "and document_attack.id_department in (:idsDepartment) ");
         setConditionFindAllDocumentAttackVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDocumentAttackVisible(request, query);
@@ -107,8 +110,8 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
         StringBuilder sb = new StringBuilder();
         sb.append("select count(0) count " +
                 "from document_attack " +
-                "    inner join department de on document_attack.id_department = de.id_department " +
-                " where 1 = 1 and de.id_department in (:idsDepartment) ");
+                "    left join department de on document_attack.id_department = de.id_department " +
+                " where 1 = 1 and document_attack.id_department in (:idsDepartment) ");
         setConditionFindAllDocumentAttack(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDocumentAttack(request, query);
@@ -118,6 +121,7 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
 
     private void setParameterFindAllDocumentAttackVisible(FindAllDocumentAttackVisibleRequest request, Query query) {
         query.setParameter("status", Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
+        query.setParameter("idsDepartment", request.getIdsDepartment());
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
         }

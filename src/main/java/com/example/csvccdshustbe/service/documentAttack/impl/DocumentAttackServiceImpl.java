@@ -42,9 +42,17 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
     public Page<FindAllDocumentAttackVisibleResponse>
     findAllDocumentAttackVisibleResponse(FindAllDocumentAttackVisibleRequest request){
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        setIdsDepartmentFindAllDocumentAttackVisible(request);
         Page<DocumentAttack> documentAttacks = documentAttackRepository.findAllDocumentAttackVisibleResponse(request, pageable);
         return new PageImpl<>(convertToFindAllDocumentAttackVisible(documentAttacks.get().collect(Collectors.toList())),
                     pageable, documentAttacks.getTotalElements());
+    }
+
+    private void setIdsDepartmentFindAllDocumentAttackVisible(FindAllDocumentAttackVisibleRequest request) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Integer> idsDepartment = csvcUser.getIdsDepartmentCurrent();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        request.setIdsDepartment(idsDepartment);
     }
 
     @Override
