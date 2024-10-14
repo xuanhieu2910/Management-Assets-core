@@ -414,7 +414,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
             sb.append(" and (cte.name REGEXP :keyword ) ");
         }
         if (ObjectUtils.isNotEmpty(request.getStatus())){
-            sb.append(" and and cte.visible = :visible ");
+            sb.append(" and cte.visible = :visible ");
         }
         sb.append(" ORDER BY path ");
     }
