@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.repository.roleAllowAssign.RoleAllowAssignRepos
 import com.example.csvccdshustbe.request.roleAllowAssignt.FindRestRoleRequest;
 import com.example.csvccdshustbe.request.roleAllowAssignt.ListDestinationRoleAssignRequest;
 import com.example.csvccdshustbe.request.roleAllowAssignt.UpdateRoleAllowAssignRequest;
+import com.example.csvccdshustbe.request.roleAllowAssignt.UpdateRoleAllowDataRequest;
 import com.example.csvccdshustbe.response.roleAllowAssign.FindAllRoleAllowAssignResponse;
 import com.example.csvccdshustbe.response.roleAllowAssign.FindAllRoleAllowResponse;
 import com.example.csvccdshustbe.response.roleAllowAssign.FindRestRoleResponse;
@@ -38,13 +39,14 @@ public class RoleAllowAssignServiceImpl implements RoleAllowAssignService {
     }
 
     @Override
-    public void updateRoleAllowAssign(List<UpdateRoleAllowAssignRequest> request) {
+    public void updateRoleAllowAssign(UpdateRoleAllowDataRequest request) {
         List<RoleAllowAssign> roleAllowAssigns = roleAllowAssignRepository.findAllRoleAllowAssign();
         if (CollectionUtils.isEmpty(roleAllowAssigns)) {
             throw new NotFoundException("Don't exits role allow assign!");
         }
+        List<UpdateRoleAllowAssignRequest> data = request.getData();
         for (RoleAllowAssign allowAssign : roleAllowAssigns){
-            for (UpdateRoleAllowAssignRequest rq : request) {
+            for (UpdateRoleAllowAssignRequest rq : data) {
                 if (allowAssign.getIdRole().equals(rq.getIdSourceRoleAssign())) {
                     for (ListDestinationRoleAssignRequest drq : rq.getDestinationRoleAssign()) {
                         if (allowAssign.getAllowAssign().equals(drq.getIdDestinationRoleAssign())) {

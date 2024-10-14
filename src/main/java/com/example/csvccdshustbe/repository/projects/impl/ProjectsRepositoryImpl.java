@@ -143,8 +143,8 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
         if (StringUtils.isNotBlank(request.getKeyword())) {
             query.setParameter("keyword", request.getKeyword());
         }
-        if (!Objects.isNull(request.getVisible())) {
-            query.setParameter("visible", request.getVisible());
+        if (!Objects.isNull(request.getStatus())) {
+            query.setParameter("visible", request.getStatus());
         }
     }
 
@@ -159,7 +159,7 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
         if (StringUtils.isNotBlank(request.getKeyword())) {
             sb.append(" and (cte.name REGEXP :keyword ) ");
         }
-        if (!Objects.isNull(request.getVisible())) {
+        if (!Objects.isNull(request.getStatus())) {
             sb.append(" and cte.visible = :visible  ");
         }
         sb.append(" ORDER BY path ");

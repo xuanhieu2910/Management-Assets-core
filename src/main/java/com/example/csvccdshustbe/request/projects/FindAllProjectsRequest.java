@@ -10,5 +10,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FindAllProjectsRequest extends RequestPageBase {
 
-    private Integer visible;
+    private Integer status;
 }

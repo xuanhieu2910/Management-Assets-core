@@ -4,6 +4,7 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.roleAllowAssignt.FindRestRoleRequest;
 import com.example.csvccdshustbe.request.roleAllowAssignt.UpdateRoleAllowAssignRequest;
+import com.example.csvccdshustbe.request.roleAllowAssignt.UpdateRoleAllowDataRequest;
 import com.example.csvccdshustbe.service.roleAllowAssign.RoleAllowAssignService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -38,8 +39,8 @@ public class RoleAllowAssignController {
     }
 
 
-    @PutMapping("/update-assign")
-    public ResponseEntity<?> updateRoleAllowAssign(@RequestBody List<UpdateRoleAllowAssignRequest> request){
+        @PutMapping("/update-assign")
+    public ResponseEntity<?> updateRoleAllowAssign(@RequestBody UpdateRoleAllowDataRequest request){
         try {
             roleAllowAssignService.updateRoleAllowAssign(request);
             return ApiResponseDto.createdWithMessage("Update role allow assign success!", HttpStatus.OK);
