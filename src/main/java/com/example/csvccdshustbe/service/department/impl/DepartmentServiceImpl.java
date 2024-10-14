@@ -195,9 +195,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        if (!departmentOptional.get().getName().equals(request.getName()) ||
-            !departmentOptional.get().getCode().equals(request.getCode()) ||
-            !departmentOptional.get().getShortName().equals(request.getShortName())) {
+        if ( (departmentOptional.get().getName() != null && StringUtils.isNotBlank(request.getName()) &&
+                departmentOptional.get().getName().equals(request.getName())) ||
+                (departmentOptional.get().getName() != null && StringUtils.isNotBlank(request.getCode()) &&
+                        !departmentOptional.get().getCode().equals(request.getCode())) ||
+                (departmentOptional.get().getName() != null && StringUtils.isNotBlank(request.getShortName()) &&
+                        !departmentOptional.get().getShortName().equals(request.getShortName()))) {
             if (departmentRepository.checkExitsDepartmentByNameOrCodeOrShortName(request.getName(),
                     request.getCode(), request.getShortName())) {
                 throw new ValidateFiledException("Exits department by name or code or short name!");

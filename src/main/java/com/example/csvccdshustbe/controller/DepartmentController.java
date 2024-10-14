@@ -99,8 +99,10 @@ public class DepartmentController {
             departmentService.updateDepartment(request);
             return ApiResponseDto.createdWithMessage("Update department success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
