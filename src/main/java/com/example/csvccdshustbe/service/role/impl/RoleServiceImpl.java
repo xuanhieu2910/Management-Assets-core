@@ -116,7 +116,7 @@ public class RoleServiceImpl implements RoleService {
         if (role.isEmpty()) {
             throw new NotFoundException("Don't exits role by id role!");
         }
-        validateDataUpdateRole(request);
+        validateDataUpdateRole(request,role.get());
         List<RoleCapabilities> roleCapabilitiesList =
                 roleCapabilitiesService.findAllRoleCapabilitiesByIdRole(request.getIdRole());
         if (roleCapabilitiesList.size() != request.getCapabilities().size()){
@@ -151,13 +151,15 @@ public class RoleServiceImpl implements RoleService {
         roleRepository.save(role);
     }
 
-    private void validateDataUpdateRole(UpdateRoleRequest request) throws ValidateFiledException {
+    private void validateDataUpdateRole(UpdateRoleRequest request, Role role) throws ValidateFiledException {
         if (StringUtils.isBlank(request.getShortName())){
             throw new ValidateFiledException("Validate name role!");
         }
-        Optional<Role> role = roleRepository.findByShortNameRole(request.getShortName());
-        if (role.isPresent()){
-            throw new ValidateFiledException("Validate name role!");
+        if (!role.getShortName().equals(request.getShortName())) {
+            Optional<Role> roleOptional = roleRepository.findByShortNameRole(request.getShortName());
+            if (roleOptional.isPresent()) {
+                throw new ValidateFiledException("Validate name role!");
+            }
         }
         if (!request.getStatus().equals(Constants.ROLE_STATUS) ||
             !request.getStatus().equals(Constants.ROLE_UN_STATUS)) {
