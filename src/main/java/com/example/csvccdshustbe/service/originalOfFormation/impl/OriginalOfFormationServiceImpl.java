@@ -159,9 +159,15 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
         }
-        if (!originalOfFormationOptional.get().getName().equals(request.getName()) ||
-                !originalOfFormationOptional.get().getCodeName().equals(request.getCodeName()) ||
-                !originalOfFormationOptional.get().getShortName().equals(request.getShortName())) {
+        if ( (originalOfFormationOptional.get().getName()!= null
+                && StringUtils.isNotBlank(request.getName())
+                && !originalOfFormationOptional.get().getName().equals(request.getName())) ||
+                ( originalOfFormationOptional.get().getCodeName() != null
+                        && StringUtils.isNotBlank(request.getCodeName())
+                        && !originalOfFormationOptional.get().getCodeName().equals(request.getCodeName())) ||
+                ( originalOfFormationOptional.get().getShortName() != null
+                        && StringUtils.isNotBlank(request.getShortName())
+                        &&!originalOfFormationOptional.get().getShortName().equals(request.getShortName()))) {
             if (originalOfFormationRepository.checkExitsOriginalOfFormationByNameOrShortNameOrCodeName(request.getName(),
                     request.getCodeName(), request.getShortName())) {
                 throw new ValidateFiledException("Exits department by name or code or short name!");
