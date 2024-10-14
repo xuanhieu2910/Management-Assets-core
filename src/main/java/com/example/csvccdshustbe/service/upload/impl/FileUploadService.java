@@ -10,6 +10,7 @@ import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 import com.example.csvccdshustbe.dto.modules.medicineModules.medicineGroup.MedicineGroupDetailsDto;
 import com.example.csvccdshustbe.dto.modules.medicineModules.medicineType.MedicineTypeDetailsDto;
 import com.example.csvccdshustbe.dto.original.FindAllOriginalDto;
+import com.example.csvccdshustbe.dto.originalOfFormation.FindAllOriginalOfFormationDto;
 import com.example.csvccdshustbe.dto.positionName.FindAllPositionNameDto;
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
 import com.example.csvccdshustbe.dto.provinces.ProvincesDto;
@@ -30,6 +31,7 @@ import com.example.csvccdshustbe.service.goalsUseGround.GoalsUseGroundService;
 import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import com.example.csvccdshustbe.service.original.OriginalService;
+import com.example.csvccdshustbe.service.originalOfFormation.OriginalOfFormationService;
 import com.example.csvccdshustbe.service.positionName.PositionNameService;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
 import com.example.csvccdshustbe.service.province.ProvinceService;
@@ -97,6 +99,7 @@ public class FileUploadService implements FilesStorageService {
     private static final String NAME_SHEET_DATA_MEDICINE_TYPE = "MedicineType";
     private static final String NAME_SHEET_DATA_MEDICINE_GROUP = "MedicineGroup";
     private static final String NAME_SHEET_DATA_GOALS_USE_GROUND = "GoalsUseGround";
+    private static final String NAME_SHEET_EXPLAIN = "Huongdannhapthongtin";
 
     private static final String NAME_INDIRECT = "INDIRECT";
     private static final String VLOOKUP = "VLOOKUP";
@@ -141,6 +144,8 @@ public class FileUploadService implements FilesStorageService {
     MedicineGroupService medicineGroupService;
     @Autowired
     GoalsUseGroundService goalsUseGroundService;
+    @Autowired
+    OriginalOfFormationService originalOfFormationService;
 
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
@@ -285,7 +290,7 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public Resource downLoadFileImportAsset() throws IOException {
-        String fileExcel = "C:\\Users\\hieux\\Desktop\\Projects\\src\\main\\resources\\static\\Final.xlsx";
+        String fileExcel = "C:\\Users\\Lenovo\\Desktop\\Project_BK\\csvc-hust\\src\\main\\resources\\static\\Sample_Excel_Import_Asset.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
 
         Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory =
@@ -309,6 +314,8 @@ public class FileUploadService implements FilesStorageService {
         List<MedicineTypeDetailsDto> dataMedicineType = medicineTypeService.findAllMedicineTypeToDownload();
         List<MedicineGroupDetailsDto> dataMedicineGroup = medicineGroupService.findAllMedicineGroupToDownload();
         List<FindAllGoalsUseGroundDto> dataGoalsUseGround = goalsUseGroundService.findAllGoalsUseGroundToDownload();
+        List<FindAllOriginalOfFormationDto> dataOriginalOfFormation = originalOfFormationService.findAllOriginalOfFormationToDownload();
+
 
         Workbook workbook = new XSSFWorkbook(file);
         createAssetCategoriesImport(workbook, mapAssetCategory);
@@ -329,9 +336,9 @@ public class FileUploadService implements FilesStorageService {
         createDataMedicineType(workbook, dataMedicineType);
         createDataMedicineGroup(workbook, dataMedicineGroup);
         createDataGoalsUseGround(workbook, dataGoalsUseGround);
+        createDataOriginalOfFormation(workbook, dataOriginalOfFormation);
 
-
-        String filePathOutput = "C:\\Users\\hieux\\Desktop\\DEF.xlsx";
+        String filePathOutput = "C:\\Users\\Lenovo\\Desktop\\Template_import_student.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
         } catch (IOException e) {
@@ -341,6 +348,24 @@ public class FileUploadService implements FilesStorageService {
         workbook.close();
         return null;
     }
+
+    private void createDataOriginalOfFormation(Workbook workbook, List<FindAllOriginalOfFormationDto> dataOriginalOfFormation) {
+        Sheet sheet = workbook.getSheet(NAME_SHEET_EXPLAIN);
+        Row row = null;
+        int indexCell = 13;
+        int indexRowStart = 5;
+        for (int i = 0; i< dataOriginalOfFormation.size(); i++){
+            if (sheet.getRow(indexRowStart) == null) {
+                row = sheet.createRow(indexRowStart);
+            } else {
+                row = sheet.getRow(indexRowStart);
+            }
+            String valueCell = dataOriginalOfFormation.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+            ++indexRowStart;
+        }
+    }
+
     private void createDataGoalsUseGround(Workbook workbook, List<FindAllGoalsUseGroundDto> dataGoalsUseGround) {
         Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_GOALS_USE_GROUND);
         Row row = null;

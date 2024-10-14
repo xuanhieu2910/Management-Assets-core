@@ -26,4 +26,6 @@ public interface OriginalOfFormationRepositoryCustom {
     boolean isCheckAssetByIdOriginalOfFormation(Integer idOriginalOfFormation);
 
     List<OriginalOfFormation> findAllOriginalOfFormationById(List<Integer> OriginalOfFormationId);
+
+    List<FindAllOriginalOfFormationDto> findAllOriginalOfFormationToDownload();
 }

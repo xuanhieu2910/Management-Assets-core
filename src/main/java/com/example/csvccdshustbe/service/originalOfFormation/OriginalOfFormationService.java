@@ -1,10 +1,13 @@
 package com.example.csvccdshustbe.service.originalOfFormation;
 
+import com.example.csvccdshustbe.dto.originalOfFormation.FindAllOriginalOfFormationDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.originalOfFormation.*;
 import com.example.csvccdshustbe.response.originalOfFormation.FindAllOriginalOfFormationResponse;
 import com.example.csvccdshustbe.response.originalOfFormation.FindAllOriginalOfFormationVisibleResponse;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface OriginalOfFormationService {
 
@@ -18,4 +21,6 @@ public interface OriginalOfFormationService {
     void deleteOriginalOfFormationServiceById(Integer idOriginalOfFormation) throws ValidateFiledException;
 
     void updateStatusOriginalOfFormation(UpdateStatusOriginalOfFormationRequest request) throws ValidateFiledException;
+
+    List<FindAllOriginalOfFormationDto> findAllOriginalOfFormationToDownload();
 }

@@ -219,4 +219,9 @@ public class OriginalOfFormationServiceImpl implements OriginalOfFormationServic
         originalOfFormation.get().setVisible(request.getVisible());
         originalOfFormationRepository.save(originalOfFormation.get());
     }
+
+    @Override
+    public List<FindAllOriginalOfFormationDto> findAllOriginalOfFormationToDownload() {
+        return originalOfFormationRepository.findAllOriginalOfFormationToDownload();
+    }
 }
