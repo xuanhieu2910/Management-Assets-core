@@ -79,8 +79,10 @@ public class CsvcUserController {
             csvcUserService.addNewUser(request);
             return ApiResponseDto.createdWithMessage("Add new user success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.OK);
         }
     }
