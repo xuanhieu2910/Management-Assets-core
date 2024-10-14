@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 public class UpdateRoleCapabilitiesRequest {
 
-    private Integer idRoleCapabilities;
+    private Integer idCapability;
     private Integer status;
 }

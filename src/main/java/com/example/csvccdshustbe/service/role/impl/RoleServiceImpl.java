@@ -132,7 +132,7 @@ public class RoleServiceImpl implements RoleService {
         Integer idUserModified = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdUser();
         for (RoleCapabilities roleCapabilities : roleCapabilitiesList){
             for (UpdateRoleCapabilitiesRequest updateRoleCapabilitiesRequest : roleCapabilitiesRequest){
-                if (updateRoleCapabilitiesRequest.getIdRoleCapabilities().equals(roleCapabilities.getIdRoleCapabilities())){
+                if (updateRoleCapabilitiesRequest.getIdCapability().equals(roleCapabilities.getIdCapabilities())){
                     roleCapabilities.setPermission(updateRoleCapabilitiesRequest.getStatus());
                     roleCapabilities.setTimeModified(timeCurrent);
                     roleCapabilities.setIdUserModified(idUserModified);
