@@ -31,31 +31,32 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
     @Override
     public List<FindAllAssetCategoriesPickedDto> findAllAssetCategoriesIsPickedAndVisible() {
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_asset_category as (    " +
-                "      select assetCategories.id_asset_category, assetCategories.name, assetCategories.short_name,    " +
-                "             assetCategories.code_name, assetCategories.description, assetCategories.parent,    " +
-                "             assetCategories.sort_order, assetCategories.asset_count,    " +
-                "             assetCategories.visible, assetCategories.time_created, assetCategories.time_modified,    " +
-                "             assetCategories.path_image,assetCategories.is_pick ,    " +
-                "             assetCategories.id_asset_category as idParent    " +
-                "      from asset_categories   assetCategories    " +
-                "      where assetCategories.parent is null    " +
-                "      union all        " +
-                "      select assetCategories.id_asset_category, assetCategories.name,    " +
-                "             assetCategories.short_name, assetCategories.code_name,    " +
-                "             assetCategories.description, assetCategories.parent,    " +
-                "             assetCategories.sort_order, assetCategories.asset_count,    " +
-                "             assetCategories.visible, assetCategories.time_created,    " +
-                "             assetCategories.time_modified, assetCategories.path_image,    " +
-                "             assetCategories.is_pick,    " +
-                "             cte.id_asset_category as idParent    " +
-                "                   from asset_categories assetCategories    " +
-                "               INNER JOIN cte_asset_category cte ON assetCategories.parent = cte.id_asset_category    " +
-                "      where  assetCategories.is_pick = :isPicked and assetCategories.visible = :isVisible    " +
-                "                   )        " +
-                "select cte.id_asset_category, cte.name, cte.short_name,    " +
-                "       cte.code_name, cte.path_image,  cte.idParent    " +
-                "from cte_asset_category cte ");
+        sb.append("WITH RECURSIVE cte_asset_category as (        " +
+                "       select assetCategories.id_asset_category, assetCategories.name, assetCategories.short_name,        " +
+                "              assetCategories.code_name, assetCategories.description, assetCategories.parent,        " +
+                "              assetCategories.sort_order, assetCategories.asset_count,        " +
+                "              assetCategories.visible, assetCategories.time_created, assetCategories.time_modified,        " +
+                "              assetCategories.path_image,assetCategories.is_pick ,        " +
+                "              assetCategories.id_asset_category as idParent        " +
+                "       from asset_categories   assetCategories        " +
+                "       where assetCategories.parent is null  " +
+                "       union all            " +
+                "       select assetCategories.id_asset_category, assetCategories.name,        " +
+                "              assetCategories.short_name, assetCategories.code_name,        " +
+                "              assetCategories.description, assetCategories.parent,        " +
+                "              assetCategories.sort_order, assetCategories.asset_count,        " +
+                "              assetCategories.visible, assetCategories.time_created,        " +
+                "              assetCategories.time_modified, assetCategories.path_image,        " +
+                "              assetCategories.is_pick,        " +
+                "              cte.id_asset_category as idParent        " +
+                "       from asset_categories assetCategories  " +
+                "                INNER JOIN cte_asset_category cte ON assetCategories.parent = cte.id_asset_category  " +
+                "                    )            " +
+                "select cte.id_asset_category, cte.name, cte.short_name,  " +
+                "        cte.code_name, cte.path_image,  cte.idParent        " +
+                "from cte_asset_category cte  " +
+                "      where cte.is_pick = :isPicked  " +
+                "      and cte.visible = :isVisible ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("isPicked", Constants.IS_PICKED);
         query.setParameter("isVisible", Constants.IS_VISIBLE);
