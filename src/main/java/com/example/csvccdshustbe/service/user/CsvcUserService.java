@@ -33,4 +33,6 @@ public interface CsvcUserService extends UserDetailsService {
     FindDetailsUserResponse findDetailsUserResponse(FindDetailsUserRequest request);
     void removeUserByDepartmentAndCodeUser(RemoveUserDepartmentRequest request);
     Map<String, List<FindAllUserUsedDto>> findAllUserUsedToDownload();
+
+    Page<FindAllUserResponse> findAllUserExistResponse(FindAllUserRequest request);
 }

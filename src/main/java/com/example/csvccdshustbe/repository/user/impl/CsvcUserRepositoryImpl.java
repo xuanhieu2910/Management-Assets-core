@@ -4,7 +4,6 @@ import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.entity.Capabilities;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Role;
-import com.example.csvccdshustbe.enums.ContextLevelPattern;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepositoryCustom;
 import com.example.csvccdshustbe.request.user.FindAllUserRequest;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;

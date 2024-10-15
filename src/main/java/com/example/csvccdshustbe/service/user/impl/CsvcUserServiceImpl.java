@@ -1,6 +1,5 @@
 package com.example.csvccdshustbe.service.user.impl;
 
-import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.dto.userRole.DepartmentUserRoleDto;
 import com.example.csvccdshustbe.entity.*;
@@ -186,6 +185,27 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         setIdsStructureDepartment(request);
         Page<FindAllUserResponse> responses = csvcUserRepository.findAllUser(request, pageable);
         return responses;
+    }
+    public Page<FindAllUserResponse> findAllUserExistResponse(FindAllUserRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        setIdsStructureDepartment(request);
+        Page<FindAllUserResponse> responses = csvcUserRepository.findAllUser(request, pageable);
+        Page<FindAllUserResponse> filteredResponses = setValueDuplicateUser(responses);
+        return filteredResponses;
+    }
+
+    private Page<FindAllUserResponse> setValueDuplicateUser(Page<FindAllUserResponse> responses) {
+        Map<String, FindAllUserResponse> uniqueResponsesMap = new LinkedHashMap<>();
+
+        for (FindAllUserResponse response : responses.getContent()) {
+            String key = response.getCodeUser();
+            if (!uniqueResponsesMap.containsKey(key)) {
+                uniqueResponsesMap.put(key, response);
+            }
+        }
+
+        List<FindAllUserResponse> filteredResponses = new ArrayList<>(uniqueResponsesMap.values());
+        return new PageImpl<>(filteredResponses, responses.getPageable(), filteredResponses.size());
     }
 
     @Override

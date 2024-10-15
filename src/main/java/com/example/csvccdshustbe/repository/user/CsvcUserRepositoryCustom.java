@@ -9,7 +9,6 @@ import com.example.csvccdshustbe.response.user.FindAllUserResponse;
 import com.example.csvccdshustbe.response.user.FindDetailsUserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.Map;

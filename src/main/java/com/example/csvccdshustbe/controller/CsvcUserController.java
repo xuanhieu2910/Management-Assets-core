@@ -125,6 +125,20 @@ public class CsvcUserController {
         }
     }
 
+    @GetMapping("/find-all-exist")
+    public ResponseEntity<?> findAllUserExist(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    })FindAllUserRequest request){
+        try {
+            return ApiResponseDto.createdWithState(csvcUserService.findAllUserExistResponse(request),
+                    "Find all user exist success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 
 
 
