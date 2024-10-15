@@ -161,7 +161,7 @@ public class RoleServiceImpl implements RoleService {
                 throw new ValidateFiledException("Validate name role!");
             }
         }
-        if (!request.getStatus().equals(Constants.ROLE_STATUS) ||
+        if (!request.getStatus().equals(Constants.ROLE_STATUS) &&
             !request.getStatus().equals(Constants.ROLE_UN_STATUS)) {
             throw new ValidateFiledException("Validate status role!");
         }
