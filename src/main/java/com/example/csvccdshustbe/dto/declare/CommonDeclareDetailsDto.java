@@ -24,7 +24,7 @@ public class CommonDeclareDetailsDto {
     private String timeCreated;
     @JsonProperty("time_modified")
     private String timeModified;
-    @JsonProperty("name_type_declare")
+    @JsonProperty("name_type_declare_asset")
     private String nameTypeDeclare;
     @JsonProperty("current_usage")
     private List<AssetCurrentUsageDetailsDto> assetCurrentUsageDetailsDto;

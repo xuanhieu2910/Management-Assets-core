@@ -1738,7 +1738,6 @@ public class AssetServiceImpl implements AssetService {
             return 0;
         }
         int yearsRemaining = (int) Math.round((double) monthsRemaining / 12);
-
         return yearsRemaining;
     }
     private Map<String, Object> processDepreciationData(XSSFRow row) {
