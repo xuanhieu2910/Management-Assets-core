@@ -28,7 +28,7 @@ public class ArchitectureModuleRepositoryImpl implements ArchitectureModuleRepos
                 "    architectureModule.volume, architectureModule.publish_date, architectureModule.id_country_producer, " +
                 "    a.name nameInstance, co.name nameCountryProducer " +
                 "from architecture_module architectureModule " +
-                "    left join csvc.asset a on architectureModule.id_asset = a.id_asset " +
+                "    left join csvc.asset a on architectureModule.id_instance = a.id_asset " +
                 "    left join country_producer co on architectureModule.id_country_producer = co.id_country_producer " +
                 "where architectureModule.id_architecture_module = :idArchitectureModule ");
         Query query = entityManager.createNativeQuery(sb.toString());
