@@ -290,7 +290,7 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public Resource downLoadFileImportAsset() throws IOException {
-        String fileExcel = "C:\\Users\\Lenovo\\Desktop\\Project_BK\\csvc-hust\\src\\main\\resources\\static\\Sample_Excel_Import_Asset.xlsx";
+        String fileExcel = "C:\\Users\\hieux\\Desktop\\Projects\\src\\main\\resources\\static\\Sample_Excel_Import_Asset.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
 
         Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory =
@@ -338,7 +338,7 @@ public class FileUploadService implements FilesStorageService {
         createDataGoalsUseGround(workbook, dataGoalsUseGround);
         createDataOriginalOfFormation(workbook, dataOriginalOfFormation);
 
-        String filePathOutput = "C:\\Users\\Lenovo\\Desktop\\Template_import_student.xlsx";
+        String filePathOutput = "C:\\Users\\hieux\\Desktop\\Template_import_student.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
         } catch (IOException e) {
@@ -707,15 +707,16 @@ public class FileUploadService implements FilesStorageService {
 
     private void filledDataUserUsed(Sheet sheet, List<FindAllUserUsedDto> dtos, int index, String keyword) {
         Row row = null;
-        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
-            if (sheet.getRow(i) == null) {
-                row = sheet.createRow(i);
+        int indexStartFilledData = INDEX_START_FILLED_DATA;
+        for (int i = 0; i < dtos.size(); i++) {
+            if (sheet.getRow(indexStartFilledData) == null) {
+                row = sheet.createRow(indexStartFilledData);
             } else {
-                row = sheet.getRow(i);
+                row = sheet.getRow(indexStartFilledData);
             }
             String valueCell = dtos.get(i).getUserName() + "(" + dtos.get(i).getFullName() + ")";
             row.createCell(index).setCellValue(valueCell);
-
+            ++indexStartFilledData;
         }
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(index));
@@ -841,15 +842,16 @@ public class FileUploadService implements FilesStorageService {
 
     private void filledDataOriginal(Sheet sheet, List<FindAllOriginalDto> dtos, int index, String keyword) {
         Row row = null;
-        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
-            if (sheet.getRow(i) == null) {
-                row = sheet.createRow(i);
+        int indexStart = INDEX_START_FILLED_DATA;
+        for (int i = 0; i < dtos.size(); i++) {
+            if (sheet.getRow(indexStart) == null) {
+                row = sheet.createRow(indexStart);
             } else {
-                row = sheet.getRow(i);
+                row = sheet.getRow(indexStart);
             }
             String valueCell = dtos.get(i).getIdOriginal() + "_" + dtos.get(i).getName();
             row.createCell(index).setCellValue(valueCell);
-
+            ++indexStart;
         }
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(index));
@@ -905,16 +907,17 @@ public class FileUploadService implements FilesStorageService {
 
     private void filledDataWards(Sheet sheet, List<WardsDto> dtos, int index, String keyword) {
         Row row = null;
-        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
-            if (sheet.getRow(i) == null) {
-                row = sheet.createRow(i);
+        int indexStart = INDEX_START_FILLED_DATA;
+        for (int i = 0; i < dtos.size(); i++) {
+            if (sheet.getRow(indexStart) == null) {
+                row = sheet.createRow(indexStart);
             } else {
-                row = sheet.getRow(i);
+                row = sheet.getRow(indexStart);
             }
             String valueCell = "STT_" + dtos.get(i).getCodeWard() + "_" + ValueUtil.convertToVietnamese(dtos.get(i).getNameWard()).
                     replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
             row.createCell(index).setCellValue(valueCell);
-
+            ++indexStart;
         }
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(index));
@@ -1004,16 +1007,17 @@ public class FileUploadService implements FilesStorageService {
 
     private void filledDataDistricts(Sheet sheet, List<DistrictsDto> dtos, int index, String keyword) {
         Row row = null;
-        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
-            if (sheet.getRow(i) == null) {
-                row = sheet.createRow(i);
+        int indexStart = INDEX_START_FILLED_DATA;
+        for (int i = 0; i < dtos.size(); i++) {
+            if (sheet.getRow(indexStart) == null) {
+                row = sheet.createRow(indexStart);
             } else {
-                row = sheet.getRow(i);
+                row = sheet.getRow(indexStart);
             }
             String valueCell = "STT_" + dtos.get(i).getCode() + "_" + ValueUtil.convertToVietnamese(dtos.get(i).getNameDistrict()).
                     replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
             row.createCell(index).setCellValue(valueCell);
-
+            ++indexStart;
         }
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(index));
@@ -1136,15 +1140,16 @@ public class FileUploadService implements FilesStorageService {
     private void filledDataDocumentAttackDefault(Sheet sheetDocumentAttack, List<FindAllDocumentAttackDto> dtos,
                                                  int index, String keyword) {
         Row row = null;
-        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
-            if (sheetDocumentAttack.getRow(i) == null) {
-                row = sheetDocumentAttack.createRow(i);
+        int indexStart = INDEX_START_FILLED_DATA;
+        for (int i = 0; i < dtos.size(); i++) {
+            if (sheetDocumentAttack.getRow(indexStart) == null) {
+                row = sheetDocumentAttack.createRow(indexStart);
             } else {
-                row = sheetDocumentAttack.getRow(i);
+                row = sheetDocumentAttack.getRow(indexStart);
             }
             String valueCell = dtos.get(i).getIdDocumentAttack() + "_" + dtos.get(i).getName();
             row.createCell(index).setCellValue(valueCell);
-
+            ++indexStart;
         }
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(index));
@@ -1161,15 +1166,16 @@ public class FileUploadService implements FilesStorageService {
                                           List<FindAllDocumentAttackDto> dtos, int index,
                                           String keyword) {
         Row row = null;
-        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
-            if (sheetDocumentAttack.getRow(i) == null) {
-                row = sheetDocumentAttack.createRow(i);
+        int indexStart = INDEX_START_FILLED_DATA;
+        for (int i = 0; i < dtos.size(); i++) {
+            if (sheetDocumentAttack.getRow(indexStart) == null) {
+                row = sheetDocumentAttack.createRow(indexStart);
             } else {
-                row = sheetDocumentAttack.getRow(i);
+                row = sheetDocumentAttack.getRow(indexStart);
             }
             String valueCell = dtos.get(i).getIdDocumentAttack() + "_" + dtos.get(i).getName();
             row.createCell(index).setCellValue(valueCell);
-
+            ++indexStart;
         }
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(index));
@@ -1211,15 +1217,16 @@ public class FileUploadService implements FilesStorageService {
 
     private void filledDataUnits(Sheet sheetUnit, List<FindAllUnitsDto> dtos, int index, String keyword) {
         Row row = null;
-        for (int i = INDEX_START_FILLED_DATA; i < dtos.size(); i++) {
-            if (sheetUnit.getRow(i) == null) {
-                row = sheetUnit.createRow(i);
+        int indexStart = INDEX_START_FILLED_DATA;
+        for (int i = 0; i < dtos.size(); i++) {
+            if (sheetUnit.getRow(indexStart) == null) {
+                row = sheetUnit.createRow(indexStart);
             } else {
-                row = sheetUnit.getRow(i);
+                row = sheetUnit.getRow(indexStart);
             }
             String valueCell = dtos.get(i).getIdUnit() + "_" + dtos.get(i).getNameUnit();
             row.createCell(index).setCellValue(valueCell);
-
+            ++indexStart;
         }
         if (row != null) {
             CellReference cellReference = new CellReference(row.getCell(index));
