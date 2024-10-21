@@ -22,4 +22,8 @@ public class Document {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+    @Column(name = "time_increase")
+    private String timeIncrease;
+    @Column(name = "id_department")
+    private Integer idDepartment;
 }

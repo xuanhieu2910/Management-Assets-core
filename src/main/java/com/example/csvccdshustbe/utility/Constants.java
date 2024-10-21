@@ -240,8 +240,18 @@ public class Constants {
     public static final Integer GOALS_USE_GROUND_ACTIVE_STATUS = 1;
 
     /*----------------------------------------------------*/
-
+    /**
+     * Constant Excel
+     * */
     public static String[] FILE_EXCEL = {"xls", "xlsx", "xlsm"};
-
     public static  final Integer SIZE_HANDLE = 50;
+    /*----------------------------------------------------*/
+    /**
+     * Constant Type Process
+     * */
+    public static String CODE_TYPE_PROCESS_INCREASE = "increase";
+    public static String CODE_TYPE_PROCESS_DECREASE = "decrease";
+    public static String CODE_TYPE_PROCESS_CHANGE = "change";
+    public static String CODE_TYPE_PROCESS_REMOVE = "remove";
+    /*----------------------------------------------------*/
 }

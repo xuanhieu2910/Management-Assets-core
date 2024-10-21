@@ -1,6 +1,8 @@
 package com.example.csvccdshustbe.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/process-asset")
 public class ProcessAssetController {
 
-
+    @PostMapping("/increase")
+    public ResponseEntity<?> increaseAsset(){
+        return null;
+    }
 
 }
