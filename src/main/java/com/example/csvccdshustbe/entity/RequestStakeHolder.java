@@ -18,8 +18,8 @@ public class RequestStakeHolder {
     private Integer idRequestStakeHolder;
     @Column(name = "id_request")
     private Integer idRequest;
-    @Column(name = "id_user_role")
-    private Integer idUserRole;
+    @Column(name = "id_user")
+    private Integer idUser;
     @Column(name = "status")
     private Integer status;
     @Column(name = "time_created")
@@ -30,4 +30,6 @@ public class RequestStakeHolder {
     private Integer idReason;
     @Column(name = "description")
     private String description;
+    @Column(name = "id_department")
+    private Integer idDepartment;
 }

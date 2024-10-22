@@ -254,5 +254,84 @@ public class Constants {
     public static String CODE_TYPE_PROCESS_CHANGE = "change";
     public static String CODE_TYPE_PROCESS_REMOVE = "remove";
     /*----------------------------------------------------*/
+    /**
+     * Constant PREFIX_DOCUMENT
+     * */
+    public static final String CODE_TYPE_STATE_INIT = "init";
+    public static final String CODE_TYPE_STATE_TEST = "test";
+    public static final String CODE_TYPE_STATE_APPROVED = "approved";
+    public static final String CODE_TYPE_STATE_COMPLETED = "completed";
+    /*----------------------------------------------------*/
+    /**
+     * Constant NAME_PROCESS
+     * */
+    public static String NAME_INCREASE_PROCESS = "Increase asset";
+    public static String NAME_TEST_PROCESS = "Test process";
+    public static String NAME_APPROVED_PROCESS = "Approved process";
+    public static String NAME_COMPLETED_PROCESS = "Completed process";
+    /*----------------------------------------------------*/
+    /**
+     * Constant NAME_REQUEST
+     * */
+    public static String NAME_INCREASE_REQUEST = "Increase asset";
+    public static String NAME_TEST_REQUEST = "Test process";
+    public static String NAME_APPROVED_REQUEST = "Approved process";
+    public static String NAME_COMPLETED_REQUEST = "Completed process";
+    /*----------------------------------------------------*/
+    /**
+     * Constant Status process
+     * */
+    public static Integer STATUS_FALSE_PROCESS = -1;
+    public static Integer STATUS_PENDING_PROCESS = 1;
+    public static Integer STATUS_SUCCESS_PROCESS = 2;
+    /*----------------------------------------------------*/
+    /**
+     * Constant Status data process asset
+     * */
+    public static Integer STATUS_PROCESS_ASSET_ACTIVE = 1;
+    public static Integer STATUS_PROCESS_ASSET_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
+
+    /**
+     * Constant Status Type State
+     * */
+    public static Integer STATUS_TYPE_STATE_ACTIVE = 1;
+    public static Integer STATUS_TYPE_STATE_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
+
+    /**
+     * Constant Status State
+     * */
+    public static Integer STATUS_STATE_FALSE = -1;
+    public static Integer STATUS_STATE_PENDING = 1;
+    public static Integer STATUS_STATE_SUCCESS = 2;
+    /*----------------------------------------------------*/
+
+
+    /**
+     * Constant Status Request
+     * */
+    public static Integer STATUS_REQUEST_FALSE = -1;
+    public static Integer STATUS_REQUEST_PENDING = 1;
+    public static Integer STATUS_REQUEST_SUCCESS = 2;
+    /*----------------------------------------------------*/
+    /**
+     * Constant Status Request
+     * */
+    public static Integer STATUS_REQUEST_STAKE_HOLDER_FALSE = -1;
+    public static Integer STATUS_REQUEST_STAKE_HOLDER_PENDING = 1;
+    public static Integer STATUS_REQUEST_STAKE_HOLDER_SUCCESS = 2;
+    /*----------------------------------------------------*/
+    /**
+     * Constant Status Request data
+     * */
+    public static Integer STATUS_REQUEST_DATA_ACTIVE = 1;
+    public static Integer STATUS_REQUEST_DATA_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
+    /**
+     * Constant PREFIX_DOCUMENT
+     * */
     public static String PREFIX_DOCUMENT = "TS";
+    /*----------------------------------------------------*/
+
 }
