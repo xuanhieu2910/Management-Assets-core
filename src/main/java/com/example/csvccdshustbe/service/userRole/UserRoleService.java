@@ -19,6 +19,7 @@ public interface UserRoleService {
     List<FindAllRolesUserResponse> findAllRolesUserByCodeUser(String codeUser);
 
     List<UserRole> findUserRoleByCodeUser(String codeUser);
+    List<UserRole> findUserRoleByNameRoleAndIdDepartment(String nameRole, Integer department);
 
     void saveAllUserRole(List<UserRole> userRoles);
 
@@ -32,4 +33,5 @@ public interface UserRoleService {
     void createNewUserRole(AddNewRoleDepartmentUserRequest request);
 
     void deleteUserRoleByIdRole(Integer idRole);
+
 }

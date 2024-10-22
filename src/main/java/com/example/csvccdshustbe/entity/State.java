@@ -25,4 +25,6 @@ public class State {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+    @Column(name = "code_type_state")
+    private String codeTypeState;
 }

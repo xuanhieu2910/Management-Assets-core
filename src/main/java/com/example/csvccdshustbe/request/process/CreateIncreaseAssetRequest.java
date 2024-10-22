@@ -12,4 +12,5 @@ public class CreateIncreaseAssetRequest {
 
     private CreateDocumentRequest document;
     private List<Integer> idsAsset;
+    private String typeProcess;
 }

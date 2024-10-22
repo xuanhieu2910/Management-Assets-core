@@ -187,4 +187,36 @@ public class UserRoleRepositoryImpl implements UserRoleRepositoryCustom {
         }
         return userRoles;
     }
+
+    @Override
+    public List<UserRole> findUserRoleByNameRoleAndIdDepartment(String nameRole, Integer department) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select  userRole.id_user_role, userRole.id_user, userRole.id_role,   " +
+                "        userRole.id_department, userRole.time_created, userRole.time_modified,   " +
+                "        userRole.picked   " +
+                "from csvc_user csvcUser   " +
+                "       inner join user_role userRole on csvcUser.id_user = userRole.id_user           " +
+                "       inner join role role on userRole.id_role = role.id_role           " +
+                "where role.title = :roleTitle   " +
+                "and userRole.id_department = :idDepartment ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("roleTitle", nameRole);
+        query.setParameter("idDepartment", department);
+        List<UserRole> userRoles = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                UserRole userRole = new UserRole();
+                userRole.setIdUserRole(ValueUtil.getIntegerByObject(obj[0]));
+                userRole.setIdUser(ValueUtil.getIntegerByObject(obj[1]));
+                userRole.setIdRole(ValueUtil.getIntegerByObject(obj[2]));
+                userRole.setIdDepartment(ValueUtil.getIntegerByObject(obj[3]));
+                userRole.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                userRole.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                userRole.setPicked(ValueUtil.getIntegerByObject(obj[6]));
+                userRoles.add(userRole);
+            }
+        }
+        return userRoles;
+    }
 }

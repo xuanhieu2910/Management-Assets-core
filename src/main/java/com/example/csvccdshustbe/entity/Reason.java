@@ -24,4 +24,7 @@ public class Reason {
     private String timeModified;
     @Column(name = "status")
     private Integer status;
+    @Column(name = "type_reason")
+    private Integer typeReason;
+
 }

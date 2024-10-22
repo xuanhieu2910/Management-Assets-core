@@ -66,6 +66,15 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
+    public List<UserRole> findUserRoleByNameRoleAndIdDepartment(String nameRole, Integer department) {
+        List<UserRole> userRoles = userRoleRepository.findUserRoleByNameRoleAndIdDepartment(nameRole, department);
+        if (CollectionUtils.isEmpty(userRoles)){
+            throw new NotFoundException("Don't exits user roles by code user");
+        }
+        return userRoles;
+    }
+
+    @Override
     public void saveAllUserRole(List<UserRole> userRoles) {
         userRoleRepository.saveAll(userRoles);
     }

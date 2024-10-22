@@ -3,7 +3,7 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
-import com.example.csvccdshustbe.service.dataProcessAsset.DataProcessAssetService;
+import com.example.csvccdshustbe.service.process.ProcessService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,12 +20,12 @@ public class ProcessAssetController {
 
 
     @Autowired
-    DataProcessAssetService dataProcessAssetService;
+    ProcessService processService;
 
     @PostMapping("/increase")
     public ResponseEntity<?> increaseAsset(@RequestBody CreateIncreaseAssetRequest request){
         try {
-            dataProcessAssetService.createNewDataProcessAsset(request);
+            processService.createIncreaseAsset(request);
             return ApiResponseDto.createdWithMessage("Create increase asset success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
