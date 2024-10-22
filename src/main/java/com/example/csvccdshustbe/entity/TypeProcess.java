@@ -17,12 +17,12 @@ public class TypeProcess {
     private Integer idTypeProcess;
     @Column(name = "name")
     private String name;
+    @Column(name = "code")
+    private String code;
     @Column(name = "description")
     private String description;
     @Column(name = "time_created")
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
-    @Column(name = "code")
-    private String code;
 }
