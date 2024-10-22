@@ -17,6 +17,8 @@ public class TypeState {
     private Integer idTypeState;
     @Column(name = "name")
     private String name;
+    @Column(name = "code")
+    private String code;
     @Column(name = "status")
     private int status;
     @Column(name = "time_created")

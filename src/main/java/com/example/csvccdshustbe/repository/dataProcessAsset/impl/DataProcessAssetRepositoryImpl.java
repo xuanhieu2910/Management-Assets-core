@@ -18,7 +18,7 @@ public class DataProcessAssetRepositoryImpl implements DataProcessAssetRepositor
     EntityManager entityManager;
 
     @Override
-    public List<DataProcessAsset> findDataProcessAssetByIdsAsset(List<Integer> idsAsset) {
+    public List<DataProcessAsset> findDataProcessIncreaseAssetByIdsAsset(List<Integer> idsAsset) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select dp.id_data_process_asset, dp.id_document, dp.id_asset, " +
                 "       dp.id_process, dp.time_created, dp.time_modified, dp.status " +

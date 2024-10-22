@@ -254,4 +254,5 @@ public class Constants {
     public static String CODE_TYPE_PROCESS_CHANGE = "change";
     public static String CODE_TYPE_PROCESS_REMOVE = "remove";
     /*----------------------------------------------------*/
+    public static String PREFIX_DOCUMENT = "TS";
 }
