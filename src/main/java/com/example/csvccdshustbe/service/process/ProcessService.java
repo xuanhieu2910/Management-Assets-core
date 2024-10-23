@@ -8,4 +8,5 @@ public interface ProcessService {
 
     Process createNewProcess(Process process);
     void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException;
+
 }

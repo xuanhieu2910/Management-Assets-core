@@ -15,5 +15,5 @@ public interface DataProcessAssetService {
 
     List<DataProcessAsset> findDataProcessIncreaseAssetByIdsAsset(List<Integer> idsAsset);
     void createNewDataProcessAsset(CreateIncreaseAssetRequest request, Document document, Process process) throws ValidateFiledException;
-     Page<FindAllProcessAssetResponse> findAllProcessAsset(FindAllProcessAssetRequest request);
+     Page<FindAllProcessAssetResponse> findAllDataProcessAsset(FindAllProcessAssetRequest request);
 }

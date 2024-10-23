@@ -66,6 +66,7 @@ public class DataProcessAssetRepositoryImpl implements DataProcessAssetRepositor
                 "       document.time_created, document.time_modified,document.time_increase,document.time_document,process.status  " +
                 "FROM process  " +
                 "         LEFT JOIN data_process_asset da ON process.id_process = da.id_process  " +
+                "         LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process " +
                 "         LEFT JOIN csvc_user user ON process.id_user_created = user.id_user  " +
                 "         LEFT JOIN department de ON process.id_department = de.id_department  " +
                 "         LEFT JOIN document ON da.id_document = document.id_document  " +
@@ -102,8 +103,8 @@ public class DataProcessAssetRepositoryImpl implements DataProcessAssetRepositor
     private void setParameterFindAllProcessAsset(FindAllProcessAssetRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
 
-        if (ObjectUtils.isNotEmpty(request.getStatusTypeProcess())){
-            query.setParameter("statusTypeProcess", request.getStatusTypeProcess());
+        if (ObjectUtils.isNotEmpty(request.getCodeTypeProcess())){
+            query.setParameter("codeTypeProcess", request.getCodeTypeProcess());
         }
         if (StringUtils.isNotBlank(request.getCodeDocument())){
             query.setParameter("codeDocument", request.getCodeDocument());
@@ -144,8 +145,8 @@ public class DataProcessAssetRepositoryImpl implements DataProcessAssetRepositor
         if (StringUtils.isNotBlank(request.getTimeCreated())){
             sb.append(" and document.time_increase = :timeIncrease ");
         }
-        if (ObjectUtils.isNotEmpty(request.getStatusTypeProcess())){
-            sb.append(" and da.status =: statusTypeProcess ");
+        if (ObjectUtils.isNotEmpty(request.getCodeTypeProcess())){
+            sb.append(" and type_process.code =: codeTypeProcess ");
         }
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
@@ -168,6 +169,7 @@ public class DataProcessAssetRepositoryImpl implements DataProcessAssetRepositor
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) FROM process  " +
                 "         LEFT JOIN data_process_asset da ON process.id_process = da.id_process  " +
+                "         LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process  " +
                 "         LEFT JOIN csvc_user user ON process.id_user_created = user.id_user  " +
                 "         LEFT JOIN department de ON process.id_department = de.id_department  " +
                 "         LEFT JOIN document ON da.id_document = document.id_document  " +

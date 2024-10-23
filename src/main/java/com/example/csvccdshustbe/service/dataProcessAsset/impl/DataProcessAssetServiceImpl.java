@@ -76,10 +76,9 @@ public class DataProcessAssetServiceImpl implements DataProcessAssetService {
     }
 
     @Override
-    public Page<FindAllProcessAssetResponse> findAllProcessAsset(FindAllProcessAssetRequest request){
+    public Page<FindAllProcessAssetResponse> findAllDataProcessAsset(FindAllProcessAssetRequest request){
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         setIdsDepartmentOriginal(request);
-        setStatusTypeProcess(request);
         Page<FindAllProcessAssetDto> findAllProcessAssetDtos = dataProcessAssetRepository.findAllProcessAssetDtoByIdsDepartment(request, pageable);
         return new PageImpl<>(convertToFindAllProcessAssetResponse(findAllProcessAssetDtos.get().collect(Collectors.toList())),
                 pageable, findAllProcessAssetDtos.getTotalElements());
@@ -116,7 +115,5 @@ public class DataProcessAssetServiceImpl implements DataProcessAssetService {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
     }
-    private void setStatusTypeProcess(FindAllProcessAssetRequest request) {
-        request.setStatusTypeProcess(1);//test thu = 1 truoc xong xet constant sau
-    }
+
 }

@@ -28,4 +28,6 @@ public class Document {
     private String timeDocument;
     @Column(name = "id_department")
     private Integer idDepartment;
+    @Column(name = "description")
+    private String description;
 }
