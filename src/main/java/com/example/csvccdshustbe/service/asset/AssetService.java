@@ -4,9 +4,11 @@ import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
 import com.example.csvccdshustbe.exception.FileExcelException;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.request.asset.FinaAllAssetToIncreaseRequest;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.response.asset.FindAllAssetResponse;
+import com.example.csvccdshustbe.response.asset.FindAllAssetResponseToIncrease;
 import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
 import com.example.csvccdshustbe.response.asset.FindDetailsAssetResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,5 +33,6 @@ public interface AssetService {
     void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException;
     Resource downloadFileTemplateImportAsset() throws IOException;
     void uploadFileImportAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException;
+    Page<FindAllAssetResponseToIncrease> findAllAssetToIncrease(FinaAllAssetToIncreaseRequest request);
 
 }

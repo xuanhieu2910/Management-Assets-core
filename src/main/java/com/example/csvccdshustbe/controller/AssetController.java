@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.request.asset.FinaAllAssetToIncreaseRequest;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.service.asset.AssetService;
@@ -165,6 +166,19 @@ public class AssetController {
             return ApiResponseDto.createdWithMessage("Upload file asset success!", HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/find-all-to-increase")
+    public ResponseEntity<?> findAllToIncreaseAsset(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FinaAllAssetToIncreaseRequest request){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllAssetToIncrease(request), "Find all asset to increase success!", HttpStatus.OK);
+        } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

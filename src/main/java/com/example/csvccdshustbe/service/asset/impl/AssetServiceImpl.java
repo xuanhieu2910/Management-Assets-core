@@ -36,9 +36,11 @@ import com.example.csvccdshustbe.repository.typeDeclareAsset.TypeDeclareAssetRep
 import com.example.csvccdshustbe.repository.typeUse.TypeUseRepository;
 import com.example.csvccdshustbe.repository.units.UnitsRepository;
 import com.example.csvccdshustbe.repository.wards.WardsRepository;
+import com.example.csvccdshustbe.request.asset.FinaAllAssetToIncreaseRequest;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.response.asset.FindAllAssetResponse;
+import com.example.csvccdshustbe.response.asset.FindAllAssetResponseToIncrease;
 import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
 import com.example.csvccdshustbe.response.asset.FindDetailsAssetResponse;
 import com.example.csvccdshustbe.service.asset.AssetService;
@@ -707,6 +709,29 @@ public class AssetServiceImpl implements AssetService {
         return responses;
     }
 
+    private List<FindAllAssetResponseToIncrease> convertToFindAllAssetToIncreaseResponse(List<FindAllAssetDto> collect) {
+        List<FindAllAssetResponseToIncrease> responses = new ArrayList<>();
+        for (FindAllAssetDto dto : collect) {
+            FindAllAssetResponseToIncrease response = new FindAllAssetResponseToIncrease();
+            response.setCodeAsset(dto.getCodeAsset());
+            response.setIdAsset(dto.getIdAsset());
+            response.setNameAsset(dto.getNameAsset());
+            response.setNameAssetCategory(dto.getNameAssetCategory());
+            response.setCodeAssetCategory(dto.getCodeAssetCategory());
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(
+                    DateUtil.formatDatePattern(dto.getTimeCreated(),
+                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
+            response.setTimeModified(DateUtil.formatToPattern(
+                    DateUtil.formatDatePattern(dto.getTimeModified(),
+                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
+            responses.add(response);
+        }
+        return responses;
+    }
+
+
     private void validateDataCreateAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
         validateDataCommonCreateAsset(createAssetRequest);
         validateDataModuleCreateAsset(createAssetRequest);
@@ -931,6 +956,15 @@ public class AssetServiceImpl implements AssetService {
         createAssetFromFile(createAssetRequest);
         }
     }
+
+    @Override
+    public Page<FindAllAssetResponseToIncrease> findAllAssetToIncrease(FinaAllAssetToIncreaseRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoToIncrease(request, pageable);
+        return new PageImpl<>(convertToFindAllAssetToIncreaseResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
     public void createAssetFromFile(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException {
         Map<String, Object> dataCreateAssetRequest =
                 objectMapper.readValue(JSONObjectUtils.toJSONString(createAssetRequest), Map.class);

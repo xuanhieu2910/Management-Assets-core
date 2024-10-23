@@ -22,11 +22,9 @@ import com.example.csvccdshustbe.utility.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ProcessServiceImpl implements ProcessService {
@@ -58,7 +56,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     @Override
-    public Process createNewProcess(Process process) {
+    public Process saveProcess(Process process) {
         return processRepository.save(process);
     }
 
@@ -66,7 +64,7 @@ public class ProcessServiceImpl implements ProcessService {
     public void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException {
         Document document = documentService.createNewDocument(request.getDocument());
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
-        Process process = createNewProcess(constructionProcess(typeProcess));
+        Process process = processRepository.save(constructionProcess(typeProcess));
         dataProcessAssetService.createNewDataProcessAsset(request, document, process);
         List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST,
                 Constants.CODE_TYPE_STATE_APPROVED, Constants.CODE_TYPE_STATE_COMPLETED);
@@ -78,6 +76,15 @@ public class ProcessServiceImpl implements ProcessService {
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, process));
 
+    }
+
+    @Override
+    public Process findProcessByIdProcess(Integer idProcess) {
+        Optional<Process> process =  processRepository.findProcessByIdProcess(idProcess);
+        if (process.isEmpty()){
+            throw new NotFoundException("Don't exits process by id process!");
+        }
+        return process.get();
     }
 
     /***
@@ -154,9 +161,25 @@ public class ProcessServiceImpl implements ProcessService {
             state.setTimeCreated(timeCurrent);
             state.setTimeModified(timeCurrent);
             state.setCodeTypeState(typeState.getCode());
+            state.setStep(setStepCreateNewState(typeState));
             stateList.add(state);
         }
         return stateList;
+    }
+
+    private Integer setStepCreateNewState(TypeState typeState) {
+        String codeTypeState = typeState.getCode();
+        switch (codeTypeState){
+            case Constants.CODE_TYPE_STATE_INIT:
+                return Constants.STEP_TYPE_STATE_INIT;
+            case Constants.CODE_TYPE_STATE_TEST:
+                return Constants.STEP_TYPE_STATE_TEST;
+            case Constants.CODE_TYPE_STATE_APPROVED:
+                return Constants.STEP_TYPE_STATE_APPROVED;
+            case Constants.CODE_TYPE_STATE_COMPLETED:
+                return Constants.STEP_TYPE_STATE_COMPLETED;
+        }
+        return 0;
     }
 
     private int setStatusCreateNewStatue(TypeState typeState) {

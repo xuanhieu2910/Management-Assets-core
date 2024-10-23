@@ -27,4 +27,6 @@ public class State {
     private String timeModified;
     @Column(name = "code_type_state")
     private String codeTypeState;
+    @Column(name = "step")
+    private Integer step;
 }
