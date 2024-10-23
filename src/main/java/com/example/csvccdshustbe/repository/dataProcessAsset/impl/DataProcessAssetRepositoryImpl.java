@@ -69,7 +69,7 @@ public class DataProcessAssetRepositoryImpl implements DataProcessAssetRepositor
                 "         LEFT JOIN csvc_user user ON process.id_user_created = user.id_user  " +
                 "         LEFT JOIN department de ON process.id_department = de.id_department  " +
                 "         LEFT JOIN document ON da.id_document = document.id_document  " +
-                "WHERE process.id_department IN (:idsDepartmentOriginal)  and da.status =: statusTypeProcess " );
+                "WHERE process.id_department IN (:idsDepartmentOriginal)  " );
         setConditionFindAllProcessAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllProcessAsset(request, query);
@@ -101,24 +101,26 @@ public class DataProcessAssetRepositoryImpl implements DataProcessAssetRepositor
 
     private void setParameterFindAllProcessAsset(FindAllProcessAssetRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("statusTypeProcess", request.getStatusTypeProcess());
 
+        if (ObjectUtils.isNotEmpty(request.getStatusTypeProcess())){
+            query.setParameter("statusTypeProcess", request.getStatusTypeProcess());
+        }
         if (StringUtils.isNotBlank(request.getCodeDocument())){
             query.setParameter("codeDocument", request.getCodeDocument());
         }
-        if (ObjectUtils.isNotEmpty(request.getTimeCreated())){
+        if (StringUtils.isNotBlank(request.getTimeCreated())){
             query.setParameter("timeCreate", request.getTimeCreated());
         }
-        if (ObjectUtils.isNotEmpty(request.getNameUserCreate())){
+        if (StringUtils.isNotBlank(request.getNameUserCreate())){
             query.setParameter("nameUserCreate", request.getNameUserCreate());
         }
         if (ObjectUtils.isNotEmpty(request.getStatus())){
             query.setParameter("status", request.getStatus());
         }
-        if (ObjectUtils.isNotEmpty(request.getTimeDocument())){
+        if (StringUtils.isNotBlank(request.getTimeDocument())){
             query.setParameter("timeDocument", request.getTimeDocument());
         }
-        if (ObjectUtils.isNotEmpty(request.getTimeIncrease())){
+        if (StringUtils.isNotBlank(request.getTimeIncrease())){
             query.setParameter("timeIncrease", request.getTimeIncrease());
         }
     }
@@ -127,20 +129,23 @@ public class DataProcessAssetRepositoryImpl implements DataProcessAssetRepositor
         if (StringUtils.isNotBlank(request.getNameUserCreate())){
             sb.append(" and (user.full_name REGEXP :nameUserCreate ) ");
         }
-        if (ObjectUtils.isNotEmpty(request.getCodeDocument())){
+        if (StringUtils.isNotBlank(request.getCodeDocument())){
             sb.append(" and document.code = :codeDocument ");
         }
-        if (ObjectUtils.isNotEmpty(request.getTimeCreated())){
+        if (StringUtils.isNotBlank(request.getTimeCreated())){
             sb.append(" and document.time_created = :timeCreate ");
         }
         if (ObjectUtils.isNotEmpty(request.getStatus())){
             sb.append(" and process.status = :status ");
         }
-        if (ObjectUtils.isNotEmpty(request.getTimeCreated())){
+        if (StringUtils.isNotBlank(request.getTimeCreated())){
             sb.append(" and document.time_document = :timeDocument ");
         }
-        if (ObjectUtils.isNotEmpty(request.getTimeCreated())){
+        if (StringUtils.isNotBlank(request.getTimeCreated())){
             sb.append(" and document.time_increase = :timeIncrease ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusTypeProcess())){
+            sb.append(" and da.status =: statusTypeProcess ");
         }
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
