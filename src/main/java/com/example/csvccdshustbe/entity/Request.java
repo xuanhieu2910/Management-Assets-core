@@ -24,7 +24,7 @@ public class Request {
     @Column(name = "description")
     private String description;
     @Column(name = "status")
-    private int status;
+    private Integer status;
     @Column(name = "time_created")
     private String timeCreated;
     @Column(name = "time_modified")

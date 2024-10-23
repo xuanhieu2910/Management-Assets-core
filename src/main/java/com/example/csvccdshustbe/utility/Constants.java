@@ -263,6 +263,14 @@ public class Constants {
     public static final String CODE_TYPE_STATE_COMPLETED = "completed";
     /*----------------------------------------------------*/
     /**
+     * Constant STEP_STATES
+     * */
+    public static final Integer STEP_TYPE_STATE_INIT = 1;
+    public static final Integer STEP_TYPE_STATE_TEST = 2;
+    public static final Integer STEP_TYPE_STATE_APPROVED = 3;
+    public static final Integer STEP_TYPE_STATE_COMPLETED = 4;
+    /*----------------------------------------------------*/
+    /**
      * Constant NAME_PROCESS
      * */
     public static String NAME_INCREASE_PROCESS = "Increase asset";
@@ -332,6 +340,12 @@ public class Constants {
      * Constant PREFIX_DOCUMENT
      * */
     public static String PREFIX_DOCUMENT = "TS";
+    /*----------------------------------------------------*/
+    /**
+     * Constant Status Request data
+     * */
+    public static Integer STATUS_REASON_ACTIVE = 1;
+    public static Integer STATUS_REASON_UN_ACTIVE = -1;
     /*----------------------------------------------------*/
 
 }

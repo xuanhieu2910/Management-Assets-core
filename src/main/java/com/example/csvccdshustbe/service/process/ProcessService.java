@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
 
 public interface ProcessService {
 
-    Process createNewProcess(Process process);
+    Process saveProcess(Process process);
     void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException;
+    Process findProcessByIdProcess(Integer idProcess);
 }

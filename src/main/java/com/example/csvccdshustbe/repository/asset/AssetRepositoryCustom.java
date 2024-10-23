@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
 import com.example.csvccdshustbe.entity.Asset;
+import com.example.csvccdshustbe.request.asset.FinaAllAssetToIncreaseRequest;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
@@ -26,4 +27,6 @@ public interface AssetRepositoryCustom {
     Page<FindAllGroundAssetResponse> findAllGroundAsset(Pageable pageable, FindAllGroundAssetRequest request);
 
     List<FindAllGroundAssetDto> findAllGroundAssetToDownload();
+
+    Page<FindAllAssetDto> findAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable);
 }
