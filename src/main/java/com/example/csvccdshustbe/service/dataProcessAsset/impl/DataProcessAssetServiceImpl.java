@@ -5,13 +5,13 @@ import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.DataProcessAsset;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.dataProcessAsset.DataProcessAssetRepository;
-import com.example.csvccdshustbe.repository.process.ProcessRepository;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessAssetResponse;
 import com.example.csvccdshustbe.service.dataProcessAsset.DataProcessAssetService;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,7 +23,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Log4j2
 @Service
 public class DataProcessAssetServiceImpl implements DataProcessAssetService {
 
@@ -51,7 +51,6 @@ public class DataProcessAssetServiceImpl implements DataProcessAssetService {
     public Page<FindAllProcessAssetResponse> findAllProcessAsset(FindAllProcessAssetRequest request){
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         setIdsDepartmentOriginal(request);
-        setStatusTypeProcess(request);
         Page<FindAllProcessAssetDto> findAllProcessAssetDtos = dataProcessAssetRepository.findAllProcessAssetDtoByIdsDepartment(request, pageable);
         return new PageImpl<>(convertToFindAllProcessAssetResponse(findAllProcessAssetDtos.get().collect(Collectors.toList())),
                 pageable, findAllProcessAssetDtos.getTotalElements());
@@ -87,8 +86,5 @@ public class DataProcessAssetServiceImpl implements DataProcessAssetService {
     private void setIdsDepartmentOriginal(FindAllProcessAssetRequest request) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
-    }
-    private void setStatusTypeProcess(FindAllProcessAssetRequest request) {
-        request.setStatusTypeProcess(1);//test thu = 1 truoc xong xet constant sau
     }
 }

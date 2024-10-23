@@ -5,7 +5,6 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetRequest;
 import com.example.csvccdshustbe.service.dataProcessAsset.DataProcessAssetService;
-import com.example.csvccdshustbe.service.process.ProcessService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
@@ -24,8 +23,6 @@ public class ProcessAssetController {
 
     @Autowired
     DataProcessAssetService dataProcessAssetService;
-    @Autowired
-    ProcessService processService;
 
     @PostMapping("/increase")
     public ResponseEntity<?> increaseAsset(@RequestBody CreateIncreaseAssetRequest request){
@@ -46,7 +43,7 @@ public class ProcessAssetController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllProcessAssetRequest findAllProcessAssetRequest){
         try {
-            return ApiResponseDto.createdWithState(processService.findAllProcessAsset(findAllProcessAssetRequest),
+            return ApiResponseDto.createdWithState(dataProcessAssetService.findAllProcessAsset(findAllProcessAssetRequest),
                     "Find all process asset success!", HttpStatus.OK);
         } catch (NotFoundException e){
             e.printStackTrace();
