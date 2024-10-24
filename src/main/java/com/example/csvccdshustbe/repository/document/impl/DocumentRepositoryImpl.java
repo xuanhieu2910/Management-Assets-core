@@ -1,7 +1,7 @@
 package com.example.csvccdshustbe.repository.document.impl;
 
-import com.example.csvccdshustbe.dto.document.DetailsDocumentBluePrintDto;
 import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
+import com.example.csvccdshustbe.dto.document.FindDetailsDocumentDto;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.repository.document.DocumentRepositoryCustom;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
@@ -85,7 +85,8 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Page<FindAllDocumentAssetDto> findAllDocumentAssetDtoByIdsDepartment(FindAllDocumentAssetRequest request, Pageable pageable){
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT document.code,type_process.code,type_process.name,user.full_name,process.status,document.description,document.time_created, de.code codeDepartment, de.name nameDepartment " +
+        sb.append(" SELECT document.code,type_process.code,type_process.name,user.full_name,process.status, " +
+                " document.description,document.time_created, de.code codeDepartment, de.name nameDepartment " +
                 " FROM document  " +
                 "          LEFT JOIN data_process_asset da ON document.id_document = da.id_document   " +
                 "          LEFT JOIN process ON da.id_process = process.id_process " +
@@ -121,7 +122,9 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     }
 
     @Override
-    public Optional<DetailsDocumentBluePrintDto> findDetailDocumentByCodeDocument(String codeDocument) {
+    public Optional<FindDetailsDocumentDto> findDetailDocumentByCodeDocument(String codeDocument, List<Integer> idsDepartment) {
+        StringBuilder sb = new StringBuilder();
+//        sb.append(" ")
         return Optional.empty();
     }
 

@@ -5,16 +5,15 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
+import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
 import org.springframework.data.domain.Page;
 
 public interface DocumentService {
 
     Document findDocumentByCodeAndIdDepartment(String code, Integer idDepartment);
     Document findDocumentByIdDepartment(Integer idDepartment);
-    Document createNewDocument(CreateDocumentRequest request) throws ValidateFiledException;
+    Document saveDocument(Document document) throws ValidateFiledException;
     String generateCodeDocument();
-
     Page<FindAllDocumentAssetResponse> findAllDocumentAsset(FindAllDocumentAssetRequest request);
-
-
+    FindDetailsDocumentResponse findDetailsDocumentByCodeDocument(String codeDocument);
 }

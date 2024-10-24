@@ -1,8 +1,8 @@
-package com.example.csvccdshustbe.repository.dataProcessAsset.impl;
+package com.example.csvccdshustbe.repository.dataDocument.impl;
 
 import com.example.csvccdshustbe.dto.process.FindAllProcessAssetDto;
-import com.example.csvccdshustbe.entity.DataProcessAsset;
-import com.example.csvccdshustbe.repository.dataProcessAsset.DataProcessAssetRepositoryCustom;
+import com.example.csvccdshustbe.entity.DataDocument;
+import com.example.csvccdshustbe.repository.dataDocument.DataDocumentRepositoryCustom;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetRequest;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -20,37 +20,37 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataProcessAssetRepositoryImpl implements DataProcessAssetRepositoryCustom {
+public class DataDocumentRepositoryImpl implements DataDocumentRepositoryCustom {
 
     @PersistenceContext
     EntityManager entityManager;
 
     @Override
-    public List<DataProcessAsset> findDataProcessIncreaseAssetByIdsAsset(List<Integer> idsAsset) {
+    public List<DataDocument> findDataProcessIncreaseAssetByIdsAsset(List<Integer> idsAsset) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select dp.id_data_process_asset, dp.id_document, dp.id_asset, " +
-                "       dp.id_process, dp.time_created, dp.time_modified, dp.status " +
-                "from data_process_asset dp " +
-                "inner join asset asset on dp.id_asset = asset.id_asset " +
-                "inner join process pro on dp.id_process = pro.id_process " +
-                "inner join type_process tp on pro.id_type_process = tp.code " +
-                "where asset.id_asset in (:idAsset) " +
-                "and tp.code = :codeTypeProcess ");
+        sb.append(" select dp.id_data_document, dp.id_document, dp.id_asset,  " +
+                "       dp.time_created, dp.time_modified, dp.status  " +
+                "  from data_document dp  " +
+                "  inner join asset asset on dp.id_asset = asset.id_asset  " +
+                "  inner join document dc on dp.id_document = dc.id_document  " +
+                "  inner join process pro on dc.id_process = pro.id_process  " +
+                "  inner join type_process tp on pro.id_type_process = tp.code    " +
+                "  where asset.id_asset in (:idAsset)    " +
+                "  and tp.code = :codeTypeProcess  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAsset", idsAsset);
         query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_INCREASE);
         List<Object[]> result = query.getResultList();
-        List<DataProcessAsset> responses = new ArrayList<>();
+        List<DataDocument> responses = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
-                DataProcessAsset processAsset = new DataProcessAsset();
-                processAsset.setIdDataProcessAsset(ValueUtil.getIntegerByObject(obj[0]));
+                DataDocument processAsset = new DataDocument();
+                processAsset.setIdDataDocument(ValueUtil.getIntegerByObject(obj[0]));
                 processAsset.setIdDocument(ValueUtil.getIntegerByObject(obj[1]));
                 processAsset.setIdAsset(ValueUtil.getIntegerByObject(obj[2]));
-                processAsset.setIdProcess(ValueUtil.getIntegerByObject(obj[3]));
-                processAsset.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
-                processAsset.setTimeModified(ValueUtil.getStringByObject(obj[5]));
-                processAsset.setStatus(ValueUtil.getIntegerByObject(obj[6]));
+                processAsset.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                processAsset.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                processAsset.setStatus(ValueUtil.getIntegerByObject(obj[5]));
                 responses.add(processAsset);
             }
         }

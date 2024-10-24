@@ -3,7 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetRequest;
-import com.example.csvccdshustbe.service.dataProcessAsset.DataProcessAssetService;
+import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
@@ -21,7 +21,7 @@ import org.webjars.NotFoundException;
 @RequestMapping("/api/v1/data-process-asset")
 public class DataProcessAssetController {
     @Autowired
-    DataProcessAssetService dataProcessAssetService;
+    DataDocumentService dataDocumentService;
     @GetMapping("/find-all")
     public ResponseEntity<?> findAllProcessAsset(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
@@ -29,7 +29,7 @@ public class DataProcessAssetController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllProcessAssetRequest findAllProcessAssetRequest){
         try {
-            return ApiResponseDto.createdWithState(dataProcessAssetService.findAllDataProcessAsset(findAllProcessAssetRequest),
+            return ApiResponseDto.createdWithState(dataDocumentService.findAllDataProcessAsset(findAllProcessAssetRequest),
                     "Find all process asset success!", HttpStatus.OK);
         } catch (NotFoundException e){
             e.printStackTrace();

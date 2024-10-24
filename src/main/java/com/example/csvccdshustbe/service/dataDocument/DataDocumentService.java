@@ -1,6 +1,6 @@
-package com.example.csvccdshustbe.service.dataProcessAsset;
+package com.example.csvccdshustbe.service.dataDocument;
 
-import com.example.csvccdshustbe.entity.DataProcessAsset;
+import com.example.csvccdshustbe.entity.DataDocument;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -11,10 +11,10 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-public interface DataProcessAssetService {
+public interface DataDocumentService {
 
-    List<DataProcessAsset> findDataProcessIncreaseAssetByIdsAsset(List<Integer> idsAsset);
-    void createNewDataProcessAsset(CreateIncreaseAssetRequest request, Document document, Process process)
+    List<DataDocument> findDataProcessIncreaseAssetByIdsAsset(List<Integer> idsAsset);
+    void createNewDataProcessAsset(CreateIncreaseAssetRequest request, Document document)
             throws ValidateFiledException;
      Page<FindAllProcessAssetResponse> findAllDataProcessAsset(FindAllProcessAssetRequest request);
 }

@@ -6,7 +6,8 @@ import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.process.ProcessRepository;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
-import com.example.csvccdshustbe.service.dataProcessAsset.DataProcessAssetService;
+import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
+import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.example.csvccdshustbe.service.request.RequestService;
@@ -19,6 +20,7 @@ import com.example.csvccdshustbe.service.typeState.TypeStateService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.Constants;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Autowired
     ProcessRepository processRepository;
     @Autowired
-    DataProcessAssetService dataProcessAssetService;
+    DataDocumentService dataDocumentService;
     @Autowired
     DocumentService documentService;
     @Autowired
@@ -62,10 +64,10 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException {
-        Document document = documentService.createNewDocument(request.getDocument());
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
-        dataProcessAssetService.createNewDataProcessAsset(request, document, process);
+        Document document = documentService.saveDocument(contructionDocument(request.getDocument(), process));
+        dataDocumentService.createNewDataProcessAsset(request, document);
         List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST,
                 Constants.CODE_TYPE_STATE_APPROVED, Constants.CODE_TYPE_STATE_COMPLETED);
         List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(codeTypeStates);
@@ -76,6 +78,26 @@ public class ProcessServiceImpl implements ProcessService {
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, process));
 
+    }
+
+    private void validateCreateNewDocument(CreateDocumentRequest request) throws ValidateFiledException {
+        if (StringUtils.isBlank(request.getCodeDocument()) || StringUtils.isBlank(request.getTimeIncrease())
+                || StringUtils.isBlank(request.getTimeDocument())){
+            throw new ValidateFiledException("Validate data create document!");
+        }
+    }
+
+    private Document contructionDocument(CreateDocumentRequest request, Process process) throws ValidateFiledException {
+        validateCreateNewDocument(request);
+        Document document = new Document();
+        String dateNow = String.valueOf(new Date().getTime());
+        document.setCode(request.getCodeDocument());
+        document.setTimeCreated(dateNow);
+        document.setTimeModified(dateNow);
+        document.setTimeIncrease(request.getTimeIncrease());
+        document.setTimeDocument(request.getTimeDocument());
+        document.setIdDepartment(process.getIdDepartment());
+        return document;
     }
 
     @Override

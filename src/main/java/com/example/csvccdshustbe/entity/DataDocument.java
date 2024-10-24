@@ -9,18 +9,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "data_process_asset")
-public class DataProcessAsset {
+@Table(name = "data_document")
+public class DataDocument {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_data_process_asset")
-    private Integer idDataProcessAsset;
+    @Column(name = "id_data_document")
+    private Integer idDataDocument;
     @Column(name = "id_asset")
     private Integer idAsset;
     @Column(name = "id_document")
     private Integer idDocument;
-    @Column(name = "id_process")
-    private Integer idProcess;
     @Column(name = "time_created")
     private String timeCreated;
     @Column(name = "time_modified")

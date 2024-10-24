@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.webjars.NotFoundException;
 
 @Tag(name = "Document Controller", description = "The Document APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
@@ -28,4 +30,15 @@ public class DocumentController {
         }
     }
 
+
+    @GetMapping("/details")
+    public ResponseEntity<?> findDocumentDetailsByCodeDocument(@RequestParam("code") String code){
+        try {
+            return null;
+        } catch (NotFoundException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

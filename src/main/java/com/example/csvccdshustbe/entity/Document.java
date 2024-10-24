@@ -30,4 +30,6 @@ public class Document {
     private Integer idDepartment;
     @Column(name = "description")
     private String description;
+    @Column(name = "id_process")
+    private Integer idProcess;
 }

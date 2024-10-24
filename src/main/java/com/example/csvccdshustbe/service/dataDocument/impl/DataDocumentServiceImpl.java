@@ -1,16 +1,16 @@
-package com.example.csvccdshustbe.service.dataProcessAsset.impl;
+package com.example.csvccdshustbe.service.dataDocument.impl;
 
 import com.example.csvccdshustbe.dto.process.FindAllProcessAssetDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
-import com.example.csvccdshustbe.entity.DataProcessAsset;
+import com.example.csvccdshustbe.entity.DataDocument;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.repository.dataProcessAsset.DataProcessAssetRepository;
+import com.example.csvccdshustbe.repository.dataDocument.DataDocumentRepository;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessAssetResponse;
-import com.example.csvccdshustbe.service.dataProcessAsset.DataProcessAssetService;
+import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -27,38 +27,37 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class DataProcessAssetServiceImpl implements DataProcessAssetService {
+public class DataDocumentServiceImpl implements DataDocumentService {
 
     @Autowired
-    DataProcessAssetRepository dataProcessAssetRepository;
+    DataDocumentRepository dataDocumentRepository;
 
 
     @Override
-    public List<DataProcessAsset> findDataProcessIncreaseAssetByIdsAsset(List<Integer> idsAsset) {
-        return dataProcessAssetRepository.findDataProcessIncreaseAssetByIdsAsset(idsAsset);
+    public List<DataDocument> findDataProcessIncreaseAssetByIdsAsset(List<Integer> idsAsset) {
+        return dataDocumentRepository.findDataProcessIncreaseAssetByIdsAsset(idsAsset);
     }
 
     @Override
-    public void createNewDataProcessAsset(CreateIncreaseAssetRequest request, Document document, Process process)
+    public void createNewDataProcessAsset(CreateIncreaseAssetRequest request, Document document)
             throws ValidateFiledException {
         validateDataProcessAsset(request.getIdsAsset());
-        saveAllDataProcessAsset(createConstructDataProcessAsset(process, document, request));
+        saveAllDataProcessAsset(createConstructDataProcessAsset(document, request));
     }
 
 
-    private List<DataProcessAsset> saveAllDataProcessAsset(List<DataProcessAsset> constructDataProcessAsset) {
-        return dataProcessAssetRepository.saveAll(constructDataProcessAsset);
+    private List<DataDocument> saveAllDataProcessAsset(List<DataDocument> constructDataProcessAsset) {
+        return dataDocumentRepository.saveAll(constructDataProcessAsset);
     }
 
-    private List<DataProcessAsset> createConstructDataProcessAsset(Process process, Document document,
+    private List<DataDocument> createConstructDataProcessAsset(Document document,
                                                              CreateIncreaseAssetRequest request) {
-        List<DataProcessAsset> dataProcessAssets = new ArrayList<>();
+        List<DataDocument> dataProcessAssets = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
         for (Integer idAsset: request.getIdsAsset()){
-            DataProcessAsset dataProcessAsset = new DataProcessAsset();
+            DataDocument dataProcessAsset = new DataDocument();
             dataProcessAsset.setIdAsset(idAsset);
             dataProcessAsset.setIdDocument(document.getIdDocument());
-            dataProcessAsset.setIdProcess(process.getIdProcess());
             dataProcessAsset.setTimeCreated(timeCurrent);
             dataProcessAsset.setTimeModified(timeCurrent);
             dataProcessAsset.setStatus(Constants.STATUS_PROCESS_ASSET_ACTIVE);
@@ -68,7 +67,7 @@ public class DataProcessAssetServiceImpl implements DataProcessAssetService {
     }
 
     private void validateDataProcessAsset(List<Integer> idsAsset) throws ValidateFiledException {
-        List<DataProcessAsset> dataProcessAssets = findDataProcessIncreaseAssetByIdsAsset(idsAsset);
+        List<DataDocument> dataProcessAssets = findDataProcessIncreaseAssetByIdsAsset(idsAsset);
         if (!CollectionUtils.isEmpty(dataProcessAssets)){
             throw new ValidateFiledException("Exist data process asset!");
         }
@@ -78,7 +77,7 @@ public class DataProcessAssetServiceImpl implements DataProcessAssetService {
     public Page<FindAllProcessAssetResponse> findAllDataProcessAsset(FindAllProcessAssetRequest request){
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         setIdsDepartmentOriginal(request);
-        Page<FindAllProcessAssetDto> findAllProcessAssetDtos = dataProcessAssetRepository.findAllProcessAssetDtoByIdsDepartment(request, pageable);
+        Page<FindAllProcessAssetDto> findAllProcessAssetDtos = dataDocumentRepository.findAllProcessAssetDtoByIdsDepartment(request, pageable);
         return new PageImpl<>(convertToFindAllProcessAssetResponse(findAllProcessAssetDtos.stream().toList()),
                 pageable, findAllProcessAssetDtos.getTotalElements());
     }
