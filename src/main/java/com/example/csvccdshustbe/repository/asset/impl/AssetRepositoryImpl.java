@@ -291,19 +291,19 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     public Page<FindAllAssetDto> findAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select asset.id_asset idAsset, asset.code_asset codeAsset,   " +
-                "        asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,   " +
-                "        assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,   " +
-                "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,   " +
-                "        lo.id_location idLocation, lo.name nameLocation,   " +
-                "        asset.time_created, asset.time_modified   " +
-                " from asset asset   " +
-                "     inner join asset_categories assetCategories   " +
-                "             on asset.id_asset_category = assetCategories.id_asset_category   " +
-                "     inner join department de on asset.id_department = de.id_department   " +
-                "     left join location lo on asset.id_location = lo.id_location   " +
-                "     left join data_process_asset dataProcessAsset on asset.id_asset = dataProcessAsset.id_asset " +
-                " where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "    and dataProcessAsset.id_asset is null  ");
+                "                        asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,   " +
+                "                        assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,   " +
+                "                        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,   " +
+                "                        lo.id_location idLocation, lo.name nameLocation,   " +
+                "                        asset.time_created, asset.time_modified   " +
+                "                 from asset asset   " +
+                "                     inner join asset_categories assetCategories   " +
+                "                             on asset.id_asset_category = assetCategories.id_asset_category   " +
+                "                     inner join department de on asset.id_department = de.id_department   " +
+                "                     left join location lo on asset.id_location = lo.id_location   " +
+                "                     left join data_document dataDocument on asset.id_asset = dataDocument.id_asset" +
+                "                 where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "                    and dataDocument.id_asset is null ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToIncrease(request, query);
@@ -425,9 +425,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "             on asset.id_asset_category = assetCategories.id_asset_category    " +
                 "     inner join department de on asset.id_department = de.id_department    " +
                 "     left join location lo on asset.id_location = lo.id_location  " +
-                "     left join data_process_asset dataProcessAsset on asset.id_asset = dataProcessAsset.id_asset  " +
+                "     left join data_document dataDocument on asset.id_asset = dataDocument.id_asset  " +
                 " where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "    and dataProcessAsset.id_asset is null   ");
+                "    and dataDocument.id_asset is null   ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToIncrease(request,query);

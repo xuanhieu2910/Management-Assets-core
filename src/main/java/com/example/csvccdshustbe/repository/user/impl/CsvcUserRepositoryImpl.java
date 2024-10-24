@@ -269,7 +269,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
     public Page<FindAllUserResponse> findAllUser(FindAllUserRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select csvcUser.code_user, csvcUser.user_name, csvcUser.full_name, " +
-                "       de.id_department, de.name, group_concat(role.short_name separator ';' ) roles " +
+                "       de.id_department, de.name, group_concat(role.short_name separator ';' ) roles,userRole.id_user_role  " +
                 "from csvc_user csvcUser " +
                 "    inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
                 "    inner join role role on userRole.id_role = role.id_role " +
@@ -291,6 +291,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
                 response.setIdDepartment(ValueUtil.getIntegerByObject(obj[3]));
                 response.setNameDepartment(ValueUtil.getStringByObject(obj[4]));
                 response.setRoles(ValueUtil.getStringByObject(obj[5]));
+                response.setIdUserRole(ValueUtil.getIntegerByObject(obj[6]));
                 responses.add(response);
             }
         }
