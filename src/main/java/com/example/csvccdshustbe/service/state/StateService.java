@@ -8,5 +8,5 @@ import java.util.List;
 public interface StateService {
 
     List<State> saveAllState(List<State> stateList);
-    void updateStatusStateByIdState(Integer idState, List<Request> requests);
+    void updateStatusStateByIdState(Integer idState);
 }
