@@ -61,16 +61,15 @@ public class DataDocumentRepositoryImpl implements DataDocumentRepositoryCustom 
     @Override
     public Page<FindAllProcessAssetDto> findAllProcessAssetDtoByIdsDepartment(FindAllProcessAssetRequest request, Pageable pageable){
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT process.id_process idProcess, document.code codeDocument, user.id_user, user.code_user, user.full_name,   " +
-                "       de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,  " +
-                "       document.time_created, document.time_modified,document.time_increase,document.time_document,process.status  " +
-                "FROM process  " +
-                "         LEFT JOIN data_process_asset da ON process.id_process = da.id_process  " +
-                "         LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process " +
-                "         LEFT JOIN csvc_user user ON process.id_user_created = user.id_user  " +
-                "         LEFT JOIN department de ON process.id_department = de.id_department  " +
-                "         LEFT JOIN document ON da.id_document = document.id_document  " +
-                "WHERE process.id_department IN (:idsDepartmentOriginal)  " );
+        sb.append("SELECT process.id_process idProcess, document.code codeDocument, user.id_user, user.code_user, user.full_name,     " +
+                "                        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,    " +
+                "                        document.time_created, document.time_modified,document.time_increase,document.time_document,process.status    " +
+                "                 FROM process " +
+                "                          LEFT JOIN document ON process.id_process = document.id_process " +
+                "                          LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process   " +
+                "                          LEFT JOIN csvc_user user ON process.id_user_created = user.id_user    " +
+                "                          LEFT JOIN department de ON process.id_department = de.id_department    " +
+                "                 WHERE process.id_department IN (:idsDepartmentOriginal)  " );
         setConditionFindAllProcessAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllProcessAsset(request, query);
@@ -90,10 +89,9 @@ public class DataDocumentRepositoryImpl implements DataDocumentRepositoryCustom 
                 findAllProcessAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[7]));
                 findAllProcessAssetDto.setTimeCreated(ValueUtil.getStringByObject(obj[8]));
                 findAllProcessAssetDto.setTimeModified(ValueUtil.getStringByObject(obj[9]));
-                findAllProcessAssetDto.setTimeModified(ValueUtil.getStringByObject(obj[10]));
-                findAllProcessAssetDto.setTimeIncrease(ValueUtil.getStringByObject(obj[11]));
-                findAllProcessAssetDto.setTimeDocument(ValueUtil.getStringByObject(obj[12]));
-                findAllProcessAssetDto.setStatus(ValueUtil.getIntegerByObject(obj[13]));
+                findAllProcessAssetDto.setTimeIncrease(ValueUtil.getStringByObject(obj[10]));
+                findAllProcessAssetDto.setTimeDocument(ValueUtil.getStringByObject(obj[11]));
+                findAllProcessAssetDto.setStatus(ValueUtil.getIntegerByObject(obj[12]));
                 responses.add(findAllProcessAssetDto);
             }
         }
@@ -168,12 +166,11 @@ public class DataDocumentRepositoryImpl implements DataDocumentRepositoryCustom 
     private long countFindAllProcessAsset(FindAllProcessAssetRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) FROM process  " +
-                "         LEFT JOIN data_process_asset da ON process.id_process = da.id_process  " +
-                "         LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process  " +
-                "         LEFT JOIN csvc_user user ON process.id_user_created = user.id_user  " +
-                "         LEFT JOIN department de ON process.id_department = de.id_department  " +
-                "         LEFT JOIN document ON da.id_document = document.id_document  " +
-                "WHERE process.id_department IN (:idsDepartmentOriginal); ");
+                "                          LEFT JOIN document ON process.id_process = document.id_process " +
+                "                          LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process   " +
+                "                          LEFT JOIN csvc_user user ON process.id_user_created = user.id_user    " +
+                "                          LEFT JOIN department de ON process.id_department = de.id_department    " +
+                "WHERE process.id_department IN (:idsDepartmentOriginal) ");
         setConditionFindAllProcessAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllProcessAsset(request, query);

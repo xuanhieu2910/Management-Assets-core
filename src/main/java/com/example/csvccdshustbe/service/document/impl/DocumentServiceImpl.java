@@ -78,7 +78,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Page<FindAllDocumentAssetResponse> findAllDocumentAsset(FindAllDocumentAssetRequest request){
+    public Page<FindAllDocumentAssetResponse> findAllDocumentByAsset(FindAllDocumentAssetRequest request){
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         setIdsDepartmentOriginal(request);
         Page<FindAllDocumentAssetDto> findAllDocumentAssetDtos = documentRepository.findAllDocumentAssetDtoByIdsDepartment(request, pageable);
