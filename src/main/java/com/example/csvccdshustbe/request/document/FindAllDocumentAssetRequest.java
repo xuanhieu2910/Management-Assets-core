@@ -12,7 +12,7 @@ import java.util.List;
 public class FindAllDocumentAssetRequest extends RequestPageBase {
 
     private Integer statusTypeProcess;
-    private Integer idAsset;
+    private String codeAsset;
     private Integer idDocument;
     private String codeDocument;
     private Integer status;
