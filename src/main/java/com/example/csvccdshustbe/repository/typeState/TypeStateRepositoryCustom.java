@@ -7,4 +7,5 @@ import java.util.List;
 public interface TypeStateRepositoryCustom {
 
     List<TypeState> findTypeStatesByListCodeAndStatus(List<String> codes, Integer status);
+    List<TypeState> findAllTypeStateByStatus(Integer status);
 }
