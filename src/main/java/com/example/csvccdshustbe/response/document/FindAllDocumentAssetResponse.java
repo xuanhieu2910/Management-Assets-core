@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class FindAllDocumentAssetResponse {
 
+
     private String codeTypeProcess;
     private String nameTypeProcess;
     private String codeDocument;

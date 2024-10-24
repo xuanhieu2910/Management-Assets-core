@@ -6,7 +6,9 @@ import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.process.ProcessRepository;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
+import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
+import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
 import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
@@ -20,8 +22,11 @@ import com.example.csvccdshustbe.service.typeState.TypeStateService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.PageUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -107,6 +112,13 @@ public class ProcessServiceImpl implements ProcessService {
             throw new NotFoundException("Don't exits process by id process!");
         }
         return process.get();
+    }
+
+    @Override
+    public Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedResponse(FindAllProcessBeAssignedRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+
+        return null;
     }
 
     /***
@@ -227,7 +239,7 @@ public class ProcessServiceImpl implements ProcessService {
         process.setTimeCreated(timeCurrent);
         process.setTimeModified(timeCurrent);
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
+        Integer idDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdDepartmentCurrent();
         process.setIdUserCreated(csvcUser.getIdUser());
         process.setIdUserModified(csvcUser.getIdUser());
         process.setIdDepartment(idDepartment);

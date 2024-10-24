@@ -2,10 +2,14 @@ package com.example.csvccdshustbe.repository.process.impl;
 
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.repository.process.ProcessRepositoryCustom;
+import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
+import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -43,5 +47,12 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssigned(FindAllProcessBeAssignedRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+//        sb.append("")
+        return null;
     }
 }

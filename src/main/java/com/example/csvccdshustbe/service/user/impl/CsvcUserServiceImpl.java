@@ -64,6 +64,7 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         DepartmentUserRoleDto departmentUserRoleDto = userRoleService.getDepartmentCurrentUserRoleByCodeUser(csvcUser.getCodeUser());
         List<Integer> idsDepartment = departmentService.findIdsStructureDepartment(departmentUserRoleDto.getIdDepartment());
         csvcUser.setIdsDepartmentCurrent(idsDepartment);
+        csvcUser.setIdDepartmentCurrent(departmentUserRoleDto.getIdDepartment());
     }
 
     @Override
