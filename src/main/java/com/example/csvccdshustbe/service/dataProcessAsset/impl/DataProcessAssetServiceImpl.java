@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.process.FindAllProcessAssetDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.DataProcessAsset;
 import com.example.csvccdshustbe.entity.Document;
+import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.dataProcessAsset.DataProcessAssetRepository;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
@@ -24,7 +25,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class DataProcessAssetServiceImpl implements DataProcessAssetService {
@@ -38,7 +38,12 @@ public class DataProcessAssetServiceImpl implements DataProcessAssetService {
         return dataProcessAssetRepository.findDataProcessIncreaseAssetByIdsAsset(idsAsset);
     }
 
-
+    @Override
+    public void createNewDataProcessAsset(CreateIncreaseAssetRequest request, Document document, Process process)
+            throws ValidateFiledException {
+        validateDataProcessAsset(request.getIdsAsset());
+        saveAllDataProcessAsset(createConstructDataProcessAsset(process, document, request));
+    }
 
 
     private List<DataProcessAsset> saveAllDataProcessAsset(List<DataProcessAsset> constructDataProcessAsset) {
@@ -74,7 +79,7 @@ public class DataProcessAssetServiceImpl implements DataProcessAssetService {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         setIdsDepartmentOriginal(request);
         Page<FindAllProcessAssetDto> findAllProcessAssetDtos = dataProcessAssetRepository.findAllProcessAssetDtoByIdsDepartment(request, pageable);
-        return new PageImpl<>(convertToFindAllProcessAssetResponse(findAllProcessAssetDtos.get().collect(Collectors.toList())),
+        return new PageImpl<>(convertToFindAllProcessAssetResponse(findAllProcessAssetDtos.stream().toList()),
                 pageable, findAllProcessAssetDtos.getTotalElements());
     }
 

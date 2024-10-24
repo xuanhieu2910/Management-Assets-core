@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.document.impl;
 
+import com.example.csvccdshustbe.dto.document.DetailsDocumentBluePrintDto;
 import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.repository.document.DocumentRepositoryCustom;
@@ -85,14 +86,14 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     public Page<FindAllDocumentAssetDto> findAllDocumentAssetDtoByIdsDepartment(FindAllDocumentAssetRequest request, Pageable pageable){
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT document.code,type_process.code,type_process.name,user.full_name,process.status,document.description,document.time_created, de.code codeDepartment, de.name nameDepartment " +
-                "                                 FROM document  " +
-                "                                          LEFT JOIN data_process_asset da ON document.id_document = da.id_document   " +
-                "                                          LEFT JOIN process ON da.id_process = process.id_process " +
-                "                                          LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process " +
-                "                                          LEFT JOIN csvc_user user ON process.id_user_created = user.id_user     " +
-                "                                          LEFT JOIN department de ON process.id_department = de.id_department   " +
-                "                                          LEFT JOIN asset ON da.id_asset = asset.id_asset   " +
-                "                                 WHERE process.id_department IN (:idsDepartmentOriginal)  " );
+                " FROM document  " +
+                "          LEFT JOIN data_process_asset da ON document.id_document = da.id_document   " +
+                "          LEFT JOIN process ON da.id_process = process.id_process " +
+                "          LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process " +
+                "          LEFT JOIN csvc_user user ON process.id_user_created = user.id_user     " +
+                "          LEFT JOIN department de ON process.id_department = de.id_department   " +
+                "          LEFT JOIN asset ON da.id_asset = asset.id_asset   " +
+                " WHERE process.id_department IN (:idsDepartmentOriginal)  " );
         setConditionFindAllDocumentAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDocumentAsset(request, query);
@@ -119,16 +120,21 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         return new PageImpl<>(responses, pageable, countFindAllDocumentAsset(request));
     }
 
+    @Override
+    public Optional<DetailsDocumentBluePrintDto> findDetailDocumentByCodeDocument(String codeDocument) {
+        return Optional.empty();
+    }
+
     private long countFindAllDocumentAsset(FindAllDocumentAssetRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) FROM document  " +
-                "                                          LEFT JOIN data_process_asset da ON document.id_document = da.id_document   " +
-                "                                          LEFT JOIN process ON da.id_process = process.id_process " +
-                "                                          LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process " +
-                "                                          LEFT JOIN csvc_user user ON process.id_user_created = user.id_user     " +
-                "                                          LEFT JOIN department de ON process.id_department = de.id_department   " +
-                "                                          LEFT JOIN asset ON da.id_asset = asset.id_asset   " +
-                "WHERE process.id_department IN (:idsDepartmentOriginal); ");
+                "          LEFT JOIN data_process_asset da ON document.id_document = da.id_document   " +
+                "          LEFT JOIN process ON da.id_process = process.id_process " +
+                "          LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process " +
+                "          LEFT JOIN csvc_user user ON process.id_user_created = user.id_user     " +
+                "          LEFT JOIN department de ON process.id_department = de.id_department   " +
+                "          LEFT JOIN asset ON da.id_asset = asset.id_asset   " +
+                " WHERE process.id_department IN (:idsDepartmentOriginal); ");
         setConditionFindAllDocumentAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDocumentAsset(request, query);
