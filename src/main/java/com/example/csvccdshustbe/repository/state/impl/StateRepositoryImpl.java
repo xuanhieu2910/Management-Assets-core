@@ -6,6 +6,8 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -45,7 +47,7 @@ public class StateRepositoryImpl implements StateRepositoryCustom {
     }
 
     @Override
-    public Optional<State> findStateByIdProcessAndStepNext(Integer idProcess, Integer stepNext) {
+    public Optional<State> findStateByIdProcessAndStepNext(Integer idProcess, Integer stepStateNext) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select st.id_state, st.id_type_state, st.code_type_state,  " +
                 "       st.id_process, st.status, st.time_created, st.time_modified,  " +
@@ -56,7 +58,7 @@ public class StateRepositoryImpl implements StateRepositoryCustom {
                 "and st.step = :stepNext   ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
-        query.setParameter("stepNext", stepNext);
+        query.setParameter("stepNext", stepStateNext);
         List<Object[]> result = query.getResultList();
         if (CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){

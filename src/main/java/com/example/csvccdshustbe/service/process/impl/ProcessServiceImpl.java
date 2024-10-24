@@ -94,7 +94,7 @@ public class ProcessServiceImpl implements ProcessService {
      */
 
     private List<RequestStakeHolder> constructionRequestStakeHolder(Request processRequest, Process process) {
-        Integer idDepartment = processRequest.getIdProcess();
+        Integer idDepartment = process.getIdDepartment();
         List<UserRole> userRoles = userRoleService.findUserRoleByNameRoleAndIdDepartment(RolePattern.ManagerDepartment.name(), idDepartment);
         List<RequestStakeHolder> stakeHolders = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());

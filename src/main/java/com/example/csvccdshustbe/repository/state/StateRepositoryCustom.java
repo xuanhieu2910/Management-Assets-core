@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface StateRepositoryCustom {
     Optional<State> findStateByIdState(Integer idState);
-    Optional<State> findStateByIdProcessAndStepNext(Integer idProcess, Integer stepNext);
+    Optional<State> findStateByIdProcessAndStepNext(Integer idProcess, Integer stepStateNext);
 
 }
