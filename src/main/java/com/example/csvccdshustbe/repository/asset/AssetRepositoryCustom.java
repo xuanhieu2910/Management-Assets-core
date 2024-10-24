@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
 import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.request.asset.FinaAllAssetToIncreaseRequest;
+import com.example.csvccdshustbe.request.asset.FindAllAssetDocumentRequest;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
@@ -29,4 +30,6 @@ public interface AssetRepositoryCustom {
     List<FindAllGroundAssetDto> findAllGroundAssetToDownload();
 
     Page<FindAllAssetDto> findAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable);
+
+    Page<FindAllAssetDto> findAllAssetDocumentByCodeDocument(FindAllAssetDocumentRequest request, Pageable pageable);
 }

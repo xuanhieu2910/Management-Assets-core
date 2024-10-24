@@ -5,12 +5,10 @@ import com.example.csvccdshustbe.exception.FileExcelException;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.asset.FinaAllAssetToIncreaseRequest;
+import com.example.csvccdshustbe.request.asset.FindAllAssetDocumentRequest;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
-import com.example.csvccdshustbe.response.asset.FindAllAssetResponse;
-import com.example.csvccdshustbe.response.asset.FindAllAssetResponseToIncrease;
-import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
-import com.example.csvccdshustbe.response.asset.FindDetailsAssetResponse;
+import com.example.csvccdshustbe.response.asset.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -34,5 +32,5 @@ public interface AssetService {
     Resource downloadFileTemplateImportAsset() throws IOException;
     void uploadFileImportAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException;
     Page<FindAllAssetResponseToIncrease> findAllAssetToIncrease(FinaAllAssetToIncreaseRequest request);
-
+    Page<FindAllAssetDocumentResponse> findAllAssetDocumentByCodeDocument(FindAllAssetDocumentRequest request);
 }

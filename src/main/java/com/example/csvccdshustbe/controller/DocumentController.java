@@ -34,7 +34,8 @@ public class DocumentController {
     @GetMapping("/details")
     public ResponseEntity<?> findDocumentDetailsByCodeDocument(@RequestParam("code") String code){
         try {
-            return null;
+            return ApiResponseDto.createdWithState(documentService.findDetailsDocumentByCodeDocument(code),
+                    "Find details document success!", HttpStatus.OK);
         } catch (NotFoundException e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){

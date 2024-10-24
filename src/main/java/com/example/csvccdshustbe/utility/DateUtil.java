@@ -104,6 +104,17 @@ public class DateUtil {
         }
     }
 
+    public static String convertStringDateToDate(String date, String format) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            Date dateFormat = sdf.parse(date);
+            return sdf.format(dateFormat);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
     public static Date parseDatePattern(Date date, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         String strDate = sdf.format(date);

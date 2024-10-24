@@ -4,6 +4,8 @@ import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class FindDetailsDocumentDto {
@@ -12,12 +14,12 @@ public class FindDetailsDocumentDto {
     private String codeDocument;
     private String fullName;
     private String userName;
-    private Integer status;
     private String description;
     private String timeCreated;
     private String timeModified;
     private String timeIncrease;
     private String timeDocument;
-    private BluePrintStateDto bluePrintStateDto;
+    private Integer idDepartment;
+    private List<BluePrintStateDto> bluePrintStateDto;
 
 }

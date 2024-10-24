@@ -20,8 +20,6 @@ public class FindDetailsDocumentResponse {
     private String fullName;
     @JsonProperty("user_name")
     private String userName;
-    @JsonProperty("status")
-    private Integer status;
     @JsonProperty("description")
     private String description;
     @JsonProperty("time_created")

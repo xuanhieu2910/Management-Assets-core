@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.repository.document.impl;
 
 import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
 import com.example.csvccdshustbe.dto.document.FindDetailsDocumentDto;
+import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.repository.document.DocumentRepositoryCustom;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
@@ -124,8 +125,64 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Optional<FindDetailsDocumentDto> findDetailDocumentByCodeDocument(String codeDocument, List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
-//        sb.append(" ")
+        sb.append(" select dc.id_document, dc.code,  " +
+                "        cu.user_name, cu.full_name,  " +
+                "       dc.time_created, dc.time_modified,  " +
+                "       dc.time_increase, dc.time_document,  " +
+                "       dc.id_department, dc.description,  " +
+                "       st.id_state, st.status statusState,  " +
+                "       ts.code codeTypeState, ts.id_type_state,  " +
+                "       ts.name nameTypeState, pr.id_process  " +
+                "from document dc  " +
+                "    inner join department de on dc.id_department = de.id_department  " +
+                "    inner join process pr on dc.id_process = pr.id_process  " +
+                "    inner join csvc_user cu on pr.id_user_created = cu.id_user  " +
+                "    inner join state st on pr.id_process = st.id_process  " +
+                "    inner join type_state ts on st.id_type_state = ts.id_type_state  " +
+                "where dc.code = :codeDocument  " +
+                "and de.id_department in (:idsDepartment)  " +
+                "and cu.is_actived = 1 ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeDocument", codeDocument);
+        query.setParameter("idsDepartment", idsDepartment);
+        List<Object[]> result = query.getResultList();
+        List<BluePrintStateDto> dtosState = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+                Object[] objCommon = result.get(0);
+                FindDetailsDocumentDto dto = new FindDetailsDocumentDto();
+                setContructionCommonFindDetailsDocumentDto(dto, objCommon);
+            for (Object[] obj : result){
+                dtosState.add(setContructionBluePrintStateDto(obj));
+            }
+            dto.setBluePrintStateDto(dtosState);
+        }
         return Optional.empty();
+    }
+
+
+
+    private BluePrintStateDto setContructionBluePrintStateDto(Object[] obj) {
+        BluePrintStateDto bluePrintStateDto = new BluePrintStateDto();
+        bluePrintStateDto.setIdState(ValueUtil.getIntegerByObject(obj[10]));
+        bluePrintStateDto.setStatus(ValueUtil.getIntegerByObject(obj[11]));
+        bluePrintStateDto.setCodeTypeState(ValueUtil.getStringByObject(obj[12]));
+        bluePrintStateDto.setIdTypeState(ValueUtil.getIntegerByObject(obj[13]));
+        bluePrintStateDto.setNameTypeState(ValueUtil.getStringByObject(obj[14]));
+        bluePrintStateDto.setIdProcess(ValueUtil.getIntegerByObject(obj[15]));
+        return bluePrintStateDto;
+    }
+
+    private void setContructionCommonFindDetailsDocumentDto(FindDetailsDocumentDto dto, Object[] obj) {
+        dto.setIdDocument(ValueUtil.getIntegerByObject(obj[0]));
+        dto.setCodeDocument(ValueUtil.getStringByObject(obj[1]));
+        dto.setUserName(ValueUtil.getStringByObject(obj[2]));
+        dto.setFullName(ValueUtil.getStringByObject(obj[3]));
+        dto.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+        dto.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+        dto.setTimeIncrease(ValueUtil.getStringByObject(obj[6]));
+        dto.setTimeDocument(ValueUtil.getStringByObject(obj[7]));
+        dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
+        dto.setDescription(ValueUtil.getStringByObject(obj[9]));
     }
 
     private long countFindAllDocumentAsset(FindAllDocumentAssetRequest request) {

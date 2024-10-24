@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FindAllAssetResponse {
+public class FindAllAssetDocumentResponse {
 
     @JsonProperty("code_asset")
     private String codeAsset;

@@ -37,12 +37,10 @@ import com.example.csvccdshustbe.repository.typeUse.TypeUseRepository;
 import com.example.csvccdshustbe.repository.units.UnitsRepository;
 import com.example.csvccdshustbe.repository.wards.WardsRepository;
 import com.example.csvccdshustbe.request.asset.FinaAllAssetToIncreaseRequest;
+import com.example.csvccdshustbe.request.asset.FindAllAssetDocumentRequest;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
-import com.example.csvccdshustbe.response.asset.FindAllAssetResponse;
-import com.example.csvccdshustbe.response.asset.FindAllAssetResponseToIncrease;
-import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
-import com.example.csvccdshustbe.response.asset.FindDetailsAssetResponse;
+import com.example.csvccdshustbe.response.asset.*;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.assetDepreciation.AssetDepreciationService;
@@ -960,9 +958,42 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public Page<FindAllAssetResponseToIncrease> findAllAssetToIncrease(FinaAllAssetToIncreaseRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        request.setIdsDepartmentOriginal(idsDepartment);
         Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoToIncrease(request, pageable);
         return new PageImpl<>(convertToFindAllAssetToIncreaseResponse(findAllAssetDtos.getContent()),
                 pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllAssetDocumentResponse> findAllAssetDocumentByCodeDocument(FindAllAssetDocumentRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDocumentByCodeDocument(request, pageable);
+        return new PageImpl<>(convertToFindAllAssetDocument(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    private List<FindAllAssetDocumentResponse> convertToFindAllAssetDocument(List<FindAllAssetDto> content) {
+        List<FindAllAssetDocumentResponse> responses = new ArrayList<>();
+        for (FindAllAssetDto dto : content) {
+            FindAllAssetDocumentResponse response = new FindAllAssetDocumentResponse();
+            response.setCodeAsset(dto.getCodeAsset());
+            response.setNameAsset(dto.getNameAsset());
+            response.setNameAssetCategory(dto.getNameAssetCategory());
+            response.setCodeAssetCategory(dto.getCodeAssetCategory());
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(
+                    DateUtil.formatDatePattern(dto.getTimeCreated(),
+                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
+            response.setTimeModified(DateUtil.formatToPattern(
+                    DateUtil.formatDatePattern(dto.getTimeModified(),
+                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
+            responses.add(response);
+        }
+        return responses;
     }
 
     public void createAssetFromFile(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException {

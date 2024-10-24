@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.asset.FinaAllAssetToIncreaseRequest;
+import com.example.csvccdshustbe.request.asset.FindAllAssetDocumentRequest;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.service.asset.AssetService;
@@ -179,8 +180,21 @@ public class AssetController {
         try {
             return ApiResponseDto.createdWithState(assetService.findAllAssetToIncrease(request), "Find all asset to increase success!", HttpStatus.OK);
         } catch (Exception e){
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
 
+    @GetMapping("/assets-document")
+    public ResponseEntity<?> findAllAssetByCodeDocument(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetDocumentRequest request){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllAssetDocumentByCodeDocument(request),
+                    "Find all data asset document success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

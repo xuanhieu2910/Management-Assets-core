@@ -1,6 +1,8 @@
 package com.example.csvccdshustbe.service.document.impl;
 
 import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
+import com.example.csvccdshustbe.dto.document.FindDetailsDocumentDto;
+import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Document;
@@ -10,6 +12,7 @@ import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
+import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
@@ -23,6 +26,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,7 +88,37 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public FindDetailsDocumentResponse findDetailsDocumentByCodeDocument(String codeDocument) {
-        return null;
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        Optional<FindDetailsDocumentDto> detailsDocumentDto = documentRepository.findDetailDocumentByCodeDocument(codeDocument,idsDepartment);
+        if (detailsDocumentDto.isEmpty()){
+            throw new NotFoundException("Don't exist document by code!");
+        }
+        return convertToFindDetailsDocumentResponse(detailsDocumentDto.get());
+    }
+
+    private FindDetailsDocumentResponse convertToFindDetailsDocumentResponse(FindDetailsDocumentDto findDetailsDocumentDto) {
+        FindDetailsDocumentResponse response = new FindDetailsDocumentResponse();
+        response.setIdDocument(findDetailsDocumentDto.getIdDocument());
+        response.setCodeDocument(findDetailsDocumentDto.getCodeDocument());
+        response.setFullName(findDetailsDocumentDto.getFullName());
+        response.setUserName(findDetailsDocumentDto.getUserName());
+        response.setDescription(findDetailsDocumentDto.getDescription());
+        response.setTimeCreated(DateUtil.convertStringDateToDate(findDetailsDocumentDto.getTimeCreated(), DateUtil.TO_DATE_FORMAT));
+        response.setTimeModified(DateUtil.convertStringDateToDate(findDetailsDocumentDto.getTimeModified(), DateUtil.TO_DATE_FORMAT));
+        response.setTimeIncrease(findDetailsDocumentDto.getTimeIncrease());
+        response.setTimeDocument(findDetailsDocumentDto.getTimeDocument());
+        List<BluePrintStateResponse> bluePrintStateResponses = new ArrayList<>();
+        for (BluePrintStateDto printStateDto : findDetailsDocumentDto.getBluePrintStateDto()){
+            BluePrintStateResponse printStateResponse = new BluePrintStateResponse();
+            printStateResponse.setIdState(printStateDto.getIdState());
+            printStateResponse.setStatus(printStateDto.getStatus());
+            printStateResponse.setCodeTypeState(printStateDto.getCodeTypeState());
+            printStateResponse.setIdTypeState(printStateDto.getIdTypeState());
+            printStateResponse.setNameTypeState(printStateDto.getNameTypeState());
+            bluePrintStateResponses.add(printStateResponse);
+        }
+        response.setStates(bluePrintStateResponses);
+        return response;
     }
 
     private List<FindAllDocumentAssetResponse> convertToFindAllDocumentAssetResponse(List<FindAllDocumentAssetDto> collect) {

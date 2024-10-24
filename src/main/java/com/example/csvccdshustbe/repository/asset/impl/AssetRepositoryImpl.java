@@ -21,6 +21,7 @@ import com.example.csvccdshustbe.dto.unit.BluePrintUnitDto;
 import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.repository.asset.AssetRepositoryCustom;
 import com.example.csvccdshustbe.request.asset.FinaAllAssetToIncreaseRequest;
+import com.example.csvccdshustbe.request.asset.FindAllAssetDocumentRequest;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
@@ -332,6 +333,90 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         return new PageImpl<>(responses, pageable, countFindAllAssetToIncrease(request));
     }
 
+    @Override
+    public Page<FindAllAssetDto> findAllAssetDocumentByCodeDocument(FindAllAssetDocumentRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,    " +
+                "         asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,    " +
+                "         assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,    " +
+                "         de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,    " +
+                "         lo.id_location idLocation, lo.name nameLocation,    " +
+                "         asset.time_created, asset.time_modified    " +
+                "from asset asset  " +
+                "      inner join asset_categories assetCategories    " +
+                "              on asset.id_asset_category = assetCategories.id_asset_category    " +
+                "      inner join department de on asset.id_department = de.id_department    " +
+                "      left join location lo on asset.id_location = lo.id_location  " +
+                "      inner join data_document dd on asset.id_asset = dd.id_asset  " +
+                "      inner join document do on dd.id_document = do.id_document  " +
+                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "and do.code = :codeDocument ");
+        setConditionFindAllAssetDocument(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllAssetDocument(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllAssetDto> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                FindAllAssetDto findAllAssetDto = new FindAllAssetDto();
+                findAllAssetDto.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
+                findAllAssetDto.setCodeAsset(ValueUtil.getStringByObject(obj[1]));
+                findAllAssetDto.setNameAsset(ValueUtil.getStringByObject(obj[2]));
+                findAllAssetDto.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
+                findAllAssetDto.setNameAssetCategory(ValueUtil.getStringByObject(obj[4]));
+                findAllAssetDto.setCodeAssetCategory(ValueUtil.getStringByObject(obj[5]));
+                findAllAssetDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
+                findAllAssetDto.setCodeDepartment(ValueUtil.getStringByObject(obj[7]));
+                findAllAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
+                findAllAssetDto.setIdLocation(ValueUtil.getIntegerByObject(obj[9]));
+                findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
+                findAllAssetDto.setTimeCreated(ValueUtil.getStringByObject(obj[11]));
+                findAllAssetDto.setTimeModified(ValueUtil.getStringByObject(obj[12]));
+                responses.add(findAllAssetDto);
+            }
+        }
+        return new PageImpl<>(responses, pageable, countFindAllAssetDocument(request));
+    }
+
+    private void setParameterFindAllAssetDocument(FindAllAssetDocumentRequest request, Query query) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("codeDocument", request.getCodeDocument());
+        if (StringUtils.isNotBlank(request.getNameAsset())){
+            query.setParameter("nameAsset", request.getNameAsset());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+            query.setParameter("idAssetCategory", request.getIdAssetCategory());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+    }
+
+    private void setConditionFindAllAssetDocument(FindAllAssetDocumentRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getNameAsset())){
+            sb.append(" and (asset.name REGEXP :nameAsset ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+            sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (StringUtils.isNotBlank(request.getSortBy())){
+            sb.append("ORDER BY ");
+            if (request.getSortBy().equals("nameAsset")) {
+                sb.append(" asset.name ");
+            }
+            if (request.getSortBy().equals("nameDepartment")) {
+                sb.append(" de.name ");
+            }
+            sb.append(" ").append(request.getSortOrder());
+        } else {
+            sb.append(" ORDER BY asset.id_asset desc ");
+        }
+    }
+
     private long countFindAllAssetToIncrease(FinaAllAssetToIncreaseRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) count  " +
@@ -541,6 +626,24 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         setConditionFindAllAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAsset(request, query);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+    private long countFindAllAssetDocument(FindAllAssetDocumentRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select count(0) count  " +
+                "from asset asset  " +
+                "      inner join asset_categories assetCategories     " +
+                "              on asset.id_asset_category = assetCategories.id_asset_category     " +
+                "      inner join department de on asset.id_department = de.id_department     " +
+                "      left join location lo on asset.id_location = lo.id_location  " +
+                "      inner join data_document dd on asset.id_asset = dd.id_asset  " +
+                "      inner join document do on dd.id_document = do.id_document  " +
+                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "and do.code = :codeDocument ");
+        setConditionFindAllAssetDocument(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllAssetDocument(request, query);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
     }
 
