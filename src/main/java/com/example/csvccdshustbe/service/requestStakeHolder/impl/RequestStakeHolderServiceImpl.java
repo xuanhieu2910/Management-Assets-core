@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.requestStakeHolder.impl;
 
+import com.example.csvccdshustbe.dto.requestStakeHolder.RequestStakeHolderDetails;
 import com.example.csvccdshustbe.entity.Reason;
 import com.example.csvccdshustbe.entity.RequestStakeHolder;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -77,5 +78,10 @@ public class RequestStakeHolderServiceImpl implements RequestStakeHolderService 
     @Override
     public List<RequestStakeHolder> findRequestStakeHolderByIdRequest(Integer idRequest) {
         return requestStakeHolderRepository.findRequestStakeHolderByIdRequest(idRequest);
+    }
+
+    @Override
+    public List<RequestStakeHolderDetails> findRequestStakeHolderDetailsByIdRequest(Integer idRequest) {
+        return requestStakeHolderRepository.findRequestStakeHolderDetailsByIdRequest(idRequest);
     }
 }

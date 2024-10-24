@@ -1,9 +1,17 @@
 package com.example.csvccdshustbe.service.state.impl;
 
+import com.example.csvccdshustbe.dto.request.RequestDetailsDto;
+import com.example.csvccdshustbe.dto.requestData.RequestDataDetailsDto;
+import com.example.csvccdshustbe.dto.requestStakeHolder.RequestStakeHolderDetails;
+import com.example.csvccdshustbe.dto.state.StateDetailsDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.repository.state.StateRepository;
+import com.example.csvccdshustbe.response.request.RequestDetailsResponse;
+import com.example.csvccdshustbe.response.requestData.RequestDataDetailsResponse;
+import com.example.csvccdshustbe.response.requestStakeHolder.RequestStakeHolderDetailsResponse;
+import com.example.csvccdshustbe.response.state.StateDetailsResponse;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.example.csvccdshustbe.service.request.RequestService;
 import com.example.csvccdshustbe.service.requestData.RequestDataService;
@@ -12,8 +20,10 @@ import com.example.csvccdshustbe.service.state.StateService;
 import com.example.csvccdshustbe.service.transition.TransitionService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -56,6 +66,85 @@ public class StateServiceImpl implements StateService {
             throw new NotFoundException("Don't exits state by id state!");
         }
         updateStatusStateCurrent(state.get(), requests);
+    }
+
+    @Override
+    public StateDetailsResponse findStateDetailByIdState(Integer idState) {
+        List<Integer> idsDepartment =
+                ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        Optional<StateDetailsDto> stateDetailsDto = stateRepository.findStateDetailsByIdState(idState,idsDepartment);
+        if (stateDetailsDto.isEmpty()){
+            throw new NotFoundException("Don't exits state by id state!");
+        }
+        List<RequestDetailsDto> requestDetailsDtos = requestService.findRequestDetailsByIdState(stateDetailsDto
+                .get()
+                .getIdTypeState());
+        for (RequestDetailsDto dto : requestDetailsDtos){
+            dto.setRequestData(requestDataService.findRequestDataDetailsByIdRequest(dto.getIdRequest()));
+            dto.setRequestStakeHolder(requestStakeHolderService.findRequestStakeHolderDetailsByIdRequest(dto.getIdRequest()));
+        }
+        stateDetailsDto.get().setRequestDetails(requestDetailsDtos);
+        return convertToStateDetailsResponse(stateDetailsDto.get());
+    }
+
+    private StateDetailsResponse convertToStateDetailsResponse(StateDetailsDto stateDetailsDto) {
+        StateDetailsResponse response = new StateDetailsResponse();
+        response.setIdState(stateDetailsDto.getIdState());
+        response.setStatusState(stateDetailsDto.getStatusState());
+        response.setIdTypeState(stateDetailsDto.getIdTypeState());
+        response.setCodeTypeState(stateDetailsDto.getCodeTypeState());
+        response.setNameTypeState(stateDetailsDto.getNameTypeState());
+        response.setTimeCreated(DateUtil.convertStringDateToDate(stateDetailsDto.getTimeCreated(),DateUtil.DATE_FORMAT));
+        response.setTimeModified(DateUtil.convertStringDateToDate(stateDetailsDto.getTimeModified(),DateUtil.DATE_FORMAT));
+        response.setIdProcess(stateDetailsDto.getIdProcess());
+        List<RequestDetailsResponse> request = new ArrayList<>();
+        for (RequestDetailsDto dto : stateDetailsDto.getRequestDetails()){
+            request.add(convertToRequestDetailResponse(dto));
+        }
+        return response;
+    }
+
+    private RequestDetailsResponse convertToRequestDetailResponse(RequestDetailsDto dto) {
+        RequestDetailsResponse response = new RequestDetailsResponse();
+        response.setIdRequest(dto.getIdRequest());
+        response.setName(dto.getName());
+        response.setDescription(dto.getDescription());
+        response.setStatus(dto.getStatus());
+        response.setTimeCreated(DateUtil.convertStringDateToDate(dto.getTimeCreated(),DateUtil.DATE_FORMAT));
+        response.setTimeModified(DateUtil.convertStringDateToDate(dto.getTimeModified(),DateUtil.DATE_FORMAT));
+        List<RequestDataDetailsResponse> dataResponse = new ArrayList<>();
+        List<RequestStakeHolderDetailsResponse> stakeHolderResponse = new ArrayList<>();
+        for (RequestDataDetailsDto dataDetailsDto : dto.getRequestData()){
+            dataResponse.add(convertToRequestDataResponse(dataDetailsDto));
+        }
+        for (RequestStakeHolderDetails stakeHolderDetails : dto.getRequestStakeHolder()){
+            stakeHolderResponse.add(convertToRequestStakeHolderResponse(stakeHolderDetails));
+        }
+        response.setRequestData(dataResponse);
+        response.setRequestStakeHolder(stakeHolderResponse);
+        return response;
+    }
+
+    private RequestStakeHolderDetailsResponse convertToRequestStakeHolderResponse(RequestStakeHolderDetails stakeHolderDetails) {
+        RequestStakeHolderDetailsResponse response = new RequestStakeHolderDetailsResponse();
+        response.setIdRequestStakeHolder(stakeHolderDetails.getIdRequestStakeHolder());
+        response.setUserName(stakeHolderDetails.getUserName());
+        response.setFullName(stakeHolderDetails.getFullName());
+        response.setStatus(stakeHolderDetails.getStatus());
+        response.setTimeCreated(DateUtil.convertStringDateToDate(stakeHolderDetails.getTimeCreated(),DateUtil.DATE_FORMAT));
+        response.setTimeModified(DateUtil.convertStringDateToDate(stakeHolderDetails.getTimeModified(),DateUtil.DATE_FORMAT));
+        response.setReason(stakeHolderDetails.getReason());
+        response.setDescription(stakeHolderDetails.getDescription());
+        return response;
+    }
+
+    private RequestDataDetailsResponse convertToRequestDataResponse(RequestDataDetailsDto dataDetailsDto) {
+        RequestDataDetailsResponse response = new RequestDataDetailsResponse();
+        response.setIdRequestData(dataDetailsDto.getIdRequestData());
+        response.setName(dataDetailsDto.getName());
+        response.setValue(dataDetailsDto.getValue());
+        response.setStatus(dataDetailsDto.getStatus());
+        return response;
     }
 
     private void handleStateNext(State stateCurrent) {

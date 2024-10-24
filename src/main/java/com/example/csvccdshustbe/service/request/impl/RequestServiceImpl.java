@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.request.impl;
 
+import com.example.csvccdshustbe.dto.request.RequestDetailsDto;
 import com.example.csvccdshustbe.entity.Request;
 import com.example.csvccdshustbe.entity.RequestStakeHolder;
 import com.example.csvccdshustbe.repository.request.RequestRepository;
@@ -9,7 +10,6 @@ import com.example.csvccdshustbe.service.state.StateService;
 import com.example.csvccdshustbe.utility.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
 
 import java.util.Date;
@@ -48,6 +48,11 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public List<Request> findAllRequestByIdState(Integer idState) {
         return requestRepository.findAllRequestByIdState(idState);
+    }
+
+    @Override
+    public List<RequestDetailsDto> findRequestDetailsByIdState(Integer idState) {
+        return requestRepository.findRequestDetailsByIdState(idState);
     }
 
     private void updateStatusRequest(Request request, List<RequestStakeHolder> requestStakeHolderList) {
