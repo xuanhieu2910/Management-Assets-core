@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,4 +22,6 @@ public class FindAllUserResponse {
     private String nameDepartment;
     @JsonProperty("roles")
     private String roles;
+    @JsonProperty("id_user_role")
+    private Integer idUserRole;
 }
