@@ -144,7 +144,7 @@ public class DataDocumentRepositoryImpl implements DataDocumentRepositoryCustom 
             sb.append(" and document.time_increase = :timeIncrease ");
         }
         if (ObjectUtils.isNotEmpty(request.getCodeTypeProcess())){
-            sb.append(" and type_process.code =: codeTypeProcess ");
+            sb.append(" and type_process.code = :codeTypeProcess ");
         }
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");

@@ -216,8 +216,8 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getStatus())){
             query.setParameter("status", request.getStatus());
         }
-        if (ObjectUtils.isNotEmpty(request.getIdAsset())){
-            query.setParameter("idAsset", request.getIdAsset());
+        if (ObjectUtils.isNotEmpty(request.getCodeAsset())){
+            query.setParameter("codeAsset", request.getCodeAsset());
         }
 
     }
@@ -233,10 +233,10 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
             sb.append(" and process.status = :status ");
         }
         if (ObjectUtils.isNotEmpty(request.getStatusTypeProcess())){
-            sb.append(" and da.status =: statusTypeProcess ");
+            sb.append(" and da.status = :statusTypeProcess ");
         }
-        if (ObjectUtils.isNotEmpty(request.getStatusTypeProcess())){
-            sb.append(" and da.id_asset =: idAsset ");
+        if (ObjectUtils.isNotEmpty(request.getCodeAsset())){
+            sb.append(" and asset.code_asset = :codeAsset ");
         }
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");

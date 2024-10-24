@@ -4,7 +4,6 @@ import com.example.csvccdshustbe.dto.process.FindAllProcessAssetDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.DataDocument;
 import com.example.csvccdshustbe.entity.Document;
-import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.dataDocument.DataDocumentRepository;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
@@ -93,7 +92,9 @@ public class DataDocumentServiceImpl implements DataDocumentService {
             response.setCodeUserCreate(dto.getCodeUserCreate());
             response.setNameUserCreate(dto.getNameUserCreate());
             response.setStatus(dto.getStatus());
-            response.setTimeIncrease(dto.getTimeIncrease());
+            response.setTimeIncrease(DateUtil.formatToPattern(
+                    DateUtil.formatDatePattern(dto.getTimeIncrease(),
+                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
 
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
@@ -103,7 +104,9 @@ public class DataDocumentServiceImpl implements DataDocumentService {
             response.setTimeModified(DateUtil.formatToPattern(
                     DateUtil.formatDatePattern(dto.getTimeModified(),
                             DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
-            response.setTimeDocument(dto.getTimeDocument());
+            response.setTimeDocument(DateUtil.formatToPattern(
+                    DateUtil.formatDatePattern(dto.getTimeDocument(),
+                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
             responses.add(response);
         }
         return responses;
