@@ -87,11 +87,11 @@ public class RequestStakeHolderRepositoryImpl implements RequestStakeHolderRepos
         sb.append("select rsh.id_request_stake_holder, rsh.id_request, csvcUser.id_user,  " +
                 "       rsh.id_department, csvcUser.user_name, csvcUser.full_name,  " +
                 "       rsh.status, rsh.time_created, rsh.time_modified,  " +
-                "       re.id_reason, re.name, rsh.description  " +
+                "       res.id_reason, res.name, rsh.description  " +
                 " from request_stake_holder rsh    " +
                 "     inner join request re on rsh.id_request = re.id_request  " +
                 "     inner join csvc_user csvcUser on rsh.id_user = csvcUser.id_user  " +
-                "     inner join reason re on rsh.id_reason = re.id_reason  " +
+                "     inner join reason res on rsh.id_reason = res.id_reason  " +
                 " where re.id_request = :idRequest  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idRequest", idRequest);
