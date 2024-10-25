@@ -6,10 +6,8 @@ import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Document;
-import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.document.DocumentRepository;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
-import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
 import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
@@ -29,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -133,9 +130,7 @@ public class DocumentServiceImpl implements DocumentService {
             response.setDescription(dto.getDescription());
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
-            response.setTimeCreated(DateUtil.formatToPattern(
-                    DateUtil.formatDatePattern(dto.getTimeCreated(),
-                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
+            response.setTimeCreated(DateUtil.convertStringDateToDate(dto.getTimeCreated(), DateUtil.DATE_FORMAT));
             responses.add(response);
         }
         return responses;

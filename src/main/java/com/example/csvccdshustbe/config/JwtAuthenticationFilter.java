@@ -1,7 +1,6 @@
 package com.example.csvccdshustbe.config;
 
 import com.example.csvccdshustbe.entity.CsvcUser;
-import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.service.jwt.JwtTokenService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import jakarta.servlet.FilterChain;
@@ -21,10 +20,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -108,12 +104,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setContext(context);
             }
         }
-        hasCapability(request);
+//        hasCapability(request);
         filterChain.doFilter(request, response);
     }
 
 
-    private void hasCapability(HttpServletRequest request) throws ServletException {
-        csvcUserService.hasCapability(request.getServletPath(), request.getMethod());
-    }
+//    private void hasCapability(HttpServletRequest request) throws ServletException {
+//        csvcUserService.hasCapability(request.getServletPath(), request.getMethod());
+//    }
 }

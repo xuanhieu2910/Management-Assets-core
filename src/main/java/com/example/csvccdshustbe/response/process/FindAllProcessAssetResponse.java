@@ -22,12 +22,12 @@ public class FindAllProcessAssetResponse {
     private String nameDepartment;
     @JsonProperty("status")
     private Integer status;
-    @JsonProperty("code_user_create")
+    @JsonProperty("time_created")
     private String timeCreated;
-    @JsonProperty("code_user_create")
+    @JsonProperty("time_modified")
     private String timeModified;
-    @JsonProperty("code_user_create")
+    @JsonProperty("time_document")
     private String timeDocument;
-    @JsonProperty("code_user_create")
+    @JsonProperty("time_increase")
     private String timeIncrease;
 }
