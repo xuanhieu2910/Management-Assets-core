@@ -101,6 +101,7 @@ public class StateServiceImpl implements StateService {
         for (RequestDetailsDto dto : stateDetailsDto.getRequestDetails()){
             request.add(convertToRequestDetailResponse(dto));
         }
+        response.setRequest(request);
         return response;
     }
 
