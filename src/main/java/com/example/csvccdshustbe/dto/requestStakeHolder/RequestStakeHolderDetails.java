@@ -12,6 +12,7 @@ public class RequestStakeHolderDetails {
     private Integer idRequest;
     private Integer idUser;
     private Integer idDepartment;
+    private String nameDepartment;
     private String userName;
     private String fullName;
     private Integer status;

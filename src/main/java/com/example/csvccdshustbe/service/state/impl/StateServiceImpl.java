@@ -130,6 +130,7 @@ public class StateServiceImpl implements StateService {
         response.setIdRequestStakeHolder(stakeHolderDetails.getIdRequestStakeHolder());
         response.setUserName(stakeHolderDetails.getUserName());
         response.setFullName(stakeHolderDetails.getFullName());
+        response.setNameDepartment(stakeHolderDetails.getNameDepartment());
         response.setStatus(stakeHolderDetails.getStatus());
         response.setTimeCreated(DateUtil.convertStringDateToDate(stakeHolderDetails.getTimeCreated(),DateUtil.DATE_FORMAT));
         response.setTimeModified(DateUtil.convertStringDateToDate(stakeHolderDetails.getTimeModified(),DateUtil.DATE_FORMAT));

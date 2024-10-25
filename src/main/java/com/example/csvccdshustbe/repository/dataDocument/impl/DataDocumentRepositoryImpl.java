@@ -110,6 +110,9 @@ public class DataDocumentRepositoryImpl implements DataDocumentRepositoryCustom 
         if (StringUtils.isNotBlank(request.getTimeCreated())){
             query.setParameter("timeCreate", request.getTimeCreated());
         }
+        if (StringUtils.isNotBlank(request.getNameDepartment())) {
+            query.setParameter("nameDepartment", request.getNameDepartment());
+        }
         if (StringUtils.isNotBlank(request.getNameUserCreate())){
             query.setParameter("nameUserCreate", request.getNameUserCreate());
         }
@@ -134,14 +137,17 @@ public class DataDocumentRepositoryImpl implements DataDocumentRepositoryCustom 
         if (StringUtils.isNotBlank(request.getTimeCreated())){
             sb.append(" and document.time_created = :timeCreate ");
         }
+        if (StringUtils.isNotBlank(request.getNameDepartment())){
+            sb.append(" and de.name = :nameDepartment ");
+        }
         if (ObjectUtils.isNotEmpty(request.getStatus())){
             sb.append(" and process.status = :status ");
         }
-        if (StringUtils.isNotBlank(request.getTimeCreated())){
-            sb.append(" and document.time_document = :timeDocument ");
+        if (StringUtils.isNotBlank(request.getTimeDocument())){
+            sb.append(" and document.time_document REGEXP :timeDocument ");
         }
-        if (StringUtils.isNotBlank(request.getTimeCreated())){
-            sb.append(" and document.time_increase = :timeIncrease ");
+        if (StringUtils.isNotBlank(request.getTimeIncrease())){
+            sb.append(" and document.time_increase REGEXP :timeIncrease ");
         }
         if (ObjectUtils.isNotEmpty(request.getCodeTypeProcess())){
             sb.append(" and type_process.code = :codeTypeProcess ");

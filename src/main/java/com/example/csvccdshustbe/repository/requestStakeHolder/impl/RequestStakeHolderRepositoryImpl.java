@@ -85,14 +85,15 @@ public class RequestStakeHolderRepositoryImpl implements RequestStakeHolderRepos
     public List<RequestStakeHolderDetails> findRequestStakeHolderDetailsByIdRequest(Integer idRequest) {
         StringBuilder sb = new StringBuilder();
         sb.append("select rsh.id_request_stake_holder, rsh.id_request, csvcUser.id_user,  " +
-                "       rsh.id_department, csvcUser.user_name, csvcUser.full_name,  " +
-                "       rsh.status, rsh.time_created, rsh.time_modified,  " +
-                "       res.id_reason, res.name, rsh.description  " +
-                " from request_stake_holder rsh    " +
-                "     inner join request re on rsh.id_request = re.id_request  " +
-                "     inner join csvc_user csvcUser on rsh.id_user = csvcUser.id_user  " +
-                "     inner join reason res on rsh.id_reason = res.id_reason  " +
-                " where re.id_request = :idRequest  ");
+                "                       rsh.id_department,de.name, csvcUser.user_name, csvcUser.full_name," +
+                "                       rsh.status, rsh.time_created, rsh.time_modified,  " +
+                "                       res.id_reason, res.name, rsh.description  " +
+                "                 from request_stake_holder rsh    " +
+                "                     left join request re on rsh.id_request = re.id_request" +
+                "                     left join csvc_user csvcUser on rsh.id_user = csvcUser.id_user" +
+                "                     left join reason res on rsh.id_reason = res.id_reason" +
+                "                     left join department de on rsh.id_department = de.id_department" +
+                "                 where re.id_request = :idRequest");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idRequest", idRequest);
         List<RequestStakeHolderDetails> stakeHolders = new ArrayList<>();
@@ -104,14 +105,15 @@ public class RequestStakeHolderRepositoryImpl implements RequestStakeHolderRepos
                 stakeHolder.setIdRequest(ValueUtil.getIntegerByObject(obj[1]));
                 stakeHolder.setIdUser(ValueUtil.getIntegerByObject(obj[2]));
                 stakeHolder.setIdDepartment(ValueUtil.getIntegerByObject(obj[3]));
-                stakeHolder.setUserName(ValueUtil.getStringByObject(obj[4]));
-                stakeHolder.setFullName(ValueUtil.getStringByObject(obj[5]));
-                stakeHolder.setStatus(ValueUtil.getIntegerByObject(obj[6]));
-                stakeHolder.setTimeCreated(ValueUtil.getStringByObject(obj[7]));
-                stakeHolder.setTimeModified(ValueUtil.getStringByObject(obj[8]));
-                stakeHolder.setIdReason(ValueUtil.getIntegerByObject(obj[9]));
-                stakeHolder.setReason(ValueUtil.getStringByObject(obj[10]));
-                stakeHolder.setDescription(ValueUtil.getStringByObject(obj[11]));
+                stakeHolder.setNameDepartment(ValueUtil.getStringByObject(obj[4]));
+                stakeHolder.setUserName(ValueUtil.getStringByObject(obj[5]));
+                stakeHolder.setFullName(ValueUtil.getStringByObject(obj[6]));
+                stakeHolder.setStatus(ValueUtil.getIntegerByObject(obj[7]));
+                stakeHolder.setTimeCreated(ValueUtil.getStringByObject(obj[8]));
+                stakeHolder.setTimeModified(ValueUtil.getStringByObject(obj[9]));
+                stakeHolder.setIdReason(ValueUtil.getIntegerByObject(obj[10]));
+                stakeHolder.setReason(ValueUtil.getStringByObject(obj[11]));
+                stakeHolder.setDescription(ValueUtil.getStringByObject(obj[12]));
                 stakeHolders.add(stakeHolder);
             }
         }

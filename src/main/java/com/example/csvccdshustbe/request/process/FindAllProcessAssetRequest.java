@@ -18,6 +18,8 @@ public class FindAllProcessAssetRequest extends RequestPageBase {
     private String timeDocument;
     private String timeIncrease;
     private Integer idDepartment;
+    private String nameDepartment;
+
     private List<Integer> idsDepartmentOriginal;
 
 }

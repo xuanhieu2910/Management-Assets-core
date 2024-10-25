@@ -14,6 +14,8 @@ public class RequestStakeHolderDetailsResponse {
     private String userName;
     @JsonProperty("full_name")
     private String fullName;
+    @JsonProperty("name_department")
+    private String nameDepartment;
     @JsonProperty("status")
     private Integer status;
     @JsonProperty("time_created")
