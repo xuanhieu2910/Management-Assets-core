@@ -109,7 +109,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
 
-//    private void hasCapability(HttpServletRequest request) throws ServletException {
-//        csvcUserService.hasCapability(request.getServletPath(), request.getMethod());
-//    }
+    private void hasCapability(HttpServletRequest request) throws ServletException {
+        csvcUserService.hasCapability(request.getServletPath(), request.getMethod());
+    }
 }

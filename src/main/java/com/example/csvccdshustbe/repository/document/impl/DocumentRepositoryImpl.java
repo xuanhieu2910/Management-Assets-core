@@ -155,6 +155,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 dtosState.add(setContructionBluePrintStateDto(obj));
             }
             dto.setBluePrintStateDto(dtosState);
+            return Optional.of(dto);
         }
         return Optional.empty();
     }
