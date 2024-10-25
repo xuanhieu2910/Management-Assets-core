@@ -100,6 +100,7 @@ public class DocumentServiceImpl implements DocumentService {
         response.setFullName(findDetailsDocumentDto.getFullName());
         response.setUserName(findDetailsDocumentDto.getUserName());
         response.setDescription(findDetailsDocumentDto.getDescription());
+        response.setStatus(findDetailsDocumentDto.getStatus());
         response.setTimeCreated(DateUtil.convertStringDateToDate(findDetailsDocumentDto.getTimeCreated(), DateUtil.TO_DATE_FORMAT));
         response.setTimeModified(DateUtil.convertStringDateToDate(findDetailsDocumentDto.getTimeModified(), DateUtil.TO_DATE_FORMAT));
         response.setTimeIncrease(findDetailsDocumentDto.getTimeIncrease());

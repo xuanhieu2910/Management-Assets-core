@@ -15,6 +15,7 @@ public class FindDetailsDocumentDto {
     private String fullName;
     private String userName;
     private String description;
+    private Integer status;
     private String timeCreated;
     private String timeModified;
     private String timeIncrease;

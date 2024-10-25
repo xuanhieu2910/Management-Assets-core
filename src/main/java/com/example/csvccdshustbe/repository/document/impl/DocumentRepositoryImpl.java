@@ -132,7 +132,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 "       dc.id_department, dc.description,  " +
                 "       st.id_state, st.status statusState,  " +
                 "       ts.code codeTypeState, ts.id_type_state,  " +
-                "       ts.name nameTypeState, pr.id_process  " +
+                "       ts.name nameTypeState, pr.id_process,pr.status  " +
                 "from document dc  " +
                 "    inner join department de on dc.id_department = de.id_department  " +
                 "    inner join process pr on dc.id_process = pr.id_process  " +
@@ -183,6 +183,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         dto.setTimeDocument(ValueUtil.getStringByObject(obj[7]));
         dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
         dto.setDescription(ValueUtil.getStringByObject(obj[9]));
+        dto.setStatus(ValueUtil.getIntegerByObject(obj[16]));
     }
 
     private long countFindAllDocumentAsset(FindAllDocumentAssetRequest request) {
