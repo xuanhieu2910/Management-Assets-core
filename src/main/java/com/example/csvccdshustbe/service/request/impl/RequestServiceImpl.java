@@ -55,6 +55,7 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.findRequestDetailsByIdState(idState);
     }
 
+
     private void updateStatusRequest(Request request, List<RequestStakeHolder> requestStakeHolderList) {
         for (RequestStakeHolder stakeHolder: requestStakeHolderList){
             if (stakeHolder.equals(Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING)) {
