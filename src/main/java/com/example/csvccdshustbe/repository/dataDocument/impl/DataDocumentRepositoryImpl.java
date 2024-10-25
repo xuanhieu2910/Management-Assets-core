@@ -107,6 +107,9 @@ public class DataDocumentRepositoryImpl implements DataDocumentRepositoryCustom 
         if (StringUtils.isNotBlank(request.getCodeDocument())){
             query.setParameter("codeDocument", request.getCodeDocument());
         }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
         if (StringUtils.isNotBlank(request.getTimeCreated())){
             query.setParameter("timeCreate", request.getTimeCreated());
         }
@@ -139,6 +142,9 @@ public class DataDocumentRepositoryImpl implements DataDocumentRepositoryCustom 
         }
         if (StringUtils.isNotBlank(request.getNameDepartment())){
             sb.append(" and de.name = :nameDepartment ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            sb.append(" and process.id_department = :idDepartment ");
         }
         if (ObjectUtils.isNotEmpty(request.getStatus())){
             sb.append(" and process.status = :status ");
