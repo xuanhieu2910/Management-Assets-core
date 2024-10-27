@@ -30,7 +30,7 @@ public class RequestStakeHolderRepositoryImpl implements RequestStakeHolderRepos
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idrth", idRequestStakeHolder);
         List<Object[]> result = query.getResultList();
-        if (CollectionUtils.isEmpty(result)){
+        if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
                 RequestStakeHolder stakeHolder = new RequestStakeHolder();
                 stakeHolder.setIdRequestStakeHolder(ValueUtil.getIntegerByObject(obj[0]));

@@ -97,6 +97,7 @@ public class ProcessServiceImpl implements ProcessService {
         Document document = new Document();
         String dateNow = String.valueOf(new Date().getTime());
         document.setCode(request.getCodeDocument());
+        document.setIdProcess(process.getIdProcess());
         document.setTimeCreated(dateNow);
         document.setTimeModified(dateNow);
         document.setTimeIncrease(request.getTimeIncrease());
