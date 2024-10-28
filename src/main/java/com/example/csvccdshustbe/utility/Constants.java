@@ -290,6 +290,7 @@ public class Constants {
      * Constant Status process
      * */
     public static Integer STATUS_FALSE_PROCESS = -1;
+    public static Integer STATUS_NOT_STARTED = 0;
     public static Integer STATUS_PENDING_PROCESS = 1;
     public static Integer STATUS_SUCCESS_PROCESS = 2;
     /*----------------------------------------------------*/
@@ -311,6 +312,7 @@ public class Constants {
      * Constant Status State
      * */
     public static Integer STATUS_STATE_FALSE = -1;
+    public static Integer STATUS_STATE_NOT_STARTED = 0;
     public static Integer STATUS_STATE_PENDING = 1;
     public static Integer STATUS_STATE_SUCCESS = 2;
     /*----------------------------------------------------*/

@@ -222,10 +222,11 @@ public class ProcessServiceImpl implements ProcessService {
         switch (codeTypeState){
             case Constants.CODE_TYPE_STATE_INIT:
                 return Constants.STATUS_STATE_SUCCESS;
-            case Constants.CODE_TYPE_STATE_TEST,
-                    Constants.CODE_TYPE_STATE_APPROVED,
-                    Constants.CODE_TYPE_STATE_COMPLETED:
+            case Constants.CODE_TYPE_STATE_TEST:
                 return Constants.STATUS_STATE_PENDING;
+            case Constants.CODE_TYPE_STATE_APPROVED,
+                 Constants.CODE_TYPE_STATE_COMPLETED:
+                return Constants.STATUS_STATE_NOT_STARTED;
         }
         return 0;
     }

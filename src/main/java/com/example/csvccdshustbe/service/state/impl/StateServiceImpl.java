@@ -153,9 +153,16 @@ public class StateServiceImpl implements StateService {
         Transition transition = transitionService.findTransitionByIdProcess(stateCurrent.getIdProcess());
         Optional<State> stateNext = stateRepository.findStateByIdProcessAndStepNext(stateCurrent.getIdProcess(),
                 stateCurrent.getStep() + 1);
-        if(stateNext.isPresent()) {
+        handleTransition(stateNext.get(),transition);
+        stateNext.get().setStatus(Constants.STATUS_STATE_PENDING);
+        stateRepository.save(stateNext.get());
+        handleRequest(stateNext.get());
+    }
+
+    private void handleTransition(State stateNext, Transition transition) {
+        if(stateNext != null) {
             transition.setIdStateCurrent(transition.getIdStateNext());
-            transition.setIdStateNext(stateNext.get().getIdState());
+            transition.setIdStateNext(stateNext.getIdState());
         } else {
             transition.setIdStateCurrent(transition.getIdStateNext());
         }
@@ -163,7 +170,6 @@ public class StateServiceImpl implements StateService {
         if (transition.getIdStateCurrent().equals(transition.getIdStateNext())){
             transitionService.updateStatusProcessByIdProcess(transition.getIdProcess(), Constants.STATUS_SUCCESS_PROCESS);
         }
-        handleRequest(stateNext.get());
     }
 
 
