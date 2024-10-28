@@ -349,5 +349,53 @@ public class Constants {
     public static Integer STATUS_REASON_ACTIVE = 1;
     public static Integer STATUS_REASON_UN_ACTIVE = -1;
     /*----------------------------------------------------*/
+    /**
+     * Constant name reports
+     * */
+    public static String[] NAME_REPORTS = {"1_04a-DKTSC_Bao cao ke khai tru so lam viec co so hoat dong su nghiep cua co quan to chuc don vi.xlsx",
+    "2_04b-DKTSC_Bao cao ke khai xe o to cua co quan to chuc don vi.xlsx",
+    "3_04c-DKTSC_Bao cao ke khai tai san co dinh khac cua co quan to chuc don vi (ngoai tru so lam viec co so hoat dong su nghiep xe o to).xlsx",
+    "4_04d-DKTSC_Bao cao ke khai tai san su dung chung.xlsx",
+    "5_04d-DKTSC_Bao cao ke khai su dung tai san cong vao muc dich cho thue.xlsx",
+    "6_04e-DKTSC_Bao cao ke khai su dung tai san cong vao muc dich kinh doanh.xlsx",
+    "7_04g-DKTSC_Bao cao ke khai su dung tai san cong vao muc dich lien doanh lien ket.xlsx",
+    "8_04h-DKTSC_Bao cao ke khai su dung tai san cong de khai thac theo hinh thuc khac (ngoai muc dich cho thue kinh doanh lien doanh lien ket).xlsx",
+    "9_04i-DKTSC_Bao cao ke khai so tien thu duoc tu khai thac tai san cong.xlsx",
+    "10_05a-DKTSDA_Bao cao ke khai tru so lam viec phuc vu hoat dong cua du an.xlsx",
+    "11_05b-DKTSDA_Bao cao ke khai o to phuc vu hoat dong cua du an.xlsx",
+    "12_05c-DKTSDA_Bao cao ke khai tai san co dinh khac phuc vu hoat dong cua du an (ngoai tru so lam viec xe o to).xlsx",
+    "13_06a-DKTSC_Bao cao ke khai thay doi thong tin ve don vi su dung tai san.xlsx",
+    "14_06b-DKTSC_Bao cao ke khai thay doi thong tin ve tai san la tru so lam viec co so hoat dong su nghiep.xlsx",
+    "15_06c_DKTSC_Bao cao ke khai thay doi thong tin ve tai san la xe o to.xlsx",
+    "16_06d-DKTSC_Bao cao ke khai thay doi thong tin ve tai san co dinh khac (ngoai tru so lam viec co so hoat dong su nghiep xe o to).xlsx",
+    "17_07DKTSC_Bao cao ke khai thong tin xu ly tai san cong.xlsx",
+    "18_01-KKTSXL_Bao cao ke khai tai san tich thu xac lap quyen so huu toan dan.xlsx",
+    "19_02-PAXLTSXL_Bao cao ke khai phuong an xu ly tai san tich thu xac lap quyen so huu toan dan.xlsx",
+    "20_03-KQXLTSXL_Bao cao ke khai ket qua xu ly tai san tich thu xac lap quyen so huu toan dan.xlsx",
+    "21_04-KQTCTSXL_Bao cao ke khai ket qua thu chi tai san tich thu xac lap quyen so huu toan dan.xlsx",
+    "22_S24-H_So tai san co dinh.xlsx",
+    "23_S25-H_The TSCD.xlsx",
+    "24_S26-H_So theo doi TSCD va cong cu dung cu tai noi su dung.xlsx",
+    "25_08a-DKTSC_Bao cao tong hop hien trang su dung tai san cong.xlsx",
+    "26_08b-DK TSC_Bao cao tong hop tinh hinh tang giam tai san cong.xlsx",
+    "27_09a-CKTSC_Cong khai tinh hinh dau tu xay dung mua sam giao thue tai san cong.xlsx",
+    "28_09b-CK TSC_Cong khai tinh hinh quan ly su dung tru so lam viec co so hoat dong su nghiep.xlsx",
+    "29_09c-CKTSC_Cong khai tinh hinh quan ly su dung xe o to va tai san co dinh khac.xlsx",
+    "30_09d-CKTSC_Cong khai tinh hinh xu ly tai san cong.xlsx",
+    "31_09d-CKTSC_Cong khai tinh hinh khai thac nguon luc tai chinh tu tai san cong.xlsx",
+    "32_C03 CCTT_Bao cao ve viec cung cap thong tin tai chinh (TSCD vo hinh va TSCD huu hinh).xlsx",
+    "33_B04-H_Bao cao tinh hinh tang giam TSCD.xlsx",
+    "34_C50 - HD_Bien ban giao nhan TSCD.xlsx",
+    "35_C51HD_Bien ban thanh ly TSCD.xlsx",
+    "36_C52 -HD_Bien ban danh gia lai TSCD.xlsx",
+    "37_C53 - HD_Bien ban kiem ke TSCD.xlsx",
+    "38_C54 - HD_Bien ban giao nhan TSCD sua chua lon hoan thanh.xlsx",
+    "39_C55a-HD_Bang tinh hao mon TSCD.xlsx",
+    "40_C55b - HD_Bang tinh va phan bo khau hao TSCD.xlsx"};
+
+    public static void main(String[] args) {
+        String abc = "Báo cáo kê khai sử dụng tài sản công để khai thác theo hình thức khác (ngoài mục đích cho thuê, kinh doanh, liên doanh, liên kết)";
+        System.out.println(abc.length());
+    }
 
 }
