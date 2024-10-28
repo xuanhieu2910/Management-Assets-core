@@ -77,7 +77,7 @@ public class DocumentServiceImpl implements DocumentService {
         if (String.valueOf(codeValueCurrent).length() > minLength) {
             minLength = minLength + 2;
         }
-        return prefix + String.format("%" + minLength + "d",(codeValueCurrent + 1));
+        return prefix + String.format("%0" + minLength + "d",(codeValueCurrent + 1));
     }
     @Override
     public Page<FindAllDocumentAssetResponse> findAllDocumentByAsset(FindAllDocumentAssetRequest request){
