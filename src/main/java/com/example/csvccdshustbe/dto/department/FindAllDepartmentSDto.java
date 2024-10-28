@@ -16,8 +16,8 @@ public class FindAllDepartmentSDto {
     private String shortName;
     private String description;
     private Integer parent;
-    private String timeCreated;
-    private String timeModified;
+    private Long timeCreated;
+    private Long timeModified;
     private Integer depth;
     private String path;
     private Integer status;

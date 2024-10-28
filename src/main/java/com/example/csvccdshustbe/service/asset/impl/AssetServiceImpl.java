@@ -696,12 +696,8 @@ public class AssetServiceImpl implements AssetService {
             response.setCodeAssetCategory(dto.getCodeAssetCategory());
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
-            response.setTimeCreated(DateUtil.formatToPattern(
-                    DateUtil.formatDatePattern(dto.getTimeCreated(),
-                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
-            response.setTimeModified(DateUtil.formatToPattern(
-                    DateUtil.formatDatePattern(dto.getTimeModified(),
-                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
             responses.add(response);
         }
         return responses;
@@ -718,12 +714,8 @@ public class AssetServiceImpl implements AssetService {
             response.setCodeAssetCategory(dto.getCodeAssetCategory());
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
-            response.setTimeCreated(DateUtil.formatToPattern(
-                    DateUtil.formatDatePattern(dto.getTimeCreated(),
-                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
-            response.setTimeModified(DateUtil.formatToPattern(
-                    DateUtil.formatDatePattern(dto.getTimeModified(),
-                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
             responses.add(response);
         }
         return responses;
@@ -985,12 +977,8 @@ public class AssetServiceImpl implements AssetService {
             response.setCodeAssetCategory(dto.getCodeAssetCategory());
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
-            response.setTimeCreated(DateUtil.formatToPattern(
-                    DateUtil.formatDatePattern(dto.getTimeCreated(),
-                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
-            response.setTimeModified(DateUtil.formatToPattern(
-                    DateUtil.formatDatePattern(dto.getTimeModified(),
-                            DateUtil.DATE_FORMAT),DateUtil.DATE_FORMAT_HH_MM));
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern( new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
             responses.add(response);
         }
         return responses;

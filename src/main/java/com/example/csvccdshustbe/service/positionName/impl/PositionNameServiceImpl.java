@@ -69,8 +69,8 @@ public class PositionNameServiceImpl implements PositionNameService {
             FindAllPositionNameResponse res = new FindAllPositionNameResponse();
             res.setIdPositionName(allPositionNameDto.getIdPositionName());
             res.setName(allPositionNameDto.getName());
-            res.setTimeCreated(DateUtil.formatToPattern(DateUtil.formatDatePattern(allPositionNameDto.getTimeCreated(),DateUtil.DDMMYYYY), DateUtil.DDMMYYYY));
-            res.setTimeModified(DateUtil.formatToPattern(DateUtil.formatDatePattern(allPositionNameDto.getTimeModified(),DateUtil.DDMMYYYY), DateUtil.DDMMYYYY));
+            res.setTimeCreated(DateUtil.formatToPattern(new Date(allPositionNameDto.getTimeCreated()),DateUtil.DDMMYYYY));
+            res.setTimeModified(DateUtil.formatToPattern(new Date(allPositionNameDto.getTimeModified()),DateUtil.DDMMYYYY));
             res.setStatus(allPositionNameDto.getStatus());
             responses.add(res);
         }

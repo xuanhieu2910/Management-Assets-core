@@ -14,7 +14,7 @@ public class FindAllPositionNameDto {
     private Integer idPositionName;
     private String name;
     private Integer status;
-    private String timeCreated;
-    private String timeModified;
+    private Long timeCreated;
+    private Long timeModified;
 
 }

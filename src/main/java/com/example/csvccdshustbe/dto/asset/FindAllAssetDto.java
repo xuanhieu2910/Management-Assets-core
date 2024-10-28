@@ -20,6 +20,6 @@ public class FindAllAssetDto {
     private String nameDepartment;
     private Integer idLocation;
     private String nameLocation;
-    private String timeCreated;
-    private String timeModified;
+    private Long timeCreated;
+    private Long timeModified;
 }

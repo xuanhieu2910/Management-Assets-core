@@ -84,8 +84,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
                 findAllAssetDto.setIdLocation(ValueUtil.getIntegerByObject(obj[9]));
                 findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
-                findAllAssetDto.setTimeCreated(ValueUtil.getStringByObject(obj[11]));
-                findAllAssetDto.setTimeModified(ValueUtil.getStringByObject(obj[12]));
+                findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[11]));
+                findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -325,8 +325,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
                 findAllAssetDto.setIdLocation(ValueUtil.getIntegerByObject(obj[9]));
                 findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
-                findAllAssetDto.setTimeCreated(ValueUtil.getStringByObject(obj[11]));
-                findAllAssetDto.setTimeModified(ValueUtil.getStringByObject(obj[12]));
+                findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[11]));
+                findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -371,8 +371,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
                 findAllAssetDto.setIdLocation(ValueUtil.getIntegerByObject(obj[9]));
                 findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
-                findAllAssetDto.setTimeCreated(ValueUtil.getStringByObject(obj[11]));
-                findAllAssetDto.setTimeModified(ValueUtil.getStringByObject(obj[12]));
+                findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[11]));
+                findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
                 responses.add(findAllAssetDto);
             }
         }

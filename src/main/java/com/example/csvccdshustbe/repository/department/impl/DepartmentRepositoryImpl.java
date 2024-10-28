@@ -246,8 +246,8 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
                 dto.setShortName(ValueUtil.getStringByObject(obj[3]));
                 dto.setDescription(ValueUtil.getStringByObject(obj[4]));
                 dto.setParent(ValueUtil.getIntegerByObject(obj[5]));
-                dto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
-                dto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                dto.setTimeCreated(ValueUtil.getLongByObject(obj[6]));
+                dto.setTimeModified(ValueUtil.getLongByObject(obj[7]));
                 dto.setDepth(ValueUtil.getIntegerByObject(obj[8]));
                 dto.setStatus(ValueUtil.getIntegerByObject(obj[9]));
                 dto.setPath(ValueUtil.getStringByObject(obj[10]));
@@ -637,8 +637,8 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
                 dto.setShortName(ValueUtil.getStringByObject(obj[3]));
                 dto.setDescription(ValueUtil.getStringByObject(obj[4]));
                 dto.setParent(ValueUtil.getIntegerByObject(obj[5]));
-                dto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
-                dto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                dto.setTimeCreated(ValueUtil.getLongByObject(obj[6]));
+                dto.setTimeModified(ValueUtil.getLongByObject(obj[7]));
                 dto.setDepth(ValueUtil.getIntegerByObject(obj[8]));
                 dto.setStatus(ValueUtil.getIntegerByObject(obj[9]));
                 dto.setPath(ValueUtil.getStringByObject(obj[10]));

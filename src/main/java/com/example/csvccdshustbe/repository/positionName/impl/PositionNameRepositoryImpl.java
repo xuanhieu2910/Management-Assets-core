@@ -46,8 +46,8 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
                 dto.setIdPositionName(ValueUtil.getIntegerByObject(obj[0]));
                 dto.setName(ValueUtil.getStringByObject(obj[1]));
                 dto.setStatus(ValueUtil.getIntegerByObject(obj[2]));
-                dto.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
-                dto.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                dto.setTimeCreated(ValueUtil.getLongByObject(obj[3]));
+                dto.setTimeModified(ValueUtil.getLongByObject(obj[4]));
                 findAllPositionNameDtos.add(dto);
             }
         }
@@ -73,8 +73,8 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
                 dto.setIdPositionName(ValueUtil.getIntegerByObject(obj[0]));
                 dto.setName(ValueUtil.getStringByObject(obj[1]));
                 dto.setStatus(ValueUtil.getIntegerByObject(obj[2]));
-                dto.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
-                dto.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                dto.setTimeCreated(ValueUtil.getLongByObject(obj[3]));
+                dto.setTimeModified(ValueUtil.getLongByObject(obj[4]));
                 findAllPositionNameDtos.add(dto);
             }
         }
@@ -212,8 +212,8 @@ public class PositionNameRepositoryImpl implements PositionNameRepositoryCustom 
                 FindAllPositionNameDto dto = new FindAllPositionNameDto();
                 dto.setIdPositionName(ValueUtil.getIntegerByObject(obj[0]));
                 dto.setName(ValueUtil.getStringByObject(obj[1]));
-                dto.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
-                dto.setTimeModified(ValueUtil.getStringByObject(obj[3]));
+                dto.setTimeCreated(ValueUtil.getLongByObject(obj[2]));
+                dto.setTimeModified(ValueUtil.getLongByObject(obj[3]));
                 dto.setStatus(ValueUtil.getIntegerByObject(obj[4]));
                 responses.add(dto);
             }
