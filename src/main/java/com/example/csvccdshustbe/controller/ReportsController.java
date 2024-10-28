@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
 import com.example.csvccdshustbe.service.report.ReportService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
+import com.example.csvccdshustbe.utility.PropertiesUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
@@ -81,7 +82,8 @@ public class ReportsController {
     @GetMapping("/preview")
     public ResponseEntity<?> previewReportByCode(@RequestParam("code") String code){
         try {
-            String pathImage = reportService.findReportByCode(code).getPathImage();
+            String pathImage = PropertiesUtil.getProperty("hust.csvc.static.location.static.files")  +
+                    reportService.findReportByCode(code).getPathImage();
             return ApiResponseDto.createdWithState(pathImage, "Preview report details success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);

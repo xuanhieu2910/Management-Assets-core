@@ -16,4 +16,5 @@ public interface FilesStorageService { ;
              throws ValidateFiledException, IOException, InterruptedException;
      Resource downLoadFileImportAsset() throws IOException;
      Resource downLoadReportByPathFile(String pathFile) throws IOException;
+
 }
