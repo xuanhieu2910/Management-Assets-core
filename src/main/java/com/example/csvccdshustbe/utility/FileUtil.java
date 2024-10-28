@@ -25,6 +25,7 @@ public class FileUtil {
     public static final String FOLDER_NAME_FILE = "upload_file";
     public static final String FOLDER_ASSET = "asset";
     public static final String FOLDER_NAME_REPORT ="report";
+    public static final String FOLDER_NAME_SAMPLE_ASSET ="sample_asset";
     public static final String SEPARATOR = "/";
     public static String pathReturn = "";
     private static final StringBuilder builder = new StringBuilder();
@@ -291,20 +292,21 @@ public class FileUtil {
         }
     }
 
-    public static String createFilePathServer(String filePath){
-        String root = PropertiesUtil.getProperty("vn.cpa.static.location.upload");
-        String fileFinal = root + File.separator + filePath;
+    public static File createFileSampleAsset(String nameFile){
+        String root = PropertiesUtil.getProperty("hust.csvc.static.location.static.files");
+        String random = RandomStringUtils.randomAlphanumeric(16);
+        String fileFinal = root + File.separator + getFolderInfo() + File.separator + random + nameFile;
         File file = new File(fileFinal);
         if (!file.exists() && !file.mkdirs()) {
             log.error("Can't create folder");
         }
-        return fileFinal;
+        return file;
     }
 
 
-    public static String createFileReport(String fileExcelName, String nameClass){
-        String root = PropertiesUtil.getProperty("file_report_excel_template");
-        String random = RandomStringUtils.randomAlphanumeric(20);
+    public static String createFileSampleAsset(String fileExcelName, String nameClass){
+        String root = PropertiesUtil.getProperty("hust.csvc.static.location.static.files") + File.separator + FOLDER_NAME_SAMPLE_ASSET;
+        String random = RandomStringUtils.randomAlphanumeric(16);
         String filePathTemplate = root + File.separator + fileExcelName;
         File oldFile = new File(filePathTemplate);
         String rootUpload = PropertiesUtil.getProperty("vn.cpa.static.location.upload");
