@@ -402,39 +402,10 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
                 "      inner join department de on userRole.id_department = de.id_department   " +
                 "where de.id_department in (:idsDepartment)   " +
                 "and csvcUser.id_user != :idUserCurrent and role.title != :titleRole ");
-        setConditionCountFindAllUser(request, sb);
+        setConditionFindAllUser(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
-        setParameterCountFindAllUser(request, query);
+        setParameterFindAllUser(request, query);
         return ValueUtil.getLongByObject(query.getSingleResult());
-    }
-
-    private void setParameterCountFindAllUser(FindAllUserRequest request, Query query) {
-        query.setParameter("idsDepartment", request.getIdsDepartment());
-        Integer idUserCurrent = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdUser();
-        query.setParameter("idUserCurrent", idUserCurrent);
-        if (StringUtils.isNotBlank(request.getFullName())){
-            query.setParameter("fullName", request.getFullName());
-        }
-        if (Objects.nonNull(request.getIdDepartment())){
-            query.setParameter("idDepartment", request.getIdDepartment());
-        }
-        if (StringUtils.isNotBlank(request.getNameRole())){
-            query.setParameter("shortNameRole", request.getNameRole());
-        }
-    }
-
-    private void setConditionCountFindAllUser(FindAllUserRequest request, StringBuilder sb) {
-        if (StringUtils.isNotBlank(request.getFullName())){
-            sb.append(" and (csvcUser.full_name REGEXP  :fullName ) ");
-        }
-        if (Objects.nonNull(request.getIdDepartment())){
-            sb.append(" and de.id_department = :idDepartment ");
-        }
-        if (StringUtils.isNotBlank(request.getNameRole())){
-            sb.append(" and ( role.short_name REGEXP  :shortNameRole ) ");
-        }
-        sb.append(" group by csvcUser.code_user, csvcUser.user_name, csvcUser.full_name, " +
-                "         de.id_department, de.name ) result");
     }
 
     private void setParameterFindAllUser(FindAllUserRequest request, Query query) {

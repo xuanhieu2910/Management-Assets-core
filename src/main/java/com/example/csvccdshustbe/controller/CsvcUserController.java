@@ -97,6 +97,7 @@ public class CsvcUserController {
             return ApiResponseDto.createdWithState(csvcUserService.findAllUserResponse(request),
                     "Find all user success!", HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
