@@ -4,16 +4,22 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
 import com.example.csvccdshustbe.service.report.ReportService;
+import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.webjars.NotFoundException;
 
 @Tag(name = "Reports Controller", description = "The Reports APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
@@ -22,6 +28,8 @@ public class ReportsController {
 
     @Autowired
     ReportService reportService;
+    @Autowired
+    FilesStorageService filesStorageService;
 
 
     @GetMapping("/find-all-visible")
@@ -51,4 +59,35 @@ public class ReportsController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @GetMapping("/download")
+    public ResponseEntity<?> downloadReportByCode(@RequestParam("code") String code){
+        try {
+            String pathFile = reportService.exportToPathFileReportByCodeReport(code);
+            Resource resource = filesStorageService.downLoadReportByPathFile(pathFile);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                    .contentLength(resource.contentLength())
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
+    @GetMapping("/preview")
+    public ResponseEntity<?> previewReportByCode(@RequestParam("code") String code){
+        try {
+            String pathImage = reportService.findReportByCode(code).getPathImage();
+            return ApiResponseDto.createdWithState(pathImage, "Preview report details success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 }

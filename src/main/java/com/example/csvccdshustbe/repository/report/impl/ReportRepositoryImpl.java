@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.report.impl;
 
 import com.example.csvccdshustbe.dto.report.FindAllReportDto;
+import com.example.csvccdshustbe.entity.Report;
 import com.example.csvccdshustbe.repository.report.ReportRepositoryCustom;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
@@ -19,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ReportRepositoryImpl implements ReportRepositoryCustom {
 
@@ -31,7 +33,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
         sb.append("select rp.id_report, rp.code, rp.title, rp.path,  " +
                 "       rp.time_created, rp.time_modified, rp.id_user_created,  " +
                 "       rp.id_user_modified, rp.status, rp.type_mime, gc.id_government_circular,  " +
-                "       gc.title  " +
+                "       gc.title, rp.path_image  " +
                 "from report rp  " +
                 "    inner join government_circular gc on rp.id_government_circular = gc.id_government_circular  " +
                 "where 1 = 1  " +
@@ -56,6 +58,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 allReportDto.setStatus(ValueUtil.getIntegerByObject(obj[8]));
                 allReportDto.setTypeMime(ValueUtil.getStringByObject(obj[9]));
                 allReportDto.setIdGovernmentCircular(ValueUtil.getIntegerByObject(obj[10]));
+                allReportDto.setPathImage(ValueUtil.getStringByObject(obj[11]));
                 findAllReportDtos.add(allReportDto);
             }
         }
@@ -68,7 +71,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
         sb.append("select rp.id_report, rp.code, rp.title, rp.path,  " +
                 "       rp.time_created, rp.time_modified, rp.id_user_created,  " +
                 "       rp.id_user_modified, rp.status, rp.type_mime, gc.id_government_circular,  " +
-                "       gc.title  " +
+                "       gc.title, rp.path_image  " +
                 "from report rp  " +
                 "    inner join government_circular gc on rp.id_government_circular = gc.id_government_circular  " +
                 "where 1 = 1  ");
@@ -92,11 +95,48 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 allReportDto.setStatus(ValueUtil.getIntegerByObject(obj[8]));
                 allReportDto.setTypeMime(ValueUtil.getStringByObject(obj[9]));
                 allReportDto.setIdGovernmentCircular(ValueUtil.getIntegerByObject(obj[10]));
+                allReportDto.setPathImage(ValueUtil.getStringByObject(obj[11]));
                 findAllReportDtos.add(allReportDto);
             }
         }
         return new PageImpl<>(findAllReportDtos, pageable, countFindAllReport(request));
     }
+
+    @Override
+    public Optional<Report> findReportByCodeAndStatus(String codeReport, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_report, code, title, path,  " +
+                "       time_created, time_modified, id_user_created,  " +
+                "       id_user_modified, status, type_mime,  " +
+                "       id_government_circular, path_image  " +
+                "from report  " +
+                "where code = :codeReport  " +
+                "and status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeReport", codeReport);
+        query.setParameter("status", status);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Report report = new Report();
+                report.setIdReport(ValueUtil.getIntegerByObject(obj[0]));
+                report.setCode(ValueUtil.getStringByObject(obj[1]));
+                report.setTitle(ValueUtil.getStringByObject(obj[2]));
+                report.setPath(ValueUtil.getStringByObject(obj[3]));
+                report.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
+                report.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                report.setIdUserCreated(ValueUtil.getIntegerByObject(obj[6]));
+                report.setIdUserModified(ValueUtil.getIntegerByObject(obj[7]));
+                report.setStatus(ValueUtil.getIntegerByObject(obj[8]));
+                report.setTypeMime(ValueUtil.getStringByObject(obj[9]));
+                report.setIdGovernmentCircular(ValueUtil.getIntegerByObject(obj[10]));
+                report.setPathImage(ValueUtil.getStringByObject(obj[11]));
+                return Optional.of(report);
+            }
+        }
+        return Optional.empty();
+    }
+
 
     private void setParameterFindAllReport(FindAllReportRequest request, Query query) {
         if (StringUtils.isNotBlank(request.getCodeReport())) {

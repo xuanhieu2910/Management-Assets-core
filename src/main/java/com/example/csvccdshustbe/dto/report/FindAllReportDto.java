@@ -18,4 +18,5 @@ public class FindAllReportDto {
     private String typeMime;
     private Integer idGovernmentCircular;
     private String titleGovernmentCircular;
+    private String pathImage;
 }

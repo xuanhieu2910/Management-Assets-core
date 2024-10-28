@@ -939,6 +939,11 @@ public class AssetServiceImpl implements AssetService {
         return filesStorageService.downLoadFileImportAsset();
     }
 
+    @Override
+    public Resource exportFileReportByPath(String pathFile) throws IOException {
+        return filesStorageService.downLoadReportByPathFile(pathFile);
+    }
+
     public void uploadFileImportAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException {
     ValidateExcelUtils.checkFileExcel(file);
     List<Map<String, Object>> assetRequests = handleUploadFileAsset(file);

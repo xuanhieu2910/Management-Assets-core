@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.report;
 
+import com.example.csvccdshustbe.entity.Report;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
 import com.example.csvccdshustbe.response.report.FindAllReportResponse;
@@ -11,4 +12,6 @@ public interface ReportService {
     Page<FindAllReportVisibleResponse> findAllReportVisible(FindAllReportVisibleRequest request);
     Page<FindAllReportResponse> findAllReport(FindAllReportRequest request);
 
+    String exportToPathFileReportByCodeReport(String codeReport);
+    Report findReportByCode(String codeReport);
 }

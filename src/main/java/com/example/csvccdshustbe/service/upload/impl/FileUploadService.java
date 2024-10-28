@@ -45,6 +45,7 @@ import com.example.csvccdshustbe.utility.FileUtil;
 import com.example.csvccdshustbe.utility.PropertiesUtil;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -55,10 +56,12 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -347,6 +350,18 @@ public class FileUploadService implements FilesStorageService {
         }
         workbook.close();
         return null;
+    }
+
+    @Override
+    public Resource downLoadReportByPathFile(String pathFileReport) throws IOException {
+        String file = PropertiesUtil.getProperty("hust.csvc.static.location.static.files") + pathFileReport;
+        Path pathFile = new File(file).toPath();
+        Resource resource = new UrlResource(pathFile.toUri());
+        if(resource.exists()) {
+            return resource;
+        } else {
+            throw new FileExistsException("File not found " + pathFileReport);
+        }
     }
 
     private void createDataOriginalOfFormation(Workbook workbook, List<FindAllOriginalOfFormationDto> dataOriginalOfFormation) {

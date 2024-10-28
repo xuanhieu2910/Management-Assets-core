@@ -34,4 +34,6 @@ public class Report {
     private String typeMime;
     @Column(name = "id_government_circular")
     private Integer idGovernmentCircular;
+    @Column(name = "path_image")
+    private String pathImage;
 }
