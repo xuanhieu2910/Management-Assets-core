@@ -275,7 +275,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
                 "    inner join role role on userRole.id_role = role.id_role " +
                 "    inner join department de on userRole.id_department = de.id_department " +
                 "where de.id_department in (:idsDepartment) " +
-                "and csvcUser.id_user != :idUserCurrent ");
+                "and csvcUser.id_user != :idUserCurrent and  role.title != :titleRole ");
         setConditionFindAllUser(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllUser(request, query);
@@ -400,7 +400,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
                 "      inner join role role on userRole.id_role = role.id_role   " +
                 "      inner join department de on userRole.id_department = de.id_department   " +
                 "where de.id_department in (:idsDepartment)   " +
-                "and csvcUser.id_user != :idUserCurrent   ");
+                "and csvcUser.id_user != :idUserCurrent and role.title != :titleRole ");
         setConditionCountFindAllUser(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterCountFindAllUser(request, query);
@@ -437,6 +437,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
     }
 
     private void setParameterFindAllUser(FindAllUserRequest request, Query query) {
+        query.setParameter("titleRole","SuperAdmin");
         query.setParameter("idsDepartment", request.getIdsDepartment());
         Integer idUserCurrent = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdUser();
         query.setParameter("idUserCurrent", idUserCurrent);
