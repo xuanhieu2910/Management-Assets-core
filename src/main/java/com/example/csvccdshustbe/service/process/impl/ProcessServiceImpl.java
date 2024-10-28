@@ -9,6 +9,7 @@ import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
+import com.example.csvccdshustbe.response.process.ProcessStatisticsIncreaseResponse;
 import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
@@ -119,6 +120,11 @@ public class ProcessServiceImpl implements ProcessService {
     public Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedResponse(FindAllProcessBeAssignedRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         return processRepository.findAllProcessBeAssigned(request, pageable);
+    }
+
+    @Override
+    public ProcessStatisticsIncreaseResponse getStatisticIncrease() {
+        return null;
     }
 
     /***

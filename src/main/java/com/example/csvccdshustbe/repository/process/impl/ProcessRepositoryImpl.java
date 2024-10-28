@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.repository.process.ProcessRepositoryCustom;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
+import com.example.csvccdshustbe.response.process.ProcessStatisticsIncreaseResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -110,6 +111,47 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             }
         }
         return new PageImpl<>(responses, pageable, countFinaAllProcessBeAssigned(request));
+    }
+
+    @Override
+    public ProcessStatisticsIncreaseResponse getStatisticsIncrease() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select sum(totalStatistic.countTotalPending) as countTotalPending,  " +
+                "       sum(totalStatistic.countTotalBeApproved) as countTotalReject, " +
+                "       sum(totalStatistic.countTotalReject) as countTotalBeApproved " +
+                "from (select count(0) countTotalPending, 0 countTotalReject, 0 countTotalBeApproved " +
+                "from process pr " +
+                "     inner join department de on pr.id_department = de.id_department " +
+                "     inner join type_process tp on pr.id_type_process = tp.id_type_process " +
+                "where pr.status = :statusPending " +
+                "and tp.code = :codeTypeProcess " +
+                "and de.id_department in (:idsDepartmentOriginal) " +
+                "union all " +
+                "select 0 countTotalPending,count(0) countTotalReject, 0 countTotalBeApproved " +
+                "from process pr " +
+                "      inner join department de on pr.id_department = de.id_department " +
+                "      inner join type_process tp on pr.id_type_process = tp.id_type_process " +
+                "where pr.status = :statusReject " +
+                "  and tp.code = :codeTypeProcess " +
+                "  and de.id_department in (:idsDepartmentOriginal) " +
+                "union all " +
+                "select 0 countTotalPending, 0 countTotalReject, count(0) countTotalBeApproved " +
+                "from request_stake_holder rsh " +
+                "      inner join request rq on rsh.id_request = rq.id_request " +
+                "      inner join state st on rq.id_state = st.id_state " +
+                "      inner join process pr on st.id_process = pr.id_process " +
+                "      inner join type_process tp on pr.id_type_process = tp.id_type_process " +
+                "      inner join csvc_user csvcUser on rsh.id_user = csvcUser.id_user " +
+                "where rsh.status = :statusRequestPending " +
+                "  and tp.code = :codeTypeProcess " +
+                "  and csvcUser.id_user = :idUser) totalStatistic ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+//        query.setParameter("statusPending");
+//        query.setParameter("statusReject");
+//        query.setParameter("statusRequestPending");
+//        query.setParameter("codeTypeProcess");
+//        query.setParameter("idsDepartmentOriginal");
+        return null;
     }
 
     private long countFinaAllProcessBeAssigned(FindAllProcessBeAssignedRequest request) {

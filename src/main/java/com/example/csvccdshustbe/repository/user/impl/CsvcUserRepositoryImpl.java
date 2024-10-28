@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.entity.Capabilities;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Role;
+import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepositoryCustom;
 import com.example.csvccdshustbe.request.user.FindAllUserRequest;
 import com.example.csvccdshustbe.request.user.FindAllUserUsedRequest;
@@ -437,7 +438,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
     }
 
     private void setParameterFindAllUser(FindAllUserRequest request, Query query) {
-        query.setParameter("titleRole","SuperAdmin");
+        query.setParameter("titleRole", RolePattern.SuperAdmin.getClass());
         query.setParameter("idsDepartment", request.getIdsDepartment());
         Integer idUserCurrent = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdUser();
         query.setParameter("idUserCurrent", idUserCurrent);

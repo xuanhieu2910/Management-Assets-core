@@ -50,5 +50,12 @@ public class ProcessAssetController {
         }
     }
 
-
+//    @GetMapping("/statistic-increase")
+//    public ResponseEntity<?> getStatisticIncrease(){
+//        try {
+//
+//        } catch (){
+//
+//        }
+//    }
 }

@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
+import com.example.csvccdshustbe.response.process.ProcessStatisticsIncreaseResponse;
 import org.springframework.data.domain.Page;
 
 public interface ProcessService {
@@ -13,4 +14,5 @@ public interface ProcessService {
     void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException;
     Process findProcessByIdProcess(Integer idProcess);
     Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedResponse(FindAllProcessBeAssignedRequest request);
+    ProcessStatisticsIncreaseResponse getStatisticIncrease();
 }
