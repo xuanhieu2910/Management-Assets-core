@@ -109,8 +109,8 @@ public class RequestStakeHolderRepositoryImpl implements RequestStakeHolderRepos
                 stakeHolder.setUserName(ValueUtil.getStringByObject(obj[5]));
                 stakeHolder.setFullName(ValueUtil.getStringByObject(obj[6]));
                 stakeHolder.setStatus(ValueUtil.getIntegerByObject(obj[7]));
-                stakeHolder.setTimeCreated(ValueUtil.getStringByObject(obj[8]));
-                stakeHolder.setTimeModified(ValueUtil.getStringByObject(obj[9]));
+                stakeHolder.setTimeCreated(ValueUtil.getLongByObject(obj[8]));
+                stakeHolder.setTimeModified(ValueUtil.getLongByObject(obj[9]));
                 stakeHolder.setIdReason(ValueUtil.getIntegerByObject(obj[10]));
                 stakeHolder.setReason(ValueUtil.getStringByObject(obj[11]));
                 stakeHolder.setDescription(ValueUtil.getStringByObject(obj[12]));

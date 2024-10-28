@@ -95,8 +95,8 @@ public class StateServiceImpl implements StateService {
         response.setIdTypeState(stateDetailsDto.getIdTypeState());
         response.setCodeTypeState(stateDetailsDto.getCodeTypeState());
         response.setNameTypeState(stateDetailsDto.getNameTypeState());
-        response.setTimeCreated(DateUtil.convertStringDateToDate(stateDetailsDto.getTimeCreated(),DateUtil.DATE_FORMAT));
-        response.setTimeModified(DateUtil.convertStringDateToDate(stateDetailsDto.getTimeModified(),DateUtil.DATE_FORMAT));
+        response.setTimeCreated(DateUtil.formatToPattern(new Date(stateDetailsDto.getTimeCreated()),DateUtil.DATE_FORMAT));
+        response.setTimeModified(DateUtil.formatToPattern(new Date(stateDetailsDto.getTimeModified()),DateUtil.DATE_FORMAT));
         response.setIdProcess(stateDetailsDto.getIdProcess());
         List<RequestDetailsResponse> request = new ArrayList<>();
         for (RequestDetailsDto dto : stateDetailsDto.getRequestDetails()){
@@ -112,8 +112,8 @@ public class StateServiceImpl implements StateService {
         response.setName(dto.getName());
         response.setDescription(dto.getDescription());
         response.setStatus(dto.getStatus());
-        response.setTimeCreated(DateUtil.convertStringDateToDate(dto.getTimeCreated(),DateUtil.DATE_FORMAT));
-        response.setTimeModified(DateUtil.convertStringDateToDate(dto.getTimeModified(),DateUtil.DATE_FORMAT));
+        response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
+        response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
         List<RequestDataDetailsResponse> dataResponse = new ArrayList<>();
         List<RequestStakeHolderDetailsResponse> stakeHolderResponse = new ArrayList<>();
         for (RequestDataDetailsDto dataDetailsDto : dto.getRequestData()){
@@ -134,8 +134,8 @@ public class StateServiceImpl implements StateService {
         response.setFullName(stakeHolderDetails.getFullName());
         response.setNameDepartment(stakeHolderDetails.getNameDepartment());
         response.setStatus(stakeHolderDetails.getStatus());
-        response.setTimeCreated(DateUtil.convertStringDateToDate(stakeHolderDetails.getTimeCreated(),DateUtil.DATE_FORMAT));
-        response.setTimeModified(DateUtil.convertStringDateToDate(stakeHolderDetails.getTimeModified(),DateUtil.DATE_FORMAT));
+        response.setTimeCreated(DateUtil.formatToPattern(new Date(stakeHolderDetails.getTimeCreated()),DateUtil.DATE_FORMAT));
+        response.setTimeModified(DateUtil.formatToPattern(new Date(stakeHolderDetails.getTimeModified()),DateUtil.DATE_FORMAT));
         response.setReason(stakeHolderDetails.getReason());
         response.setDescription(stakeHolderDetails.getDescription());
         return response;

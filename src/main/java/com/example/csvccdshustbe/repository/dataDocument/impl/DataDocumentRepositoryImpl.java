@@ -87,8 +87,8 @@ public class DataDocumentRepositoryImpl implements DataDocumentRepositoryCustom 
                 findAllProcessAssetDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[5]));
                 findAllProcessAssetDto.setCodeDepartment(ValueUtil.getStringByObject(obj[6]));
                 findAllProcessAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[7]));
-                findAllProcessAssetDto.setTimeCreated(ValueUtil.getStringByObject(obj[8]));
-                findAllProcessAssetDto.setTimeModified(ValueUtil.getStringByObject(obj[9]));
+                findAllProcessAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[8]));
+                findAllProcessAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[9]));
                 findAllProcessAssetDto.setTimeIncrease(ValueUtil.getStringByObject(obj[10]));
                 findAllProcessAssetDto.setTimeDocument(ValueUtil.getStringByObject(obj[11]));
                 findAllProcessAssetDto.setStatus(ValueUtil.getIntegerByObject(obj[12]));

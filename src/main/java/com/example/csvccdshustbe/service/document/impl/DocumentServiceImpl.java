@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -105,8 +106,8 @@ public class DocumentServiceImpl implements DocumentService {
         response.setUserName(findDetailsDocumentDto.getUserName());
         response.setDescription(findDetailsDocumentDto.getDescription());
         response.setStatus(findDetailsDocumentDto.getStatus());
-        response.setTimeCreated(DateUtil.convertStringDateToDate(findDetailsDocumentDto.getTimeCreated(), DateUtil.TO_DATE_FORMAT));
-        response.setTimeModified(DateUtil.convertStringDateToDate(findDetailsDocumentDto.getTimeModified(), DateUtil.TO_DATE_FORMAT));
+        response.setTimeCreated(DateUtil.formatToPattern(new Date(findDetailsDocumentDto.getTimeCreated()), DateUtil.TO_DATE_FORMAT));
+        response.setTimeModified(DateUtil.formatToPattern(new Date(findDetailsDocumentDto.getTimeModified()), DateUtil.TO_DATE_FORMAT));
         response.setTimeIncrease(findDetailsDocumentDto.getTimeIncrease());
         response.setTimeDocument(findDetailsDocumentDto.getTimeDocument());
         List<BluePrintStateResponse> bluePrintStateResponses = new ArrayList<>();
@@ -135,7 +136,7 @@ public class DocumentServiceImpl implements DocumentService {
             response.setDescription(dto.getDescription());
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
-            response.setTimeCreated(DateUtil.convertStringDateToDate(dto.getTimeCreated(), DateUtil.DATE_FORMAT));
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
             responses.add(response);
         }
         return responses;

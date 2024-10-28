@@ -16,8 +16,8 @@ public class RequestStakeHolderDetails {
     private String userName;
     private String fullName;
     private Integer status;
-    private String timeCreated;
-    private String timeModified;
+    private Long timeCreated;
+    private Long timeModified;
     private String reason;
     private String description;
     private Integer idReason;

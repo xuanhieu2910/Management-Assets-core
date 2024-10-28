@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,12 +94,12 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 response.setCodeDocument(ValueUtil.getStringByObject(obj[3]));
                 response.setTypeProcess(ValueUtil.getStringByObject(obj[4]));
                 response.setDescription(ValueUtil.getStringByObject(obj[5]));
-                response.setTimeCreatedProcess(DateUtil.convertStringDateToDate(ValueUtil.getStringByObject(obj[6]), DateUtil.DATE_FORMAT));
-                response.setTimeModifiedProcess(DateUtil.convertStringDateToDate(ValueUtil.getStringByObject(obj[7]), DateUtil.DATE_FORMAT));
+                response.setTimeCreatedProcess(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[6])), DateUtil.DATE_FORMAT));
+                response.setTimeModifiedProcess(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[7])), DateUtil.DATE_FORMAT));
                 response.setUserNameCreated(ValueUtil.getStringByObject(obj[8]));
                 response.setFullNameCreated(ValueUtil.getStringByObject(obj[9]));
-                response.setTimeCreatedDocument(DateUtil.convertStringDateToDate(ValueUtil.getStringByObject(obj[10]), DateUtil.DATE_FORMAT));
-                response.setTimeModifiedDocument(DateUtil.convertStringDateToDate(ValueUtil.getStringByObject(obj[11]), DateUtil.DATE_FORMAT));
+                response.setTimeCreatedDocument(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[10])), DateUtil.DATE_FORMAT));
+                response.setTimeModifiedDocument(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[11])), DateUtil.DATE_FORMAT));
                 response.setTimeIncrease(ValueUtil.getStringByObject(obj[12]));
                 response.setTimeModifiedDocument(ValueUtil.getStringByObject(obj[13]));
                 response.setIdState(ValueUtil.getIntegerByObject(obj[14]));

@@ -143,8 +143,8 @@ public class StateRepositoryImpl implements StateRepositoryCustom {
                 stateDetailsDto.setIdTypeState(ValueUtil.getIntegerByObject(obj[2]));
                 stateDetailsDto.setCodeTypeState(ValueUtil.getStringByObject(obj[3]));
                 stateDetailsDto.setNameTypeState(ValueUtil.getStringByObject(obj[4]));
-                stateDetailsDto.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
-                stateDetailsDto.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                stateDetailsDto.setTimeCreated(ValueUtil.getLongByObject(obj[5]));
+                stateDetailsDto.setTimeModified(ValueUtil.getLongByObject(obj[6]));
                 stateDetailsDto.setIdProcess(ValueUtil.getIntegerByObject(obj[7]));
                 stateDetailsDto.setStep(ValueUtil.getIntegerByObject(obj[8]));
                 return Optional.of(stateDetailsDto);

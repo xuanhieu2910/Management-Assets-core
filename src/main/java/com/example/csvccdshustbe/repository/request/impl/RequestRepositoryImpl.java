@@ -98,8 +98,8 @@ public class RequestRepositoryImpl implements RequestRepositoryCustom {
                 request.setName(ValueUtil.getStringByObject(obj[3]));
                 request.setDescription(ValueUtil.getStringByObject(obj[4]));
                 request.setStatus(ValueUtil.getIntegerByObject(obj[5]));
-                request.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
-                request.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                request.setTimeCreated(ValueUtil.getLongByObject(obj[6]));
+                request.setTimeModified(ValueUtil.getLongByObject(obj[7]));
                 requests.add(request);
             }
         }

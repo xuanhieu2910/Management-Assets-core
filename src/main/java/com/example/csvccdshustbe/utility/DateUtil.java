@@ -17,7 +17,7 @@ public class DateUtil {
     public static final String FROM_DATE_FORMAT = "dd/MM/yyyy 00:00:00";
     public static final String TO_DATE_FORMAT = "dd/MM/yyyy 23:59:59";
     public static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
-    public static final String DATE_FORMAT_HH_MM = "dd/MM/yyyy HH:mm";
+    public static final String DATE_FORMAT_HH_MM = "dd/MM/yyyy HH:mm:ss";
     public static final String DATE_TIME_STAMP = "yyyy-MM-dd HH:mm:ss";
     public static final String HHMMSS_DDMMYYYY = "HH:mm:ss dd/MM/yyyy";
     public static final String DATE_FORMAT_UPLOAD = "ddMMyyyyHHmmssSSS";
@@ -100,20 +100,10 @@ public class DateUtil {
             SimpleDateFormat sdf = new SimpleDateFormat(format);
             return sdf.parse(date);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
-
-    public static String convertStringDateToDate(String date, String format) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat(format);
-            Date dateFormat = sdf.parse(date);
-            return sdf.format(dateFormat);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
 
     public static Date parseDatePattern(Date date, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);

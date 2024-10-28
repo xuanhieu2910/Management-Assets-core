@@ -13,7 +13,7 @@ public class FindAllDocumentAssetDto {
     private String codeDocument;
     private String nameUserCreate;
     private Integer status;
-    private String timeCreated;
+    private Long timeCreated;
     private String description;
     private String codeDepartment;
     private String nameDepartment;

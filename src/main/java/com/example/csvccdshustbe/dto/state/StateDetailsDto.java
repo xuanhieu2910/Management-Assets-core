@@ -16,8 +16,8 @@ public class StateDetailsDto {
     private Integer idTypeState;
     private String codeTypeState;
     private String nameTypeState;
-    private String timeCreated;
-    private String timeModified;
+    private Long timeCreated;
+    private Long timeModified;
     private Integer idProcess;
     private Integer step;
     private List<RequestDetailsDto> requestDetails;

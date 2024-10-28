@@ -111,7 +111,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 findAllDocumentAssetDto.setNameUserCreate(ValueUtil.getStringByObject(obj[3]));
                 findAllDocumentAssetDto.setStatus(ValueUtil.getIntegerByObject(obj[4]));
                 findAllDocumentAssetDto.setDescription(ValueUtil.getStringByObject(obj[5]));
-                findAllDocumentAssetDto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                findAllDocumentAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[6]));
                 findAllDocumentAssetDto.setCodeDepartment(ValueUtil.getStringByObject(obj[7]));
                 findAllDocumentAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
 
@@ -178,8 +178,8 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         dto.setCodeDocument(ValueUtil.getStringByObject(obj[1]));
         dto.setUserName(ValueUtil.getStringByObject(obj[2]));
         dto.setFullName(ValueUtil.getStringByObject(obj[3]));
-        dto.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
-        dto.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+        dto.setTimeCreated(ValueUtil.getLongByObject(obj[4]));
+        dto.setTimeModified(ValueUtil.getLongByObject(obj[5]));
         dto.setTimeIncrease(ValueUtil.getStringByObject(obj[6]));
         dto.setTimeDocument(ValueUtil.getStringByObject(obj[7]));
         dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));

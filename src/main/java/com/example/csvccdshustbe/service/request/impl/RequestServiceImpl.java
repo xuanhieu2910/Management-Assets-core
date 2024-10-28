@@ -58,10 +58,10 @@ public class RequestServiceImpl implements RequestService {
 
     private void updateStatusRequest(Request request, List<RequestStakeHolder> requestStakeHolderList) {
         for (RequestStakeHolder stakeHolder: requestStakeHolderList){
-            if (stakeHolder.equals(Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING)) {
+            if (stakeHolder.getStatus().equals(Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING)) {
                 return;
             }
-            else if (stakeHolder.equals(Constants.STATUS_REQUEST_STAKE_HOLDER_FALSE)){
+            else if (stakeHolder.getStatus().equals(Constants.STATUS_REQUEST_STAKE_HOLDER_FALSE)){
                 request.setStatus(Constants.STATUS_REQUEST_FALSE);
                 request.setTimeModified(String.valueOf(new Date().getTime()));
                 requestRepository.save(request);

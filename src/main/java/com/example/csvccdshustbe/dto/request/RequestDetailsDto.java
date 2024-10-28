@@ -18,8 +18,8 @@ public class RequestDetailsDto {
     private String name;
     private String description;
     private Integer status;
-    private String timeCreated;
-    private String timeModified;
+    private Long timeCreated;
+    private Long timeModified;
     private List<RequestDataDetailsDto> requestData;
     private List<RequestStakeHolderDetails> requestStakeHolder;
 }

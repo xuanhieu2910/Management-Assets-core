@@ -97,8 +97,8 @@ public class DataDocumentServiceImpl implements DataDocumentService {
 
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
-            response.setTimeCreated(DateUtil.convertStringDateToDate(dto.getTimeCreated(), DateUtil.DATE_FORMAT));
-            response.setTimeModified(DateUtil.convertStringDateToDate(dto.getTimeModified(), DateUtil.DATE_FORMAT));
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
             response.setTimeDocument(dto.getTimeDocument());
             responses.add(response);
         }
