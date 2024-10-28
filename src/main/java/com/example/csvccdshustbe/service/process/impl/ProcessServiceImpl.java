@@ -118,8 +118,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedResponse(FindAllProcessBeAssignedRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-
-        return null;
+        return processRepository.findAllProcessBeAssigned(request, pageable);
     }
 
     /***

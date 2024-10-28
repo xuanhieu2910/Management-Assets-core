@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class FindAllProcessBeAssignedRequest  extends RequestPageBase {
 
-    private Integer typeProcess;
+    private String codeTypeProcess;
+    private String codeDocument;
 
 }

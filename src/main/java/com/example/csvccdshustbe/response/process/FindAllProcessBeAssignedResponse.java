@@ -42,4 +42,6 @@ public class FindAllProcessBeAssignedResponse {
     private String codeTypeState;
     @JsonProperty("status_state")
     private Integer statusState;
+    @JsonProperty("id_request_stake_holder")
+    private Integer idRequestStakeHolder;
 }

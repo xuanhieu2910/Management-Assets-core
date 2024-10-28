@@ -37,16 +37,16 @@ public class ProcessAssetController {
     }
 
     @GetMapping("/be-assigned")
-    public ResponseEntity<?> findAllProjectBeAssigned(@And({
+    public ResponseEntity<?> findAllProcessBeAssigned(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllProcessBeAssignedRequest request){
         try {
-//            return ApiResponseDto.createdWithState()
-            return null;
+            return ApiResponseDto.createdWithState(processService.findAllProcessBeAssignedResponse(request),
+                    "Find all process be assigned success!", HttpStatus.OK);
         } catch (Exception e) {
-            return null;
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
 
