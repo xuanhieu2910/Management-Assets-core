@@ -350,6 +350,18 @@ public class Constants {
     public static Integer STATUS_REASON_UN_ACTIVE = -1;
     /*----------------------------------------------------*/
     /**
+     * Constant Status Report
+     * */
+    public static Integer STATUS_REPORT_ACTIVE = 1;
+    public static Integer STATUS_REPORT_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
+    /**
+     * Constant Status Report
+     * */
+    public static Integer STATUS_GOVERNMENT_ACTIVE = 1;
+    public static Integer STATUS_GOVERNMENT_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
+    /**
      * Constant name reports
      * */
     public static String[] NAME_REPORTS = {"1_04a-DKTSC_Bao cao ke khai tru so lam viec co so hoat dong su nghiep cua co quan to chuc don vi.xlsx",
@@ -392,10 +404,5 @@ public class Constants {
     "38_C54 - HD_Bien ban giao nhan TSCD sua chua lon hoan thanh.xlsx",
     "39_C55a-HD_Bang tinh hao mon TSCD.xlsx",
     "40_C55b - HD_Bang tinh va phan bo khau hao TSCD.xlsx"};
-
-    public static void main(String[] args) {
-        String abc = "Báo cáo kê khai sử dụng tài sản công để khai thác theo hình thức khác (ngoài mục đích cho thuê, kinh doanh, liên doanh, liên kết)";
-        System.out.println(abc.length());
-    }
 
 }
