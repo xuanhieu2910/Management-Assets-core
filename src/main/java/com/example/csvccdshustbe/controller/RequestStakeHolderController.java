@@ -29,8 +29,10 @@ public class RequestStakeHolderController {
             requestStakeHolderService.approvedRequestStakeHolder(request);
             return ApiResponseDto.createdWithMessage("Approved request stake holder success!", HttpStatus.OK);
         } catch (NotFoundException e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

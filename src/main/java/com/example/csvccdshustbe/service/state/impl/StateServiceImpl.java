@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.request.RequestDetailsDto;
 import com.example.csvccdshustbe.dto.requestData.RequestDataDetailsDto;
 import com.example.csvccdshustbe.dto.requestStakeHolder.RequestStakeHolderDetails;
 import com.example.csvccdshustbe.dto.state.StateDetailsDto;
+import com.example.csvccdshustbe.dto.state.StateLinkListDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.enums.RolePattern;
@@ -151,18 +152,23 @@ public class StateServiceImpl implements StateService {
 
     private void handleStateNext(State stateCurrent) {
         Transition transition = transitionService.findTransitionByIdProcess(stateCurrent.getIdProcess());
-        Optional<State> stateNext = stateRepository.findStateByIdProcessAndStepNext(stateCurrent.getIdProcess(),
-                stateCurrent.getStep() + 1);
-        handleTransition(stateNext.get(),transition);
-        stateNext.get().setStatus(Constants.STATUS_STATE_PENDING);
-        stateRepository.save(stateNext.get());
-        handleRequest(stateNext.get());
+        Optional<StateLinkListDto> stateNext = stateRepository.findStateByIdProcessAndStep(stateCurrent.getIdProcess(),
+                stateCurrent.getStep());
+        handleTransition(stateNext,transition);
+        if (stateNext.isPresent() && stateNext.get().getStateNext() != null) {
+            stateNext.get().getStateCurrent().setStatus(Constants.STATUS_STATE_PENDING);
+            stateRepository.save(stateNext.get().getStateCurrent());
+            handleRequest(stateNext.get().getStateCurrent());
+        } else {
+            stateNext.get().getStateCurrent().setStatus(Constants.STATUS_STATE_SUCCESS);
+            stateRepository.save(stateNext.get().getStateCurrent());
+        }
     }
 
-    private void handleTransition(State stateNext, Transition transition) {
-        if(stateNext != null) {
+    private void handleTransition(Optional<StateLinkListDto> stateNext, Transition transition) {
+        if(stateNext.isPresent() && stateNext.get().getStateNext() != null) {
             transition.setIdStateCurrent(transition.getIdStateNext());
-            transition.setIdStateNext(stateNext.getIdState());
+            transition.setIdStateNext(stateNext.get().getStateNext().getIdState());
         } else {
             transition.setIdStateCurrent(transition.getIdStateNext());
         }

@@ -34,7 +34,7 @@ public class TransitionRepositoryImpl implements TransitionRepositoryCustom {
                 transition.setIdTransition(ValueUtil.getIntegerByObject(obj[0]));
                 transition.setIdProcess(ValueUtil.getIntegerByObject(obj[1]));
                 transition.setIdStateCurrent(ValueUtil.getIntegerByObject(obj[2]));
-                transition.setIdStateCurrent(ValueUtil.getIntegerByObject(obj[3]));
+                transition.setIdStateNext(ValueUtil.getIntegerByObject(obj[3]));
                 return Optional.of(transition);
             }
         }
