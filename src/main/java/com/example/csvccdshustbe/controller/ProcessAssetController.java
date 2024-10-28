@@ -50,12 +50,13 @@ public class ProcessAssetController {
         }
     }
 
-//    @GetMapping("/statistic-increase")
-//    public ResponseEntity<?> getStatisticIncrease(){
-//        try {
-//
-//        } catch (){
-//
-//        }
-//    }
+    @GetMapping("/statistic-increase")
+    public ResponseEntity<?> getStatisticIncrease(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticIncrease(),
+                    "Get statistic increase success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

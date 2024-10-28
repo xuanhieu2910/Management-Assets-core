@@ -124,7 +124,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public ProcessStatisticsIncreaseResponse getStatisticIncrease() {
-        return null;
+        return processRepository.getStatisticsIncrease();
     }
 
     /***

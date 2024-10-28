@@ -145,13 +145,24 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 "where rsh.status = :statusRequestPending " +
                 "  and tp.code = :codeTypeProcess " +
                 "  and csvcUser.id_user = :idUser) totalStatistic ");
+        CsvcUser csvcUser = (CsvcUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Query query = entityManager.createNativeQuery(sb.toString());
-//        query.setParameter("statusPending");
-//        query.setParameter("statusReject");
-//        query.setParameter("statusRequestPending");
-//        query.setParameter("codeTypeProcess");
-//        query.setParameter("idsDepartmentOriginal");
-        return null;
+        query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
+        query.setParameter("statusReject", Constants.STATUS_FALSE_PROCESS);
+        query.setParameter("statusRequestPending", Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_INCREASE);
+        query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
+        query.setParameter("idUser", csvcUser.getIdUser());
+        List<Object[]> result = query.getResultList();
+        ProcessStatisticsIncreaseResponse response = new ProcessStatisticsIncreaseResponse();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                response.setTotalIncreasePendingApproved(ValueUtil.getIntegerByObject(obj[0]));
+                response.setTotalIncreasePendingBeApproved(ValueUtil.getIntegerByObject(obj[1]));
+                response.setTotalIncreaseRejected(ValueUtil.getIntegerByObject(obj[2]));
+            }
+        }
+        return response;
     }
 
     private long countFinaAllProcessBeAssigned(FindAllProcessBeAssignedRequest request) {
