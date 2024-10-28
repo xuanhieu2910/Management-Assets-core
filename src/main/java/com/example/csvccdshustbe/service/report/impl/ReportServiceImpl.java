@@ -50,7 +50,7 @@ public class ReportServiceImpl implements ReportService {
     public Page<FindAllReportResponse> findAllReport(FindAllReportRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllReportDto> findAllReportDtos = reportRepository.findAllReportDto(request, pageable);
-        return new PageImpl<>(convertToFindAllReport(findAllReportDtos.stream().toList()), pageable, findAllReportDtos.getTotalElements());;
+        return new PageImpl<>(convertToFindAllReport(findAllReportDtos.stream().toList()), pageable, findAllReportDtos.getTotalElements());
     }
 
     private List<FindAllReportResponse> convertToFindAllReport(List<FindAllReportDto> findAllDtos) {
