@@ -13,7 +13,6 @@ import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
 import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.document.DocumentService;
-import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -37,8 +36,6 @@ public class DocumentServiceImpl implements DocumentService {
     @Autowired
     DocumentRepository documentRepository;
     @Autowired
-    CsvcUserService csvcUserService;
-    @Autowired
     DepartmentService departmentService;
 
     @Override
@@ -60,20 +57,27 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public String generateCodeDocument() {
-        Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
+        int minLength = 7;
+        Integer idDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdDepartmentCurrent();
         Department department =
                 departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
         String prefix = null;
+        int codeValueCurrent = 1;
         if (StringUtils.isNotBlank(department.getCode())){
             prefix = department.getCode();
         } else {
             prefix = Constants.PREFIX_DOCUMENT;
         }
         Document document = findDocumentByIdDepartment(idDepartment);
-        int codeValueCurrent = Integer.parseInt(document.getCode().replace(prefix,""));
-        return prefix + (codeValueCurrent + 1);
+        if (document == null) {
+            return prefix + String.format("%07d", codeValueCurrent);
+        }
+        codeValueCurrent = Integer.parseInt(document.getCode().replace(prefix,""));
+        if (String.valueOf(codeValueCurrent).length() > minLength) {
+            minLength = minLength + 2;
+        }
+        return prefix + String.format("%" + minLength + "d",(codeValueCurrent + 1));
     }
-
     @Override
     public Page<FindAllDocumentAssetResponse> findAllDocumentByAsset(FindAllDocumentAssetRequest request){
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
