@@ -11,6 +11,7 @@ import com.example.csvccdshustbe.service.report.ReportService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
+import com.example.csvccdshustbe.utility.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -63,7 +64,7 @@ public class ReportServiceImpl implements ReportService {
         if (report.isEmpty()){
             throw new NotFoundException("Don't exits report by code report!");
         }
-        return report.get().getPath();
+        return PropertiesUtil.getProperty("hust.csvc.static.location.static.files") + report.get().getPath();
     }
 
     @Override
