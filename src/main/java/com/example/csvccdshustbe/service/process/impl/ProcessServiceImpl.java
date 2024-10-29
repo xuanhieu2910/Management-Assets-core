@@ -99,6 +99,7 @@ public class ProcessServiceImpl implements ProcessService {
         String dateNow = String.valueOf(new Date().getTime());
         document.setCode(request.getCodeDocument());
         document.setIdProcess(process.getIdProcess());
+        document.setDescription(request.getDescription());
         document.setTimeCreated(dateNow);
         document.setTimeModified(dateNow);
         document.setTimeIncrease(request.getTimeIncrease());
