@@ -62,6 +62,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -345,8 +346,7 @@ public class FileUploadService implements FilesStorageService {
         String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
         String folder = root + SEPARATOR + FOLDER_SAMPLE_EXCEL_IMPORT + SEPARATOR + FileUtil.getFolderInfo();
         FileUtil.createFolder(folder);
-        String random = RandomStringUtils.randomAlphanumeric(16);
-        String fileFinal = folder + SEPARATOR + random + "Sample_Excel_Import_Asset.xlsx";
+        String fileFinal = folder + SEPARATOR + "Sample_Excel_Import_Asset_" + new Date().getTime() + ".xlsx";
         log.info("File final:" + fileFinal);
         File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
         String fileReturn = fileFinal.replace(root, PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
