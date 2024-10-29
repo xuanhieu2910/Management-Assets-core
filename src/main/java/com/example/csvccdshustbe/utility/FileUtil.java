@@ -29,6 +29,9 @@ public class FileUtil {
     public static final String SEPARATOR = "/";
     public static String pathReturn = "";
     private static final StringBuilder builder = new StringBuilder();
+    private static final String CREATE_FILE_WIN = "copy con";
+    private static final String CREATE_FILE_UNIX = "touch";
+    private static final String CREATE_FOLDER = "mkdir";
     /**
      * Constant File
      * */
@@ -292,13 +295,18 @@ public class FileUtil {
         }
     }
 
-    public static File createFileSampleAsset(String nameFile){
+    public static File createFileSampleAsset(String nameFile) throws IOException {
         String root = PropertiesUtil.getProperty("hust.csvc.static.location.static.files");
         String random = RandomStringUtils.randomAlphanumeric(16);
         String fileFinal = root + File.separator + getFolderInfo() + File.separator + random + nameFile;
         File file = new File(fileFinal);
-        if (!file.exists() && !file.mkdirs()) {
-            log.error("Can't create folder");
+        if(!file.exists()) {
+            System.out.println("creating file");
+            if(file.createNewFile()) {
+                System.out.println("Succesfully created file");
+            } else{
+                System.out.println("Failed to create file");
+            }
         }
         return file;
     }
@@ -360,5 +368,57 @@ public class FileUtil {
         return fileFinal;
     }
 
+
+
+    public static void executeCreateFolderCommand(String command) {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        String osName = System.getProperty("os.name").toLowerCase();
+        String[] cmdArray = null;
+        if (osName.contains("win")) {
+            command = CREATE_FOLDER + " " + command;
+            cmdArray = new String[]{"cmd.exe", "/c", command};
+        } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
+            command = CREATE_FOLDER + " " + command;
+            cmdArray = new String[]{"/bin/bash", "-c", command};
+        }
+        processBuilder.command(cmdArray);
+        try {
+            Process process = processBuilder.start();
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(process.getInputStream()));
+            int exitCode = process.waitFor();
+            log.info("\nExited with code : " + exitCode);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String executeCreateFileCommand(String file) throws IOException {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        String osName = System.getProperty("os.name").toLowerCase();
+        String[] cmdArray = null;
+        if (osName.contains("win")) {
+            file = CREATE_FILE_WIN + " " + file;
+            cmdArray = new String[]{"cmd.exe", "/c", file};
+        } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
+            file = CREATE_FILE_UNIX + " " + file;
+            cmdArray = new String[]{"/bin/bash", "-c", file};
+        }
+        processBuilder.command(cmdArray);
+        try {
+            Process process = processBuilder.start();
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(process.getInputStream()));
+//            int exitCode = process.waitFor();
+//            log.info("\nExited with code : " + exitCode);
+//            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IOException(e);
+        }
+        return file;
+    }
 
 }

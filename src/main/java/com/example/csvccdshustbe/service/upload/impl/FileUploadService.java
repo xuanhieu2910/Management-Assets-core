@@ -342,17 +342,19 @@ public class FileUploadService implements FilesStorageService {
         createDataMedicineGroup(workbook, dataMedicineGroup);
         createDataGoalsUseGround(workbook, dataGoalsUseGround);
         createDataOriginalOfFormation(workbook, dataOriginalOfFormation);
-
+        String root = PropertiesUtil.getProperty("hust.csvc.static.location.static.files");
+        String folder = FileUtil.getFolderInfo();
+        FileUtil.executeCreateFolderCommand(root + SEPARATOR + folder);
         File filePathOutput = FileUtil.createFileSampleAsset("Sample_Excel_Import_Asset.xlsx");
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
+            workbook.close();
+            Path pathFile = filePathOutput.toPath();
+            return new UrlResource(pathFile.toUri());
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        workbook.close();
-        Path pathFile = filePathOutput.toPath();
-        return new UrlResource(pathFile.toUri());
     }
 
     @Override
