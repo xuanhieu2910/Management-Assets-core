@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DocumentRepositoryCustom {
+
     Optional<Document> findDocumentByCodeAndIdDepartment(String code, Integer idDepartment);
     Optional<Document> findDocumentByIdDepartment(Integer idDepartment);
 
