@@ -63,7 +63,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 "        doc.time_modified, doc.time_increase, doc.time_document,  " +
                 "        doc.id_department    " +
                 " from document doc     " +
-                " where doc.id_department = :idDepartment  ");
+                " where doc.id_department = :idDepartment ORDER BY doc.code DESC ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idDepartment", idDepartment);
         List<Object[]> result = query.getResultList();
