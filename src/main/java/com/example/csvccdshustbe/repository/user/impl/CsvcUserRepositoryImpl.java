@@ -407,7 +407,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
     }
 
     private void setParameterFindAllUser(FindAllUserRequest request, Query query) {
-        query.setParameter("titleRole", RolePattern.SuperAdmin.getClass());
+        query.setParameter("titleRole", RolePattern.SuperAdmin.name());
         query.setParameter("idsDepartment", request.getIdsDepartment());
         Integer idUserCurrent = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdUser();
         query.setParameter("idUserCurrent", idUserCurrent);
