@@ -65,12 +65,7 @@ public class ReportsController {
     public ResponseEntity<?> downloadReportByCode(@RequestParam("code") String code){
         try {
             String pathFile = reportService.exportToPathFileReportByCodeReport(code);
-            Resource resource = filesStorageService.downLoadReportByPathFile(pathFile);
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                    .contentLength(resource.contentLength())
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                    .body(resource);
+            return ApiResponseDto.createdWithState(pathFile, "Download file code success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){

@@ -296,38 +296,13 @@ public class FileUtil {
     }
 
     public static File createFileSampleAsset(String nameFile) throws IOException {
-        String root = PropertiesUtil.getProperty("hust.csvc.static.location.static.files");
-        String random = RandomStringUtils.randomAlphanumeric(16);
-        String fileFinal = root + File.separator + getFolderInfo() + File.separator + random + nameFile;
-        File file = new File(fileFinal);
+        // Define the file path
+        File file = new File(nameFile);
         if(!file.exists()) {
             System.out.println("creating file");
-            if(file.createNewFile()) {
-                System.out.println("Succesfully created file");
-            } else{
-                System.out.println("Failed to create file");
-            }
+            executeCreateFileCommand(nameFile);
         }
         return file;
-    }
-
-
-    public static String createFileSampleAsset(String fileExcelName, String nameClass){
-        String root = PropertiesUtil.getProperty("hust.csvc.static.location.static.files") + File.separator + FOLDER_NAME_SAMPLE_ASSET;
-        String random = RandomStringUtils.randomAlphanumeric(16);
-        String filePathTemplate = root + File.separator + fileExcelName;
-        File oldFile = new File(filePathTemplate);
-        String rootUpload = PropertiesUtil.getProperty("vn.cpa.static.location.upload");
-        String fileFinal = rootUpload + File.separator + FOLDER_NAME_REPORT + File.separator + getFolderInfo() + File.separator + random + nameClass + fileExcelName;
-        pathReturn = FOLDER_NAME_REPORT + File.separator + getFolderInfo() + File.separator + random + nameClass + fileExcelName;
-        File newFile = new File(fileFinal);
-        try {
-            FileUtils.copyFile(oldFile, newFile);
-        } catch (IOException e) {
-            log.error("Can't not copy file!");
-            e.printStackTrace();
-        }
-        return fileFinal;
     }
 
     public static String createFileReportClassTime(String fileExcelName){
@@ -368,12 +343,21 @@ public class FileUtil {
         return fileFinal;
     }
 
+    public static void createFolder(String folder){
+        File directory = new File(folder);
+        if (!directory.exists()) {
+            directory.mkdirs();// Create directories if they don't exist
+            log.info("Create folder " + folder + " success!");
+        }
+    }
+
 
 
     public static void executeCreateFolderCommand(String command) {
         ProcessBuilder processBuilder = new ProcessBuilder();
         String osName = System.getProperty("os.name").toLowerCase();
         String[] cmdArray = null;
+        log.info(command);
         if (osName.contains("win")) {
             command = CREATE_FOLDER + " " + command;
             cmdArray = new String[]{"cmd.exe", "/c", command};
@@ -381,7 +365,7 @@ public class FileUtil {
             command = CREATE_FOLDER + " " + command;
             cmdArray = new String[]{"/bin/bash", "-c", command};
         }
-        processBuilder.command(cmdArray);
+        processBuilder.command(Arrays.toString(cmdArray));
         try {
             Process process = processBuilder.start();
             BufferedReader reader =
@@ -403,22 +387,26 @@ public class FileUtil {
             file = CREATE_FILE_WIN + " " + file;
             cmdArray = new String[]{"cmd.exe", "/c", file};
         } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
-            file = CREATE_FILE_UNIX + " " + file;
+            file = CREATE_FILE_UNIX + " " + file + " && chmod 751 " + file;
             cmdArray = new String[]{"/bin/bash", "-c", file};
         }
+        log.info("Cmd: " + Arrays.toString(cmdArray));
         processBuilder.command(cmdArray);
         try {
             Process process = processBuilder.start();
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(process.getInputStream()));
-//            int exitCode = process.waitFor();
-//            log.info("\nExited with code : " + exitCode);
-//            return file;
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                System.out.println("File created successfully: " + file);
+            } else {
+                System.out.println("Failed to create file. Exit code: " + exitCode);
+            }
+            return file;
         } catch (IOException e) {
             e.printStackTrace();
             throw new IOException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        return file;
     }
 
 }

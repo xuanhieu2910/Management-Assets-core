@@ -149,12 +149,8 @@ public class AssetController {
     @GetMapping("/download-file-template-import-asset")
     public ResponseEntity<?> downloadFileTemplateImportAsset(){
         try {
-            Resource resource = assetService.downloadFileTemplateImportAsset();
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                    .contentLength(resource.contentLength())
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                    .body(resource);
+            return ApiResponseDto.createdWithState(assetService.downloadFileTemplateImportAsset(),
+                    "Download file template import asset success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

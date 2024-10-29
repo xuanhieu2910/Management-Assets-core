@@ -292,7 +292,7 @@ public class FileUploadService implements FilesStorageService {
     }
 
     @Override
-    public Resource downLoadFileImportAsset() throws IOException {
+    public String downLoadFileImportAsset() throws IOException {
         String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static") + SEPARATOR
                 + "Sample_Excel_Import_Asset.xlsx";
 
@@ -342,15 +342,19 @@ public class FileUploadService implements FilesStorageService {
         createDataMedicineGroup(workbook, dataMedicineGroup);
         createDataGoalsUseGround(workbook, dataGoalsUseGround);
         createDataOriginalOfFormation(workbook, dataOriginalOfFormation);
-        String root = PropertiesUtil.getProperty("hust.csvc.static.location.static.files");
-        String folder = FOLDER_SAMPLE_EXCEL_IMPORT + SEPARATOR +FileUtil.getFolderInfo();
-        FileUtil.executeCreateFolderCommand(root + SEPARATOR + folder);
-        File filePathOutput = FileUtil.createFileSampleAsset("Sample_Excel_Import_Asset.xlsx");
+        String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
+        String folder = root + SEPARATOR + FOLDER_SAMPLE_EXCEL_IMPORT + SEPARATOR + FileUtil.getFolderInfo();
+        FileUtil.createFolder(folder);
+        String random = RandomStringUtils.randomAlphanumeric(16);
+        String fileFinal = folder + SEPARATOR + random + "Sample_Excel_Import_Asset.xlsx";
+        log.info("File final:" + fileFinal);
+        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
+        String fileReturn = fileFinal.replace(root, PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
+        log.info("File return: " + fileReturn);
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
             workbook.close();
-            Path pathFile = filePathOutput.toPath();
-            return new UrlResource(pathFile.toUri());
+            return fileReturn;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -358,15 +362,9 @@ public class FileUploadService implements FilesStorageService {
     }
 
     @Override
-    public Resource downLoadReportByPathFile(String pathFileReport) throws IOException {
+    public String downLoadReportByPathFile(String pathFileReport) throws IOException {
         String file = PropertiesUtil.getProperty("hust.csvc.static.location.static.files") + pathFileReport;
-        Path pathFile = new File(file).toPath();
-        Resource resource = new UrlResource(pathFile.toUri());
-        if(resource.exists()) {
-            return resource;
-        } else {
-            throw new FileExistsException("File not found " + pathFileReport);
-        }
+        return file;
     }
 
     private void createDataOriginalOfFormation(Workbook workbook, List<FindAllOriginalOfFormationDto> dataOriginalOfFormation) {

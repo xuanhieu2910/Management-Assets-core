@@ -935,12 +935,12 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Resource downloadFileTemplateImportAsset() throws IOException {
+    public String downloadFileTemplateImportAsset() throws IOException {
         return filesStorageService.downLoadFileImportAsset();
     }
 
     @Override
-    public Resource exportFileReportByPath(String pathFile) throws IOException {
+    public String exportFileReportByPath(String pathFile) throws IOException {
         return filesStorageService.downLoadReportByPathFile(pathFile);
     }
 
