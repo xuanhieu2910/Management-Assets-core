@@ -71,7 +71,7 @@ import java.util.Map;
 public class FileUploadService implements FilesStorageService {
 
 
-    public static final String FOLDER_AVATAR = "avatar";
+    public static final String FOLDER_SAMPLE_EXCEL_IMPORT = "sample_import_asset";
     public static final String FOLDER_PAYMENT = "payment";
     private static final String SEPARATOR = File.separator;
 
@@ -293,7 +293,7 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public Resource downLoadFileImportAsset() throws IOException {
-        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.static.files") + SEPARATOR
+        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static") + SEPARATOR
                 + "Sample_Excel_Import_Asset.xlsx";
 
         FileInputStream file = new FileInputStream(new File(fileExcel));
@@ -343,7 +343,7 @@ public class FileUploadService implements FilesStorageService {
         createDataGoalsUseGround(workbook, dataGoalsUseGround);
         createDataOriginalOfFormation(workbook, dataOriginalOfFormation);
         String root = PropertiesUtil.getProperty("hust.csvc.static.location.static.files");
-        String folder = FileUtil.getFolderInfo();
+        String folder = FOLDER_SAMPLE_EXCEL_IMPORT + SEPARATOR +FileUtil.getFolderInfo();
         FileUtil.executeCreateFolderCommand(root + SEPARATOR + folder);
         File filePathOutput = FileUtil.createFileSampleAsset("Sample_Excel_Import_Asset.xlsx");
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
