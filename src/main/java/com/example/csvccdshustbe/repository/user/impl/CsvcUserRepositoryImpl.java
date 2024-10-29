@@ -445,10 +445,13 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
 
     private long countFindAllUserUsedDto(FindAllUserUsedRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select count(0) " +
-                "from csvc_user csvcUser " +
+        sb.append(" select count(0)  " +
+                "    from csvc_user csvcUser " +
+                "    inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
+                "    inner join department de on userRole.id_department = de.id_department " +
                 "where 1 = 1 " +
-                "and csvcUser.is_actived = :isActive ");
+                "  and csvcUser.is_actived = :isActive " +
+                "  and de.id_department in (:idsDepartment) ");
         setConditionFindAllUserUsedDto(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllUserUsedDto(request, query);
