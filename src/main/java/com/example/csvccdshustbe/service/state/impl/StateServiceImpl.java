@@ -236,6 +236,7 @@ public class StateServiceImpl implements StateService {
                 state.setStatus(Constants.STATUS_STATE_FALSE);
                 state.setTimeModified(String.valueOf(new Date().getTime()));
                 stateRepository.save(state);
+                updateStatusProcessByState(state);
                 return;
             }
         }
@@ -243,5 +244,11 @@ public class StateServiceImpl implements StateService {
         state.setTimeModified(String.valueOf(new Date().getTime()));
         stateRepository.save(state);
         handleStateNext(state);
+    }
+
+    private void updateStatusProcessByState(State state) {
+        Process process = processService.findProcessByIdProcess(state.getIdProcess());
+        process.setStatus(Constants.STATUS_FALSE_PROCESS);
+        processService.saveProcess(process);
     }
 }
