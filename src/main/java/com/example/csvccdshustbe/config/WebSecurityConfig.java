@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.RoleException;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.*;
 
 
+@Log4j2
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -86,6 +88,7 @@ public class WebSecurityConfig{
 
 
     private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
+        log.info("Oidc user service start....!");
         final OidcUserService delegate = new OidcUserService();
         return (userRequest) -> {
             OidcUser oidcUser = delegate.loadUser(userRequest);
@@ -96,6 +99,7 @@ public class WebSecurityConfig{
             if (userDetails.isEmpty()){
                 try {
                     userDetails = Optional.of(csvcUserService.createNewUser(userName,fullName));
+                    log.info("Create user success by method sso azure!");
                 } catch (RoleException e) {
                     throw new RuntimeException(e);
                 }
@@ -117,6 +121,7 @@ public class WebSecurityConfig{
             } else {
                 oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUserInfo);
             }
+            log.info("Oidc user service end!");
             return oidcUser;
         };
     }

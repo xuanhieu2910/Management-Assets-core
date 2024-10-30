@@ -29,7 +29,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         OidcUser oidcUser = (OidcUser) ((OAuth2AuthenticationToken) authentication).getPrincipal();
         CsvcUser csvcUser = oidcUser.getUserInfo().getClaim(Constants.CLAIMS_INFORMATION_USER);
-        log.debug("User name " + csvcUser.getUsername() + " login success!");
+        log.info("User name " + csvcUser.getUsername() + " login success!");
         this.setAlwaysUseDefaultTargetUrl(true);
         this.setDefaultTargetUrl(frontendUrlSuccess);
         super.onAuthenticationSuccess(request, response, authentication);

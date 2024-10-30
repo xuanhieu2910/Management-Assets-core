@@ -73,7 +73,7 @@ public class DocumentServiceImpl implements DocumentService {
         if (document == null) {
             return prefix + String.format("%0" + minLength + "d", codeValueCurrent) + "-";
         }
-        codeValueCurrent = Integer.parseInt(document.getCode().replace(prefix,""));
+        codeValueCurrent = Integer.parseInt(document.getCode().replace(prefix,"").split("-")[0]);
         if (String.valueOf(codeValueCurrent).length() > minLength) {
             minLength = minLength + 2;
         }
