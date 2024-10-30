@@ -972,6 +972,56 @@ public class AssetServiceImpl implements AssetService {
                 pageable, findAllAssetDtos.getTotalElements());
     }
 
+    @Override
+    public String generateCodeAsset(String prefix) {
+        if (prefix.equals(Constants.PREFIX_ASSET_LOT)){
+            return prefixAssetLot(prefix);
+        } else if (prefix.equals(Constants.PREFIX_ASSET)) {
+            return prefixAsset(prefix);
+        }
+        return prefix;
+    }
+
+    private String prefixAsset(String prefix) {
+        int minLength = 4;
+        Integer idDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdDepartmentCurrent();
+        Department department =
+                departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
+        int codeValueCurrent = 1;
+        if (StringUtils.isNotBlank(department.getCode())){
+            prefix = department.getCode();
+        }
+        Optional<Asset> asset = assetRepository.findAssetByIdDepartmentOrigin(idDepartment);
+        if (asset.isEmpty()) {
+            return prefix + String.format("%0"+ minLength +"d", codeValueCurrent) + "-";
+        }
+        codeValueCurrent = Integer.parseInt(asset.get().getCodeAsset().replace(prefix,""));
+        if (String.valueOf(codeValueCurrent).length() > minLength) {
+            minLength = minLength + 2;
+        }
+        return prefix + String.format("%0" + minLength + "d",(codeValueCurrent + 1)) + "-";
+    }
+
+    private String prefixAssetLot(String prefix) {
+        int minLength = 4;
+        Integer idDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdDepartmentCurrent();
+        Department department =
+                departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
+        int codeValueCurrent = 1;
+        if (StringUtils.isNotBlank(department.getCode())){
+            prefix = department.getCode() + Constants.PREFIX_ASSET_LOT;
+        }
+        Optional<Asset> asset = assetRepository.findAssetLotByIdDepartmentOrigin(idDepartment);
+        if (asset.isEmpty()) {
+            return prefix + String.format("%0" + minLength +"d", codeValueCurrent) + "-";
+        }
+        codeValueCurrent = Integer.parseInt(asset.get().getCodeAsset().replace(prefix,""));
+        if (String.valueOf(codeValueCurrent).length() > minLength) {
+            minLength = minLength + 2;
+        }
+        return prefix + String.format("%0" + minLength + "d",(codeValueCurrent + 1)) + "-";
+    }
+
     private List<FindAllAssetDocumentResponse> convertToFindAllAssetDocument(List<FindAllAssetDto> content) {
         List<FindAllAssetDocumentResponse> responses = new ArrayList<>();
         for (FindAllAssetDto dto : content) {

@@ -7,8 +7,10 @@ import com.example.csvccdshustbe.request.asset.FindAllAssetDocumentRequest;
 import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
 import com.example.csvccdshustbe.service.asset.AssetService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.log4j.Log4j2;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -24,6 +26,7 @@ import org.webjars.NotFoundException;
 
 import java.util.HashMap;
 
+@Log4j2
 @Tag(name = "Asset Controller", description = "The Asset APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/asset")
@@ -47,6 +50,21 @@ public class AssetController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @PostMapping("/create-lot")
+    public ResponseEntity<?> createAssetLot(@RequestBody HashMap<String, Object> createAssetRequest){
+        try{
+            assetService.createAsset(createAssetRequest);
+            return ApiResponseDto.createdWithMessage("Create asset success!", HttpStatus.OK);
+        } catch (ValidateFiledException | JsonProcessingException e ){
+            e.printStackTrace();
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            e.printStackTrace();
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 
     @PutMapping("/update")
     public ResponseEntity<?> updateAsset(@RequestBody HashMap<String,Object> updateAssetRequest){
@@ -190,6 +208,30 @@ public class AssetController {
             return ApiResponseDto.createdWithState(assetService.findAllAssetDocumentByCodeDocument(request),
                     "Find all data asset document success!", HttpStatus.OK);
         } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/generate-code")
+    public ResponseEntity<?> generateCodeAsset(){
+        try {
+            return ApiResponseDto.createdWithState(assetService.generateCodeAsset(Constants.PREFIX_ASSET),
+                    "Generate asset code success!", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/generate-code-lot")
+    public ResponseEntity<?> generateCodeAssetLot(){
+        try {
+            return ApiResponseDto.createdWithState(assetService.generateCodeAsset(Constants.PREFIX_ASSET_LOT),
+                    "Generate asset code success!", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

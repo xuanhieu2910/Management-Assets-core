@@ -59,4 +59,6 @@ public class Asset {
     private Integer idInstance;
     @Column(name = "id_department_origin")
     private Integer idDepartmentOrigin;
+    @Column(name = "parent")
+    private Integer parent;
 }

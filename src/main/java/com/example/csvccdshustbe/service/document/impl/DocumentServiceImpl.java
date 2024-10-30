@@ -58,26 +58,26 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public String generateCodeDocument() {
-        int minLength = 7;
+        int minLength = 4;
         Integer idDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdDepartmentCurrent();
         Department department =
                 departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
         String prefix = null;
         int codeValueCurrent = 1;
         if (StringUtils.isNotBlank(department.getCode())){
-            prefix = department.getCode();
+            prefix = Constants.PREFIX_DOCUMENT + department.getCode();
         } else {
             prefix = Constants.PREFIX_DOCUMENT;
         }
         Document document = findDocumentByIdDepartment(idDepartment);
         if (document == null) {
-            return prefix + String.format("%07d", codeValueCurrent);
+            return prefix + String.format("%0" + minLength + "d", codeValueCurrent) + "-";
         }
         codeValueCurrent = Integer.parseInt(document.getCode().replace(prefix,""));
         if (String.valueOf(codeValueCurrent).length() > minLength) {
             minLength = minLength + 2;
         }
-        return prefix + String.format("%0" + minLength + "d",(codeValueCurrent + 1));
+        return prefix + String.format("%0" + minLength + "d",(codeValueCurrent + 1)) + "-";
     }
     @Override
     public Page<FindAllDocumentAssetResponse> findAllDocumentByAsset(FindAllDocumentAssetRequest request){

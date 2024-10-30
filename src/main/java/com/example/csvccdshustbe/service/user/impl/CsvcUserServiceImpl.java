@@ -110,11 +110,13 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     }
 
     @Override
-    public void createNewUser(String userName) throws RoleException {
+    public CsvcUser createNewUser(String userName) throws RoleException {
         Role role = userRoleService.findRoleByUserName(RolePattern.User.name());
         CsvcUser csvcUser = createCsvcUserByRegisterAccount(userName);
         saveCsvcUser(csvcUser);
+        csvcUser.setRole(Collections.singleton(role));
         userRoleService.saveUserRole(createUserRoleByRegisterAccount(csvcUser.getIdUser(),role.getIdRole()));
+        return csvcUser;
     }
 
     @Override

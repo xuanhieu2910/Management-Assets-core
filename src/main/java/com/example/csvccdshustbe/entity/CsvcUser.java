@@ -58,14 +58,16 @@ public class CsvcUser implements OAuth2User,UserDetails {
     private Integer sex;
     @Column(name = "is_actived")
     private Integer isActived;
+    @Column(name = "id_department_current")
+    private Integer idDepartmentCurrent;
+    @Column(name = "ids_department_current")
+    private List<Integer> idsDepartmentCurrent;
 
     @ManyToMany
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name="role_id"))
     private Collection<Role> role;
-    private List<Integer> idsDepartmentCurrent;
-    private Integer idDepartmentCurrent;
 
     @Override
     public Map<String, Object> getAttributes() {

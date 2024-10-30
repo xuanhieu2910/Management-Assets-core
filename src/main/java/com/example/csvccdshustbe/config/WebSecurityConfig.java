@@ -94,7 +94,7 @@ public class WebSecurityConfig{
             Optional<CsvcUser> userDetails = csvcUserService.findByUserName(userName);
             if (userDetails.isEmpty()){
                 try {
-                    csvcUserService.createNewUser(userName);
+                    userDetails = Optional.of(csvcUserService.createNewUser(userName));
                 } catch (RoleException e) {
                     throw new RuntimeException(e);
                 }

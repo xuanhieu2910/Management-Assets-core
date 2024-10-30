@@ -29,7 +29,9 @@ public class DocumentController {
         try {
             return ApiResponseDto.createdWithState(documentService.generateCodeDocument(),
                     "Generate code document success!", HttpStatus.OK);
-        }catch (Exception e){
+        } catch (NotFoundException e){
+          return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

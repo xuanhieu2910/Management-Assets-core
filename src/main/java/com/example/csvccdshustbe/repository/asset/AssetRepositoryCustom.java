@@ -32,4 +32,7 @@ public interface AssetRepositoryCustom {
     Page<FindAllAssetDto> findAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable);
 
     Page<FindAllAssetDto> findAllAssetDocumentByCodeDocument(FindAllAssetDocumentRequest request, Pageable pageable);
+
+    Optional<Asset> findAssetByIdDepartmentOrigin(Integer idDepartmentOrigin);
+    Optional<Asset> findAssetLotByIdDepartmentOrigin(Integer idDepartmentOrigin);
 }

@@ -341,7 +341,13 @@ public class Constants {
     /**
      * Constant PREFIX_DOCUMENT
      * */
-    public static String PREFIX_DOCUMENT = "TS";
+    public static String PREFIX_DOCUMENT = "MC";
+    /*----------------------------------------------------*/
+    /**
+     * Constant PREFIX_ASSET
+     * */
+    public static String PREFIX_ASSET = "TS";
+    public static String PREFIX_ASSET_LOT = "LO";
     /*----------------------------------------------------*/
     /**
      * Constant Status Request data
