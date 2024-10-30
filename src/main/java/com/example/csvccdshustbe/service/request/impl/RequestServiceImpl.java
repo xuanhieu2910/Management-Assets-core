@@ -67,6 +67,7 @@ public class RequestServiceImpl implements RequestService {
                 request.setStatus(Constants.STATUS_REQUEST_FALSE);
                 request.setTimeModified(String.valueOf(new Date().getTime()));
                 requestRepository.save(request);
+                stateService.updateStatusStateByIdState(request.getIdState());
                 return;
             }
         }
