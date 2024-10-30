@@ -720,7 +720,7 @@ public class FileUploadService implements FilesStorageService {
         productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_3);
-        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_USER_USED), true);
+//        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_USER_USED), true);
     }
 
     private void filledDataUserUsed(Sheet sheet, List<FindAllUserUsedDto> dtos, int index, String keyword) {
@@ -742,7 +742,7 @@ public class FileUploadService implements FilesStorageService {
                     replaceAll("\\d","");
             Name electronicsRange = sheet.getWorkbook().createName();
             electronicsRange.setNameName(PREFIX[8] + keyword);
-            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_ORIGINAL
+            electronicsRange.setRefersToFormula(NAME_SHEET_DATA_USER_USED
                     + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
                     + ":$" + prefix + "$" + dtos.size());
         }
@@ -1153,7 +1153,7 @@ public class FileUploadService implements FilesStorageService {
         productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation);
-//        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_DOCUMENT_ATTACK), true);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_DOCUMENT_ATTACK), true);
     }
 
     private void filledDataDocumentAttackDefault(Sheet sheetDocumentAttack, List<FindAllDocumentAttackDto> dtos,
