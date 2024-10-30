@@ -744,7 +744,7 @@ public class FileUploadService implements FilesStorageService {
             electronicsRange.setNameName(PREFIX[8] + keyword);
             electronicsRange.setRefersToFormula(NAME_SHEET_DATA_USER_USED
                     + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
-                    + ":$" + prefix + "$" + dtos.size());
+                    + ":$" + prefix + "$" + indexStartFilledData);
         }
     }
 
@@ -879,7 +879,7 @@ public class FileUploadService implements FilesStorageService {
             electronicsRange.setNameName(PREFIX[2] + keyword);
             electronicsRange.setRefersToFormula(NAME_SHEET_DATA_ORIGINAL
                     + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
-                    + ":$" + prefix + "$" + dtos.size());
+                    + ":$" + prefix + "$" + indexStart);
         }
     }
 
@@ -945,7 +945,7 @@ public class FileUploadService implements FilesStorageService {
             electronicsRange.setNameName(PREFIX[6] + keyword);
             electronicsRange.setRefersToFormula(NAME_SHEET_DATA_WARDS
                     + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
-                    + ":$" + prefix + "$" + dtos.size());
+                    + ":$" + prefix + "$" + indexStart);
         }
     }
 
@@ -1044,7 +1044,7 @@ public class FileUploadService implements FilesStorageService {
             electronicsRange.setNameName(PREFIX[5] + keyword);
             electronicsRange.setRefersToFormula(NAME_SHEET_DATA_DISTRICTS
                     + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
-                    + ":$" + prefix + "$" + dtos.size());
+                    + ":$" + prefix + "$" + indexStart);
         }
     }
 
@@ -1177,7 +1177,7 @@ public class FileUploadService implements FilesStorageService {
             electronicsRange.setNameName(PREFIX[4] + keyword);
             electronicsRange.setRefersToFormula(NAME_SHEET_DATA_DOCUMENT_ATTACK
                     + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
-                    + ":$" + prefix + "$" + (dtos.size() + INDEX_START_FILLED_DATA));
+                    + ":$" + prefix + "$" + indexStart);
         }
     }
 
@@ -1203,7 +1203,7 @@ public class FileUploadService implements FilesStorageService {
             electronicsRange.setNameName(PREFIX[4] + keyword);
             electronicsRange.setRefersToFormula(NAME_SHEET_DATA_DOCUMENT_ATTACK
                     + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
-                    + ":$" + prefix + "$" + (dtos.size() + INDEX_START_FILLED_DATA));
+                    + ":$" + prefix + "$" + indexStart);
         }
     }
 
@@ -1257,7 +1257,7 @@ public class FileUploadService implements FilesStorageService {
             }
             electronicsRange.setRefersToFormula(NAME_SHEET_DATA_UNITS
                     + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
-                    + ":$" + prefix + "$" + dtos.size());
+                    + ":$" + prefix + "$" + indexStart);
         }
     }
 
@@ -1342,7 +1342,7 @@ public class FileUploadService implements FilesStorageService {
                 electronicsRange.setNameName(PREFIX[3] + keyword);
                 electronicsRange.setRefersToFormula(NAME_SHEET_DATA_LOCATION
                         + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
-                        + ":$" + prefix + "$" + (INDEX_START_FILLED_DATA + dtos.size()));
+                        + ":$" + prefix + "$" + indexStartFilled);
             }
         } else {
             if (sheetDepartment.getRow(indexStartFilled) == null) {
@@ -1358,7 +1358,7 @@ public class FileUploadService implements FilesStorageService {
                 electronicsRange.setNameName(PREFIX[3] + keyword);
                 electronicsRange.setRefersToFormula(NAME_SHEET_DATA_LOCATION
                         + "!$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1)
-                        + ":$" + prefix + "$" + (INDEX_START_FILLED_DATA + 1 + dtos.size()));
+                        + ":$" + prefix + "$" + indexStartFilled);
             }
         }
     }
