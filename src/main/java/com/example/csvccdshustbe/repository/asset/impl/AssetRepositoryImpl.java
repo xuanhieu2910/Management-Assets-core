@@ -119,21 +119,21 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        assetCategory.value_wear_tear, assetCategory.year_used_wear_tear, assetCategory.minimum_time_depreciation, " +
                 "        assetCategory.maximum_time_depreciation " +
                 "from asset asset       " +
-                "     inner join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category             " +
-                "     inner join department de on asset.id_department = de.id_department             " +
-                "     inner join document_attack documentAttack on asset.id_document_attack = documentAttack.id_document_attack             " +
+                "     left join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category             " +
+                "     left join department de on asset.id_department = de.id_department             " +
+                "     left join document_attack documentAttack on asset.id_document_attack = documentAttack.id_document_attack             " +
                 "     left join location location on asset.id_location = location.id_location             " +
-                "     inner join units unit on asset.id_unit = unit.id_unit             " +
-                "     inner join projects project on asset.id_projects = project.id_project             " +
+                "     left join units unit on asset.id_unit = unit.id_unit             " +
+                "     left join projects project on asset.id_projects = project.id_project             " +
                 "     left join department departmentDefault on asset.id_department_default = departmentDefault.id_department             " +
                 "     left join level_type_asset levelTypeAsset on asset.id_level_type_asset = levelTypeAsset.id_level_type_asset             " +
-                "     inner join asset_modules assetModules on asset.id_asset = assetModules.id_asset             " +
-                "     inner join modules modules on assetModules.id_module = modules.id_module             " +
-                "     inner join asset_original assetOriginal on asset.id_asset = assetOriginal.id_asset             " +
-                "     inner join original original on assetOriginal.id_original = original.id_original             " +
-                "     inner join asset_declare assetDeclare on asset.id_asset = assetDeclare.id_asset             " +
-                "     inner join `declare` decl on assetDeclare.id_declare = decl.id_declare    " +
-                "     inner join asset_depreciation assetDepreciation on asset.id_asset = assetDepreciation.id_asset   " +
+                "     left join asset_modules assetModules on asset.id_asset = assetModules.id_asset             " +
+                "     left join modules modules on assetModules.id_module = modules.id_module             " +
+                "     left join asset_original assetOriginal on asset.id_asset = assetOriginal.id_asset             " +
+                "     left join original original on assetOriginal.id_original = original.id_original             " +
+                "     left join asset_declare assetDeclare on asset.id_asset = assetDeclare.id_asset             " +
+                "     left join `declare` decl on assetDeclare.id_declare = decl.id_declare    " +
+                "     left join asset_depreciation assetDepreciation on asset.id_asset = assetDepreciation.id_asset   " +
                 "where asset.code_asset = :codeAsset ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("codeAsset", codeAsset);
