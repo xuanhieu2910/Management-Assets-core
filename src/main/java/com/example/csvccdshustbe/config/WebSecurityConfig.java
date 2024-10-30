@@ -90,11 +90,12 @@ public class WebSecurityConfig{
         return (userRequest) -> {
             OidcUser oidcUser = delegate.loadUser(userRequest);
             String userName = oidcUser.getIdToken().getClaimAsString("preferred_username").trim().toLowerCase();
+            String fullName = oidcUser.getIdToken().getClaimAsString("name").trim().toLowerCase();
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
             Optional<CsvcUser> userDetails = csvcUserService.findByUserName(userName);
             if (userDetails.isEmpty()){
                 try {
-                    userDetails = Optional.of(csvcUserService.createNewUser(userName));
+                    userDetails = Optional.of(csvcUserService.createNewUser(userName,fullName));
                 } catch (RoleException e) {
                     throw new RuntimeException(e);
                 }

@@ -110,9 +110,9 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     }
 
     @Override
-    public CsvcUser createNewUser(String userName) throws RoleException {
+    public CsvcUser createNewUser(String userName, String fullName) throws RoleException {
         Role role = userRoleService.findRoleByUserName(RolePattern.User.name());
-        CsvcUser csvcUser = createCsvcUserByRegisterAccount(userName);
+        CsvcUser csvcUser = createCsvcUserByRegisterAccount(userName,fullName);
         saveCsvcUser(csvcUser);
         csvcUser.setRole(Collections.singleton(role));
         userRoleService.saveUserRole(createUserRoleByRegisterAccount(csvcUser.getIdUser(),role.getIdRole()));
@@ -298,7 +298,7 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         return findAllUserUsedResponses;
     }
 
-    private CsvcUser createCsvcUserByRegisterAccount(String userName){
+    private CsvcUser createCsvcUserByRegisterAccount(String userName, String fullName){
         String timeCurrently = String.valueOf(new Timestamp(new Date().getTime()).getTime());
         CsvcUser csvcUser = new CsvcUser();
         csvcUser.setUserName(userName);
@@ -308,6 +308,7 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         csvcUser.setIsActived(Constants.ACCOUNT_IS_UN_LOCK);
         csvcUser.setAuth(OAuth2Factory.azure.name());
         csvcUser.setCodeUser(CodeUserUtil.autoGenerateSecureRandomUser(userName));
+        csvcUser.setFullName(fullName);
         return csvcUser;
     }
 

@@ -23,7 +23,7 @@ public interface CsvcUserService extends UserDetailsService {
     Boolean exitsByUserName(String userName);
     CsvcUser saveCsvcUser(CsvcUser csvcUser);
     Page<FindAllUserUsedResponse> findAllUserUsedResponse(FindAllUserUsedRequest request);
-    CsvcUser createNewUser(String userName) throws RoleException;
+    CsvcUser createNewUser(String userName, String fullName) throws RoleException;
     UserAuthenticationResponse getInformationUser();
     List<FindAllRolesUserResponse> findAllRolesUser();
     void switchRoleUser(SwitchUserRequest request);
