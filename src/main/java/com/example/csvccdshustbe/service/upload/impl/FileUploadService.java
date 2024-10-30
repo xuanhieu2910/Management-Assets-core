@@ -720,7 +720,7 @@ public class FileUploadService implements FilesStorageService {
         productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
         productValidation.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_3);
-//        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_USER_USED), true);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_USER_USED), true);
     }
 
     private void filledDataUserUsed(Sheet sheet, List<FindAllUserUsedDto> dtos, int index, String keyword) {
