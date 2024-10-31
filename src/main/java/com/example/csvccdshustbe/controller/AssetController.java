@@ -54,8 +54,8 @@ public class AssetController {
     @PostMapping("/create-lot")
     public ResponseEntity<?> createAssetLot(@RequestBody HashMap<String, Object> createAssetRequest){
         try{
-            assetService.createAsset(createAssetRequest);
-            return ApiResponseDto.createdWithMessage("Create asset success!", HttpStatus.OK);
+            assetService.createAssetLot(createAssetRequest);
+            return ApiResponseDto.createdWithMessage("Create asset lot success!", HttpStatus.OK);
         } catch (ValidateFiledException | JsonProcessingException e ){
             e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -82,9 +82,9 @@ public class AssetController {
 
 
     @GetMapping
-    public ResponseEntity<?> findAssetByCode(@RequestParam("code") String codeAsset){
+    public ResponseEntity<?> findAssetByCode(@RequestParam("salt") String saltAsset){
         try {
-            return ApiResponseDto.createdWithState(assetService.findDetailsAssetByCodeAsset(codeAsset),
+            return ApiResponseDto.createdWithState(assetService.findDetailsAssetBySaltAsset(saltAsset),
                     "Find asset details success!", HttpStatus.OK);
         } catch (NotFoundException e) {
             e.printStackTrace();
@@ -115,9 +115,9 @@ public class AssetController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteAsset(@RequestParam("code-asset") String codeAsset){
+    public ResponseEntity<?> deleteAsset(@RequestParam("salt-asset") String saltAsset){
         try {
-            assetService.deleteAssetByCodeAsset(codeAsset);
+            assetService.deleteAssetBySaltAsset(saltAsset);
             return ApiResponseDto.createdWithMessage("Delete asset success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);

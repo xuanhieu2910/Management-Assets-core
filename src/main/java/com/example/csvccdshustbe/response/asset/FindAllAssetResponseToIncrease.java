@@ -27,4 +27,6 @@ public class FindAllAssetResponseToIncrease {
     private String timeModified;
     @JsonProperty("id_asset")
     private Integer idAsset;
+    @JsonProperty("salt")
+    private String salt;
 }

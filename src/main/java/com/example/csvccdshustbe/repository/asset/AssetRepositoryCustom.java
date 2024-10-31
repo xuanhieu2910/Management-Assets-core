@@ -19,9 +19,9 @@ public interface AssetRepositoryCustom {
 
     Page<FindAllAssetDto> findAllAssetDtoByIdsDepartment(FindAllAssetRequest request, Pageable pageable);
 
-    Optional<AssetBluePrintDto> findDetailAssetByCodeAsset(String codeAsset);
+    Optional<AssetBluePrintDto> findDetailAssetBySaltAsset(String saltAsset);
 
-    Optional<Asset> findAssetByCodeAsset(String codeAsset);
+    Optional<Asset> findAssetBySalt(String salt);
 
     void deleteByIdAsset(Integer idAsset);
 

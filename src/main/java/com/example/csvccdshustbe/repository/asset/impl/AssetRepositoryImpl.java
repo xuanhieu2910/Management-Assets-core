@@ -52,18 +52,19 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Page<FindAllAssetDto> findAllAssetDtoByIdsDepartment(FindAllAssetRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select asset.id_asset idAsset, asset.code_asset codeAsset, " +
-                "       asset.name nameAsset, assetCategories.id_asset_category idAssetCategory, " +
-                "       assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory, " +
-                "       de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment, " +
-                "       lo.id_location idLocation, lo.name nameLocation, " +
-                "       asset.time_created, asset.time_modified " +
-                "from asset asset " +
-                "    inner join asset_categories assetCategories " +
-                "            on asset.id_asset_category = assetCategories.id_asset_category " +
-                "    inner join department de on asset.id_department = de.id_department " +
-                "    left join location lo on asset.id_location = lo.id_location " +
-                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal) ");
+        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,     " +
+                "         asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,     " +
+                "         assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,     " +
+                "         de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,     " +
+                "         lo.id_location idLocation, lo.name nameLocation,     " +
+                "         asset.time_created, asset.time_modified,  " +
+                "         asset.parent, asset.salt  " +
+                "  from asset asset     " +
+                "      inner join asset_categories assetCategories     " +
+                "              on asset.id_asset_category = assetCategories.id_asset_category     " +
+                "      inner join department de on asset.id_department = de.id_department     " +
+                "      left join location lo on asset.id_location = lo.id_location     " +
+                "  where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  ");
         setConditionFindAllAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAsset(request, query);
@@ -86,6 +87,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
                 findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[11]));
                 findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
+                findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
+                findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -93,50 +96,50 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     @Override
-    public Optional<AssetBluePrintDto> findDetailAssetByCodeAsset(String codeAsset) {
+    public Optional<AssetBluePrintDto> findDetailAssetBySaltAsset(String saltAsset) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset, asset.name, asset.code_asset, assetCategory.id_asset_category idAssetCategory,             " +
-                "        assetCategory.name nameAssetCategory, de.code codeDepartment, de.id_department idDepartment, de.name nameDepartment,             " +
-                "        documentAttack.id_document_attack idDocumentAttack, documentAttack.name nameDocumentAttack,             " +
-                "        location.id_location idLocation, location.name nameLocation, unit.id_unit idUnit, unit.name nameUnit,             " +
-                "        project.id_project idProject, project.name nameProject, asset.purpose, asset.notes, asset.description, asset.file_attack,             " +
-                "        departmentDefault.id_department idDepartmentDefault, departmentDefault.name nameDepartmentDefault,             " +
-                "        levelTypeAsset.id_level_type_asset idLevelTypeAsset, levelTypeAsset.name nameLevelTypeAsset,             " +
-                "        modules.hard_code typeModules, modules.id_module, modules.name nameModules,             " +
-                "        assetModules.id_instance idInstanceModule,             " +
-                "        original.hard_code_dev typeOriginal, original.id_original, original.name nameOriginal,             " +
-                "        assetOriginal.id_instance idInstanceOriginal,             " +
-                "        decl.hard_code typeDeclare, decl.id_declare, decl.name nameDeclare,             " +
-                "        assetDeclare.id_instance inInstanceDeclare,       " +
-                "        asset.id_instance assetIdInstance, assetDepreciation.id_asset_depreciation,   " +
-                "        assetDepreciation.time_started_depreciation, assetDepreciation.amount_months_depreciation,    " +
-                "        assetDepreciation.value_depreciation, assetDepreciation.type_depreciation,    " +
-                "        assetDepreciation.value_type_depreciation, assetDepreciation.amount_rest_months_depreciation,    " +
-                "        assetDepreciation.cumulative, assetDepreciation.rest_value, assetDepreciation.time_started_wear_tear,    " +
-                "        assetDepreciation.time_end_wear_tear, assetDepreciation.type_calculate, assetDepreciation.time_buy,    " +
-                "        assetDepreciation.time_started_used, assetDepreciation.time_started_increase,    " +
-                "        assetDepreciation.time_year_tracking, assetDepreciation.time_created, assetDepreciation.time_modified , " +
-                "        assetCategory.value_wear_tear, assetCategory.year_used_wear_tear, assetCategory.minimum_time_depreciation, " +
-                "        assetCategory.maximum_time_depreciation " +
-                "from asset asset       " +
-                "     left join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category             " +
-                "     left join department de on asset.id_department = de.id_department             " +
-                "     left join document_attack documentAttack on asset.id_document_attack = documentAttack.id_document_attack             " +
-                "     left join location location on asset.id_location = location.id_location             " +
-                "     left join units unit on asset.id_unit = unit.id_unit             " +
-                "     left join projects project on asset.id_projects = project.id_project             " +
-                "     left join department departmentDefault on asset.id_department_default = departmentDefault.id_department             " +
-                "     left join level_type_asset levelTypeAsset on asset.id_level_type_asset = levelTypeAsset.id_level_type_asset             " +
-                "     left join asset_modules assetModules on asset.id_asset = assetModules.id_asset             " +
-                "     left join modules modules on assetModules.id_module = modules.id_module             " +
-                "     left join asset_original assetOriginal on asset.id_asset = assetOriginal.id_asset             " +
-                "     left join original original on assetOriginal.id_original = original.id_original             " +
-                "     left join asset_declare assetDeclare on asset.id_asset = assetDeclare.id_asset             " +
-                "     left join `declare` decl on assetDeclare.id_declare = decl.id_declare    " +
-                "     left join asset_depreciation assetDepreciation on asset.id_asset = assetDepreciation.id_asset   " +
-                "where asset.code_asset = :codeAsset ");
+        sb.append("select asset.id_asset, asset.name, asset.code_asset, assetCategory.id_asset_category idAssetCategory,    " +
+                "        assetCategory.name nameAssetCategory, de.code codeDepartment, de.id_department idDepartment, de.name nameDepartment,    " +
+                "        documentAttack.id_document_attack idDocumentAttack, documentAttack.name nameDocumentAttack,    " +
+                "        location.id_location idLocation, location.name nameLocation, unit.id_unit idUnit, unit.name nameUnit,    " +
+                "        project.id_project idProject, project.name nameProject, asset.purpose, asset.notes, asset.description, asset.file_attack,    " +
+                "        departmentDefault.id_department idDepartmentDefault, departmentDefault.name nameDepartmentDefault,    " +
+                "        levelTypeAsset.id_level_type_asset idLevelTypeAsset, levelTypeAsset.name nameLevelTypeAsset,    " +
+                "        modules.hard_code typeModules, modules.id_module, modules.name nameModules,    " +
+                "        assetModules.id_instance idInstanceModule,    " +
+                "        original.hard_code_dev typeOriginal, original.id_original, original.name nameOriginal,    " +
+                "        assetOriginal.id_instance idInstanceOriginal,    " +
+                "        decl.hard_code typeDeclare, decl.id_declare, decl.name nameDeclare,    " +
+                "        assetDeclare.id_instance inInstanceDeclare,     " +
+                "        asset.id_instance assetIdInstance, assetDepreciation.id_asset_depreciation,    " +
+                "        assetDepreciation.time_started_depreciation, assetDepreciation.amount_months_depreciation,     " +
+                "        assetDepreciation.value_depreciation, assetDepreciation.type_depreciation,     " +
+                "        assetDepreciation.value_type_depreciation, assetDepreciation.amount_rest_months_depreciation,     " +
+                "        assetDepreciation.cumulative, assetDepreciation.rest_value, assetDepreciation.time_started_wear_tear,     " +
+                "        assetDepreciation.time_end_wear_tear, assetDepreciation.type_calculate, assetDepreciation.time_buy,     " +
+                "        assetDepreciation.time_started_used, assetDepreciation.time_started_increase,     " +
+                "        assetDepreciation.time_year_tracking, assetDepreciation.time_created, assetDepreciation.time_modified ,    " +
+                "        assetCategory.value_wear_tear, assetCategory.year_used_wear_tear, assetCategory.minimum_time_depreciation,    " +
+                "        assetCategory.maximum_time_depreciation, asset.parent, asset.salt  " +
+                "from asset asset     " +
+                "     left join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category    " +
+                "     left join department de on asset.id_department = de.id_department    " +
+                "     left join document_attack documentAttack on asset.id_document_attack = documentAttack.id_document_attack    " +
+                "     left join location location on asset.id_location = location.id_location    " +
+                "     left join units unit on asset.id_unit = unit.id_unit    " +
+                "     left join projects project on asset.id_projects = project.id_project    " +
+                "     left join department departmentDefault on asset.id_department_default = departmentDefault.id_department    " +
+                "     left join level_type_asset levelTypeAsset on asset.id_level_type_asset = levelTypeAsset.id_level_type_asset    " +
+                "     left join asset_modules assetModules on asset.id_asset = assetModules.id_asset    " +
+                "     left join modules modules on assetModules.id_module = modules.id_module    " +
+                "     left join asset_original assetOriginal on asset.id_asset = assetOriginal.id_asset    " +
+                "     left join original original on assetOriginal.id_original = original.id_original    " +
+                "     left join asset_declare assetDeclare on asset.id_asset = assetDeclare.id_asset    " +
+                "     left join `declare` decl on assetDeclare.id_declare = decl.id_declare     " +
+                "     left join asset_depreciation assetDepreciation on asset.id_asset = assetDepreciation.id_asset  " +
+                "where asset.salt = :saltAsset ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("codeAsset", codeAsset);
+        query.setParameter("saltAsset", saltAsset);
         List<Object[]> result = query.getResultList();
         AssetBluePrintDto dto = new AssetBluePrintDto();
         if (!CollectionUtils.isEmpty(result)) {
@@ -179,21 +182,21 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     @Override
-    public Optional<Asset> findAssetByCodeAsset(String codeAsset) {
+    public Optional<Asset> findAssetBySalt(String salt) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset, asset.name, asset.code_asset,    " +
-                "        asset.id_asset_category, asset.id_document_attack,    " +
-                "        asset.id_department, asset.id_location,    " +
-                "        asset.id_unit, asset.id_projects, asset.description,    " +
-                "        asset.purpose, asset.notes, asset.file_attack,    " +
-                "        asset.time_created, asset.time_modified, asset.id_department_default,    " +
-                "        asset.id_level_type_asset, asset.id_user_created,    " +
-                "        asset.id_user_modified, asset.quantity, asset.id_instance,  " +
-                "        asset.id_department_origin  " +
-                " from asset     " +
-                " where asset.code_asset = :codeAsset ");
+        sb.append("select asset.id_asset, asset.name, asset.code_asset,       " +
+                "        asset.id_asset_category, asset.id_document_attack,       " +
+                "        asset.id_department, asset.id_location,       " +
+                "        asset.id_unit, asset.id_projects, asset.description,       " +
+                "        asset.purpose, asset.notes, asset.file_attack,       " +
+                "        asset.time_created, asset.time_modified, asset.id_department_default,       " +
+                "        asset.id_level_type_asset, asset.id_user_created,       " +
+                "        asset.id_user_modified, asset.quantity, asset.id_instance,     " +
+                "        asset.id_department_origin, asset.parent, asset.salt  " +
+                " from asset        " +
+                " where asset.salt = :salt  ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("codeAsset", codeAsset);
+        query.setParameter("salt", salt);
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj: result){
@@ -220,6 +223,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setQuantity(ValueUtil.getIntegerByObject(obj[19]));
                 asset.setIdInstance(ValueUtil.getIntegerByObject(obj[20]));
                 asset.setIdDepartmentOrigin(ValueUtil.getIntegerByObject(obj[21]));
+                asset.setParent(ValueUtil.getIntegerByObject(obj[22]));
+                asset.setSalt(ValueUtil.getStringByObject(obj[23]));
                 return Optional.of(asset);
             }
         }
@@ -242,10 +247,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Page<FindAllGroundAssetResponse> findAllGroundAsset(Pageable pageable, FindAllGroundAssetRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select asset.id_asset, asset.code_asset, asset.name " +
-                "from asset asset " +
-                "    inner join ground_module groundModule on asset.id_asset = groundModule.id_asset " +
-                "where 1 = 1 ");
+        sb.append("select asset.id_asset, asset.code_asset, asset.name,  " +
+                "       asset.salt  " +
+                "       from asset asset     " +
+                "    inner join ground_module groundModule   " +
+                "        on asset.id_asset = groundModule.id_asset     " +
+                "where 1 = 1  ");
         setConditionFindAllGroundAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllGroundAsset(request, query);
@@ -258,6 +265,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 response.setIdGroundAsset(ValueUtil.getIntegerByObject(obj[0]));
                 response.setCodeGroundAsset(ValueUtil.getStringByObject(obj[1]));
                 response.setNameGroundAsset(ValueUtil.getStringByObject(obj[2]));
+                response.setSalt(ValueUtil.getStringByObject(obj[3]));
                 responses.add(response);
             }
         }
@@ -290,20 +298,20 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Page<FindAllAssetDto> findAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select asset.id_asset idAsset, asset.code_asset codeAsset,   " +
-                "                        asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,   " +
-                "                        assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,   " +
-                "                        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,   " +
-                "                        lo.id_location idLocation, lo.name nameLocation,   " +
-                "                        asset.time_created, asset.time_modified   " +
-                "                 from asset asset   " +
-                "                     inner join asset_categories assetCategories   " +
-                "                             on asset.id_asset_category = assetCategories.id_asset_category   " +
-                "                     inner join department de on asset.id_department = de.id_department   " +
-                "                     left join location lo on asset.id_location = lo.id_location   " +
-                "                     left join data_document dataDocument on asset.id_asset = dataDocument.id_asset" +
-                "                 where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "                    and dataDocument.id_asset is null ");
+        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,        " +
+                "         asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,        " +
+                "         assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,        " +
+                "         de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,        " +
+                "         lo.id_location idLocation, lo.name nameLocation,        " +
+                "         asset.time_created, asset.time_modified, asset.parent, asset.salt   " +
+                "  from asset asset        " +
+                "      inner join asset_categories assetCategories        " +
+                "              on asset.id_asset_category = assetCategories.id_asset_category        " +
+                "      inner join department de on asset.id_department = de.id_department        " +
+                "      left join location lo on asset.id_location = lo.id_location        " +
+                "      left join data_document dataDocument on asset.id_asset = dataDocument.id_asset     " +
+                "  where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)       " +
+                "     and dataDocument.id_asset is null  ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToIncrease(request, query);
@@ -327,6 +335,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
                 findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[11]));
                 findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
+                findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
+                findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -336,21 +346,21 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Page<FindAllAssetDto> findAllAssetDocumentByCodeDocument(FindAllAssetDocumentRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,    " +
-                "         asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,    " +
-                "         assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,    " +
-                "         de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,    " +
-                "         lo.id_location idLocation, lo.name nameLocation,    " +
-                "         asset.time_created, asset.time_modified    " +
-                "from asset asset  " +
-                "      inner join asset_categories assetCategories    " +
-                "              on asset.id_asset_category = assetCategories.id_asset_category    " +
-                "      inner join department de on asset.id_department = de.id_department    " +
-                "      left join location lo on asset.id_location = lo.id_location  " +
-                "      inner join data_document dd on asset.id_asset = dd.id_asset  " +
-                "      inner join document do on dd.id_document = do.id_document  " +
-                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "and do.code = :codeDocument ");
+        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,     " +
+                "        asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,     " +
+                "        assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,     " +
+                "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,     " +
+                "        lo.id_location idLocation, lo.name nameLocation,     " +
+                "        asset.time_created, asset.time_modified, asset.parent, asset.salt   " +
+                "from asset asset    " +
+                "     inner join asset_categories assetCategories     " +
+                "             on asset.id_asset_category = assetCategories.id_asset_category     " +
+                "     inner join department de on asset.id_department = de.id_department     " +
+                "     left join location lo on asset.id_location = lo.id_location    " +
+                "     inner join data_document dd on asset.id_asset = dd.id_asset    " +
+                "     inner join document do on dd.id_document = do.id_document    " +
+                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)    " +
+                "and do.code = :codeDocument  ");
         setConditionFindAllAssetDocument(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDocument(request, query);
@@ -373,6 +383,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
                 findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[11]));
                 findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
+                findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
+                findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -382,13 +394,14 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Optional<Asset> findAssetByIdDepartmentOrigin(Integer idDepartmentOrigin) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select id_asset, name, code_asset, id_asset_category,  " +
-                "       id_document_attack, id_department, id_location, " +
-                "       id_unit, id_projects, purpose, notes, file_attack,  " +
-                "       time_created, time_modified, id_department_default, " +
-                "       id_level_type_asset, id_user_created, id_user_modified,  " +
-                "       description, quantity, id_instance, id_department_origin " +
-                "from asset where id_department_origin = :idDepartmentOrigin " +
+        sb.append("select id_asset, name, code_asset, id_asset_category,       " +
+                "         id_document_attack, id_department, id_location,      " +
+                "         id_unit, id_projects, purpose, notes, file_attack,       " +
+                "         time_created, time_modified, id_department_default,      " +
+                "         id_level_type_asset, id_user_created, id_user_modified,       " +
+                "         description, quantity, id_instance, id_department_origin,   " +
+                "         parent, salt   " +
+                "from asset where id_department_origin = :idDepartmentOrigin      " +
                 "order by id_asset desc limit 1 ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idDepartmentOrigin", idDepartmentOrigin);
@@ -418,6 +431,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setQuantity(ValueUtil.getIntegerByObject(obj[19]));
                 asset.setIdInstance(ValueUtil.getIntegerByObject(obj[20]));
                 asset.setIdDepartmentOrigin(ValueUtil.getIntegerByObject(obj[21]));
+                asset.setParent(ValueUtil.getIntegerByObject(obj[22]));
+                asset.setSalt(ValueUtil.getStringByObject(obj[23]));
                 return Optional.of(asset);
             }
         }
@@ -427,16 +442,17 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Optional<Asset> findAssetLotByIdDepartmentOrigin(Integer idDepartmentOrigin) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select id_asset, name, code_asset, id_asset_category,     " +
-                "        id_document_attack, id_department, id_location,    " +
-                "        id_unit, id_projects, purpose, notes, file_attack,     " +
-                "        time_created, time_modified, id_department_default,    " +
-                "        id_level_type_asset, id_user_created, id_user_modified,     " +
-                "        description, quantity, id_instance, id_department_origin    " +
-                " from asset  " +
-                " where id_department_origin = :idDepartmentOrigin  " +
-                " and parent is not null  " +
-                " order by id_asset desc limit 1  ");
+        sb.append("select id_asset, name, code_asset, id_asset_category,         " +
+                "        id_document_attack, id_department, id_location,        " +
+                "        id_unit, id_projects, purpose, notes, file_attack,         " +
+                "        time_created, time_modified, id_department_default,        " +
+                "        id_level_type_asset, id_user_created, id_user_modified,         " +
+                "        description, quantity, id_instance, id_department_origin,   " +
+                "        parent, salt   " +
+                "from asset   " +
+                "where id_department_origin = :idDepartmentOrigin   " +
+                "and parent is not null   " +
+                "order by id_asset desc limit 1 ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idDepartmentOrigin", idDepartmentOrigin);
         List<Object[]> result = query.getResultList();
@@ -465,6 +481,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setQuantity(ValueUtil.getIntegerByObject(obj[19]));
                 asset.setIdInstance(ValueUtil.getIntegerByObject(obj[20]));
                 asset.setIdDepartmentOrigin(ValueUtil.getIntegerByObject(obj[21]));
+                asset.setParent(ValueUtil.getIntegerByObject(obj[22]));
+                asset.setSalt(ValueUtil.getStringByObject(obj[23]));
                 return Optional.of(asset);
             }
         }
@@ -647,6 +665,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         dto.setDescription(ValueUtil.getStringByObject(obj[18]));
         dto.setFileAttack(ValueUtil.getStringByObject(obj[19]));
         dto.setIdInstance(ValueUtil.getIntegerByObject(obj[36]));
+        dto.setParent(ValueUtil.getIntegerByObject(obj[59]));
+        dto.setSalt(ValueUtil.getStringByObject(obj[60]));
     }
 
     private void setBluePrintDepartmentLevelTypeAsset(AssetBluePrintDto dto, Object[] obj) {

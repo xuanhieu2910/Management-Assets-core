@@ -16,4 +16,6 @@ public class FindAllGroundAssetResponse {
     private String nameGroundAsset;
     @JsonProperty("code_ground_asset")
     private String codeGroundAsset;
+    @JsonProperty("salt")
+    private String salt;
 }

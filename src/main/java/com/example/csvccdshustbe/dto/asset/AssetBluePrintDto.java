@@ -47,4 +47,6 @@ public class AssetBluePrintDto {
     private AssetDeclareDto declare;
     private Integer idInstance;
     private AssetDepreciationDto assetDepreciationDto;
+    private Integer parent;
+    private String salt;
 }

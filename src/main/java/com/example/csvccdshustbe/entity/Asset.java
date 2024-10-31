@@ -61,4 +61,6 @@ public class Asset {
     private Integer idDepartmentOrigin;
     @Column(name = "parent")
     private Integer parent;
+    @Column(name = "salt")
+    private String salt;
 }

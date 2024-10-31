@@ -24,4 +24,8 @@ public class FindAllAssetDocumentResponse {
     private String timeCreated;
     @JsonProperty("time_modified")
     private String timeModified;
+    @JsonProperty("parent")
+    private Integer parent;
+    @JsonProperty("salt")
+    private String salt;
 }

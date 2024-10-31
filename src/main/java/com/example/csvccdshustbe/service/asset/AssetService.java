@@ -22,10 +22,11 @@ import java.util.Map;
 public interface AssetService {
 
     void createAsset(Map<String,Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException;
+    void createAssetLot(Map<String,Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException;
     Page<FindAllAssetResponse> findAllAsset(FindAllAssetRequest request);
-    FindDetailsAssetResponse findDetailsAssetByCodeAsset(String codeAsset) throws ValidateFiledException, IllegalAccessException;
+    FindDetailsAssetResponse findDetailsAssetBySaltAsset(String saltAsset) throws ValidateFiledException, IllegalAccessException;
     void updateAsset(HashMap<String, Object> updateAssetRequest) throws JsonProcessingException, ValidateFiledException, IllegalAccessException;
-    void deleteAssetByCodeAsset(String codeAsset) throws ValidateFiledException;
+    void deleteAssetBySaltAsset(String saltAsset) throws ValidateFiledException;
     Page<FindAllGroundAssetResponse> findAllGroundAsset(FindAllGroundAssetRequest request);
     String uploadFile(MultipartFile multipartFile) throws FileException, IOException, FileExcelException;
     void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException;

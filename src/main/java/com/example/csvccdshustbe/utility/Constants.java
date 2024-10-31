@@ -176,7 +176,11 @@ public class Constants {
     public static final String KEY_TYPE_DECLARE = "typeDeclare";
     public static final String KEY_ASSET_ORIGINAL_OF_FORMATION = "originOfFormation";
     /*----------------------------------------------------*/
-
+    /**
+     * Constant Asset LOT LIST ASSET CHILDREN
+     * */
+    public static final String KEY_CHILDREN_DISTRIBUTION = "distribution";
+    /*----------------------------------------------------*/
     /**
      * Constant Original
      * */

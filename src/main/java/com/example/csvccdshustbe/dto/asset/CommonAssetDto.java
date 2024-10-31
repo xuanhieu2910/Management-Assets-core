@@ -55,4 +55,8 @@ public class CommonAssetDto {
     private List<AssetOriginalOfFormDto> originOfFormation;
     @JsonProperty("id_instance")
     private Integer idInstance;
+    @JsonProperty("salt")
+    private String salt;
+    @JsonProperty("parent")
+    private Integer parent;
 }

@@ -71,7 +71,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -183,6 +182,15 @@ public class AssetServiceImpl implements AssetService {
         storeNewAsset(dataCreateAssetRequest);
     }
 
+    @Transactional
+    @Override
+    public void createAssetLot(Map<String, Object> createAssetLotRequest) throws JsonProcessingException, ValidateFiledException {
+        Map<String, Object> dataCreateAssetLotRequest =
+                objectMapper.readValue(JSONObjectUtils.toJSONString(createAssetLotRequest), Map.class);
+        validateDataCreateAssetLot(dataCreateAssetLotRequest);
+        storeNewAssetLot(dataCreateAssetLotRequest);
+    }
+
     @Override
     public Page<FindAllAssetResponse> findAllAsset(FindAllAssetRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
@@ -198,8 +206,8 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public FindDetailsAssetResponse findDetailsAssetByCodeAsset(String codeAsset) throws ValidateFiledException, IllegalAccessException {
-        Optional<AssetBluePrintDto> assetBluePrintDto = assetRepository.findDetailAssetByCodeAsset(codeAsset);
+    public FindDetailsAssetResponse findDetailsAssetBySaltAsset(String saltAsset) throws ValidateFiledException, IllegalAccessException {
+        Optional<AssetBluePrintDto> assetBluePrintDto = assetRepository.findDetailAssetBySaltAsset(saltAsset);
         if (assetBluePrintDto.isEmpty()) {
             throw new NotFoundException("Don't exits asset by code!");
         }
@@ -222,8 +230,8 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public void deleteAssetByCodeAsset(String codeAsset) throws ValidateFiledException {
-        Optional<AssetBluePrintDto> assetBluePrintDto = assetRepository.findDetailAssetByCodeAsset(codeAsset);
+    public void deleteAssetBySaltAsset(String saltAsset) throws ValidateFiledException {
+        Optional<AssetBluePrintDto> assetBluePrintDto = assetRepository.findDetailAssetBySaltAsset(saltAsset);
         if (assetBluePrintDto.isEmpty()) {
             throw new NotFoundException("Don't exits asset by code!");
         }
@@ -500,8 +508,8 @@ public class AssetServiceImpl implements AssetService {
 
     private Asset updateCommonDataAsset(Map<String, Object> dataUpdateAssetRequest) {
         Map<String,Object> commonDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_COMMON);
-        log.info("Start update common data asset by code asset = " + ValueUtil.getStringByObject(commonDataAsset.get("codeAsset")));
-        Optional<Asset> asset = assetRepository.findAssetByCodeAsset(ValueUtil.getStringByObject(commonDataAsset.get("codeAsset")));
+        log.info("Start update common data asset by code asset = " + ValueUtil.getStringByObject(commonDataAsset.get("salt")));
+        Optional<Asset> asset = assetRepository.findAssetBySalt(ValueUtil.getStringByObject(commonDataAsset.get("salt")));
         if (asset.isEmpty()) {
             throw new NotFoundException("Don't exits asset by code!");
         }
@@ -585,13 +593,7 @@ public class AssetServiceImpl implements AssetService {
         asset.setName(ValueUtil.getStringByObject(commonDataAsset.get("name")));
         asset.setIdAssetCategory(ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory")));
         asset.setIdDocumentAttack(ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack")));
-        if (!asset.getIdDepartment().equals(ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment")))) {
-            if (StringUtils.isNotBlank(ValueUtil.getStringByObject(commonDataAsset.get("codeDepartment")))) {
-                asset.setCodeAsset(ValueUtil.getStringByObject(commonDataAsset.get("codeDepartment")) + "-" + UUID.randomUUID());
-            } else {
-                asset.setCodeAsset(String.valueOf(UUID.randomUUID()));
-            }
-        }
+        asset.setCodeAsset(ValueUtil.getStringByObject(commonDataAsset.get("codeAsset")));
         asset.setIdDepartment(ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment")));
         asset.setIdLocation(ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation")));
         asset.setIdUnit(ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit")));
@@ -652,6 +654,8 @@ public class AssetServiceImpl implements AssetService {
         commonAssetDto.setLevelTypeAsset(assetBluePrintDto.getLevelTypeAsset());
         commonAssetDto.setOriginOfFormation(assetBluePrintDto.getOriginOfFormation());
         commonAssetDto.setIdInstance(assetBluePrintDto.getIdInstance());
+        commonAssetDto.setParent(assetBluePrintDto.getParent());
+        commonAssetDto.setSalt(assetBluePrintDto.getSalt());
         return commonAssetDto;
     }
 
@@ -729,7 +733,19 @@ public class AssetServiceImpl implements AssetService {
         validateDataDeclareCreateAsset(createAssetRequest);
     }
 
+    private void validateDataCreateAssetLot(Map<String, Object> createAssetRequest) throws ValidateFiledException {
+        validateDataCommonCreateAssetLot(createAssetRequest);
+        validateDataModuleCreateAssetLot(createAssetRequest);
+        validateDataOriginalCreateAssetLot(createAssetRequest);
+        validateDataDeclareCreateAssetLot(createAssetRequest);
+    }
+
+
     private void validateDataDeclareCreateAsset(Map<String, Object> createAssetRequest) {
+        declareServiceFactory.validateDataDeclare((Map<String, Object>) createAssetRequest.get(Constants.KEY_DECLARE_ASSET));
+    }
+
+    private void validateDataDeclareCreateAssetLot(Map<String, Object> createAssetRequest) {
         declareServiceFactory.validateDataDeclare((Map<String, Object>) createAssetRequest.get(Constants.KEY_DECLARE_ASSET));
     }
 
@@ -741,6 +757,10 @@ public class AssetServiceImpl implements AssetService {
        originalServiceFactory.validateDataOriginal((Map<String, Object>) createAssetRequest.get(Constants.KEY_ORIGINAL_ASSET));
     }
 
+    private void validateDataOriginalCreateAssetLot(Map<String, Object> createAssetRequest) {
+        originalServiceFactory.validateDataOriginal((Map<String, Object>) createAssetRequest.get(Constants.KEY_ORIGINAL_ASSET));
+    }
+
     private void validateDataOriginalUpdateAsset(Map<String, Object> createAssetRequest) {
         originalServiceFactory.validateDataOriginal((Map<String, Object>) createAssetRequest.get(Constants.KEY_ORIGINAL_ASSET));
     }
@@ -749,11 +769,32 @@ public class AssetServiceImpl implements AssetService {
         modulesServiceFactory.validateDataModules((List<Map<String,Object>>) createAssetRequest.get(Constants.KEY_MODULE));
     }
 
+    private void validateDataModuleCreateAssetLot(Map<String, Object> createAssetRequest) throws ValidateFiledException {
+        modulesServiceFactory.validateDataModules((List<Map<String,Object>>) createAssetRequest.get(Constants.KEY_MODULE));
+    }
+
+
     private void validateDataModuleUpdateAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
         modulesServiceFactory.validateDataModules((List<Map<String,Object>>) createAssetRequest.get(Constants.KEY_MODULE));
     }
 
     private void validateDataCommonCreateAsset(Map<String, Object> createAssetRequest) {
+        Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_COMMON);
+        Integer idDepartment = ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment"));
+        departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
+        Integer idLocation = ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation"));
+        locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
+        Integer idAssetCategory = ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory"));
+        assetCategoriesService.findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, Constants.ASSET_CATEGORY_IS_VISIBLE);
+        Integer idUnit = ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit"));
+        unitsService.findUnitsByIdUnitAndStatus(idUnit, Constants.UNITS_IS_ACTIVE);
+        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
+        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
+        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
+        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
+    }
+
+    private void validateDataCommonCreateAssetLot(Map<String, Object> createAssetRequest) {
         Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_COMMON);
         Integer idDepartment = ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment"));
         departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
@@ -794,11 +835,31 @@ public class AssetServiceImpl implements AssetService {
         storeDeclareDataAsset(createAssetRequest, asset);
     }
 
+    private void storeNewAssetLot(Map<String, Object> createAssetLotRequest) throws ValidateFiledException {
+        log.info("Init store asset");
+        List<Asset> assetChildren = storeCommonDataAssetLot(createAssetLotRequest);
+        storeDepreciationLot(createAssetLotRequest, assetChildren);
+        storeModulesDataAssetLot(createAssetLotRequest, assetChildren);
+        storeOriginalDataAssetLot(createAssetLotRequest, assetChildren);
+        storeDeclareDataAssetLot(createAssetLotRequest, assetChildren);
+    }
+
+
     private void storeDepreciation(Map<String, Object> createAssetRequest, Asset asset) {
         log.info("Storing depreciation data asset");
         Map<String, Object> depreciationAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_DEPRECIATION);
         AssetDepreciation depreciation = contructionDataAssetDepreciation(depreciationAsset, asset.getIdAsset());
         assetDepreciationService.save(depreciation);
+        log.info("Stored success depreciation data asset");
+    }
+
+    private void storeDepreciationLot(Map<String, Object> createAssetRequest, List<Asset> assetChildren) {
+        log.info("Storing depreciation data asset");
+        Map<String, Object> depreciationAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_DEPRECIATION);
+        for (Asset assetChild: assetChildren) {
+            AssetDepreciation depreciation = contructionDataAssetDepreciation(depreciationAsset, assetChild.getIdAsset());
+            assetDepreciationService.save(depreciation);
+        }
         log.info("Stored success depreciation data asset");
     }
 
@@ -837,6 +898,19 @@ public class AssetServiceImpl implements AssetService {
         log.info("Finish store declare factory " + declareFactory.getClass());
     }
 
+    private void storeDeclareDataAssetLot(Map<String, Object> createAssetRequest, List<Asset> assetChildren) throws ValidateFiledException {
+        log.info("Storing declare data asset");
+        for (Asset assetChild : assetChildren) {
+            Map<String, Object> declareDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_DECLARE_ASSET);
+            declareDataAsset.put("idAsset", assetChild.getIdAsset());
+            DeclareFactory declareFactory = (DeclareFactory) ProxyInitDataAssetUtil.
+                    proxyInitDeclareDataAsset(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)));
+            IDeclare iDeclare = declareFactory.createDeclare(declareDataAsset);
+            declareServiceFactory.save(iDeclare, declareDataAsset);
+            log.info("Finish store declare factory " + declareFactory.getClass());
+        }
+    }
+
     private void storeOriginalDataAsset(Map<String, Object> createAssetRequest, Asset asset) throws ValidateFiledException {
         log.info("Storing original data asset");
         Map<String,Object> originalDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_ORIGINAL_ASSET);
@@ -847,6 +921,19 @@ public class AssetServiceImpl implements AssetService {
         originalServiceFactory.save(iOriginal, originalDataAsset);
         log.info("Finish store original factory " + originalFactory.getClass());
 
+    }
+
+    private void storeOriginalDataAssetLot(Map<String, Object> createAssetRequest, List<Asset> assetChildren) throws ValidateFiledException {
+        log.info("Storing original data asset");
+        for (Asset assetChild : assetChildren) {
+            Map<String,Object> originalDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_ORIGINAL_ASSET);
+            originalDataAsset.put("idAsset", assetChild.getIdAsset());
+            OriginalFactory originalFactory = (OriginalFactory) ProxyInitDataAssetUtil.
+                    proxyInitOriginalDataAsset(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)));
+            IOriginal iOriginal = originalFactory.createOriginal(originalDataAsset);
+            originalServiceFactory.save(iOriginal, originalDataAsset);
+            log.info("Finish store original factory " + originalFactory.getClass());
+        }
     }
 
     private void storeModulesDataAsset(Map<String, Object> createAssetRequest, Asset asset) throws ValidateFiledException {
@@ -874,6 +961,33 @@ public class AssetServiceImpl implements AssetService {
         }
     }
 
+    private void storeModulesDataAssetLot(Map<String, Object> createAssetRequest, List<Asset> assetChildren) throws ValidateFiledException {
+        log.info("Storing modules data asset");
+        List<HashMap<String,Object>> modulesDataAsset = (List<HashMap<String,Object>>) createAssetRequest.get(Constants.KEY_MODULE);
+        for (Asset assetChild : assetChildren) {
+            if (!CollectionUtils.isEmpty(modulesDataAsset)) {
+                for (HashMap<String, Object> moduleDataAsset : modulesDataAsset) {
+                    if (StringUtils.isNotBlank(ValueUtil.getStringByObject(moduleDataAsset.get("codeUser")))) {
+                        Optional<CsvcUser> user = csvcUserService.findByCodeUser(ValueUtil.getStringByObject(moduleDataAsset.get("codeUser")));
+                        if (user.isEmpty()) {
+                            throw new UsernameNotFoundException("User not found!");
+                        }
+                        if (!user.get().isAccountNonLocked()) {
+                            throw new UsernameNotFoundException("User is locked!");
+                        }
+                        moduleDataAsset.put("idUser", user.get().getIdUser());
+                    }
+                    moduleDataAsset.put("idAsset", assetChild.getIdAsset());
+                    ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
+                            proxyInitModuleDataAsset(ValueUtil.getStringByObject(moduleDataAsset.get(Constants.KEY_TYPE_MODULE)));
+                    IModules iModules = moduleFactory.createModule(moduleDataAsset);
+                    modulesServiceFactory.save(iModules, moduleDataAsset);
+                    log.info("Finish store module factory " + moduleFactory.getClass());
+                }
+            }
+        }
+    }
+
     private Asset storeCommonData(Map<String, Object> createAssetRequest) {
         log.info("Storing common data asset");
         Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_COMMON);
@@ -883,6 +997,108 @@ public class AssetServiceImpl implements AssetService {
         log.info("Store success common data asset by id = " + asset.getIdAsset());
         return asset;
     }
+
+    private List<Asset> storeCommonDataAssetLot(Map<String, Object> createAssetLotRequest) {
+        log.info("Storing common data asset LOT ");
+        Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetLotRequest.get(Constants.KEY_COMMON);
+        Asset assetParentLot = createDataAssetParentLot(commonDataAsset);
+        List<Map<String, Object>> dataAssetChildrenLot = (List<Map<String, Object>>) commonDataAsset.get(Constants.KEY_CHILDREN_DISTRIBUTION);
+        List<Asset> assetChildren = createAssetChildren(assetParentLot,dataAssetChildrenLot);
+        saveAssetChildrenOriginalOfFormations(assetChildren, commonDataAsset);
+        return assetChildren;
+    }
+
+    private void saveAssetChildrenOriginalOfFormations(List<Asset> assetChildren, Map<String, Object> commonDataAsset) {
+        List<HashMap<String,Object>> assetOriginalOfFormationData = (List<HashMap<String,Object>>) commonDataAsset.get(Constants.KEY_ASSET_ORIGINAL_OF_FORMATION);
+        List<AssetOriginalOfFormation> originalOfFormations = new ArrayList<>();
+        String currentTime = String.valueOf(new Date().getTime());
+        for (Asset assetChild: assetChildren) {
+            if (!CollectionUtils.isEmpty(assetOriginalOfFormationData)) {
+                for (HashMap<String, Object> obj : assetOriginalOfFormationData) {
+                    AssetOriginalOfFormation originalOfFormation = new AssetOriginalOfFormation();
+                    originalOfFormation.setIdOriginalOfFormation(ValueUtil.getIntegerByObject(obj.get("idOriginOfFormation")));
+                    originalOfFormation.setIdAsset(assetChild.getIdAsset());
+                    originalOfFormation.setTimeCreated(currentTime);
+                    originalOfFormation.setTimeModified(currentTime);
+                    originalOfFormation.setValue(ValueUtil.getStringByObject(obj.get("value")));
+                    originalOfFormations.add(originalOfFormation);
+                }
+            }
+        }
+        if (!CollectionUtils.isEmpty(originalOfFormations)) {
+            assetOriginalOfFormationService.saveAll(originalOfFormations);
+        }
+    }
+
+    private List<Asset> createAssetChildren(Asset parentAsset, List<Map<String, Object>> dataAssetChildrenDistribution) {
+        List<Asset> assetChildren = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(dataAssetChildrenDistribution)){
+            dataAssetChildrenDistribution.forEach(obj -> {
+                assetChildren.add(constructionChildAssetLot(parentAsset, obj));
+            });
+        }
+        return assetRepository.saveAll(assetChildren);
+    }
+
+    private Asset constructionChildAssetLot(Asset parentAsset, Map<String, Object> obj) {
+        Asset childAsset = new Asset();
+        childAsset.setName(parentAsset.getName());
+        childAsset.setIdAssetCategory(parentAsset.getIdAssetCategory());
+        childAsset.setCodeAsset(ValueUtil.getStringByObject(obj.get("codeAsset")));
+        childAsset.setSalt(String.valueOf(UUID.randomUUID()));
+        childAsset.setIdDocumentAttack(parentAsset.getIdDocumentAttack());
+        childAsset.setIdDepartment(ValueUtil.getIntegerByObject(obj.get("idDepartment")));
+        childAsset.setIdLocation(ValueUtil.getIntegerByObject(obj.get("idLocation")));
+        childAsset.setIdUnit(parentAsset.getIdUnit());
+        childAsset.setIdProjects(parentAsset.getIdProjects());
+        childAsset.setPurpose(parentAsset.getPurpose());
+        childAsset.setNotes(parentAsset.getNotes());
+        childAsset.setDescription(parentAsset.getDescription());
+        childAsset.setQuantity(parentAsset.getQuantity());
+        childAsset.setFileAttack(parentAsset.getFileAttack());
+        String timeCurrent = String.valueOf(new Date().getTime());
+        childAsset.setTimeCreated(timeCurrent);
+        childAsset.setTimeModified(timeCurrent);
+        childAsset.setIdDepartmentDefault(parentAsset.getIdDepartmentDefault());
+        childAsset.setIdLevelTypeAsset(parentAsset.getIdLevelTypeAsset());
+        childAsset.setIdInstance(parentAsset.getIdInstance());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        childAsset.setIdUserCreated(csvcUser.getIdUser());
+        childAsset.setIdUserModified(csvcUser.getIdUser());
+        childAsset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
+        childAsset.setParent(parentAsset.getIdAsset());
+        return childAsset;
+    }
+
+    private Asset createDataAssetParentLot(Map<String, Object> dataAssetParent) {
+        Asset assetParent = new Asset();
+        assetParent.setName(ValueUtil.getStringByObject(dataAssetParent.get("name")));
+        assetParent.setIdAssetCategory(ValueUtil.getIntegerByObject(dataAssetParent.get("idAssetCategory")));
+        assetParent.setCodeAsset(ValueUtil.getStringByObject(dataAssetParent.get("codeAsset")));
+        assetParent.setSalt(String.valueOf(UUID.randomUUID()));
+        assetParent.setIdDocumentAttack(ValueUtil.getIntegerByObject(dataAssetParent.get("idDocumentAttack")));
+        assetParent.setIdDepartment(ValueUtil.getIntegerByObject(dataAssetParent.get("idDepartment")));
+        assetParent.setIdLocation(ValueUtil.getIntegerByObject(dataAssetParent.get("idLocation")));
+        assetParent.setIdUnit(ValueUtil.getIntegerByObject(dataAssetParent.get("idUnit")));
+        assetParent.setIdProjects(ValueUtil.getIntegerByObject(dataAssetParent.get("idProjects")));
+        assetParent.setPurpose(ValueUtil.getStringByObject(dataAssetParent.get("purpose")));
+        assetParent.setNotes(ValueUtil.getStringByObject(dataAssetParent.get("notes")));
+        assetParent.setDescription(ValueUtil.getStringByObject(dataAssetParent.get("description")));
+        assetParent.setQuantity(ValueUtil.getIntegerByObject(dataAssetParent.get("quantity")));
+        assetParent.setFileAttack(ValueUtil.getStringByObject(dataAssetParent.get("fileAttack")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetParent.setTimeCreated(timeCurrent);
+        assetParent.setTimeModified(timeCurrent);
+        assetParent.setIdDepartmentDefault(ValueUtil.getIntegerByObject(dataAssetParent.get("idDepartmentDefault")));
+        assetParent.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(dataAssetParent.get("idLevelTypeAsset")));
+        assetParent.setIdInstance(ValueUtil.getIntegerByObject(dataAssetParent.get("idInstance")));
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        assetParent.setIdUserCreated(csvcUser.getIdUser());
+        assetParent.setIdUserModified(csvcUser.getIdUser());
+        assetParent.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
+        return assetRepository.save(assetParent);
+    }
+
 
     private void saveAssetOriginalOfFormations(Asset asset, Map<String, Object> commonDataAsset) {
         List<HashMap<String,Object>> assetOriginalOfFormationData = (List<HashMap<String,Object>>) commonDataAsset.get(Constants.KEY_ASSET_ORIGINAL_OF_FORMATION);
@@ -906,11 +1122,8 @@ public class AssetServiceImpl implements AssetService {
         Asset asset = new Asset();
         asset.setName(ValueUtil.getStringByObject(dataAsset.get("name")));
         asset.setIdAssetCategory(ValueUtil.getIntegerByObject(dataAsset.get("idAssetCategory")));
-        if (StringUtils.isNotBlank(ValueUtil.getStringByObject(dataAsset.get("codeDepartment")))) {
-            asset.setCodeAsset(ValueUtil.getStringByObject(dataAsset.get("codeDepartment")) + "-" + UUID.randomUUID());
-        } else {
-            asset.setCodeAsset(String.valueOf(UUID.randomUUID()));
-        }
+        asset.setCodeAsset(ValueUtil.getStringByObject(dataAsset.get("codeAsset")));
+        asset.setSalt(String.valueOf(UUID.randomUUID()));
         asset.setIdDocumentAttack(ValueUtil.getIntegerByObject(dataAsset.get("idDocumentAttack")));
         asset.setIdDepartment(ValueUtil.getIntegerByObject(dataAsset.get("idDepartment")));
         asset.setIdLocation(ValueUtil.getIntegerByObject(dataAsset.get("idLocation")));
@@ -930,7 +1143,7 @@ public class AssetServiceImpl implements AssetService {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());
-        asset.setIdDepartmentOrigin(csvcUserService.getInformationUser().getIdDepartment());
+        asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
         return asset;
     }
 
