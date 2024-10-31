@@ -42,7 +42,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-@Log4j2
 public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     @PersistenceContext
