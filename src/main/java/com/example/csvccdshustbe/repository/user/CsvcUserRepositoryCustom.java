@@ -23,6 +23,7 @@ public interface CsvcUserRepositoryCustom {
     Page<FindAllUserUsedDto> findAllUserUsedDto(FindAllUserUsedRequest request, Pageable pageable);
     Optional<CsvcUser> findByUserName(String userName);
     List<Integer> findIdsUserByListUserName(List<String> userName);
+    List<String> findCodeUserByListUserName(List<String> userName);
     void updateStatusAccountUserByIds(List<Integer> idsUser, Integer status);
     Page<FindAllUserResponse> findAllUser(FindAllUserRequest request, Pageable pageable);
     Optional<FindDetailsUserResponse> findDetailsUserResponse(FindDetailsUserRequest request);

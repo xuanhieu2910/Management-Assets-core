@@ -252,6 +252,23 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
         }
         return idsUser;
     }
+    @Override
+    public List<String> findCodeUserByListUserName(List<String> userName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select csvc_user.code_user, user_name " +
+                "from csvc_user where user_name in (:userName) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("userName", userName);
+        List<String> codesUser = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                String codeUser = ValueUtil.getStringByObject(obj[0]);
+                codesUser.add(codeUser);
+            }
+        }
+        return codesUser;
+    }
 
     @Modifying
     @Transactional

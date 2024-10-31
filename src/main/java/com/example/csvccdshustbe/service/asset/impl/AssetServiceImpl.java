@@ -35,6 +35,7 @@ import com.example.csvccdshustbe.repository.province.ProvinceRepository;
 import com.example.csvccdshustbe.repository.typeDeclareAsset.TypeDeclareAssetRepository;
 import com.example.csvccdshustbe.repository.typeUse.TypeUseRepository;
 import com.example.csvccdshustbe.repository.units.UnitsRepository;
+import com.example.csvccdshustbe.repository.user.CsvcUserRepository;
 import com.example.csvccdshustbe.repository.wards.WardsRepository;
 import com.example.csvccdshustbe.request.asset.*;
 import com.example.csvccdshustbe.response.asset.*;
@@ -86,6 +87,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Log4j2
@@ -168,7 +170,8 @@ public class AssetServiceImpl implements AssetService {
     CurrentUsageRepository currentUsageRepository;
     @Autowired
     PositionNameRepository positionNameRepository;
-
+    @Autowired
+    CsvcUserRepository csvcUserRepository;
 
     @Transactional
     @Override
@@ -1547,6 +1550,15 @@ public class AssetServiceImpl implements AssetService {
         }
         return input;
     }
+    public String extractUserNameUsedAsset(String input) {
+        if (input != null && input.contains("(")) {
+            String firstPart = input.split("\\(")[0].trim();
+            if (!firstPart.isEmpty()) {
+                return firstPart;
+            }
+        }
+        return null;
+    }
     private boolean hasDataInRow(XSSFRow row, int numCellsToCheck) {
 
         int limit = Math.min(numCellsToCheck, row.getLastCellNum());
@@ -1599,6 +1611,7 @@ public class AssetServiceImpl implements AssetService {
                 List<Integer> medicineTypeListExcel = new ArrayList<>();
                 List<Integer> medicineGroupListExcel = new ArrayList<>();
                 List<Integer> originalOfFormationIds = new ArrayList<>();
+                List<String> userUsedInModuleExcel= new ArrayList<>();
                 List<OriginalOfFormation> originalOfFormationList = originalOfFormationRepository.findAll();
                 for (OriginalOfFormation original : originalOfFormationList) {
                     originalOfFormationIds.add(original.getIdOriginalOfFormation());
@@ -1636,6 +1649,11 @@ public class AssetServiceImpl implements AssetService {
                     String idPositionNameOtherVehicleExcel = (String) ExcelUtil.convertValue(row.getCell(82), CellType.STRING);
                     String idMedicineTypeExcel = (String) ExcelUtil.convertValue(row.getCell(93), CellType.STRING);
                     String idMedicineGroupExcel = (String) ExcelUtil.convertValue(row.getCell(94), CellType.STRING);
+                    String userNameUsedMachine = (String) ExcelUtil.convertValue(row.getCell(21), CellType.STRING);
+                    String userNameUsedCar = (String) ExcelUtil.convertValue(row.getCell(61), CellType.STRING);
+                    String userNameUsedOtherVehicle = (String) ExcelUtil.convertValue(row.getCell(80), CellType.STRING);
+                    String userNameUsedOtherAsset = (String) ExcelUtil.convertValue(row.getCell(91), CellType.STRING);
+
                     if (idInstanceCategoryExcel != null) {
 
                         instanceCategoryListExcel.add(extractIdSTTFromExcel(idInstanceCategoryExcel));
@@ -1730,6 +1748,19 @@ public class AssetServiceImpl implements AssetService {
                     if (idMedicineGroupExcel != null) {
                         medicineGroupListExcel.add(extractIdValueFromExcel(idMedicineGroupExcel));
                     }
+                    if (userNameUsedMachine != null) {
+                        userUsedInModuleExcel.add(extractUserNameUsedAsset(userNameUsedMachine));
+                    }
+                    if (userNameUsedCar != null) {
+                        userUsedInModuleExcel.add(extractUserNameUsedAsset(userNameUsedCar));
+                    }
+                    if (userNameUsedOtherVehicle != null) {
+                        userUsedInModuleExcel.add(extractUserNameUsedAsset(userNameUsedOtherVehicle));
+                    }
+                    if (userNameUsedOtherAsset != null) {
+                        userUsedInModuleExcel.add(extractUserNameUsedAsset(userNameUsedOtherAsset));
+                    }
+
                 }
                 Set<Integer> uniqueInstanceCategorySet = new HashSet<>(instanceCategoryListExcel);
                 instanceCategoryListExcel = new ArrayList<>(uniqueInstanceCategorySet);
@@ -1763,6 +1794,8 @@ public class AssetServiceImpl implements AssetService {
                 medicineTypeListExcel = new ArrayList<>(uniqueMedicineTypeAllSet);
                 Set<Integer> uniqueMedicineGroupSet = new HashSet<>(medicineGroupListExcel);
                 medicineGroupListExcel = new ArrayList<>(uniqueMedicineGroupSet);
+                Set<String> uniqueUserNameUsedSet = new HashSet<>(userUsedInModuleExcel);
+                userUsedInModuleExcel = new ArrayList<>(uniqueUserNameUsedSet);
 
                 List<AssetCategories> assetInstanceCategoryNamesList = assetCategoriesRepository.findAllAssetCategoriesByIdIn(instanceCategoryListExcel);
                 List<AssetCategories> assetCategoriesList = assetCategoriesRepository.findAllAssetCategoriesByIdIn(categoryListExcel);
@@ -1781,6 +1814,8 @@ public class AssetServiceImpl implements AssetService {
                 List<PositionName> positionNameList=positionNameRepository.findPositionNameByListId(positionNameAllListExcel);
                 List<MedicineType> medicineTypeList=medicineTypeRepository.findMedicineTypeByAllId(medicineTypeListExcel);
                 List<MedicineGroup> medicineGroupList=medicineGroupRepository.findMedicineGroupByAllId(medicineGroupListExcel);
+                List<String> codeUserNameUsedAssetList=csvcUserRepository.findCodeUserByListUserName(userUsedInModuleExcel);
+
                 // Kiểm tra xem số luong có khớp ko
                 if (categoryListExcel.size() != assetCategoriesList.size() || departmentAndDefaultListExcel.size() != departmentList.size()
                 || locationList.size() != locationListExcel.size() || unitsList.size() != unitsListExcel.size()
@@ -1789,17 +1824,23 @@ public class AssetServiceImpl implements AssetService {
                 || typeUseList.size() != typeUseListExcel.size() || provincesList.size() != provincesListExcel.size()
                         || districtsList.size() != districtListExcel.size() ||wardsList.size() != wardsListExcel.size()
                         || positionNameList.size() != positionNameAllListExcel.size() || medicineTypeList.size() != medicineTypeListExcel.size()
-                ||medicineGroupList.size() != medicineGroupListExcel.size() || instanceCategoryListExcel.size() != assetInstanceCategoryNamesList.size()) {
+                || medicineGroupList.size() != medicineGroupListExcel.size() || instanceCategoryListExcel.size() != assetInstanceCategoryNamesList.size()
+                || codeUserNameUsedAssetList.size() != userUsedInModuleExcel.size() ) {
                     throw new RuntimeException("You need update new file temple Upload Asset");
                 }
 
                 Map<String, OriginalOfFormation> originalOfFormationMap = ofFormationList.stream()
                         .collect(Collectors.toMap(OriginalOfFormation::getName, Function.identity(), (existing, replacement) -> existing));
-
+                Map<String, String> userNameToCodeMap = IntStream.range(0, userUsedInModuleExcel.size())
+                        .boxed()
+                        .collect(Collectors.toMap(
+                                userUsedInModuleExcel::get,      // Khóa là tên người dùng từ danh sách userUsedInModuleExcel
+                                codeUserNameUsedAssetList::get   // Giá trị là mã code tương ứng từ danh sách codeUserNameUsedAssetList
+                        ));
                 for (int i = start; i < Math.min(start + batchSize, allRows.size()); i++) {
                     XSSFRow row = allRows.get(i);
                     if (row != null) {
-                        assetRequests.add(convertExcelRowToMap(row,originalOfFormationMap));
+                        assetRequests.add(convertExcelRowToMap(row,originalOfFormationMap,userNameToCodeMap));
                     }
                 }
             }
@@ -1812,7 +1853,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
 
-    private Map<String, Object> convertExcelRowToMap(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap) {
+    private Map<String, Object> convertExcelRowToMap(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap, Map<String, String> userNameToCodeMap) {
         Map<String, Object> createAssetRequest = new HashMap<>();
 
         // Gọi hàm xử lý commonData
@@ -1820,17 +1861,17 @@ public class AssetServiceImpl implements AssetService {
         createAssetRequest.put(Constants.KEY_COMMON, commonData);
 
         // Gọi hàm xử lý modulesDataAsset
-        List<Map<String, Object>> modulesDataAsset = processModulesData(row, commonData);
+        List<Map<String, Object>> modulesDataAsset = processModulesData(row, commonData, userNameToCodeMap);
         createAssetRequest.put(Constants.KEY_MODULE, modulesDataAsset);
 
         Map<String, Object> DeclareData = processDeclareData(row,commonData);
         createAssetRequest.put(Constants.KEY_DECLARE_ASSET, DeclareData);
 
         Map<String, Object> originalData = processOriginalData(row);
-        createAssetRequest.put(Constants.KEY_ORIGINAL_ASSET, originalData);
+      createAssetRequest.put(Constants.KEY_ORIGINAL_ASSET, originalData);
 
         Map<String, Object> depreciationData = processDepreciationData(row);
-        createAssetRequest.put(Constants.KEY_DEPRECIATION, depreciationData);
+       createAssetRequest.put(Constants.KEY_DEPRECIATION, depreciationData);
         return createAssetRequest;
 
     }
@@ -1907,7 +1948,7 @@ public class AssetServiceImpl implements AssetService {
         return commonData;
     }
 
-    private List<Map<String, Object>> processModulesData(XSSFRow row, Map<String, Object> commonData) {
+    private List<Map<String, Object>> processModulesData(XSSFRow row, Map<String, Object> commonData, Map<String, String> userNameToCodeMap) {
         List<Map<String, Object>> modulesDataAsset = new ArrayList<>();
 //        Optional<AssetCategories> assetCategoriesInstanceOptional = assetCategoriesRepository.findAssetCategoryById((Integer) commonData.get("idInstance"));
         List<Modules> ModulesArray = modulesRepository.findAllModulesByIdAssetCategoryAndStatus((Integer) commonData.get("idInstance"), 1);
@@ -1931,7 +1972,7 @@ public class AssetServiceImpl implements AssetService {
                     moduleDataDetails.put("serial", ExcelUtil.convertValue(row.getCell(18), CellType.STRING));
                     moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(19), CellType.STRING));
                     moduleDataDetails.put("idCountryProducer",  extractIdValueFromExcel(countryProducer));
-                    moduleDataDetails.put("codeUser",  userOptionalMachine.isPresent() ? userOptionalMachine.get().getCodeUser() : null);
+                    moduleDataDetails.put("codeUser",  userNameToCodeMap.get(extractUserNameUsedAsset(userNameMachine)));
                     moduleDataDetails.put("idTypeUse", extractIdValueFromExcel(typeUse));
                     break;
                 case "GroundModule":
@@ -2014,7 +2055,7 @@ public class AssetServiceImpl implements AssetService {
                     moduleDataDetails.put("companyRegister", ExcelUtil.convertValue(row.getCell(58), CellType.STRING));
                     moduleDataDetails.put("source", ExcelUtil.convertValue(row.getCell(59), CellType.STRING));
                     moduleDataDetails.put("color", ExcelUtil.convertValue(row.getCell(60), CellType.STRING));
-                    moduleDataDetails.put("codeUser",  userOptionalCar.isPresent() ? userOptionalCar.get().getCodeUser() : null);
+                    moduleDataDetails.put("codeUser",  userNameToCodeMap.get(extractUserNameUsedAsset(userNameCar)));
                     moduleDataDetails.put("idTypeUse", extractIdValueFromExcel(typeUseCar));
                     moduleDataDetails.put("idPositionName", extractIdValueFromExcel(positionNameCar));
                     moduleDataDetails.put("idPositionNameOther", extractIdValueFromExcel(positionNameOtherCar));
@@ -2043,7 +2084,7 @@ public class AssetServiceImpl implements AssetService {
                     moduleDataDetails.put("companyRegister", ExcelUtil.convertValue(row.getCell(77), CellType.STRING));
                     moduleDataDetails.put("source", ExcelUtil.convertValue(row.getCell(78), CellType.STRING));
                     moduleDataDetails.put("color", ExcelUtil.convertValue(row.getCell(79), CellType.STRING));
-                    moduleDataDetails.put("codeUser",  userOptionalOtherVehicle.isPresent() ? userOptionalOtherVehicle.get().getCodeUser() : null);
+                    moduleDataDetails.put("codeUser",  userNameToCodeMap.get(extractUserNameUsedAsset(userNameOtherVehicle)));
                     moduleDataDetails.put("idTypeUse", extractIdValueFromExcel(typeUseOtherVehicle));
                     moduleDataDetails.put("idPositionName", extractIdValueFromExcel(positionNameVehicle));
                     break;
@@ -2070,7 +2111,7 @@ public class AssetServiceImpl implements AssetService {
                     moduleDataDetails.put("serial", ExcelUtil.convertValue(row.getCell(88), CellType.STRING));
                     moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(89), CellType.STRING));
                     moduleDataDetails.put("idCountryProducer", extractIdValueFromExcel(countryProducerOther));
-                    moduleDataDetails.put("codeUser",  userOptionalOther.isPresent() ? userOptionalOther.get().getCodeUser() : null);
+                    moduleDataDetails.put("codeUser",  userNameToCodeMap.get(extractUserNameUsedAsset(userNameOther)));
                     moduleDataDetails.put("idTypeUse", extractIdValueFromExcel(typeUseOther));
                     break;
                 case "MedicineModule":
