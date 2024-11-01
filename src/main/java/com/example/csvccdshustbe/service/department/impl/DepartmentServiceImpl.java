@@ -126,6 +126,15 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentRepository.findAllAssetDepartmentToDownload();
     }
 
+    @Override
+    public Department findDepartmentDefault() {
+        Optional<Department> departmentOptional = departmentRepository.findDepartmentByDefault();
+        if (departmentOptional.isEmpty()){
+            throw new NotFoundException("Don't exits department by id!");
+        }
+        return departmentOptional.get();
+    }
+
 
     @Override
     public Page<FindAllDepartmentSResponse> findAllDepartment(FindAllDepartmentRequest request) {

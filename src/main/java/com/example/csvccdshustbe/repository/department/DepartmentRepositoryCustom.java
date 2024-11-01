@@ -43,4 +43,5 @@ public interface DepartmentRepositoryCustom {
   findAllDepartmentLocationToDownloadByIdsDepartment(List<Integer> idsDepartment);
 
   List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload();
+    Optional<Department> findDepartmentByDefault();
 }

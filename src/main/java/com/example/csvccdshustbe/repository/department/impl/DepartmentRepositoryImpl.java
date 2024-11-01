@@ -648,6 +648,35 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
         return dtos;
     }
 
+    @Override
+    public Optional<Department> findDepartmentByDefault() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select de.id_department, de.name, de.code, " +
+                "       de.short_name, de.description, de.parent, " +
+                "       de.time_created, de.time_modified, de.status " +
+                "from department de " +
+                "where de.parent is null and de.status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", Constants.DEPARTMENT_ACTIVE_STATUS);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                Department department = new Department();
+                department.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
+                department.setName(ValueUtil.getStringByObject(obj[1]));
+                department.setCode(ValueUtil.getStringByObject(obj[2]));
+                department.setShortName(ValueUtil.getStringByObject(obj[3]));
+                department.setDescription(ValueUtil.getStringByObject(obj[4]));
+                department.setParent(ValueUtil.getIntegerByObject(obj[5]));
+                department.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                department.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                department.setStatus(ValueUtil.getIntegerByObject(obj[8]));
+                return Optional.of(department);
+            }
+        }
+        return Optional.empty();
+    }
+
 
     private void setParameterFindAllDepartment(FindAllDepartmentRequest request, Query query) {
         query.setParameter("idDepartment", request.getIdDepartment());

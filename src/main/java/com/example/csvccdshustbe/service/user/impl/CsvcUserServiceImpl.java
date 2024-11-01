@@ -313,12 +313,15 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     }
 
     private UserRole createUserRoleByRegisterAccount(Integer idUser, Integer idRole){
+        Department departmentDefault = departmentService.findDepartmentDefault();
         String timeCurrently = String.valueOf(new Timestamp(new Date().getTime()).getTime());
         UserRole userRole = new UserRole();
         userRole.setIdUser(idUser);
         userRole.setIdRole(idRole);
         userRole.setTimeCreated(timeCurrently);
         userRole.setTimeModified(timeCurrently);
+        userRole.setIdDepartment(departmentDefault.getIdDepartment());
+        userRole.setPicked(Constants.IS_PICKED);
         return userRole;
     }
 }

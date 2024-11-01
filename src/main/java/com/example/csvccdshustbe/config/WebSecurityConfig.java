@@ -101,7 +101,7 @@ public class WebSecurityConfig{
             if (userDetails.isEmpty()){
                 try {
                     userDetails = Optional.of(csvcUserService.createNewUser(userName,fullName));
-                    log.info("Create user success by method sso azure!, user details: " + userDetails.toString());
+                    log.info("Create user success by method sso azure!, user details: " + userDetails.get().toString());
                 } catch (RoleException e) {
                     throw new RuntimeException(e);
                 }

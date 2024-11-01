@@ -30,4 +30,5 @@ public interface DepartmentService {
     List<FindAllDepartmentByCodeAndVisibleDto> findAllStructureDepartmentByIdDepartment(Integer department);
     List<Integer> findIdsStructureDepartment(Integer department);
     List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload();
+    Department findDepartmentDefault();
 }
