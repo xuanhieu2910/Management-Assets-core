@@ -2,10 +2,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.asset.FinaAllAssetToIncreaseRequest;
-import com.example.csvccdshustbe.request.asset.FindAllAssetDocumentRequest;
-import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
-import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
+import com.example.csvccdshustbe.request.asset.*;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,10 +40,8 @@ public class AssetController {
             assetService.createAsset(createAssetRequest);
             return ApiResponseDto.createdWithMessage("Create asset success!", HttpStatus.OK);
         } catch (ValidateFiledException | JsonProcessingException e ){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -57,10 +52,8 @@ public class AssetController {
             assetService.createAssetLot(createAssetRequest);
             return ApiResponseDto.createdWithMessage("Create asset lot success!", HttpStatus.OK);
         } catch (ValidateFiledException | JsonProcessingException e ){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -72,25 +65,50 @@ public class AssetController {
             assetService.updateAsset(updateAssetRequest);
             return ApiResponseDto.createdWithMessage("Update asset success!", HttpStatus.OK);
         }catch (ValidateFiledException | JsonProcessingException | NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PutMapping("/update-lot")
+    public ResponseEntity<?> updateAssetLot(@RequestBody HashMap<String,Object> updateAssetRequest){
+        try {
+            assetService.updateAssetLot(updateAssetRequest);
+            return ApiResponseDto.createdWithMessage("Update asset lot success!", HttpStatus.OK);
+        } catch (ValidateFiledException | JsonProcessingException | NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
 
 
+
     @GetMapping
-    public ResponseEntity<?> findAssetByCode(@RequestParam("salt") String saltAsset){
+    public ResponseEntity<?> findAssetBySalt(@RequestParam("salt") String saltAsset){
         try {
             return ApiResponseDto.createdWithState(assetService.findDetailsAssetBySaltAsset(saltAsset),
                     "Find asset details success!", HttpStatus.OK);
         } catch (NotFoundException e) {
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/children")
+    public ResponseEntity<?> getAssetChildrenBySaltParent(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetLotChildrenRequest findAllAssetRequest){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllAssetLotChildren(findAllAssetRequest),
+                    "Find all asset lot children success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -106,10 +124,8 @@ public class AssetController {
             return ApiResponseDto.createdWithState(assetService.findAllAsset(findAllAssetRequest),
                     "Find all asset success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -118,6 +134,18 @@ public class AssetController {
     public ResponseEntity<?> deleteAsset(@RequestParam("salt-asset") String saltAsset){
         try {
             assetService.deleteAssetBySaltAsset(saltAsset);
+            return ApiResponseDto.createdWithMessage("Delete asset success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @DeleteMapping("/asset-lot")
+    public ResponseEntity<?> deleteAssetLot(@RequestParam("salt-asset") String saltAsset){
+        try {
+            assetService.deleteAssetBySaltAssetLot(saltAsset);
             return ApiResponseDto.createdWithMessage("Delete asset success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);

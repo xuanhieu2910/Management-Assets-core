@@ -2,7 +2,12 @@ package com.example.csvccdshustbe.utility;
 
 public class Constants {
 
+    /**
+     * Constants Azure Microsoft Ad
+     * */
+    public final static Integer QUANTITY_DEFAULT = 1;
 
+    /*-----------------------------------------------------*/
 
     /**
      * Constants Azure Microsoft Ad

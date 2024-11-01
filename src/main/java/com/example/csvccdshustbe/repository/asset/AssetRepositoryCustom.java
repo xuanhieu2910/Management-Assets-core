@@ -4,10 +4,7 @@ import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
 import com.example.csvccdshustbe.entity.Asset;
-import com.example.csvccdshustbe.request.asset.FinaAllAssetToIncreaseRequest;
-import com.example.csvccdshustbe.request.asset.FindAllAssetDocumentRequest;
-import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
-import com.example.csvccdshustbe.request.asset.FindAllGroundAssetRequest;
+import com.example.csvccdshustbe.request.asset.*;
 import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +15,7 @@ import java.util.Optional;
 public interface AssetRepositoryCustom {
 
     Page<FindAllAssetDto> findAllAssetDtoByIdsDepartment(FindAllAssetRequest request, Pageable pageable);
+    Page<FindAllAssetDto> findAllAssetLotChildrenDtoByIdsDepartment(FindAllAssetLotChildrenRequest request, Pageable pageable);
 
     Optional<AssetBluePrintDto> findDetailAssetBySaltAsset(String saltAsset);
 
@@ -35,4 +33,5 @@ public interface AssetRepositoryCustom {
 
     Optional<Asset> findAssetByIdDepartmentOrigin(Integer idDepartmentOrigin);
     Optional<Asset> findAssetLotByIdDepartmentOrigin(Integer idDepartmentOrigin);
+    List<Asset> findAllAssetChildrenByParentId(Integer idAsset);
 }
