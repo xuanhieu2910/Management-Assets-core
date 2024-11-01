@@ -433,12 +433,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        lo.id_location idLocation, lo.name nameLocation,     " +
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt   " +
                 "from asset asset    " +
-                "     inner join asset_categories assetCategories     " +
+                "     left join asset_categories assetCategories     " +
                 "             on asset.id_asset_category = assetCategories.id_asset_category     " +
-                "     inner join department de on asset.id_department = de.id_department     " +
+                "     left join department de on asset.id_department = de.id_department     " +
                 "     left join location lo on asset.id_location = lo.id_location    " +
-                "     inner join data_document dd on asset.id_asset = dd.id_asset    " +
-                "     inner join document do on dd.id_document = do.id_document    " +
+                "     left join data_document dd on asset.id_asset = dd.id_asset    " +
+                "     left join document do on dd.id_document = do.id_document    " +
                 "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)    " +
                 "and do.code = :codeDocument  ");
         setConditionFindAllAssetDocument(request, sb);
@@ -890,12 +890,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append("select count(0) count  " +
                 "from asset asset  " +
-                "      inner join asset_categories assetCategories     " +
+                "      left join asset_categories assetCategories     " +
                 "              on asset.id_asset_category = assetCategories.id_asset_category     " +
-                "      inner join department de on asset.id_department = de.id_department     " +
+                "      left join department de on asset.id_department = de.id_department     " +
                 "      left join location lo on asset.id_location = lo.id_location  " +
-                "      inner join data_document dd on asset.id_asset = dd.id_asset  " +
-                "      inner join document do on dd.id_document = do.id_document  " +
+                "      left join data_document dd on asset.id_asset = dd.id_asset  " +
+                "      left join document do on dd.id_document = do.id_document  " +
                 "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
                 "and do.code = :codeDocument ");
         setConditionFindAllAssetDocument(request, sb);
