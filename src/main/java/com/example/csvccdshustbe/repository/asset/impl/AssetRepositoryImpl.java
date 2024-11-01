@@ -28,6 +28,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -37,9 +38,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Log4j2
 public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     @PersistenceContext
@@ -57,15 +60,17 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         asset.time_created, asset.time_modified,  " +
                 "         asset.parent, asset.salt  " +
                 "  from asset asset     " +
-                "      inner join asset_categories assetCategories     " +
+                "      left join asset_categories assetCategories     " +
                 "              on asset.id_asset_category = assetCategories.id_asset_category     " +
-                "      inner join department de on asset.id_department = de.id_department     " +
+                "      left join department de on asset.id_department = de.id_department     " +
                 "      left join location lo on asset.id_location = lo.id_location     " +
                 "  where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  ");
         setConditionFindAllAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAsset(request, query);
         PageUtils.buildQuery(pageable, query);
+        log.info("Start query ... ");
+        long timeStart = new Date().getTime();
         List<Object[]> result = query.getResultList();
         List<FindAllAssetDto> responses = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
@@ -89,6 +94,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 responses.add(findAllAssetDto);
             }
         }
+        log.info("End query ....." + (new Date().getTime() - timeStart));
         return new PageImpl<>(responses, pageable, countFindAllAsset(request));
     }
 
@@ -853,9 +859,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) " +
                 "from asset asset " +
-                "    inner join asset_categories assetCategories " +
+                "    left join asset_categories assetCategories " +
                 "            on asset.id_asset_category = assetCategories.id_asset_category " +
-                "    inner join department de on asset.id_department = de.id_department " +
+                "    left join department de on asset.id_department = de.id_department " +
                 "    left join location lo on asset.id_location = lo.id_location " +
                 "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal) ");
         setConditionFindAllAsset(request, sb);

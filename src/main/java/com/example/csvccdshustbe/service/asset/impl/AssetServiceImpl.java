@@ -192,7 +192,11 @@ public class AssetServiceImpl implements AssetService {
     public Page<FindAllAssetResponse> findAllAsset(FindAllAssetRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         setIdsDepartmentOriginal(request);
+        log.info("Start time query.....");
+        long timeStart = new Date().getTime();
         Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoByIdsDepartment(request, pageable);
+        log.info("Time caculated: " + (new Date().getTime() - timeStart));
+        log.info("End time query .....");
         return new PageImpl<>(convertToFindAllAssetResponse(findAllAssetDtos.get().collect(Collectors.toList())),
                     pageable, findAllAssetDtos.getTotalElements());
     }
@@ -911,6 +915,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private List<FindAllAssetResponse> convertToFindAllAssetResponse(List<FindAllAssetDto> collect) {
+        log.info(" Start convert asset ..... ");
         List<FindAllAssetResponse> responses = new ArrayList<>();
         for (FindAllAssetDto dto : collect) {
             FindAllAssetResponse response = new FindAllAssetResponse();
@@ -924,6 +929,7 @@ public class AssetServiceImpl implements AssetService {
             response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
             responses.add(response);
         }
+        log.info(" End convert asset ..... ");
         return responses;
     }
 
