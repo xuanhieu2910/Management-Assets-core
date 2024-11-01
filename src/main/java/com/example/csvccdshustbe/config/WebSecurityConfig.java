@@ -91,15 +91,17 @@ public class WebSecurityConfig{
         log.info("Oidc user service start....!");
         final OidcUserService delegate = new OidcUserService();
         return (userRequest) -> {
+            log.info("Handling Azure user ....................");
             OidcUser oidcUser = delegate.loadUser(userRequest);
             String userName = oidcUser.getIdToken().getClaimAsString("preferred_username").trim().toLowerCase();
             String fullName = oidcUser.getIdToken().getClaimAsString("name").trim().toLowerCase();
+            log.info("User Azure: {}, {}", userName, fullName);
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
             Optional<CsvcUser> userDetails = csvcUserService.findByUserName(userName);
             if (userDetails.isEmpty()){
                 try {
                     userDetails = Optional.of(csvcUserService.createNewUser(userName,fullName));
-                    log.info("Create user success by method sso azure!");
+                    log.info("Create user success by method sso azure!, user details: " + userDetails.toString());
                 } catch (RoleException e) {
                     throw new RuntimeException(e);
                 }
@@ -107,6 +109,7 @@ public class WebSecurityConfig{
             if (userDetails.isPresent() && !userDetails.get().isAccountNonLocked()) {
                 throw new UsernameNotFoundException("User is locked!");
             }
+            log.info("Handling authorization ....................");
             Map<String, Object> claims = new HashMap<>();
             claims.put(Constants.CLAIMS_INFORMATION_USER,userDetails.get());
             OidcUserInfo oidcUserInfo = new OidcUserInfo(claims);
