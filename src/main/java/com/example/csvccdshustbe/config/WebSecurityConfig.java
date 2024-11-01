@@ -32,6 +32,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.*;
 
@@ -41,7 +43,7 @@ import java.util.*;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity
-public class WebSecurityConfig{
+public class WebSecurityConfig implements WebMvcConfigurer {
 
     @Autowired
     UnauthorizedEntryPoint unauthorizedEntryPoint;
@@ -57,6 +59,8 @@ public class WebSecurityConfig{
     CsvcUserService csvcUserService;
     @Autowired
     OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    @Autowired
+    InterceptLog logInterceptor;
 
     public final static String PREFERRED_USERNAME = "preferred_username";
     public final static String INFORMATION_USER = "informationUser";
@@ -142,4 +146,8 @@ public class WebSecurityConfig{
         return source;
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(logInterceptor);
+    }
 }

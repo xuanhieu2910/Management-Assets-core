@@ -192,11 +192,7 @@ public class AssetServiceImpl implements AssetService {
     public Page<FindAllAssetResponse> findAllAsset(FindAllAssetRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         setIdsDepartmentOriginal(request);
-        log.info("Start time query.....");
-        long timeStart = new Date().getTime();
         Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoByIdsDepartment(request, pageable);
-        log.info("Time caculated: " + (new Date().getTime() - timeStart));
-        log.info("End time query .....");
         return new PageImpl<>(convertToFindAllAssetResponse(findAllAssetDtos.get().collect(Collectors.toList())),
                     pageable, findAllAssetDtos.getTotalElements());
     }
@@ -704,7 +700,8 @@ public class AssetServiceImpl implements AssetService {
     private void updateOriginalOfFormation(Asset asset, Map<String, Object> commonDataAsset) {
         List<AssetOriginalOfFormation> originalOfFormations =
                 assetOriginalOfFormationService.findOriginalOfFormationByIdAsset(asset.getIdAsset());
-        List<Map<String,Object>> assetOriginalOfFormationData = (List<Map<String, Object>>) commonDataAsset.get(Constants.KEY_ASSET_ORIGINAL_OF_FORMATION);
+        List<Map<String,Object>> assetOriginalOfFormationData =
+                (List<Map<String, Object>>) commonDataAsset.get(Constants.KEY_ASSET_ORIGINAL_OF_FORMATION);
         deleteAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData, asset);
         createAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData, asset);
         updateAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData);
@@ -714,7 +711,8 @@ public class AssetServiceImpl implements AssetService {
         for (Asset asset: assetChildren) {
             List<AssetOriginalOfFormation> originalOfFormations =
                     assetOriginalOfFormationService.findOriginalOfFormationByIdAsset(asset.getIdAsset());
-            List<Map<String, Object>> assetOriginalOfFormationData = (List<Map<String, Object>>) commonDataAsset.get(Constants.KEY_ASSET_ORIGINAL_OF_FORMATION);
+            List<Map<String, Object>> assetOriginalOfFormationData =
+                    (List<Map<String, Object>>) commonDataAsset.get(Constants.KEY_ASSET_ORIGINAL_OF_FORMATION);
             deleteAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData, asset);
             createAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData, asset);
             updateAssetOriginalOfFormation(originalOfFormations, assetOriginalOfFormationData);

@@ -69,8 +69,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAsset(request, query);
         PageUtils.buildQuery(pageable, query);
-        log.info("Start query ... ");
-        long timeStart = new Date().getTime();
         List<Object[]> result = query.getResultList();
         List<FindAllAssetDto> responses = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
@@ -94,7 +92,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 responses.add(findAllAssetDto);
             }
         }
-        log.info("End query ....." + (new Date().getTime() - timeStart));
         return new PageImpl<>(responses, pageable, countFindAllAsset(request));
     }
 

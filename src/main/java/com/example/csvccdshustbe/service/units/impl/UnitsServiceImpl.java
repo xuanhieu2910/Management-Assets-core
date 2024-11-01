@@ -13,6 +13,7 @@ import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ import org.webjars.NotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+@Log4j2
 @Service
 public class UnitsServiceImpl implements UnitsService {
 
