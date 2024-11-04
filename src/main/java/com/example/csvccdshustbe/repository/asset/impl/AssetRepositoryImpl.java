@@ -110,7 +110,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "             on asset.id_asset_category = assetCategories.id_asset_category        " +
                 "     inner join department de on asset.id_department = de.id_department        " +
                 "     left join location lo on asset.id_location = lo.id_location       " +
-                "     inner join (select * from asset where asset.salt = :slatAssetParent ) assetParent   " +
+                "     inner join (select * from asset where asset.salt = :saltAssetParent ) assetParent   " +
                 "         on asset.parent = assetParent.id_asset  " +
                 " where 1 = 1  and asset.id_department_origin in (:idsDepartmentOriginal)   ");
         setConditionFindAllAssetLotChildren(request, sb);
@@ -145,6 +145,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAssetLotChildren(FindAllAssetLotChildrenRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("saltAssetParent", request.getSaltAssetParent());
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }
@@ -877,7 +878,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "             on asset.id_asset_category = assetCategories.id_asset_category        " +
                 "     inner join department de on asset.id_department = de.id_department  " +
                 "     left join location lo on asset.id_location = lo.id_location  " +
-                "     inner join (select * from asset where asset.salt = :slatAssetParent ) assetParent  " +
+                "     inner join (select * from asset where asset.salt = :saltAssetParent ) assetParent  " +
                 "         on asset.parent = assetParent.id_asset  " +
                 " where 1 = 1  and asset.id_department_origin in (:idsDepartmentOriginal) ");
         setConditionFindAllAssetLotChildren(request, sb);
