@@ -171,7 +171,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             }
             sb.append(" ").append(request.getSortOrder());
         } else {
-            sb.append(" ORDER BY asset.id_asset desc ");
+            sb.append(" ORDER BY asset.id_asset ");
         }
     }
 

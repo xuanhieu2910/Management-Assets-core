@@ -350,7 +350,13 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private void updateDataAssetLot(Map<String, Object> dataUpdateAssetRequest) throws ValidateFiledException, IllegalAccessException {
-        List<Asset> assetChildren = updateCommonDataAssetLot(dataUpdateAssetRequest);
+        Asset assetParent = updateAttributeAssetLotParent(dataUpdateAssetRequest);
+        updateAssetDepreciation(dataUpdateAssetRequest, assetParent);
+        updateModulesDataAsset(dataUpdateAssetRequest, assetParent);
+        updateOriginalDataAsset(dataUpdateAssetRequest, assetParent);
+        updateDeclareDataAsset(dataUpdateAssetRequest, assetParent);
+
+        List<Asset> assetChildren = updateCommonDataAssetLot(dataUpdateAssetRequest, assetParent);
         updateAssetDepreciationLot(dataUpdateAssetRequest, assetChildren);
         updateModulesDataAssetLot(dataUpdateAssetRequest, assetChildren);
         updateOriginalDataAssetLot(dataUpdateAssetRequest, assetChildren);
@@ -622,16 +628,10 @@ public class AssetServiceImpl implements AssetService {
         return asset.get();
     }
 
-    private List<Asset> updateCommonDataAssetLot(Map<String, Object> dataUpdateAssetRequest) throws ValidateFiledException {
+    private List<Asset> updateCommonDataAssetLot(Map<String, Object> dataUpdateAssetRequest, Asset assetParent) throws ValidateFiledException {
         Map<String,Object> commonDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_COMMON);
-        log.info("Start update common data asset by salt asset = " + ValueUtil.getStringByObject(commonDataAsset.get("salt")));
-        Optional<Asset> assetParent = assetRepository.findAssetBySalt(ValueUtil.getStringByObject(commonDataAsset.get("salt")));
-        if (assetParent.isEmpty()) {
-            throw new NotFoundException("Don't exits asset by salt!");
-        }
-        updateAttributeAssetLotParent(commonDataAsset, assetParent.get());
         List<Map<String, Object>> dataAssetChildren = (List<Map<String, Object>>)dataUpdateAssetRequest.get(Constants.KEY_CHILDREN_DISTRIBUTION);
-        List<Asset> assetChildren = updateAttributeAssetChildrenLot(dataAssetChildren,assetParent.get());
+        List<Asset> assetChildren = updateAttributeAssetChildrenLot(dataAssetChildren,assetParent);
         updateOriginalOfFormationLot(assetChildren, commonDataAsset);
         return assetChildren;
     }
@@ -806,27 +806,34 @@ public class AssetServiceImpl implements AssetService {
         assetRepository.save(asset);
     }
 
-    private void updateAttributeAssetLotParent(Map<String, Object> commonDataAsset, Asset assetParent) {
-        assetParent.setName(ValueUtil.getStringByObject(commonDataAsset.get("name")));
-        assetParent.setIdAssetCategory(ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory")));
-        assetParent.setIdDocumentAttack(ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack")));
-        assetParent.setCodeAsset(ValueUtil.getStringByObject(commonDataAsset.get("codeAsset")));
-        assetParent.setIdDepartment(ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment")));
-        assetParent.setIdLocation(ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation")));
-        assetParent.setIdUnit(ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit")));
-        assetParent.setIdProjects(ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects")));
-        assetParent.setPurpose(ValueUtil.getStringByObject(commonDataAsset.get("purpose")));
-        assetParent.setNotes(ValueUtil.getStringByObject(commonDataAsset.get("notes")));
-        assetParent.setDescription(ValueUtil.getStringByObject(commonDataAsset.get("description")));
-        assetParent.setQuantity(ValueUtil.getIntegerByObject(commonDataAsset.get("quantity")));
-        assetParent.setFileAttack(ValueUtil.getStringByObject(commonDataAsset.get("fileAttack")));
+    private Asset updateAttributeAssetLotParent(Map<String, Object> dataUpdateAssetRequest) {
+        Map<String,Object> commonDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_COMMON);
+        log.info("Start update common data asset by salt asset = " + ValueUtil.getStringByObject(commonDataAsset.get("salt")));
+        Optional<Asset> assetParent = assetRepository.findAssetBySalt(ValueUtil.getStringByObject(commonDataAsset.get("salt")));
+        if (assetParent.isEmpty()) {
+            throw new NotFoundException("Don't exits asset by salt!");
+        }
+        assetParent.get().setName(ValueUtil.getStringByObject(commonDataAsset.get("name")));
+        assetParent.get().setIdAssetCategory(ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory")));
+        assetParent.get().setIdDocumentAttack(ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack")));
+        assetParent.get().setCodeAsset(ValueUtil.getStringByObject(commonDataAsset.get("codeAsset")));
+        assetParent.get().setIdDepartment(ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment")));
+        assetParent.get().setIdLocation(ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation")));
+        assetParent.get().setIdUnit(ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit")));
+        assetParent.get().setIdProjects(ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects")));
+        assetParent.get().setPurpose(ValueUtil.getStringByObject(commonDataAsset.get("purpose")));
+        assetParent.get().setNotes(ValueUtil.getStringByObject(commonDataAsset.get("notes")));
+        assetParent.get().setDescription(ValueUtil.getStringByObject(commonDataAsset.get("description")));
+        assetParent.get().setDescription(ValueUtil.getStringByObject(commonDataAsset.get("description")));
+        assetParent.get().setQuantity(ValueUtil.getIntegerByObject(commonDataAsset.get("quantity")));
+        assetParent.get().setFileAttack(ValueUtil.getStringByObject(commonDataAsset.get("fileAttack")));
         String timeCurrent = String.valueOf(new Date().getTime());
-        assetParent.setTimeModified(timeCurrent);
-        assetParent.setIdDepartmentDefault(ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartmentDefault")));
-        assetParent.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(commonDataAsset.get("idLevelTypeAsset")));
+        assetParent.get().setTimeModified(timeCurrent);
+        assetParent.get().setIdDepartmentDefault(ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartmentDefault")));
+        assetParent.get().setIdLevelTypeAsset(ValueUtil.getIntegerByObject(commonDataAsset.get("idLevelTypeAsset")));
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        assetParent.setIdUserModified(csvcUser.getIdUser());
-        assetRepository.save(assetParent);
+        assetParent.get().setIdUserModified(csvcUser.getIdUser());
+        return assetRepository.save(assetParent.get());
     }
 
 
@@ -1079,7 +1086,12 @@ public class AssetServiceImpl implements AssetService {
 
     private void storeNewAssetLot(Map<String, Object> createAssetLotRequest) throws ValidateFiledException {
         log.info("Init store asset");
-        List<Asset> assetChildren = storeCommonDataAssetLot(createAssetLotRequest);
+        Asset assetParent = createDataAssetParentLot(createAssetLotRequest);
+        storeDepreciation(createAssetLotRequest, assetParent);
+        storeModulesDataAsset(createAssetLotRequest, assetParent);
+        storeOriginalDataAsset(createAssetLotRequest, assetParent);
+        storeDeclareDataAsset(createAssetLotRequest, assetParent);
+        List<Asset> assetChildren = storeCommonDataAssetChildrenLot(createAssetLotRequest,assetParent);
         storeDepreciationLot(createAssetLotRequest, assetChildren);
         storeModulesDataAssetLot(createAssetLotRequest, assetChildren);
         storeOriginalDataAssetLot(createAssetLotRequest, assetChildren);
@@ -1240,10 +1252,9 @@ public class AssetServiceImpl implements AssetService {
         return asset;
     }
 
-    private List<Asset> storeCommonDataAssetLot(Map<String, Object> createAssetLotRequest) {
+    private List<Asset> storeCommonDataAssetChildrenLot(Map<String, Object> createAssetLotRequest, Asset assetParentLot) {
         log.info("Storing common data asset LOT ");
         Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetLotRequest.get(Constants.KEY_COMMON);
-        Asset assetParentLot = createDataAssetParentLot(commonDataAsset);
         List<Map<String, Object>> dataAssetChildrenLot = (List<Map<String, Object>>) commonDataAsset.get(Constants.KEY_CHILDREN_DISTRIBUTION);
         List<Asset> assetChildren = createAssetChildren(assetParentLot,dataAssetChildrenLot);
         saveAssetChildrenOriginalOfFormations(assetChildren, commonDataAsset);
@@ -1312,7 +1323,8 @@ public class AssetServiceImpl implements AssetService {
         return childAsset;
     }
 
-    private Asset createDataAssetParentLot(Map<String, Object> dataAssetParent) {
+    private Asset createDataAssetParentLot(Map<String, Object> createAssetLotRequest) {
+        Map<String,Object> dataAssetParent = (Map<String, Object>) createAssetLotRequest.get(Constants.KEY_COMMON);
         Asset assetParent = new Asset();
         assetParent.setName(ValueUtil.getStringByObject(dataAssetParent.get("name")));
         assetParent.setIdAssetCategory(ValueUtil.getIntegerByObject(dataAssetParent.get("idAssetCategory")));
