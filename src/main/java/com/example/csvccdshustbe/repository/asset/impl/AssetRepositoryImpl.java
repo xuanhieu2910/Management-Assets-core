@@ -57,7 +57,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,     " +
                 "         lo.id_location idLocation, lo.name nameLocation,     " +
                 "         asset.time_created, asset.time_modified,  " +
-                "         asset.parent, asset.salt  " +
+                "         asset.parent, asset.salt, asset.quantity  " +
                 "  from asset asset     " +
                 "      left join asset_categories assetCategories     " +
                 "              on asset.id_asset_category = assetCategories.id_asset_category     " +
@@ -88,6 +88,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
                 findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
+                findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[15]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -859,7 +860,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "            on asset.id_asset_category = assetCategories.id_asset_category " +
                 "    left join department de on asset.id_department = de.id_department " +
                 "    left join location lo on asset.id_location = lo.id_location " +
-                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal) ");
+                "where 1 = 1 and asset.parent is null and asset.id_department_origin in (:idsDepartmentOriginal) ");
         setConditionFindAllAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAsset(request, query);

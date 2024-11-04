@@ -22,6 +22,7 @@ public class FindAllAssetDto {
     private String nameLocation;
     private Long timeCreated;
     private Long timeModified;
+    private Integer quantity;
     private Integer parent;
     private String salt;
 }

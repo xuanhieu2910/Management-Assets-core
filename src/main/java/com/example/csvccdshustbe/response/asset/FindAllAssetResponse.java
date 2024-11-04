@@ -28,4 +28,6 @@ public class FindAllAssetResponse {
     private Integer parent;
     @JsonProperty("salt")
     private String salt;
+    @JsonProperty("quantity")
+    private Integer quantity;
 }
