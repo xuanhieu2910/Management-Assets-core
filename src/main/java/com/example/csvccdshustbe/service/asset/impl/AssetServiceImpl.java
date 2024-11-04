@@ -913,7 +913,6 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private List<FindAllAssetResponse> convertToFindAllAssetResponse(List<FindAllAssetDto> collect) {
-        log.info(" Start convert asset ..... ");
         List<FindAllAssetResponse> responses = new ArrayList<>();
         for (FindAllAssetDto dto : collect) {
             FindAllAssetResponse response = new FindAllAssetResponse();
@@ -927,7 +926,6 @@ public class AssetServiceImpl implements AssetService {
             response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
             responses.add(response);
         }
-        log.info(" End convert asset ..... ");
         return responses;
     }
 
