@@ -1,10 +1,8 @@
 package com.example.csvccdshustbe.service.assetCategories.impl;
 
 import com.example.csvccdshustbe.dto.assetCategories.*;
-import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.entity.CsvcUser;
-import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -32,6 +30,8 @@ import org.webjars.NotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+
 @Service
 public class AssetCategoriesImpl implements AssetCategoriesService {
 
@@ -54,6 +54,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             FindAllAssetCategoriesVisibleRequest request) throws ValidateFiledException {
         validateFindAllAssetCategoriesByCodeAssetCategories(request);
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+
         Page<FindAllAssetCategoriesByCodeAndVisibleDto> categories =
                 assetCategoriesRepository.findAllAssetCategoriesByCodeAndVisible(pageable, request);
         return new PageImpl<>(convertToFindAllAssetCategoriesByCodeAndVisible(categories.get().collect(Collectors.toList())),

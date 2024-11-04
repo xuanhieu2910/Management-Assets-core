@@ -45,7 +45,6 @@ import com.example.csvccdshustbe.utility.FileUtil;
 import com.example.csvccdshustbe.utility.PropertiesUtil;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -55,13 +54,10 @@ import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -294,9 +290,9 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public String downLoadFileImportAsset() throws IOException {
-        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static") + SEPARATOR
-                + "Sample_Excel_Import_Asset.xlsx";
-
+//        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static") + SEPARATOR
+//                + "Sample_Excel_Import_Asset.xlsx";
+        String fileExcel = "D:\\CompanyBk\\CSVC\\csvc-hust\\src\\main\\resources\\static\\Sample_Excel_Import_Asset.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
 
         Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory =
