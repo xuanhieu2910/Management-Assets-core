@@ -17,4 +17,5 @@ public class FindAllDocumentAssetDto {
     private String description;
     private String codeDepartment;
     private String nameDepartment;
+    private String salt;
 }

@@ -221,6 +221,9 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getCodeAsset())){
             query.setParameter("codeAsset", request.getCodeAsset());
         }
+        if (ObjectUtils.isNotEmpty(request.getSalt())){
+            query.setParameter("salt", request.getSalt());
+        }
 
     }
 
@@ -239,6 +242,9 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         }
         if (ObjectUtils.isNotEmpty(request.getCodeAsset())){
             sb.append(" and asset.code_asset = :codeAsset ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getSalt())){
+            sb.append(" and asset.salt = :salt ");
         }
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");

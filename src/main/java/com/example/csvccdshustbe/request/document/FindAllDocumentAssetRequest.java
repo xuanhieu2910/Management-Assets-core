@@ -22,5 +22,6 @@ public class FindAllDocumentAssetRequest extends RequestPageBase {
     private String timeCreated;
     private String timeDocument;
     private String description;
+    private String salt;
     private List<Integer> idsDepartmentOriginal;
 }
