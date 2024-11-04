@@ -375,18 +375,6 @@ public class AssetServiceImpl implements AssetService {
         }
     }
 
-
-    private void updateAssetDepreciationLot(Map<String, Object> dataUpdateAssetRequest, List<Asset> assetChildren) {
-        log.info("Storing depreciation data asset");
-        for (Asset assetChild: assetChildren) {
-            Map<String, Object> depreciationAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_DEPRECIATION);
-            AssetDepreciation assetDepreciation = assetDepreciationService.findAssetDepreciationByIdAsset(assetChild.getIdAsset());
-            updateDataAssetDepreciation(assetDepreciation, depreciationAsset);
-            assetDepreciationService.save(assetDepreciation);
-        }
-    }
-
-
     private void updateDataAssetDepreciation(AssetDepreciation assetDepreciation, Map<String, Object> depreciationAsset) {
         assetDepreciation.setTimeStartedDepreciation(ValueUtil.getStringByObject(depreciationAsset.get("timeStartedDepreciation")));
         assetDepreciation.setAmountMonthsDepreciation(ValueUtil.getIntegerByObject(depreciationAsset.get("amountMonthsDepreciation")));
@@ -536,17 +524,6 @@ public class AssetServiceImpl implements AssetService {
         }
     }
 
-    private void updateModulesDataAssetLot(Map<String, Object> dataUpdateAssetRequest, List<Asset> assetChildren) throws ValidateFiledException, IllegalAccessException {
-        for (Asset asset: assetChildren) {
-            log.info("Start update modules data asset by code asset " + asset.getCodeAsset());
-            List<BluePrintAssetModulesDto> bluePrintAssetModulesDtos = modulesServiceFactory.findBluePrintAssetModulesByIdAsset(asset.getIdAsset());
-            List<HashMap<String, Object>> modulesDataAsset = (List<HashMap<String, Object>>) dataUpdateAssetRequest.get(Constants.KEY_MODULE);
-
-            deleteAssetModule(bluePrintAssetModulesDtos, modulesDataAsset);
-            createNewAssetModule(bluePrintAssetModulesDtos, modulesDataAsset, asset);
-            updateAssetModule(bluePrintAssetModulesDtos, modulesDataAsset);
-        }
-    }
 
     private void updateAssetModule(List<BluePrintAssetModulesDto> bluePrintAssetModulesDtos,
                                    List<HashMap<String, Object>> dataModule) throws ValidateFiledException, IllegalAccessException {
@@ -866,14 +843,6 @@ public class AssetServiceImpl implements AssetService {
         validateDataOriginalUpdateAsset(dataCreateAssetRequest);
         validateDataDeclareUpdateAsset(dataCreateAssetRequest);
     }
-
-    private void validateDataUpdateAssetLot(Map<String, Object> dataCreateAssetRequest) throws ValidateFiledException {
-        validateDataCommonUpdateAssetLot(dataCreateAssetRequest);
-        validateDataModuleUpdateAsset(dataCreateAssetRequest);
-        validateDataOriginalUpdateAsset(dataCreateAssetRequest);
-        validateDataDeclareUpdateAsset(dataCreateAssetRequest);
-    }
-
     private FindDetailsAssetResponse convertToFindDetailsAssetResponse(AssetBluePrintDto assetBluePrintDto) {
         FindDetailsAssetResponse response = new FindDetailsAssetResponse();
         response.setCodeAssetCategory(assetBluePrintDto.getBluePrintParentAssetCategoryDto().getCodeAssetCategory());
@@ -1072,22 +1041,6 @@ public class AssetServiceImpl implements AssetService {
         departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
         Integer idLocation = ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation"));
         locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
-        Integer idAssetCategory = ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory"));
-        assetCategoriesService.findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, Constants.ASSET_CATEGORY_IS_VISIBLE);
-        Integer idUnit = ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit"));
-        unitsService.findUnitsByIdUnitAndStatus(idUnit, Constants.UNITS_IS_ACTIVE);
-        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
-        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
-        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
-        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
-    }
-
-    private void validateDataCommonUpdateAssetLot(Map<String, Object> createAssetRequest) {
-        Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_COMMON);
-//        Integer idDepartment = ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment"));
-//        departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
-//        Integer idLocation = ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation"));
-//        locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
         Integer idAssetCategory = ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory"));
         assetCategoriesService.findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, Constants.ASSET_CATEGORY_IS_VISIBLE);
         Integer idUnit = ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit"));
