@@ -77,8 +77,10 @@ public class AssetController {
             assetService.updateAssetLot(updateAssetRequest);
             return ApiResponseDto.createdWithMessage("Update asset lot success!", HttpStatus.OK);
         } catch (ValidateFiledException | JsonProcessingException | NotFoundException e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

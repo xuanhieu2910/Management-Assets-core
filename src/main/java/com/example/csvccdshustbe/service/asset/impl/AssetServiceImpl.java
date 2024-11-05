@@ -260,7 +260,6 @@ public class AssetServiceImpl implements AssetService {
         updateDataAsset(dataCreateAssetRequest);
     }
 
-    @Transactional
     @Override
     public void updateAssetLot(HashMap<String, Object> updateAssetRequest) throws JsonProcessingException, ValidateFiledException,
             IllegalAccessException {
@@ -634,7 +633,7 @@ public class AssetServiceImpl implements AssetService {
 
     private List<Asset> updateCommonDataAssetLot(Map<String, Object> dataUpdateAssetRequest, Asset assetParent) throws ValidateFiledException {
         Map<String,Object> commonDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_COMMON);
-        List<Map<String, Object>> dataAssetChildren = (List<Map<String, Object>>)dataUpdateAssetRequest.get(Constants.KEY_CHILDREN_DISTRIBUTION);
+        List<Map<String, Object>> dataAssetChildren = (List<Map<String, Object>>) commonDataAsset.get(Constants.KEY_CHILDREN_DISTRIBUTION);
         List<Asset> assetChildren = updateAttributeAssetChildrenLot(dataAssetChildren,assetParent);
         updateOriginalOfFormationLot(assetChildren, commonDataAsset);
         return assetChildren;
