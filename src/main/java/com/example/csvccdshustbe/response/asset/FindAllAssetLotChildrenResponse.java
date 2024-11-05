@@ -16,15 +16,23 @@ public class FindAllAssetLotChildrenResponse {
     private String nameAssetCategory;
     @JsonProperty("code_asset_category")
     private String codeAssetCategory;
+    @JsonProperty("id_department")
+    private Integer idDepartment;
     @JsonProperty("code_department")
     private String codeDepartment;
     @JsonProperty("name_department")
     private String nameDepartment;
+    @JsonProperty("id_location")
+    private Integer idLocation;
+    @JsonProperty("name_location")
+    private String nameLocation;
     @JsonProperty("time_created")
     private String timeCreated;
     @JsonProperty("time_modified")
     private String timeModified;
     @JsonProperty("parent")
     private Integer parent;
+    @JsonProperty("salt")
+    private String salt;
 
 }

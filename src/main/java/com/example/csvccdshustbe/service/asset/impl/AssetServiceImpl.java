@@ -218,8 +218,12 @@ public class AssetServiceImpl implements AssetService {
             response.setNameAsset(dto.getNameAsset());
             response.setNameAssetCategory(dto.getNameAssetCategory());
             response.setCodeAssetCategory(dto.getCodeAssetCategory());
+            response.setIdDepartment(dto.getIdDepartment());
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
+            response.setIdLocation(dto.getIdLocation());
+            response.setNameLocation(dto.getNameLocation());
+            response.setSalt(dto.getSalt());
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
             response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
             responses.add(response);
