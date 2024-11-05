@@ -260,6 +260,7 @@ public class AssetServiceImpl implements AssetService {
         updateDataAsset(dataCreateAssetRequest);
     }
 
+    @Transactional
     @Override
     public void updateAssetLot(HashMap<String, Object> updateAssetRequest) throws JsonProcessingException, ValidateFiledException,
             IllegalAccessException {
