@@ -28,7 +28,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -38,7 +37,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -390,7 +388,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "      inner join department de on asset.id_department = de.id_department        " +
                 "      left join location lo on asset.id_location = lo.id_location        " +
                 "      left join data_document dataDocument on asset.id_asset = dataDocument.id_asset     " +
-                "  where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)       " +
+                "  where 1 = 1 and asset.quantity = 1 and asset.id_department_origin in (:idsDepartmentOriginal)       " +
                 "     and dataDocument.id_asset is null  ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());

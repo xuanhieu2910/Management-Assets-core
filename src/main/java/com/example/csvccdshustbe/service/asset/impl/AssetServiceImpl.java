@@ -635,24 +635,25 @@ public class AssetServiceImpl implements AssetService {
     private List<Asset> updateCommonDataAssetLot(Map<String, Object> dataUpdateAssetRequest, Asset assetParent) throws ValidateFiledException {
         Map<String,Object> commonDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_COMMON);
         List<Map<String, Object>> dataAssetChildren = (List<Map<String, Object>>) commonDataAsset.get(Constants.KEY_CHILDREN_DISTRIBUTION);
-        List<Asset> assetChildren = updateAttributeAssetChildrenLot(dataAssetChildren,assetParent);
+        List<Asset> assetChildren = updateAttributeAssetChildrenLot(dataUpdateAssetRequest,dataAssetChildren,assetParent);
         updateOriginalOfFormationLot(assetChildren, commonDataAsset);
         return assetChildren;
     }
 
-    private List<Asset> updateAttributeAssetChildrenLot(List<Map<String, Object>> dataAssetChildren, Asset asset) throws ValidateFiledException {
+    private List<Asset> updateAttributeAssetChildrenLot(Map<String, Object> dataUpdateAssetRequest,List<Map<String, Object>> dataAssetChildren, Asset asset) throws ValidateFiledException {
         List<Asset> assetChildren = assetRepository.findAllAssetChildrenByParentId(asset.getIdAsset());
         if (CollectionUtils.isEmpty(assetChildren)){
             throw new NotFoundException("Don't exist asset children by parent id!");
         }
         deleteAssetChildrenLot(dataAssetChildren, assetChildren);
-        createNewAssetChildrenLot(dataAssetChildren, assetChildren, asset);
+        createNewAssetChildrenLot(dataUpdateAssetRequest,dataAssetChildren, assetChildren, asset);
         updateAssetChildrenLot(dataAssetChildren, assetChildren);
         return assetChildren;
     }
 
-    private void createNewAssetChildrenLot(List<Map<String, Object>> dataAssetChildren,
-                                           List<Asset> assetChildren, Asset assetParent) {
+    private void createNewAssetChildrenLot(Map<String, Object> dataUpdateAssetRequest,
+                                           List<Map<String, Object>> dataAssetChildren,
+                                           List<Asset> assetChildren, Asset assetParent) throws ValidateFiledException {
         for (Map<String, Object> dataDistributionAsset : dataAssetChildren) {
             boolean isCheckExits = false;
             for (Asset asset : assetChildren) {
@@ -662,7 +663,13 @@ public class AssetServiceImpl implements AssetService {
                 }
             }
             if (!isCheckExits){
-                assetChildren.add(constructionChildAssetLot(assetParent, dataDistributionAsset));
+                Asset asset= constructionChildAssetLot(assetParent, dataDistributionAsset);
+                assetRepository.save(asset);
+                storeDepreciation(dataUpdateAssetRequest, asset);
+                storeModulesDataAsset(dataUpdateAssetRequest, asset);
+                storeOriginalDataAsset(dataUpdateAssetRequest, asset);
+                storeDeclareDataAsset(dataUpdateAssetRequest, asset);
+                assetChildren.add(asset);
             }
         }
     }
@@ -1324,6 +1331,8 @@ public class AssetServiceImpl implements AssetService {
         childAsset.setIdUserModified(csvcUser.getIdUser());
         childAsset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
         childAsset.setParent(parentAsset.getIdAsset());
+        assetRepository.save(childAsset);
+
         return childAsset;
     }
 
@@ -1942,7 +1951,7 @@ public class AssetServiceImpl implements AssetService {
         }
 
 
-        commonData.put("codeAsset", codeAsset);
+        commonData.put("codeAsset", generateCodeAsset(Constants.PREFIX_ASSET));
         commonData.put("name", nameAsset);
         commonData.put("idAssetCategory", extractIdValueFromExcel(category));
 //        commonData.put("idInstance", assetInstanceCategoriesMap.get(instanceCategory).getIdAssetCategory());
