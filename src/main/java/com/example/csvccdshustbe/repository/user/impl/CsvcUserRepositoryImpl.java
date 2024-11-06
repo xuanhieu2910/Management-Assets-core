@@ -297,7 +297,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
         setConditionFindAllUser(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllUser(request, query);
-        PageUtils.buildPage(request.getPage(), request.getSize());
+        PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
         List<FindAllUserResponse> responses = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
