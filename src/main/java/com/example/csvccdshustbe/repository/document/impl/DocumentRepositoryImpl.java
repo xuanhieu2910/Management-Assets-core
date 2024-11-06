@@ -32,10 +32,10 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append("select doc.id_document, doc.code, doc.time_created,    " +
                 "        doc.time_modified, doc.time_increase, doc.time_document,  " +
-                "        doc.id_department    " +
+                "        doc.id_department, doc.id_department_original    " +
                 " from document doc     " +
                 " where doc.code = :code    " +
-                " and doc.id_department = :idDepartment  ");
+                " and doc.id_department_original = :idDepartment   ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("code", code);
         query.setParameter("idDepartment", idDepartment);
@@ -50,6 +50,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 document.setTimeIncrease(ValueUtil.getStringByObject(obj[4]));
                 document.setTimeDocument(ValueUtil.getStringByObject(obj[5]));
                 document.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
+                document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
                 return Optional.of(document);
             }
         }
@@ -59,11 +60,11 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Optional<Document> findDocumentByIdDepartment(Integer idDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select doc.id_document, doc.code, doc.time_created,    " +
-                "        doc.time_modified, doc.time_increase, doc.time_document,  " +
-                "        doc.id_department    " +
-                " from document doc     " +
-                " where doc.id_department = :idDepartment ORDER BY doc.code DESC ");
+        sb.append("select doc.id_document, doc.code, doc.time_created,      " +
+                "        doc.time_modified, doc.time_increase, doc.time_document,    " +
+                "        doc.id_department, doc.id_department_original " +
+                " from document doc       " +
+                " where doc.id_department_original = :idDepartment ORDER BY doc.code DESC  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idDepartment", idDepartment);
         List<Object[]> result = query.getResultList();
@@ -77,6 +78,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 document.setTimeIncrease(ValueUtil.getStringByObject(obj[4]));
                 document.setTimeDocument(ValueUtil.getStringByObject(obj[5]));
                 document.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
+                document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
                 return Optional.of(document);
             }
         }
@@ -134,7 +136,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 "       ts.code codeTypeState, ts.id_type_state,  " +
                 "       ts.name nameTypeState, pr.id_process,pr.status  " +
                 "from document dc  " +
-                "    inner join department de on dc.id_department = de.id_department  " +
+                "    inner join department de on dc.id_department_original = de.id_department  " +
                 "    inner join process pr on dc.id_process = pr.id_process  " +
                 "    inner join csvc_user cu on pr.id_user_created = cu.id_user  " +
                 "    inner join state st on pr.id_process = st.id_process  " +

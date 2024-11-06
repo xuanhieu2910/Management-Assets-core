@@ -26,10 +26,12 @@ public class Document {
     private String timeIncrease;
     @Column(name = "time_document")
     private String timeDocument;
-    @Column(name = "id_department")
-    private Integer idDepartment;
+    @Column(name = "id_department_original")
+    private Integer idDepartmentOriginal;
     @Column(name = "description")
     private String description;
     @Column(name = "id_process")
     private Integer idProcess;
+    @Column(name = "id_department")
+    private Integer idDepartment;
 }

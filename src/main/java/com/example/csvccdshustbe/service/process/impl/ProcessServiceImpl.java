@@ -72,7 +72,7 @@ public class ProcessServiceImpl implements ProcessService {
     public void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException {
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
-        Document document = documentService.saveDocument(contructionDocument(request.getDocument(), process));
+        Document document = documentService.saveDocument(contructionDocumentIncrease(request.getDocument(), process));
         dataDocumentService.createNewDataProcessAsset(request, document);
         List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
                 Constants.CODE_TYPE_STATE_COMPLETED);
@@ -98,7 +98,7 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private Document contructionDocument(CreateDocumentRequest request, Process process) throws ValidateFiledException {
+    private Document contructionDocumentIncrease(CreateDocumentRequest request, Process process) throws ValidateFiledException {
         validateCreateNewDocument(request);
         Document document = new Document();
         String dateNow = String.valueOf(new Date().getTime());
@@ -109,7 +109,7 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeModified(dateNow);
         document.setTimeIncrease(request.getTimeIncrease());
         document.setTimeDocument(request.getTimeDocument());
-        document.setIdDepartment(process.getIdDepartment());
+        document.setIdDepartmentOriginal(process.getIdDepartment());
         return document;
     }
 
