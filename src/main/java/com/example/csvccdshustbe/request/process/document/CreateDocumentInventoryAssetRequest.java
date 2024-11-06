@@ -11,4 +11,5 @@ public class CreateDocumentInventoryAssetRequest {
     private String timeCreatedDocument;
     private String timeInventory;
     private String description;
+    private Integer idDepartment;
 }

@@ -6,7 +6,9 @@ import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.process.ProcessRepository;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
+import com.example.csvccdshustbe.request.process.CreateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
+import com.example.csvccdshustbe.request.process.document.CreateDocumentInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
 import com.example.csvccdshustbe.response.process.ProcessStatisticsIncreaseResponse;
@@ -87,7 +89,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public void createInventoryAsset() {
+    public void createInventoryAsset(CreateInventoryAssetRequest request) {
 
     }
 

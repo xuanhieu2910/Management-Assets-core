@@ -3,7 +3,9 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
+import com.example.csvccdshustbe.request.process.CreateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
+import com.example.csvccdshustbe.request.process.document.CreateDocumentInventoryAssetRequest;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -37,9 +39,10 @@ public class ProcessAssetController {
     }
 
 //    @PostMapping("/inventory")
-//    public ResponseEntity<?> inventory(){
+//    public ResponseEntity<?> inventory(@RequestBody CreateInventoryAssetRequest request){
 //        try {
-//
+//            processService.createInventoryAsset(request);
+//            return ApiResponseDto.createdWithMessage("Create inventory asset success!", HttpStatus.OK);
 //        } catch (ValidateFiledException e){
 //            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
 //        } catch (Exception e){
