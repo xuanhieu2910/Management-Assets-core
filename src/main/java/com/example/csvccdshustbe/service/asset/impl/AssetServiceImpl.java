@@ -663,12 +663,11 @@ public class AssetServiceImpl implements AssetService {
                 }
             }
             if (!isCheckExits){
-                Asset asset= constructionChildAssetLot(assetParent, dataDistributionAsset);
-                assetRepository.save(asset);
-                storeDepreciation(dataUpdateAssetRequest, asset);
-                storeModulesDataAsset(dataUpdateAssetRequest, asset);
-                storeOriginalDataAsset(dataUpdateAssetRequest, asset);
-                storeDeclareDataAsset(dataUpdateAssetRequest, asset);
+                Asset asset = createSingleAssetChildren(assetParent,dataDistributionAsset);
+                storeDepreciationLot(dataUpdateAssetRequest, List.of(asset));
+                storeModulesDataAssetLot(dataUpdateAssetRequest, List.of(asset));
+                storeOriginalDataAssetLot(dataUpdateAssetRequest, List.of(asset));
+                storeDeclareDataAssetLot(dataUpdateAssetRequest, List.of(asset));
                 assetChildren.add(asset);
             }
         }
@@ -1303,6 +1302,11 @@ public class AssetServiceImpl implements AssetService {
         }
         return assetRepository.saveAll(assetChildren);
     }
+
+    private Asset createSingleAssetChildren(Asset parentAsset, Map<String, Object> dataAssetChildrenDistribution) {
+        return assetRepository.save(constructionChildAssetLot(parentAsset, dataAssetChildrenDistribution));
+    }
+
 
     private Asset constructionChildAssetLot(Asset parentAsset, Map<String, Object> obj) {
         Asset childAsset = new Asset();
