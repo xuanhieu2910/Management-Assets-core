@@ -36,6 +36,17 @@ public class ProcessAssetController {
         }
     }
 
+//    @PostMapping("/inventory")
+//    public ResponseEntity<?> inventory(){
+//        try {
+//
+//        } catch (ValidateFiledException e){
+//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+//        }
+//    }
+
     @GetMapping("/be-assigned")
     public ResponseEntity<?> findAllProcessBeAssigned(@And({
             @Spec(path = "page", params = "page", spec = Like.class),

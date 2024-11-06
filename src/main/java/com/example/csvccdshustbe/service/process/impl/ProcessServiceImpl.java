@@ -74,15 +74,20 @@ public class ProcessServiceImpl implements ProcessService {
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(contructionDocument(request.getDocument(), process));
         dataDocumentService.createNewDataProcessAsset(request, document);
-        List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST,
-                Constants.CODE_TYPE_STATE_APPROVED, Constants.CODE_TYPE_STATE_COMPLETED);
+        List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                Constants.CODE_TYPE_STATE_COMPLETED);
         List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(codeTypeStates);
         List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
         transitionService.saveTransition(constructionTransition(process, states));
         Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
-                states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST)).findFirst().get().getIdState()));
+                states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, process));
+
+    }
+
+    @Override
+    public void createInventoryAsset() {
 
     }
 
@@ -181,10 +186,10 @@ public class ProcessServiceImpl implements ProcessService {
         Transition transition = new Transition();
         transition.setIdProcess(process.getIdProcess());
         for (State state: states){
-            if (state.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST)){
+            if (state.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)){
                 transition.setIdStateCurrent(state.getIdState());
             }
-            if (state.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_APPROVED)){
+            if (state.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_COMPLETED)){
                 transition.setIdStateNext(state.getIdState());
             }
         }
@@ -213,10 +218,8 @@ public class ProcessServiceImpl implements ProcessService {
         switch (codeTypeState){
             case Constants.CODE_TYPE_STATE_INIT:
                 return Constants.STEP_TYPE_STATE_INIT;
-            case Constants.CODE_TYPE_STATE_TEST:
-                return Constants.STEP_TYPE_STATE_TEST;
-            case Constants.CODE_TYPE_STATE_APPROVED:
-                return Constants.STEP_TYPE_STATE_APPROVED;
+            case Constants.CODE_TYPE_STATE_TEST_APPROVED:
+                return Constants.STEP_TYPE_STATE_TEST_APPROVED;
             case Constants.CODE_TYPE_STATE_COMPLETED:
                 return Constants.STEP_TYPE_STATE_COMPLETED;
         }
@@ -228,10 +231,9 @@ public class ProcessServiceImpl implements ProcessService {
         switch (codeTypeState){
             case Constants.CODE_TYPE_STATE_INIT:
                 return Constants.STATUS_STATE_SUCCESS;
-            case Constants.CODE_TYPE_STATE_TEST:
+            case Constants.CODE_TYPE_STATE_TEST_APPROVED:
                 return Constants.STATUS_STATE_PENDING;
-            case Constants.CODE_TYPE_STATE_APPROVED,
-                 Constants.CODE_TYPE_STATE_COMPLETED:
+            case Constants.CODE_TYPE_STATE_COMPLETED:
                 return Constants.STATUS_STATE_NOT_STARTED;
         }
         return 0;

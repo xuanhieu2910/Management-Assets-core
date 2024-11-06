@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.requestDetailStakeHolder.impl;
+
+import com.example.csvccdshustbe.repository.requestDetailStakeHolder.RequestDetailStakeHolderRepositoryCustom;
+
+public class RequestDetailStakeHolderRepository implements RequestDetailStakeHolderRepositoryCustom {
+}

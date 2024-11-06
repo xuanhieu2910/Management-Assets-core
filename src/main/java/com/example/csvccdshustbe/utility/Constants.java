@@ -267,17 +267,15 @@ public class Constants {
      * Constant PREFIX_DOCUMENT
      * */
     public static final String CODE_TYPE_STATE_INIT = "init";
-    public static final String CODE_TYPE_STATE_TEST = "test";
-    public static final String CODE_TYPE_STATE_APPROVED = "approved";
+    public static final String CODE_TYPE_STATE_TEST_APPROVED = "test/approved";
     public static final String CODE_TYPE_STATE_COMPLETED = "completed";
     /*----------------------------------------------------*/
     /**
      * Constant STEP_STATES
      * */
     public static final Integer STEP_TYPE_STATE_INIT = 1;
-    public static final Integer STEP_TYPE_STATE_TEST = 2;
-    public static final Integer STEP_TYPE_STATE_APPROVED = 3;
-    public static final Integer STEP_TYPE_STATE_COMPLETED = 4;
+    public static final Integer STEP_TYPE_STATE_TEST_APPROVED = 2;
+    public static final Integer STEP_TYPE_STATE_COMPLETED = 3;
     /*----------------------------------------------------*/
     /**
      * Constant NAME_PROCESS
