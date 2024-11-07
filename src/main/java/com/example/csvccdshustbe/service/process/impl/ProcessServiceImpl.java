@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.process.impl;
 
+import com.example.csvccdshustbe.dto.user.FindAllUserDto;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.RolePattern;
@@ -8,11 +9,13 @@ import com.example.csvccdshustbe.repository.process.ProcessRepository;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
 import com.example.csvccdshustbe.request.process.CreateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
+import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilInventoryRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
 import com.example.csvccdshustbe.response.process.ProcessStatisticsIncreaseResponse;
 import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
+import com.example.csvccdshustbe.service.dataDocumentInventory.DataDocumentInventoryService;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.example.csvccdshustbe.service.request.RequestService;
@@ -63,7 +66,8 @@ public class ProcessServiceImpl implements ProcessService {
     RequestStakeHolderService requestStakeHolderService;
     @Autowired
     UserRoleService userRoleService;
-
+    @Autowired
+    DataDocumentInventoryService dataDocumentInventoryService;
 
     @Override
     public Process saveProcess(Process process) {
@@ -75,7 +79,7 @@ public class ProcessServiceImpl implements ProcessService {
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(contructionDocumentIncrease(request.getDocument(), process));
-        dataDocumentService.createNewDataProcessAsset(request, document);
+        dataDocumentService.createNewDataProcessAssetIncrease(request, document);
         List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
                 Constants.CODE_TYPE_STATE_COMPLETED);
         List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(codeTypeStates);
@@ -85,23 +89,65 @@ public class ProcessServiceImpl implements ProcessService {
                 states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, process));
-
     }
 
     @Override
-    public void createInventoryAsset(CreateInventoryAssetRequest request) {
-
+    public void createInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException {
+        TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
+        Process process = processRepository.save(constructionProcess(typeProcess));
+        Document document = documentService.saveDocument(contructionDocumentInventory(request.getDocument(), process));
+        dataDocumentInventoryService.createNewDataDocumentInventories(request, document);
+        List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                Constants.CODE_TYPE_STATE_COMPLETED);
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(codeTypeStates);
+        List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
+        transitionService.saveTransition(constructionTransition(process, states));
+        Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
+                states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
+        requestDataService.createNewRequestData(constructionRequestData(processRequest));
+        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderInventory(processRequest, request.getCouncilInventory()));
     }
 
-    private void validateCreateNewDocument(CreateDocumentRequest request) throws ValidateFiledException {
+    private List<RequestStakeHolder> constructionRequestStakeHolderInventory(Request processRequest,
+                                                                             List<CreateCouncilInventoryRequest> councilInventories) {
+        List<String> usersName = new ArrayList<>();
+        councilInventories.forEach(x->usersName.add(x.getUserName()));
+        List<FindAllUserDto> usersDto = csvcUserService.findIdsUserByUsersName(usersName);
+        List<RequestStakeHolder> stakeHolders = new ArrayList<>();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        for (CreateCouncilInventoryRequest council : councilInventories){
+            RequestStakeHolder stakeHolder = new RequestStakeHolder();
+            stakeHolder.setIdRequest(processRequest.getIdRequest());
+            stakeHolder.setIdUser(usersDto.stream().filter(x->x.getUserName().equals(council.getUserName())).findFirst().get().getIdUser());
+            stakeHolder.setStatus(Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
+            stakeHolder.setTimeCreated(timeCurrent);
+            stakeHolder.setTimeModified(timeCurrent);
+            stakeHolder.setIdDepartment(council.getIdDepartment());
+            stakeHolder.setPosition(council.getPosition());
+            stakeHolder.setPositionInstance(council.getPositionInstance());
+            stakeHolder.setLevel(council.getLevel());
+            stakeHolders.add(stakeHolder);
+        }
+        return stakeHolders;
+    }
+
+
+    private void validateCreateNewDocumentIncrease(CreateDocumentRequest request) throws ValidateFiledException {
         if (StringUtils.isBlank(request.getCodeDocument()) || StringUtils.isBlank(request.getTimeIncrease())
                 || StringUtils.isBlank(request.getTimeDocument())){
             throw new ValidateFiledException("Validate data create document!");
         }
     }
 
+    private void validateCreateNewDocumentInventory(CreateDocumentInventoryAssetRequest request) throws ValidateFiledException {
+        if (StringUtils.isBlank(request.getCodeDocument()) || StringUtils.isBlank(request.getTimeCreatedDocument())
+                || StringUtils.isBlank(request.getTimeInventory())){
+            throw new ValidateFiledException("Validate data create document!");
+        }
+    }
+
     private Document contructionDocumentIncrease(CreateDocumentRequest request, Process process) throws ValidateFiledException {
-        validateCreateNewDocument(request);
+        validateCreateNewDocumentIncrease(request);
         Document document = new Document();
         String dateNow = String.valueOf(new Date().getTime());
         document.setCode(request.getCodeDocument());
@@ -114,6 +160,23 @@ public class ProcessServiceImpl implements ProcessService {
         document.setIdDepartmentOriginal(process.getIdDepartment());
         return document;
     }
+
+    private Document contructionDocumentInventory(CreateDocumentInventoryAssetRequest request, Process process) throws ValidateFiledException {
+        validateCreateNewDocumentInventory(request);
+        Document document = new Document();
+        String dateNow = String.valueOf(new Date().getTime());
+        document.setCode(request.getCodeDocument());
+        document.setIdProcess(process.getIdProcess());
+        document.setDescription(request.getDescription());
+        document.setTimeCreated(dateNow);
+        document.setTimeModified(dateNow);
+        document.setTimeIncrease(request.getTimeInventory());
+        document.setTimeDocument(request.getTimeCreatedDocument());
+        document.setIdDepartmentOriginal(process.getIdDepartment());
+        document.setIdDepartment(request.getIdDepartment());
+        return document;
+    }
+
 
     @Override
     public Process findProcessByIdProcess(Integer idProcess) {
@@ -245,7 +308,7 @@ public class ProcessServiceImpl implements ProcessService {
     private Process constructionProcess(TypeProcess typeProcess) {
         Process process = new Process();
         process.setIdTypeProcess(typeProcess.getIdTypeProcess());
-        process.setName(Constants.NAME_INCREASE_PROCESS);
+        process.setName(typeProcess.getName());
         process.setStatus(Constants.STATUS_PENDING_PROCESS);
         String timeCurrent = String.valueOf(new Date().getTime());
         process.setTimeCreated(timeCurrent);

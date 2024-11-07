@@ -21,4 +21,7 @@ public class RequestStakeHolderDetails {
     private String reason;
     private String description;
     private Integer idReason;
+    private String position;
+    private String positionInstance;
+    private Integer level;
 }

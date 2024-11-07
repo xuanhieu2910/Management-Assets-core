@@ -8,7 +8,9 @@ import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.dataDocument.DataDocumentRepository;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
+import com.example.csvccdshustbe.request.process.CreateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetRequest;
+import com.example.csvccdshustbe.request.process.asset.AssetDetailInventoryRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessAssetResponse;
 import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
 import com.example.csvccdshustbe.utility.Constants;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +42,7 @@ public class DataDocumentServiceImpl implements DataDocumentService {
     }
 
     @Override
-    public void createNewDataProcessAsset(CreateIncreaseAssetRequest request, Document document)
+    public void createNewDataProcessAssetIncrease(CreateIncreaseAssetRequest request, Document document)
             throws ValidateFiledException {
         validateDataProcessAsset(request.getIdsAsset());
         saveAllDataProcessAsset(createConstructDataProcessAsset(document, request));
@@ -60,7 +63,7 @@ public class DataDocumentServiceImpl implements DataDocumentService {
             dataProcessAsset.setIdDocument(document.getIdDocument());
             dataProcessAsset.setTimeCreated(timeCurrent);
             dataProcessAsset.setTimeModified(timeCurrent);
-            dataProcessAsset.setStatus(Constants.STATUS_PROCESS_ASSET_ACTIVE);
+            dataProcessAsset.setStatus(Constants.STATUS_DATA_DOCUMENT_ACTIVE);
             dataProcessAssets.add(dataProcessAsset);
         }
         return dataProcessAssets;
@@ -82,6 +85,25 @@ public class DataDocumentServiceImpl implements DataDocumentService {
                 pageable, findAllProcessAssetDtos.getTotalElements());
     }
 
+    @Override
+    public List<DataDocument> createNewDataProcessAssetInventory(CreateInventoryAssetRequest request, Document document) {
+        return dataDocumentRepository.saveAll(contructionDataDocumentAssetInventory(request, document));
+    }
+
+    private List<DataDocument> contructionDataDocumentAssetInventory(CreateInventoryAssetRequest request, Document document) {
+        List<DataDocument> dataDocuments = new ArrayList<>();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        for (AssetDetailInventoryRequest data : request.getAssetDetail()){
+            DataDocument dataDocument = new DataDocument();
+            dataDocument.setIdAsset(data.getIdAsset());
+            dataDocument.setIdDocument(document.getIdDocument());
+            dataDocument.setTimeCreated(timeCurrent);
+            dataDocument.setTimeModified(timeCurrent);
+            dataDocument.setStatus(Constants.STATUS_DATA_DOCUMENT_ACTIVE);
+            dataDocuments.add(dataDocument);
+        }
+        return dataDocuments;
+    }
 
 
     private List<FindAllProcessAssetResponse> convertToFindAllProcessAssetResponse(List<FindAllProcessAssetDto> collect) {

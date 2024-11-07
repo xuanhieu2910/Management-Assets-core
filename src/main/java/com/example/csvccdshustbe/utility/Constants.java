@@ -262,6 +262,8 @@ public class Constants {
     public static String CODE_TYPE_PROCESS_DECREASE = "decrease";
     public static String CODE_TYPE_PROCESS_CHANGE = "change";
     public static String CODE_TYPE_PROCESS_REMOVE = "remove";
+    public static String CODE_TYPE_PROCESS_REVALUATION = "revaluation";
+    public static String CODE_TYPE_PROCESS_INVENTORY = "inventory";
     /*----------------------------------------------------*/
     /**
      * Constant PREFIX_DOCUMENT
@@ -304,8 +306,14 @@ public class Constants {
     /**
      * Constant Status data process asset
      * */
-    public static Integer STATUS_PROCESS_ASSET_ACTIVE = 1;
-    public static Integer STATUS_PROCESS_ASSET_UN_ACTIVE = -1;
+    public static Integer STATUS_DATA_DOCUMENT_ACTIVE = 1;
+    public static Integer STATUS_DATA_DOCUMENT_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
+    /**
+     * Constant Status data detail inventory
+     * */
+    public static Integer STATUS_DATA_DETAIL_INVENTORY_ACTIVE = 1;
+    public static Integer STATUS_DATA_DETAIL_INVENTORY_UN_ACTIVE = -1;
     /*----------------------------------------------------*/
 
     /**

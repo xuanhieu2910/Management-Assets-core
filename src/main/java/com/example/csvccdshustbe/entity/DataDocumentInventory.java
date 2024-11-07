@@ -9,15 +9,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "data_detail_inventory")
-public class DataDetailInventory {
+@Table(name = "data_document_inventory")
+public class DataDocumentInventory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_data_detail_inventory")
-    private Integer idDataDetailInventory;
-    @Column(name = "id_data_process_asset")
-    private Integer idDataProcessAsset;
+    @Column(name = "id_data_document_inventory")
+    private Integer idDataDocumentInventory;
     @Column(name = "id_asset")
     private Integer idAsset;
     @Column(name = "id_document")

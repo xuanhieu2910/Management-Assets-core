@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.user.impl;
 
+import com.example.csvccdshustbe.dto.user.FindAllUserDto;
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.entity.Capabilities;
 import com.example.csvccdshustbe.entity.CsvcUser;
@@ -252,6 +253,27 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
         }
         return idsUser;
     }
+
+    @Override
+    public List<FindAllUserDto> findUserDtoByListUserName(List<String> userName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_user, user_name " +
+                "from csvc_user where user_name in (:userName) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("userName", userName);
+        List<FindAllUserDto> userDtos = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FindAllUserDto userDto = new FindAllUserDto();
+                userDto.setIdUser(ValueUtil.getIntegerByObject(obj[0]));
+                userDto.setUserName(ValueUtil.getStringByObject(obj[1]));
+                userDtos.add(userDto);
+            }
+        }
+        return userDtos;
+    }
+
     @Override
     public List<String> findCodeUserByListUserName(List<String> userName) {
         StringBuilder sb = new StringBuilder();

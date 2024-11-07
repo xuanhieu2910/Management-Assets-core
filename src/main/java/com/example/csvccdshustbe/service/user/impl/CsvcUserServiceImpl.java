@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.user.impl;
 
+import com.example.csvccdshustbe.dto.user.FindAllUserDto;
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.dto.userRole.DepartmentUserRoleDto;
 import com.example.csvccdshustbe.entity.*;
@@ -87,6 +88,11 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     @Override
     public Optional<CsvcUser> findByUserName(String userName) {
         return csvcUserRepository.findByUserName(userName);
+    }
+
+    @Override
+    public List<FindAllUserDto> findIdsUserByUsersName(List<String> usersName) {
+        return csvcUserRepository.findUserDtoByListUserName(usersName);
     }
 
     @Override

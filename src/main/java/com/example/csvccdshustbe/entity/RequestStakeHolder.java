@@ -32,4 +32,10 @@ public class RequestStakeHolder {
     private String description;
     @Column(name = "id_department")
     private Integer idDepartment;
+    @Column(name = "position")
+    private String position;
+    @Column(name = "position_instance")
+    private String positionInstance;
+    @Column(name = "level")
+    private Integer level;
 }

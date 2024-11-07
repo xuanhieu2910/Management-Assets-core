@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.user;
 
+import com.example.csvccdshustbe.dto.user.FindAllUserDto;
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.exception.RoleException;
@@ -20,6 +21,7 @@ public interface CsvcUserService extends UserDetailsService {
     CsvcUser findByIdCsvcUser(Integer idUser);
     Optional<CsvcUser> findByCodeUser(String codeUser);
     Optional<CsvcUser> findByUserName(String userName);
+    List<FindAllUserDto> findIdsUserByUsersName(List<String> usersName);
     Boolean exitsByUserName(String userName);
     CsvcUser saveCsvcUser(CsvcUser csvcUser);
     Page<FindAllUserUsedResponse> findAllUserUsedResponse(FindAllUserUsedRequest request);

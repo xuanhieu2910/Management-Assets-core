@@ -14,4 +14,5 @@ public class CreateCouncilInventoryRequest {
     private String position;
     private String positionInstance;
     private Integer level;
+    private Integer idDepartment;
 }

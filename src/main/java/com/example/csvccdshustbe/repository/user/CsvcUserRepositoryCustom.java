@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.user;
 
+import com.example.csvccdshustbe.dto.user.FindAllUserDto;
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.request.user.FindAllUserRequest;
@@ -23,6 +24,7 @@ public interface CsvcUserRepositoryCustom {
     Page<FindAllUserUsedDto> findAllUserUsedDto(FindAllUserUsedRequest request, Pageable pageable);
     Optional<CsvcUser> findByUserName(String userName);
     List<Integer> findIdsUserByListUserName(List<String> userName);
+    List<FindAllUserDto> findUserDtoByListUserName(List<String> userName);
     List<String> findCodeUserByListUserName(List<String> userName);
     void updateStatusAccountUserByIds(List<Integer> idsUser, Integer status);
     Page<FindAllUserResponse> findAllUser(FindAllUserRequest request, Pageable pageable);

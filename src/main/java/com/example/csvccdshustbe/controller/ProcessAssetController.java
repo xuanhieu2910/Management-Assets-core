@@ -38,17 +38,17 @@ public class ProcessAssetController {
         }
     }
 
-//    @PostMapping("/inventory")
-//    public ResponseEntity<?> inventory(@RequestBody CreateInventoryAssetRequest request){
-//        try {
-//            processService.createInventoryAsset(request);
-//            return ApiResponseDto.createdWithMessage("Create inventory asset success!", HttpStatus.OK);
-//        } catch (ValidateFiledException e){
-//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
-//        } catch (Exception e){
-//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
-//        }
-//    }
+    @PostMapping("/inventory")
+    public ResponseEntity<?> inventory(@RequestBody CreateInventoryAssetRequest request){
+        try {
+            processService.createInventoryAsset(request);
+            return ApiResponseDto.createdWithMessage("Create inventory asset success!", HttpStatus.OK);
+        } catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 
     @GetMapping("/be-assigned")
     public ResponseEntity<?> findAllProcessBeAssigned(@And({
