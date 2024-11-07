@@ -363,6 +363,7 @@ public class Constants {
      * */
     public static String PREFIX_ASSET = "TS";
     public static String PREFIX_ASSET_LOT = "LO";
+    public static String PREFIX_ASSET_KK = "KK";
     /*----------------------------------------------------*/
     /**
      * Constant Status Request data

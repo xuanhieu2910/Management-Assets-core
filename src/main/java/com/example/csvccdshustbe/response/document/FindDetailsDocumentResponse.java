@@ -32,6 +32,10 @@ public class FindDetailsDocumentResponse {
     private String timeIncrease;
     @JsonProperty("time_document")
     private String timeDocument;
+    @JsonProperty("description_refuse")
+    private String descriptionRefuse;
+    @JsonProperty("name_reason")
+    private String nameReason;
     @JsonProperty("states")
     private List<BluePrintStateResponse> states;
 

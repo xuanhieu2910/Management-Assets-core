@@ -1479,7 +1479,7 @@ public class AssetServiceImpl implements AssetService {
         if (asset.isEmpty()) {
             return prefix + String.format("%0"+ minLength +"d", codeValueCurrent) + "-";
         }
-        codeValueCurrent = Integer.parseInt(asset.get().getCodeAsset().replace(prefix,"").split("-")[0]);
+        codeValueCurrent = Integer.parseInt(asset.get().getCodeAsset().replace(prefix,"").replace(Constants.PREFIX_ASSET_LOT,"").replace(Constants.PREFIX_ASSET_KK,"").split("-")[0]);
         if (String.valueOf(codeValueCurrent).length() > minLength) {
             minLength = minLength + 2;
         }
@@ -1505,6 +1505,7 @@ public class AssetServiceImpl implements AssetService {
         }
         return prefix + String.format("%0" + minLength + "d",(codeValueCurrent + 1)) + "-";
     }
+
 
     private List<FindAllAssetDocumentResponse> convertToFindAllAssetDocument(List<FindAllAssetDto> content) {
         List<FindAllAssetDocumentResponse> responses = new ArrayList<>();
