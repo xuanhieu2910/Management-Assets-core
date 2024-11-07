@@ -14,6 +14,7 @@ import com.example.csvccdshustbe.request.process.document.CreateDocumentInventor
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
 import com.example.csvccdshustbe.response.process.ProcessStatisticsIncreaseResponse;
+import com.example.csvccdshustbe.response.process.ProcessStatisticsInventoryResponse;
 import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
 import com.example.csvccdshustbe.service.dataDocumentInventory.DataDocumentInventoryService;
 import com.example.csvccdshustbe.service.document.DocumentService;
@@ -196,6 +197,11 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public ProcessStatisticsIncreaseResponse getStatisticIncrease() {
         return processRepository.getStatisticsIncrease();
+    }
+
+    @Override
+    public ProcessStatisticsInventoryResponse getStatisticInventory() {
+        return processRepository.getStatisticsInventory();
     }
 
     /***

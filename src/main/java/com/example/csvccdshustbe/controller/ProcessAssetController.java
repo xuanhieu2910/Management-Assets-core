@@ -73,4 +73,14 @@ public class ProcessAssetController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @GetMapping("/statistic-inventory")
+    public ResponseEntity<?> getStatisticInventory(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticInventory(),
+                    "Get statistic inventory success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

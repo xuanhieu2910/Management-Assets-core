@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.request.process.CreateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
 import com.example.csvccdshustbe.response.process.ProcessStatisticsIncreaseResponse;
+import com.example.csvccdshustbe.response.process.ProcessStatisticsInventoryResponse;
 import org.springframework.data.domain.Page;
 
 public interface ProcessService {
@@ -17,4 +18,5 @@ public interface ProcessService {
     Process findProcessByIdProcess(Integer idProcess);
     Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedResponse(FindAllProcessBeAssignedRequest request);
     ProcessStatisticsIncreaseResponse getStatisticIncrease();
+    ProcessStatisticsInventoryResponse getStatisticInventory();
 }
