@@ -1,17 +1,17 @@
 package com.example.csvccdshustbe.service.dataDocument.impl;
 
-import com.example.csvccdshustbe.dto.process.FindAllProcessAssetDto;
+import com.example.csvccdshustbe.dto.process.FindAllProcessAssetIncreaseDto;
+import com.example.csvccdshustbe.dto.process.FindAllProcessAssetInventoryDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.DataDocument;
 import com.example.csvccdshustbe.entity.Document;
-import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.dataDocument.DataDocumentRepository;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
-import com.example.csvccdshustbe.request.process.CreateInventoryAssetRequest;
-import com.example.csvccdshustbe.request.process.FindAllProcessAssetRequest;
-import com.example.csvccdshustbe.request.process.asset.AssetDetailInventoryRequest;
-import com.example.csvccdshustbe.response.process.FindAllProcessAssetResponse;
+import com.example.csvccdshustbe.request.process.FindAllProcessAssetIncreaseRequest;
+import com.example.csvccdshustbe.request.process.FindAllProcessAssetInventoryRequest;
+import com.example.csvccdshustbe.response.process.FindAllProcessAssetIncreaseResponse;
+import com.example.csvccdshustbe.response.process.FindAllProcessAssetInventoryResponse;
 import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -77,39 +76,32 @@ public class DataDocumentServiceImpl implements DataDocumentService {
     }
 
     @Override
-    public Page<FindAllProcessAssetResponse> findAllDataProcessAsset(FindAllProcessAssetRequest request){
+    public Page<FindAllProcessAssetIncreaseResponse> findAllDataProcessAssetIncrease(FindAllProcessAssetIncreaseRequest request){
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-        setIdsDepartmentOriginal(request);
-        Page<FindAllProcessAssetDto> findAllProcessAssetDtos = dataDocumentRepository.findAllProcessAssetDtoByIdsDepartment(request, pageable);
-        return new PageImpl<>(convertToFindAllProcessAssetResponse(findAllProcessAssetDtos.stream().toList()),
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllProcessAssetIncreaseDto> findAllProcessAssetDtos =
+                dataDocumentRepository.findAllProcessAssetIncreaseDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllProcessAssetIncreaseResponse(findAllProcessAssetDtos.stream().toList()),
                 pageable, findAllProcessAssetDtos.getTotalElements());
     }
 
     @Override
-    public List<DataDocument> createNewDataProcessAssetInventory(CreateInventoryAssetRequest request, Document document) {
-        return dataDocumentRepository.saveAll(contructionDataDocumentAssetInventory(request, document));
+    public Page<FindAllProcessAssetInventoryResponse> findAllDataProcessAssetInventory(FindAllProcessAssetInventoryRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllProcessAssetInventoryDto> findAllProcessAssetDtos =
+                dataDocumentRepository.findAllProcessAssetInventoryDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllProcessAssetInventoryResponse(findAllProcessAssetDtos.stream().toList()),
+                pageable, findAllProcessAssetDtos.getTotalElements());
     }
 
-    private List<DataDocument> contructionDataDocumentAssetInventory(CreateInventoryAssetRequest request, Document document) {
-        List<DataDocument> dataDocuments = new ArrayList<>();
-        String timeCurrent = String.valueOf(new Date().getTime());
-        for (AssetDetailInventoryRequest data : request.getAssetDetail()){
-            DataDocument dataDocument = new DataDocument();
-            dataDocument.setIdAsset(data.getIdAsset());
-            dataDocument.setIdDocument(document.getIdDocument());
-            dataDocument.setTimeCreated(timeCurrent);
-            dataDocument.setTimeModified(timeCurrent);
-            dataDocument.setStatus(Constants.STATUS_DATA_DOCUMENT_ACTIVE);
-            dataDocuments.add(dataDocument);
-        }
-        return dataDocuments;
-    }
-
-
-    private List<FindAllProcessAssetResponse> convertToFindAllProcessAssetResponse(List<FindAllProcessAssetDto> collect) {
-        List<FindAllProcessAssetResponse> responses = new ArrayList<>();
-        for (FindAllProcessAssetDto dto : collect) {
-            FindAllProcessAssetResponse response = new FindAllProcessAssetResponse();
+    private List<FindAllProcessAssetIncreaseResponse>
+    convertToFindAllProcessAssetIncreaseResponse(List<FindAllProcessAssetIncreaseDto> collect) {
+        List<FindAllProcessAssetIncreaseResponse> responses = new ArrayList<>();
+        for (FindAllProcessAssetIncreaseDto dto : collect) {
+            FindAllProcessAssetIncreaseResponse response = new FindAllProcessAssetIncreaseResponse();
             response.setCodeDocument(dto.getCodeDocument());
             response.setIdUserCreate(dto.getIdUserCreate());
             response.setCodeUserCreate(dto.getCodeUserCreate());
@@ -127,9 +119,27 @@ public class DataDocumentServiceImpl implements DataDocumentService {
         return responses;
     }
 
-    private void setIdsDepartmentOriginal(FindAllProcessAssetRequest request) {
-        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+
+    private List<FindAllProcessAssetInventoryResponse>
+    convertToFindAllProcessAssetInventoryResponse(List<FindAllProcessAssetInventoryDto> collect) {
+        List<FindAllProcessAssetInventoryResponse> responses = new ArrayList<>();
+        for (FindAllProcessAssetInventoryDto dto : collect) {
+            FindAllProcessAssetInventoryResponse response = new FindAllProcessAssetInventoryResponse();
+            response.setCodeDocument(dto.getCodeDocument());
+            response.setIdUserCreate(dto.getIdUserCreate());
+            response.setCodeUserCreate(dto.getCodeUserCreate());
+            response.setNameUserCreate(dto.getNameUserCreate());
+            response.setStatus(dto.getStatus());
+            response.setTimeInventory(dto.getTimeInventory());
+
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setTimeDocument(dto.getTimeDocument());
+            responses.add(response);
+        }
+        return responses;
     }
 
 }

@@ -1,14 +1,12 @@
 package com.example.csvccdshustbe.dto.process;
 
-
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-public class FindAllProcessAssetDto {
+public class FindAllProcessAssetInventoryDto {
+
     private Integer idProcess;
     private String codeDocument;
     private Integer idDepartment;
@@ -21,5 +19,5 @@ public class FindAllProcessAssetDto {
     private Long timeCreated;
     private Long timeModified;
     private String timeDocument;
-    private String timeIncrease;
+    private String timeInventory;
 }

@@ -2,7 +2,8 @@ package com.example.csvccdshustbe.controller;
 
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
-import com.example.csvccdshustbe.request.process.FindAllProcessAssetRequest;
+import com.example.csvccdshustbe.request.process.FindAllProcessAssetIncreaseRequest;
+import com.example.csvccdshustbe.request.process.FindAllProcessAssetInventoryRequest;
 import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -20,22 +21,40 @@ import org.webjars.NotFoundException;
 @RestController
 @RequestMapping("/api/v1/data-process-asset")
 public class DataProcessAssetController {
+
+
     @Autowired
     DataDocumentService dataDocumentService;
-    @GetMapping("/find-all")
-    public ResponseEntity<?> findAllProcessAsset(@And({
+
+
+    @GetMapping("/find-all-increase")
+    public ResponseEntity<?> findAllProcessAssetIncrease(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
-    }) FindAllProcessAssetRequest findAllProcessAssetRequest){
+    }) FindAllProcessAssetIncreaseRequest findAllProcessAssetRequest){
         try {
-            return ApiResponseDto.createdWithState(dataDocumentService.findAllDataProcessAsset(findAllProcessAssetRequest),
+            return ApiResponseDto.createdWithState(dataDocumentService.findAllDataProcessAssetIncrease(findAllProcessAssetRequest),
                     "Find all process asset success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/find-all-inventory")
+    public ResponseEntity<?> findAllProcessAssetInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllProcessAssetInventoryRequest findAllProcessAssetRequest){
+        try {
+            return ApiResponseDto.createdWithState(dataDocumentService.findAllDataProcessAssetInventory(findAllProcessAssetRequest),
+                    "Find all process asset success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

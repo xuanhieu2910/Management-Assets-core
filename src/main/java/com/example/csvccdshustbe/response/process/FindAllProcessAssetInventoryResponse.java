@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
-public class FindAllProcessAssetResponse {
+public class FindAllProcessAssetInventoryResponse {
 
     @JsonProperty("code_document")
     private String codeDocument;
@@ -28,6 +29,7 @@ public class FindAllProcessAssetResponse {
     private String timeModified;
     @JsonProperty("time_document")
     private String timeDocument;
-    @JsonProperty("time_increase")
-    private String timeIncrease;
+    @JsonProperty("time_inventory")
+    private String timeInventory;
+
 }

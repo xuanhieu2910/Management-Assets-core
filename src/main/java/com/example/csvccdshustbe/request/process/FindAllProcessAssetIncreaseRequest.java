@@ -9,8 +9,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllProcessAssetRequest extends RequestPageBase {
-    private String codeTypeProcess;
+public class FindAllProcessAssetIncreaseRequest extends RequestPageBase {
+
     private String codeDocument;
     private Integer status;
     private String nameUserCreate;
