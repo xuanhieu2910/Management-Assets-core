@@ -634,23 +634,20 @@ public class AssetServiceImpl implements AssetService {
 
     private List<Asset> updateCommonDataAssetLot(Map<String, Object> dataUpdateAssetRequest, Asset assetParent) throws ValidateFiledException {
         Map<String,Object> commonDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_COMMON);
-        List<Map<String, Object>> dataAssetChildren = (List<Map<String, Object>>) commonDataAsset.get(Constants.KEY_CHILDREN_DISTRIBUTION);
-        List<Asset> assetChildren = updateAttributeAssetChildrenLot(dataUpdateAssetRequest,dataAssetChildren,assetParent);
-        for (Asset assetChild: assetChildren) {
-            updateAttributeAsset(commonDataAsset, assetChild);
-        }
+        List<Asset> assetChildren = updateAttributeAssetChildrenLot(dataUpdateAssetRequest,assetParent);
         updateOriginalOfFormationLot(assetChildren, commonDataAsset);
         return assetChildren;
     }
 
-    private List<Asset> updateAttributeAssetChildrenLot(Map<String, Object> dataUpdateAssetRequest,List<Map<String, Object>> dataAssetChildren, Asset asset) throws ValidateFiledException {
-        List<Asset> assetChildren = assetRepository.findAllAssetChildrenByParentId(asset.getIdAsset());
+    private List<Asset> updateAttributeAssetChildrenLot(Map<String, Object> dataUpdateAssetRequest, Asset assetParent) throws ValidateFiledException {
+        List<Map<String, Object>> dataAssetChildren = (List<Map<String, Object>>) dataUpdateAssetRequest.get(Constants.KEY_CHILDREN_DISTRIBUTION);
+        List<Asset> assetChildren = assetRepository.findAllAssetChildrenByParentId(assetParent.getIdAsset());
         if (CollectionUtils.isEmpty(assetChildren)){
             throw new NotFoundException("Don't exist asset children by parent id!");
         }
         deleteAssetChildrenLot(dataAssetChildren, assetChildren);
-        createNewAssetChildrenLot(dataUpdateAssetRequest,dataAssetChildren, assetChildren, asset);
-        updateAssetChildrenLot(dataAssetChildren, assetChildren);
+        createNewAssetChildrenLot(dataUpdateAssetRequest,dataAssetChildren, assetChildren, assetParent);
+        updateAssetChildrenLot(dataAssetChildren, assetChildren,assetParent);
         return assetChildren;
     }
 
@@ -676,23 +673,36 @@ public class AssetServiceImpl implements AssetService {
         }
     }
 
-    private void updateAssetChildrenLot(List<Map<String, Object>> dataAssetChildren, List<Asset> assetChildren) {
+    private void updateAssetChildrenLot(List<Map<String, Object>> dataAssetChildren, List<Asset> assetChildren, Asset assetParent) {
         for (Asset asset : assetChildren){
             for (Map<String, Object> dataDistributionAsset: dataAssetChildren){
                 if (asset.getSalt().equals(ValueUtil.getStringByObject(dataDistributionAsset.get("salt")))) {
-                    updateConstructionAssetChild(dataDistributionAsset, asset);
+                    updateConstructionAssetChild(dataDistributionAsset, asset, assetParent);
                 }
             }
         }
     }
 
-    private void updateConstructionAssetChild(Map<String, Object> obj, Asset childAsset) {
+    private void updateConstructionAssetChild(Map<String, Object> obj, Asset childAsset, Asset assetParent) {
+        childAsset.setName(assetParent.getName());
+        childAsset.setIdAssetCategory(assetParent.getIdAssetCategory());
+        childAsset.setIdDocumentAttack(assetParent.getIdDocumentAttack());
+        childAsset.setIdUnit(assetParent.getIdUnit());
+        childAsset.setIdProjects(assetParent.getIdProjects());
+        childAsset.setPurpose(assetParent.getPurpose());
+        childAsset.setNotes(assetParent.getNotes());
+        childAsset.setDescription(assetParent.getDescription());
+        childAsset.setQuantity(assetParent.getQuantity());
+        childAsset.setFileAttack(assetParent.getFileAttack());
+        String timeCurrent = String.valueOf(new Date().getTime());
+        childAsset.setTimeModified(timeCurrent);
+        childAsset.setIdDepartmentDefault(assetParent.getIdDepartmentDefault());
+        childAsset.setIdLevelTypeAsset(assetParent.getIdLevelTypeAsset());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        childAsset.setIdUserModified(csvcUser.getIdUser());
         childAsset.setCodeAsset(ValueUtil.getStringByObject(obj.get("codeAsset")));
         childAsset.setIdDepartment(ValueUtil.getIntegerByObject(obj.get("idDepartment")));
         childAsset.setIdLocation(ValueUtil.getIntegerByObject(obj.get("idLocation")));
-        childAsset.setTimeModified(String.valueOf(new Date().getTime()));
-        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        childAsset.setIdUserModified(csvcUser.getIdUser());
         assetRepository.save(childAsset);
     }
 
