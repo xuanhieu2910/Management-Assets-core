@@ -190,8 +190,9 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
         dto.setDescription(ValueUtil.getStringByObject(obj[9]));
         dto.setStatus(ValueUtil.getIntegerByObject(obj[16]));
-        dto.setDescriptionRefuse(ValueUtil.getStringByObject(obj[17]));
-        dto.setNameReason(ValueUtil.getStringByObject(obj[18]));
+        dto.setNameReason(ValueUtil.getStringByObject(obj[17]));
+        dto.setDescriptionRefuse(ValueUtil.getStringByObject(obj[18]));
+
     }
 
     private long countFindAllDocumentAsset(FindAllDocumentAssetRequest request) {
