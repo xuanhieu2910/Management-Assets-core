@@ -1,6 +1,5 @@
 package com.example.csvccdshustbe.service.dataDocumentInventory.impl;
 
-import com.example.csvccdshustbe.entity.DataDetailInventory;
 import com.example.csvccdshustbe.entity.DataDocumentInventory;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.repository.dataDocumentInventory.DataDocumentInventoryRepository;
@@ -27,11 +26,11 @@ public class DataDocumentInventoryServiceImpl implements DataDocumentInventorySe
         return dataDetailInventoryRepository.saveAll(contructionDataDetailInventories(request, document));
     }
 
-    private List<DataDetailInventory> contructionDataDetailInventories(CreateInventoryAssetRequest request, Document document) {
-        List<DataDetailInventory> dataDetailInventories = new ArrayList<>();
+    private List<DataDocumentInventory> contructionDataDetailInventories(CreateInventoryAssetRequest request, Document document) {
+        List<DataDocumentInventory> dataDetailInventories = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
         for (AssetDetailInventoryRequest dataDetail : request.getAssetDetail()){
-            DataDetailInventory detailInventory = new DataDetailInventory();
+            DataDocumentInventory detailInventory = new DataDocumentInventory();
             detailInventory.setIdAsset(dataDetail.getIdAsset());
             detailInventory.setIdDocument(document.getIdDocument());
             detailInventory.setQuantity(dataDetail.getQuantity());
