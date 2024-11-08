@@ -697,6 +697,7 @@ public class AssetServiceImpl implements AssetService {
         String timeCurrent = String.valueOf(new Date().getTime());
         childAsset.setTimeModified(timeCurrent);
         childAsset.setIdDepartmentDefault(assetParent.getIdDepartmentDefault());
+        childAsset.setIdDepartmentOrigin(assetParent.getIdDepartmentOrigin());
         childAsset.setIdLevelTypeAsset(assetParent.getIdLevelTypeAsset());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         childAsset.setIdUserModified(csvcUser.getIdUser());
@@ -1346,7 +1347,7 @@ public class AssetServiceImpl implements AssetService {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         childAsset.setIdUserCreated(csvcUser.getIdUser());
         childAsset.setIdUserModified(csvcUser.getIdUser());
-        childAsset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
+        childAsset.setIdDepartmentOrigin(parentAsset.getIdDepartmentOrigin());
         childAsset.setParent(parentAsset.getIdAsset());
         assetRepository.save(childAsset);
 
