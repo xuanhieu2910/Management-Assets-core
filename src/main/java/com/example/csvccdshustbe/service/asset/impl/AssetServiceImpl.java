@@ -640,7 +640,8 @@ public class AssetServiceImpl implements AssetService {
     }
 
     private List<Asset> updateAttributeAssetChildrenLot(Map<String, Object> dataUpdateAssetRequest, Asset assetParent) throws ValidateFiledException {
-        List<Map<String, Object>> dataAssetChildren = (List<Map<String, Object>>) dataUpdateAssetRequest.get(Constants.KEY_CHILDREN_DISTRIBUTION);
+        Map<String,Object> commonDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_COMMON);
+        List<Map<String, Object>> dataAssetChildren = (List<Map<String, Object>>) commonDataAsset.get(Constants.KEY_CHILDREN_DISTRIBUTION);
         List<Asset> assetChildren = assetRepository.findAllAssetChildrenByParentId(assetParent.getIdAsset());
         if (CollectionUtils.isEmpty(assetChildren)){
             throw new NotFoundException("Don't exist asset children by parent id!");
