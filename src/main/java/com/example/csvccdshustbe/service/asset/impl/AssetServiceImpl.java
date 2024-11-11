@@ -1508,7 +1508,10 @@ public class AssetServiceImpl implements AssetService {
             inventory.setQuantityOriginal(dto.getQuantity());
             inventory.setRestValueOriginal(dto.getRestValue());
             inventory.setTotalOriginalOfFormationOriginal(String.valueOf(
-                    Arrays.stream(dto.getOriginalOfFormation().split("-")).mapToLong(String::length).sum()));
+                    Arrays.stream(dto.getOriginalOfFormation().split("-"))
+                            .mapToLong(Long::parseLong)
+                            .sum()
+            ));
             response.add(inventory);
         }
         return response;

@@ -625,7 +625,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,            " +
                 "          lo.id_location idLocation, lo.name nameLocation,            " +
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
-                "          assetDepreciation.rest_value,   " +
+                "          assetDepreciation.rest_value,asset.quantity,  " +
                 "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue  " +
                 "   from asset asset  " +
                 "       inner join asset_categories assetCategories            " +
@@ -665,7 +665,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
                 findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[15]));
-                findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[16]));
+                findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[16]));
+                findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[17]));
                 responses.add(findAllAssetDto);
             }
         }
