@@ -52,7 +52,14 @@ public class AssetInstanceServiceImpl implements AssetInstanceService {
 
     @Override
     public void deleteAssetInstance(DeleteAssetInstanceRequest request) {
-
+        List<Integer> idsAssetInstance = new ArrayList<>();
+        List<AssetInstanceRequest> assetInstanceRequests = request.getAssetInstances();
+        assetInstanceRequests.forEach(x->idsAssetInstance.add(x.getIdAssetInstance()));
+        List<AssetInstance> assetInstances = assetInstanceRepository.findAllAssetInstanceByIds(idsAssetInstance);
+        if (CollectionUtils.isEmpty(assetInstances) || assetInstances.size() != idsAssetInstance.size()){
+            throw new NotFoundException("Don't exits asset instance by ids!");
+        }
+        assetInstanceRepository.deleteAll(assetInstances);
     }
 
     private List<FindAllAssetInstanceResponse> convertToAssetInstance(List<AssetInstance> assetInstances) {
