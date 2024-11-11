@@ -39,7 +39,7 @@ public class ProcessAssetController {
     }
 
     @PostMapping("/inventory")
-    public ResponseEntity<?> inventory(@RequestBody CreateInventoryAssetRequest request){
+    public ResponseEntity<?> createInventory(@RequestBody CreateInventoryAssetRequest request){
         try {
             processService.createInventoryAsset(request);
             return ApiResponseDto.createdWithMessage("Create inventory asset success!", HttpStatus.OK);
