@@ -628,14 +628,14 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          assetDepreciation.rest_value,   " +
                 "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue  " +
                 "   from asset asset  " +
-                "       left join asset_categories assetCategories            " +
+                "       inner join asset_categories assetCategories            " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category            " +
-                "       left join department de on asset.id_department = de.id_department            " +
+                "       inner join department de on asset.id_department = de.id_department            " +
                 "       left join location lo on asset.id_location = lo.id_location            " +
-                "       left join data_document dataDocument on asset.id_asset = dataDocument.id_asset  " +
-                "       left join asset_original_of_formation assetOriginalOfFormation  " +
+                "       inner join data_document dataDocument on asset.id_asset = dataDocument.id_asset  " +
+                "       inner join asset_original_of_formation assetOriginalOfFormation  " +
                 "           on asset.id_asset = assetOriginalOfFormation.id_asset  " +
-                "      left join asset_depreciation assetDepreciation  " +
+                "      inner join asset_depreciation assetDepreciation  " +
                 "          on asset.id_asset = assetDepreciation.id_asset  " +
                 "   where 1 = 1 and asset.quantity = 1  " +
                 "         and asset.id_department_origin in (:idsDepartmentOriginal)  " +
@@ -729,7 +729,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private long countFindAllAssetToInventory(FindAllAssetToInventoryRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select count(0)  " +
+        sb.append("select count(0) " +
+                "from ( select count(0)  " +
                 "   from asset asset  " +
                 "       inner join asset_categories assetCategories            " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category            " +
@@ -743,7 +744,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "   where 1 = 1 and asset.quantity = 1  " +
                 "         and asset.id_department_origin in (:idsDepartmentOriginal)  " +
                 "         and dataDocument.id_asset is null ");
-        setConditionFindAllAssetDtoToInventory(request, sb);
+        setCountConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToInventory(request,query);
         return ValueUtil.getLongByObject(query.getSingleResult());
@@ -830,6 +831,36 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     }
 
+
+    private void setCountConditionFindAllAssetDtoToInventory(FindAllAssetToInventoryRequest request,StringBuilder sb) {
+        sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
+                "         assetCategories.id_asset_category, assetCategories.name,  " +
+                "         assetCategories.code_name, de.id_department,  " +
+                "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
+                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value ");
+        if (StringUtils.isNotBlank(request.getNameAsset())) {
+            sb.append(" and (asset.name REGEXP :nameAsset ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())) {
+            sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (StringUtils.isNotBlank(request.getSortBy())) {
+            sb.append("ORDER BY ");
+            if (request.getSortBy().equals("nameAsset")) {
+                sb.append(" asset.name ");
+            }
+            if (request.getSortBy().equals("nameDepartment")) {
+                sb.append(" de.name ");
+            }
+            sb.append(" ").append(request.getSortOrder());
+        } else {
+            sb.append(" ORDER BY asset.id_asset desc ) asset");
+        }
+
+    }
 
 
     private long countFindAllGroundAsset(FindAllGroundAssetRequest request) {

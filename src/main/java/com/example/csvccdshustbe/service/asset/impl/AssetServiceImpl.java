@@ -1655,14 +1655,15 @@ public class AssetServiceImpl implements AssetService {
     }
     private List<Map<String, Object>> handleUploadFileAsset(MultipartFile file) {
         List<Map<String, Object>> assetRequests = new ArrayList<>();
+        int constantMaximumRow = 2000;
         int indexSheet = 0;
         int indexRowStartToReadData = 3;
         try {
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(indexSheet);
             int totalRow = xssfSheet.getLastRowNum();
-            if (totalRow>=2000){
-                totalRow=2000;
+            if (totalRow > (constantMaximumRow + indexRowStartToReadData)){
+                totalRow = constantMaximumRow;
             }
             List<XSSFRow> allRows = new ArrayList<>();
             for (int i = indexRowStartToReadData; i <= totalRow; i++) {
