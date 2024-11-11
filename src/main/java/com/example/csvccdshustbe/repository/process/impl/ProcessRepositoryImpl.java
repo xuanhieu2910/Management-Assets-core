@@ -203,7 +203,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
         query.setParameter("statusReject", Constants.STATUS_FALSE_PROCESS);
         query.setParameter("statusRequestPending", Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
-        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_INVENTORY);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_INCREASE);
         query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
         query.setParameter("idUser", csvcUser.getIdUser());
         List<Object[]> result = query.getResultList();

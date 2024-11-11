@@ -16,6 +16,7 @@ import com.example.csvccdshustbe.factory.module.ModuleFactory;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.repository.assetCategories.AssetCategoriesRepository;
+import com.example.csvccdshustbe.repository.assetInstance.AssetInstanceRepository;
 import com.example.csvccdshustbe.repository.countryProducer.CountryProducerRepository;
 import com.example.csvccdshustbe.repository.currentUsage.CurrentUsageRepository;
 import com.example.csvccdshustbe.repository.declare.DeclareRepository;
@@ -172,7 +173,8 @@ public class AssetServiceImpl implements AssetService {
     PositionNameRepository positionNameRepository;
     @Autowired
     CsvcUserRepository csvcUserRepository;
-
+    @Autowired
+    AssetInstanceRepository assetInstanceRepository;
     @Transactional
     @Override
     public void createAsset(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException {
@@ -1446,9 +1448,27 @@ public class AssetServiceImpl implements AssetService {
     public void uploadFileImportAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException {
     ValidateExcelUtils.checkFileExcel(file);
     List<Map<String, Object>> assetRequests = handleUploadFileAsset(file);
-    for (Map<String, Object> createAssetRequest : assetRequests) {
-        createAssetFromFile(createAssetRequest);
-        }
+        //Lưu Request vào bảng tạm, rồi sao khi xử lý thì lưu vào assete sau.
+        //common:error
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    String assetRequestsJson = objectMapper.writeValueAsString(assetRequests);
+    String dateNow = String.valueOf(new Date().getTime());
+    CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    AssetInstance assetInstance= new AssetInstance();
+    assetInstance.setIdUser(csvcUser.getIdUser());
+    assetInstance.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());
+    assetInstance.setTimeCreated(dateNow);
+    assetInstance.setTimeModified(dateNow);
+    assetInstance.setValue(assetRequestsJson);
+    assetInstanceRepository.save(assetInstance);
+
+        //lưu bảng tạm
+        //khi chọn bảng tạm
+        //Map<String, Object> abc  =(Map<String, Object>)Object
+//    for (Map<String, Object> createAssetRequest : assetRequests) {
+//        createAssetFromFile(createAssetRequest);
+//        }
     }
 
     @Override
@@ -1584,6 +1604,7 @@ public class AssetServiceImpl implements AssetService {
         Map<String, Object> dataCreateAssetRequest =
                 objectMapper.readValue(JSONObjectUtils.toJSONString(createAssetRequest), Map.class);
 //        validateDataCreateAsset(dataCreateAssetRequest);
+
         storeNewAssetFromFile(dataCreateAssetRequest);
     }
     private void storeNewAssetFromFile(Map<String, Object> createAssetRequest) throws ValidateFiledException {
@@ -1956,10 +1977,11 @@ public class AssetServiceImpl implements AssetService {
         createAssetRequest.put(Constants.KEY_DECLARE_ASSET, DeclareData);
 
         Map<String, Object> originalData = processOriginalData(row);
-      createAssetRequest.put(Constants.KEY_ORIGINAL_ASSET, originalData);
+        createAssetRequest.put(Constants.KEY_ORIGINAL_ASSET, originalData);
 
         Map<String, Object> depreciationData = processDepreciationData(row);
-       createAssetRequest.put(Constants.KEY_DEPRECIATION, depreciationData);
+        createAssetRequest.put(Constants.KEY_DEPRECIATION, depreciationData);
+
         return createAssetRequest;
 
     }
@@ -1973,40 +1995,73 @@ public class AssetServiceImpl implements AssetService {
     private Map<String, Object> processCommonData(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap) {
         Map<String, Object> commonData = new HashMap<>();
 
+        List<String> errorList = new ArrayList<>();
+
         String instanceCategory = (String) ExcelUtil.convertValue(row.getCell(0), CellType.STRING);
+        if (instanceCategory == null) {
+            errorList.add("Thiếu dữ liệu Danh mục tài sản");
+        }
+
         String category = (String) ExcelUtil.convertValue(row.getCell(1), CellType.STRING);
+        if (category == null) {
+            errorList.add("Thiếu dữ liệu cho Loại tài sản");
+        }
+
         String nameAsset = (String) ExcelUtil.convertValue(row.getCell(2), CellType.STRING);
+        if (nameAsset == null) {
+            errorList.add("Thiếu dữ liệu cho Tên tài sản");
+        }
+
         String department = (String) ExcelUtil.convertValue(row.getCell(3), CellType.STRING);
+        if (department == null) {
+            errorList.add("Thiếu dữ liệu Đơn vị sử dụng");
+        }
+
         String location = (String) ExcelUtil.convertValue(row.getCell(4), CellType.STRING);
+        if (location == null) {
+            errorList.add("Thiếu dữ liệu cho trường Địa điểm sử dụng");
+        }
+
         String unit = (String) ExcelUtil.convertValue(row.getCell(5), CellType.STRING);
+        if (unit == null) {
+            errorList.add("Thiếu dữ liệu cho Đơn vị tính của tài sản");
+        }
+
         String documentAttack = (String) ExcelUtil.convertValue(row.getCell(6), CellType.STRING);
+        if (documentAttack == null) {
+            errorList.add("Thiếu dữ liệu Số quyết định trang cấp");
+        }
+
         String project = (String) ExcelUtil.convertValue(row.getCell(7), CellType.STRING);
+        if (project == null) {
+            errorList.add("Thiếu dữ liệu Dự án của tài sản");
+        }
         String description = (String) ExcelUtil.convertValue(row.getCell(8), CellType.STRING);
         String purpose = (String) ExcelUtil.convertValue(row.getCell(9), CellType.STRING);
         String departmentDefault = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
-//        String levelTypeAsset = (String) ExcelUtil.convertValue(row.getCell(11), CellType.STRING);
         String notes = (String) ExcelUtil.convertValue(row.getCell(11), CellType.STRING);
-//        String original = (String) ExcelUtil.convertValue(row.getCell(13), CellType.STRING);
         String originalOfFormationName = (String) ExcelUtil.convertValue(row.getCell(13), CellType.STRING);
         String originalOfFormationValues = (String) ExcelUtil.convertValue(row.getCell(14), CellType.STRING);
 
         Optional<Department> departmentOptional = departmentRepository.findDepartmentById(extractIdSTTFromExcel(department));
 
-        String codeDepartment = departmentOptional.map(Department::getCode).orElse(null);
 
-        String codeAsset;
-        if (codeDepartment != null) {
-            codeAsset = codeDepartment + "-" + UUID.randomUUID();
-        } else {
-            codeAsset = String.valueOf(UUID.randomUUID());
-        }
         String[] originOfFormationNameArray = originalOfFormationName.split(";");
         String[] originOfFormationValuesArray = originalOfFormationValues.split(";");
+        if (originOfFormationNameArray.length != originOfFormationValuesArray.length) {
+            errorList.add("Số lượng giá trị của 2 cột nguồn hình thành không bằng nhau");
+        }
+        else {
+
+            for (int i = 0; i < originOfFormationNameArray.length; i++) {
+                if (originOfFormationNameArray[i].isEmpty() || originOfFormationValuesArray[i].isEmpty()) {
+                    errorList.add("Dữ liệu nguồn hình thành không hợp lệ");
+                }
+            }
+        }
         List<Map<String, Object>> originOfFormationList = new ArrayList<>();
         for (int i = 0; i < originOfFormationNameArray.length; i++) {
             Map<String, Object> originOfFormation = new HashMap<>();
-//            Optional<OriginalOfFormation> originalOfFormationOptional=originalOfFormationRepository.findOriginalOfFormationByName(originOfFormationNameArray[i]);
-//            originOfFormation.put("idOriginOfFormation", originalOfFormationOptional.map(OriginalOfFormation::getIdOriginalOfFormation).orElse(null));
             originOfFormation.put("idOriginOfFormation", originalOfFormationMap.get(originOfFormationNameArray[i]).getIdOriginalOfFormation());
             originOfFormation.put("value", originOfFormationValuesArray[i]);
             originOfFormationList.add(originOfFormation);
@@ -2032,7 +2087,8 @@ public class AssetServiceImpl implements AssetService {
         commonData.put("description", description);
         commonData.put("quantity", 1);
         commonData.put("idDepartmentDefault", extractIdValueFromExcel(departmentDefault));
-
+        // Các lỗi liên quan validate các trường
+        commonData.put("error", errorList);
         return commonData;
     }
 
