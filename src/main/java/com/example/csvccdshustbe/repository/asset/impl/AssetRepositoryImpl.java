@@ -616,6 +616,63 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         return assetChildren;
     }
 
+    @Override
+    public Page<FindAllAssetDto> findAllAssetDtoToInventory(FindAllAssetToInventoryRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select asset.id_asset idAsset, asset.code_asset codeAsset,            " +
+                "          asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,            " +
+                "          assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,            " +
+                "          de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,            " +
+                "          lo.id_location idLocation, lo.name nameLocation,            " +
+                "          asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
+                "          assetDepreciation.rest_value,   " +
+                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue  " +
+                "   from asset asset  " +
+                "       inner join asset_categories assetCategories            " +
+                "               on asset.id_asset_category = assetCategories.id_asset_category            " +
+                "       inner join department de on asset.id_department = de.id_department            " +
+                "       left join location lo on asset.id_location = lo.id_location            " +
+                "       inner join data_document dataDocument on asset.id_asset = dataDocument.id_asset  " +
+                "       inner join asset_original_of_formation assetOriginalOfFormation  " +
+                "           on asset.id_asset = assetOriginalOfFormation.id_asset  " +
+                "      inner join asset_depreciation assetDepreciation  " +
+                "          on asset.id_asset = assetDepreciation.id_asset  " +
+                "   where 1 = 1 and asset.quantity = 1  " +
+                "         and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "         and dataDocument.id_asset is null  ");
+        setConditionFindAllAssetDtoToInventory(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllAssetDtoToInventory(request, query);
+        PageUtils.buildQuery(pageable, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllAssetDto> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                FindAllAssetDto findAllAssetDto = new FindAllAssetDto();
+                findAllAssetDto.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
+                findAllAssetDto.setCodeAsset(ValueUtil.getStringByObject(obj[1]));
+                findAllAssetDto.setNameAsset(ValueUtil.getStringByObject(obj[2]));
+                findAllAssetDto.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
+                findAllAssetDto.setNameAssetCategory(ValueUtil.getStringByObject(obj[4]));
+                findAllAssetDto.setCodeAssetCategory(ValueUtil.getStringByObject(obj[5]));
+                findAllAssetDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
+                findAllAssetDto.setCodeDepartment(ValueUtil.getStringByObject(obj[7]));
+                findAllAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
+                findAllAssetDto.setIdLocation(ValueUtil.getIntegerByObject(obj[9]));
+                findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
+                findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[11]));
+                findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
+                findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
+                findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
+                findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[15]));
+                findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[16]));
+                responses.add(findAllAssetDto);
+            }
+        }
+        return new PageImpl<>(responses, pageable, countFindAllAssetToInventory(request));
+    }
+
     private void setParameterFindAllAssetDocument(FindAllAssetDocumentRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("codeDocument", request.getCodeDocument());
@@ -671,7 +728,43 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         return ValueUtil.getLongByObject(query.getSingleResult());
     }
 
+    private long countFindAllAssetToInventory(FindAllAssetToInventoryRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select count(0)  " +
+                "   from asset asset  " +
+                "       inner join asset_categories assetCategories            " +
+                "               on asset.id_asset_category = assetCategories.id_asset_category            " +
+                "       inner join department de on asset.id_department = de.id_department            " +
+                "       left join location lo on asset.id_location = lo.id_location            " +
+                "       inner join data_document dataDocument on asset.id_asset = dataDocument.id_asset  " +
+                "       inner join asset_original_of_formation assetOriginalOfFormation  " +
+                "           on asset.id_asset = assetOriginalOfFormation.id_asset  " +
+                "      inner join asset_depreciation assetDepreciation  " +
+                "          on asset.id_asset = assetDepreciation.id_asset  " +
+                "   where 1 = 1 and asset.quantity = 1  " +
+                "         and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "         and dataDocument.id_asset is null ");
+        setConditionFindAllAssetDtoToInventory(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllAssetDtoToInventory(request,query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+
     private void setParameterFindAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Query query) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        if (StringUtils.isNotBlank(request.getNameAsset())){
+            query.setParameter("nameAsset", request.getNameAsset());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+            query.setParameter("idAssetCategory", request.getIdAssetCategory());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+    }
+
+    private void setParameterFindAllAssetDtoToInventory(FindAllAssetToInventoryRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
@@ -707,6 +800,36 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             sb.append(" ORDER BY asset.id_asset desc ");
         }
     }
+
+    private void setConditionFindAllAssetDtoToInventory(FindAllAssetToInventoryRequest request,StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getNameAsset())) {
+            sb.append(" and (asset.name REGEXP :nameAsset ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())) {
+            sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (StringUtils.isNotBlank(request.getSortBy())) {
+            sb.append("ORDER BY ");
+            if (request.getSortBy().equals("nameAsset")) {
+                sb.append(" asset.name ");
+            }
+            if (request.getSortBy().equals("nameDepartment")) {
+                sb.append(" de.name ");
+            }
+            sb.append(" ").append(request.getSortOrder());
+        } else {
+            sb.append(" ORDER BY asset.id_asset desc ");
+        }
+        sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
+                "         assetCategories.id_asset_category, assetCategories.name,  " +
+                "         assetCategories.code_name, de.id_department,  " +
+                "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
+                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value ");
+    }
+
 
 
     private long countFindAllGroundAsset(FindAllGroundAssetRequest request) {

@@ -10,12 +10,20 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MailDto {
-    private String emailTo;
+    private String addressFrom;
+    private String addressTo;
+    private String addressCc;
     private String subject;
     private String content;
 
     @Override
     public String toString() {
-        return "To: " + emailTo + ", Subject: " + subject + ", Content: " + content;
+        return "MailDto{" +
+                "addressFrom='" + addressFrom + '\'' +
+                ", addressTo='" + addressTo + '\'' +
+                ", addressCc='" + addressCc + '\'' +
+                ", subject='" + subject + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }

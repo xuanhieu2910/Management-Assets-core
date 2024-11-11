@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.userRole;
 
 import com.example.csvccdshustbe.dto.userRole.DepartmentUserRoleDto;
+import com.example.csvccdshustbe.dto.userRole.UserRoleDto;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.entity.UserRole;
 import com.example.csvccdshustbe.exception.RoleException;
@@ -19,7 +20,7 @@ public interface UserRoleService {
     List<FindAllRolesUserResponse> findAllRolesUserByCodeUser(String codeUser);
 
     List<UserRole> findUserRoleByCodeUser(String codeUser);
-    List<UserRole> findUserRoleByNameRoleAndIdDepartment(String nameRole, Integer department);
+    List<UserRoleDto> findUserRoleByNameRoleAndIdDepartment(String nameRole, Integer department);
 
     void saveAllUserRole(List<UserRole> userRoles);
 

@@ -25,6 +25,11 @@ public class EmailUtil implements Runnable {
     private static SmtpAuthenticator smtpAuthenticator;
     private Queue<MailDto> mailDtoQueue;
 
+    public final static String[] SUBJECTS_PROCESS = {"Kiểm tra/Đánh giá ghi tăng tài sản", "Kiểm tra/Đánh giá Giảm tài sản",
+            "Kiểm tra/Đánh giá điều chuyển tài sản", "Kiểm tra/Đánh giá lại tài sản", "Kiểm tra/Đánh giá", "Kiểm tra/Đánh giá kiểm kê tài sản"};
+
+
+
     public static EmailUtil getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new EmailUtil();
@@ -40,20 +45,7 @@ public class EmailUtil implements Runnable {
         mailDtoQueue = new LinkedList<>();
     }
 
-    public boolean sendLostPasswordEmail(MessageSource messageSource, Integer language, String emailTo, String code, String fullName) {
-        String subject = messageSource.getMessage(MessageUtil.EMAIL_LOSTPASSWORD_SUBJECT_VI, null, Locale.forLanguageTag("vi"));
-        String content = messageSource.getMessage(MessageFormat.format(MessageUtil.EMAIL_LOSTPASSWORD_CONTENT_VI, fullName, code), null, Locale.forLanguageTag("vi"))
-                .replace("{USER_NAME}", fullName)
-                .replace("{CODE}", code);
-        return mailDtoQueue.add(new MailDto(emailTo, subject, content));
-    }
 
-    public boolean sendMailRegister(String emailTo, Integer otp) {
-        String subject = OptUtils.SUBJECT_REGISTER_ACCOUNT;
-        String content = OptUtils.CONTENT_VERIFY_ACCOUNT;
-        content = content.replace("{{USER-NAME-HERE}}", emailTo).replace("{{OTP-HERE}}", String.valueOf(otp.intValue()));
-        return mailDtoQueue.add(new MailDto(emailTo, subject, content));
-    }
 
     private static boolean send(MailDto mailDto) {
         try {
@@ -67,7 +59,7 @@ public class EmailUtil implements Runnable {
             message.setFrom(new InternetAddress(PropertiesUtil.getEmailProperty("mail.user")));
 
             // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailDto.getEmailTo()));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailDto.getAddressTo()));
             // Set Subject: header field
             message.setSubject(mailDto.getSubject(), "UTF-8");
 

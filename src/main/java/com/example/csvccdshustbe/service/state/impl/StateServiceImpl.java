@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.dto.requestData.RequestDataDetailsDto;
 import com.example.csvccdshustbe.dto.requestStakeHolder.RequestStakeHolderDetails;
 import com.example.csvccdshustbe.dto.state.StateDetailsDto;
 import com.example.csvccdshustbe.dto.state.StateLinkListDto;
+import com.example.csvccdshustbe.dto.userRole.UserRoleDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.enums.RolePattern;
@@ -188,10 +189,10 @@ public class StateServiceImpl implements StateService {
     private List<RequestStakeHolder> contructionRequestStakeHolder(Request request, Integer idProcess) {
         Process process = processService.findProcessByIdProcess(idProcess);
         Integer idDepartment = process.getIdDepartment();
-        List<UserRole> userRoles = userRoleService.findUserRoleByNameRoleAndIdDepartment(RolePattern.ManagerDepartment.name(), idDepartment);
+        List<UserRoleDto> userRoles = userRoleService.findUserRoleByNameRoleAndIdDepartment(RolePattern.ManagerDepartment.name(), idDepartment);
         List<RequestStakeHolder> stakeHolders = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
-        for (UserRole userRole : userRoles){
+        for (UserRoleDto userRole : userRoles){
             RequestStakeHolder stakeHolder = new RequestStakeHolder();
             stakeHolder.setIdRequest(request.getIdRequest());
             stakeHolder.setIdUser(userRole.getIdUser());

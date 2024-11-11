@@ -25,4 +25,6 @@ public class FindAllAssetDto {
     private Integer quantity;
     private Integer parent;
     private String salt;
+    private String originalOfFormation;
+    private String restValue;
 }

@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.userRole;
 
 import com.example.csvccdshustbe.dto.userRole.DepartmentUserRoleDto;
+import com.example.csvccdshustbe.dto.userRole.UserRoleDto;
 import com.example.csvccdshustbe.entity.UserRole;
 import com.example.csvccdshustbe.response.user.FindAllRolesUserResponse;
 
@@ -18,5 +19,5 @@ public interface UserRoleRepositoryCustom {
     Optional<UserRole> findUserRoleByIdUserRole(Integer idUserRole);
 
     List<UserRole> findUserRoleByIdRole(Integer idRole);
-    List<UserRole> findUserRoleByNameRoleAndIdDepartment(String nameRole, Integer department);
+    List<UserRoleDto> findUserRoleByNameRoleAndIdDepartment(String nameRole, Integer department);
 }

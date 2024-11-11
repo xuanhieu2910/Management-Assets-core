@@ -79,7 +79,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                                         "/webjars/**",
                                         "/swagger-ui.html",
                                         "/v3/api-docs/**",
-                                        "/api/v1/user/auth/**").permitAll()
+                                        "/api/v1/user/auth/**",
+                                        "/api/v1/process/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

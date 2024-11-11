@@ -1481,6 +1481,39 @@ public class AssetServiceImpl implements AssetService {
         return prefix;
     }
 
+    @Override
+    public Page<FindAllAssetResponseToInventory> findAllAssetToInventory(FindAllAssetToInventoryRequest inventoryRequest) {
+        Pageable pageable = PageUtils.buildPage(inventoryRequest.getPage(), inventoryRequest.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        inventoryRequest.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoToInventory(inventoryRequest, pageable);
+        return new PageImpl<>(convertToFindAllAssetToInventoryResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    private List<FindAllAssetResponseToInventory> convertToFindAllAssetToInventoryResponse(List<FindAllAssetDto> content) {
+        List<FindAllAssetResponseToInventory> response = new ArrayList<>();
+        for (FindAllAssetDto dto : content){
+            FindAllAssetResponseToInventory inventory = new FindAllAssetResponseToInventory();
+            inventory.setCodeAsset(dto.getCodeAsset());
+            inventory.setNameAsset(dto.getNameAsset());
+            inventory.setNameAssetCategory(dto.getNameAssetCategory());
+            inventory.setCodeAssetCategory(dto.getCodeAssetCategory());
+            inventory.setCodeDepartment(dto.getCodeDepartment());
+            inventory.setNameDepartment(dto.getNameDepartment());
+            inventory.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
+            inventory.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
+            inventory.setIdAsset(dto.getIdAsset());
+            inventory.setSalt(dto.getSalt());
+            inventory.setQuantityOriginal(dto.getQuantity());
+            inventory.setRestValueOriginal(dto.getRestValue());
+            inventory.setTotalOriginalOfFormationOriginal(String.valueOf(
+                    Arrays.stream(dto.getOriginalOfFormation().split("-")).mapToLong(String::length).sum()));
+            response.add(inventory);
+        }
+        return response;
+    }
+
     private String prefixAsset(String prefix) {
         int minLength = 4;
         Integer idDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdDepartmentCurrent();

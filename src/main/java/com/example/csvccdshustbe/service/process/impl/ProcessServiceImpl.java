@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.process.impl;
 
 import com.example.csvccdshustbe.dto.user.FindAllUserDto;
+import com.example.csvccdshustbe.dto.userRole.UserRoleDto;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.RolePattern;
@@ -23,13 +24,16 @@ import com.example.csvccdshustbe.service.request.RequestService;
 import com.example.csvccdshustbe.service.requestData.RequestDataService;
 import com.example.csvccdshustbe.service.requestStakeHolder.RequestStakeHolderService;
 import com.example.csvccdshustbe.service.state.StateService;
+import com.example.csvccdshustbe.service.taskSendMail.TaskSendMailService;
 import com.example.csvccdshustbe.service.transition.TransitionService;
 import com.example.csvccdshustbe.service.typeProcessService.TypeProcessService;
 import com.example.csvccdshustbe.service.typeState.TypeStateService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.EmailUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
+import com.example.csvccdshustbe.utility.PropertiesUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -69,6 +73,8 @@ public class ProcessServiceImpl implements ProcessService {
     UserRoleService userRoleService;
     @Autowired
     DataDocumentInventoryService dataDocumentInventoryService;
+    @Autowired
+    TaskSendMailService taskSendMailService;
 
     @Override
     public Process saveProcess(Process process) {
@@ -88,8 +94,25 @@ public class ProcessServiceImpl implements ProcessService {
         transitionService.saveTransition(constructionTransition(process, states));
         Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
                 states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
+        Integer idDepartment = process.getIdDepartment();
+        List<UserRoleDto> userRoles = userRoleService.findUserRoleByNameRoleAndIdDepartment(RolePattern.ManagerDepartment.name(),
+                idDepartment);
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
-        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, process));
+        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
+        createTaskSendMail(userRoles, document);
+    }
+
+    private void createTaskSendMail(List<UserRoleDto> userRoleDtos, Document document) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        for (UserRoleDto stakeHolder : userRoleDtos){
+            TaskSendMail taskSendMail = new TaskSendMail();
+            taskSendMail.setAddressFrom(PropertiesUtil.getEmailProperty("mail.user"));
+            taskSendMail.setAddressTo(stakeHolder.getUserName());
+            taskSendMail.setAddressCc(csvcUser.getUsername());
+            taskSendMail.setSubject(EmailUtil.SUBJECTS_PROCESS[5]);
+//            taskSendMail.setContent(EmailUtil.);
+//            taskSendMail.setRetry();
+        }
     }
 
     @Override
@@ -210,12 +233,10 @@ public class ProcessServiceImpl implements ProcessService {
      *
      */
 
-    private List<RequestStakeHolder> constructionRequestStakeHolder(Request processRequest, Process process) {
-        Integer idDepartment = process.getIdDepartment();
-        List<UserRole> userRoles = userRoleService.findUserRoleByNameRoleAndIdDepartment(RolePattern.ManagerDepartment.name(), idDepartment);
+    private List<RequestStakeHolder> constructionRequestStakeHolder(Request processRequest, List<UserRoleDto> userRoles) {
         List<RequestStakeHolder> stakeHolders = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
-        for (UserRole userRole : userRoles){
+        for (UserRoleDto userRole : userRoles){
             RequestStakeHolder stakeHolder = new RequestStakeHolder();
             stakeHolder.setIdRequest(processRequest.getIdRequest());
             stakeHolder.setIdUser(userRole.getIdUser());

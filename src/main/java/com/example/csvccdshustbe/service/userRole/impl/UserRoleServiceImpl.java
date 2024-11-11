@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.userRole.impl;
 
 import com.example.csvccdshustbe.dto.userRole.DepartmentUserRoleDto;
+import com.example.csvccdshustbe.dto.userRole.UserRoleDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Role;
 import com.example.csvccdshustbe.entity.UserRole;
@@ -66,8 +67,8 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public List<UserRole> findUserRoleByNameRoleAndIdDepartment(String nameRole, Integer department) {
-        List<UserRole> userRoles = userRoleRepository.findUserRoleByNameRoleAndIdDepartment(nameRole, department);
+    public List<UserRoleDto> findUserRoleByNameRoleAndIdDepartment(String nameRole, Integer department) {
+        List<UserRoleDto> userRoles = userRoleRepository.findUserRoleByNameRoleAndIdDepartment(nameRole, department);
         if (CollectionUtils.isEmpty(userRoles)){
             throw new NotFoundException("Don't exits user roles by code user");
         }

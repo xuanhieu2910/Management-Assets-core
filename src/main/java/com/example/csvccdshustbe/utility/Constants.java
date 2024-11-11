@@ -383,6 +383,25 @@ public class Constants {
     public static Integer STATUS_GOVERNMENT_ACTIVE = 1;
     public static Integer STATUS_GOVERNMENT_UN_ACTIVE = -1;
     /*----------------------------------------------------*/
+
+    /**
+     * Constant Status Report
+     * */
+    public static Integer STATUS_TASK_SEND_DETAIL_MAIL_FALSE = -1;
+    public static Integer STATUS_TASK_SEND_DETAIL_MAIL_PENDING = 1;
+    public static Integer STATUS_TASK_SEND_DETAIL_MAIL_SUCCESS = 2;
+    /*----------------------------------------------------*/
+    /**
+     * Constant Status Report
+     * */
+    public static Integer STATUS_TASK_SEND_DETAIL_MAIL_NOT_YET_OPEN = -1;
+    public static Integer STATUS_TASK_SEND_DETAIL_MAIL_IS_OPEN = 1;
+    /*----------------------------------------------------*/
+    /**
+     * Constant Status Report
+     * */
+    public static Integer STATUS_TASK_SEND_DETAIL_MAIL_DEFAULT_COUNT_OPEN = 0;
+    /*----------------------------------------------------*/
     /**
      * Constant name reports
      * */
