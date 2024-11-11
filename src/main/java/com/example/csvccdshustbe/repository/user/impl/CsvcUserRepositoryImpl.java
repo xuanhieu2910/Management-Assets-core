@@ -308,18 +308,22 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
     @Override
     public Page<FindAllUserResponse> findAllUser(FindAllUserRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select csvcUser.code_user, csvcUser.user_name, csvcUser.full_name,  " +
-                "         de.id_department, de.name,  concat_ws('\\',role.short_name)  as roles, " +
-                "         userRole.id_user_role  " +
-                "   from csvc_user csvcUser          " +
-                "       inner join user_role userRole on csvcUser.id_user = userRole.id_user          " +
-                "       inner join role role on userRole.id_role = role.id_role          " +
-                "       inner join department de on userRole.id_department = de.id_department          " +
-                "   where de.id_department in (:idsDepartment)          " +
-                "   and (csvcUser.id_user != :idUserCurrent and  role.title != :titleRole)  ");
+        sb.append("select csvcUser.code_user,  " +
+                "       csvcUser.user_name,  " +
+                "       csvcUser.full_name,  " +
+                "       de.id_department,  " +
+                "       de.name,  " +
+                "       role.short_name as roles,  " +
+                "       userRole.id_user_role  " +
+                "from csvc_user csvcUser  " +
+                "         inner join user_role userRole on csvcUser.id_user = userRole.id_user  " +
+                "         inner join role role on userRole.id_role = role.id_role  " +
+                "         inner join department de on userRole.id_department = de.id_department  " +
+                "where de.id_department in (:idsDepartment)  " +
+                "  and (csvcUser.id_user != :idUserCurrent and role.title != :titleRole) ");
         setConditionFindAllUser(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
-//        PageUtils.buildQuery(pageable, query);
+        PageUtils.buildQuery(pageable, query);
         setParameterFindAllUser(request, query);
         List<Object[]> result = query.getResultList();
         List<FindAllUserResponse> responses = new ArrayList<>();

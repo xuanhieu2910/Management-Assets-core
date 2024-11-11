@@ -85,7 +85,7 @@ public class AssetInstanceRepositoryImpl implements AssetInstanceRepositoryCusto
     private void setParameterFindAllAssetInstance(Query query) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         query.setParameter("idUser", csvcUser.getIdUser());
-        query.setParameter("idDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
+        query.setParameter("idDepartmentOriginal", csvcUser.getIdDepartmentCurrent());
     }
 
     private long countFindAllAssetInstance() {
