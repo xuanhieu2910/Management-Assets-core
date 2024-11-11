@@ -639,7 +639,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          on asset.id_asset = assetDepreciation.id_asset  " +
                 "   where 1 = 1 and asset.quantity = 1  " +
                 "         and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "         and dataDocument.id_asset is null  ");
+                "         and dataDocument.id_asset is not null  ");
         setConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToInventory(request, query);
@@ -743,7 +743,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          on asset.id_asset = assetDepreciation.id_asset  " +
                 "   where 1 = 1 and asset.quantity = 1  " +
                 "         and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "         and dataDocument.id_asset is null ");
+                "         and dataDocument.id_asset is not null ");
         setCountConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToInventory(request,query);
