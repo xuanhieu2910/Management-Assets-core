@@ -319,9 +319,8 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
                 "   and (csvcUser.id_user != :idUserCurrent and  role.title != :titleRole)  ");
         setConditionFindAllUser(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
-        PageUtils.buildQuery(pageable, query);
+//        PageUtils.buildQuery(pageable, query);
         setParameterFindAllUser(request, query);
-        PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
         List<FindAllUserResponse> responses = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
