@@ -1578,7 +1578,9 @@ public class AssetServiceImpl implements AssetService {
         return responses;
     }
 
-    public void createAssetFromFile(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException {
+    @Override
+    public void createAssetFromFile(Map<String, Object> createAssetRequest) throws JsonProcessingException,
+            ValidateFiledException {
         Map<String, Object> dataCreateAssetRequest =
                 objectMapper.readValue(JSONObjectUtils.toJSONString(createAssetRequest), Map.class);
 //        validateDataCreateAsset(dataCreateAssetRequest);

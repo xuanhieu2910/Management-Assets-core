@@ -34,4 +34,5 @@ public interface AssetService {
     Page<FindAllAssetDocumentResponse> findAllAssetDocumentByCodeDocument(FindAllAssetDocumentRequest request);
     String generateCodeAsset(String prefix);
     Page<FindAllAssetResponseToInventory> findAllAssetToInventory(FindAllAssetToInventoryRequest inventoryRequest);
+    void createAssetFromFile(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException;
 }

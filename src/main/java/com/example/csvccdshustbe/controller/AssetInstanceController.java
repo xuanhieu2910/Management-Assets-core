@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
+import com.example.csvccdshustbe.request.assetInstance.CreateAssetInstanceRequest;
 import com.example.csvccdshustbe.request.assetInstance.DeleteAssetInstanceRequest;
 import com.example.csvccdshustbe.request.assetInstance.FindAllAssetInstanceRequest;
 import com.example.csvccdshustbe.request.assetInstance.UpdateAssetInstanceRequest;
@@ -59,6 +60,18 @@ public class AssetInstanceController {
     public ResponseEntity<?> deleteAssetInstance(@RequestBody DeleteAssetInstanceRequest request){
         try {
             assetInstanceService.deleteAssetInstance(request);
+            return ApiResponseDto.createdWithMessage("Update asset instance success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/create-assets")
+    public ResponseEntity<?> createAssets(@RequestBody CreateAssetInstanceRequest request){
+        try {
+            assetInstanceService.createAssetInstance(request);
             return ApiResponseDto.createdWithMessage("Update asset instance success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
