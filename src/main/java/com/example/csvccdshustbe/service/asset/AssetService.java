@@ -33,5 +33,5 @@ public interface AssetService {
     Page<FindAllAssetResponseToIncrease> findAllAssetToIncrease(FinaAllAssetToIncreaseRequest request);
     Page<FindAllAssetDocumentResponse> findAllAssetDocumentByCodeDocument(FindAllAssetDocumentRequest request);
     String generateCodeAsset(String prefix);
-    Object findAllAssetToInventory(FindAllAssetToInventoryRequest inventoryRequest);
+    Page<FindAllAssetResponseToInventory> findAllAssetToInventory(FindAllAssetToInventoryRequest inventoryRequest);
 }

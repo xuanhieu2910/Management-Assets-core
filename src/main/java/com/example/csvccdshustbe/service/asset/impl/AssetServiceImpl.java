@@ -1512,6 +1512,9 @@ public class AssetServiceImpl implements AssetService {
                             .mapToLong(Long::parseLong)
                             .sum()
             ));
+            inventory.setQuantityInventory(dto.getQuantity());
+            inventory.setTotalOriginalOfFormationInventory(inventory.getTotalOriginalOfFormationOriginal());
+            inventory.setRestValueInventory(dto.getRestValue());
             response.add(inventory);
         }
         return response;
