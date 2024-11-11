@@ -628,14 +628,14 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          assetDepreciation.rest_value,   " +
                 "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue  " +
                 "   from asset asset  " +
-                "       inner join asset_categories assetCategories            " +
+                "       left join asset_categories assetCategories            " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category            " +
-                "       inner join department de on asset.id_department = de.id_department            " +
+                "       left join department de on asset.id_department = de.id_department            " +
                 "       left join location lo on asset.id_location = lo.id_location            " +
-                "       inner join data_document dataDocument on asset.id_asset = dataDocument.id_asset  " +
-                "       inner join asset_original_of_formation assetOriginalOfFormation  " +
+                "       left join data_document dataDocument on asset.id_asset = dataDocument.id_asset  " +
+                "       left join asset_original_of_formation assetOriginalOfFormation  " +
                 "           on asset.id_asset = assetOriginalOfFormation.id_asset  " +
-                "      inner join asset_depreciation assetDepreciation  " +
+                "      left join asset_depreciation assetDepreciation  " +
                 "          on asset.id_asset = assetDepreciation.id_asset  " +
                 "   where 1 = 1 and asset.quantity = 1  " +
                 "         and asset.id_department_origin in (:idsDepartmentOriginal)  " +
@@ -643,7 +643,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         setConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToInventory(request, query);
-        PageUtils.buildQuery(pageable, query);
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
         List<FindAllAssetDto> responses = new ArrayList<>();
@@ -802,6 +801,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     private void setConditionFindAllAssetDtoToInventory(FindAllAssetToInventoryRequest request,StringBuilder sb) {
+        sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
+                "         assetCategories.id_asset_category, assetCategories.name,  " +
+                "         assetCategories.code_name, de.id_department,  " +
+                "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
+                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value ");
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
         }
@@ -823,11 +827,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         } else {
             sb.append(" ORDER BY asset.id_asset desc ");
         }
-        sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
-                "         assetCategories.id_asset_category, assetCategories.name,  " +
-                "         assetCategories.code_name, de.id_department,  " +
-                "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
-                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value ");
+
     }
 
 
