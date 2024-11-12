@@ -1620,7 +1620,7 @@ public class AssetServiceImpl implements AssetService {
 
 
 
-
+    //extract ID IN STT_ID_...
     public Integer extractIdSTTFromExcel(String input) {
         if (input != null && input.contains("_")) {
             String[] parts = input.split("_");
@@ -1637,6 +1637,18 @@ public class AssetServiceImpl implements AssetService {
         }
         return null;
     }
+    //êexexxtract String after STT_ID_...
+    public String extractNameAfterIdSTTFromExcel(String input) {
+        if (input != null && input.contains("_")) {
+            String[] parts = input.split("_");
+            if (parts.length > 2) {
+                return parts[2];
+            }
+        }
+        return null;
+    }
+
+    //extract id in id_...
     public Integer extractIdValueFromExcel(String input) {
         if (input != null && input.contains("_")) {
             String firstPart = input.split("_")[0];
@@ -1650,12 +1662,31 @@ public class AssetServiceImpl implements AssetService {
         }
         return null;
     }
+    //extract name after id in id_name
+    public String extractNameAfterIDFromExcel(String input) {
+        if (input != null && input.contains("_")) {
+            String[] parts = input.split("_", 2);
+            if (parts.length > 1) {
+                return parts[1];
+            }
+        }
+        return null;
+    }
+    //STT_0001_Name lay ra 0001
     public String extractCodeValueFromExcel(String input) {
         if (input != null && input.contains("_")) {
             String[] parts = input.split("_");
             if (parts.length > 1) {
                 return parts[1];
             }
+        }
+        return input;
+    }
+    //STT_0001_Name lay ra Name
+    public String extractNameAfterCodeValueFromExcel(String input) {
+        if (input != null && input.contains("_")) {
+            String[] parts = input.split("_");
+            return parts[2];
         }
         return input;
     }
@@ -1698,7 +1729,10 @@ public class AssetServiceImpl implements AssetService {
             List<XSSFRow> allRows = new ArrayList<>();
             for (int i = indexRowStartToReadData; i <= totalRow; i++) {
                 XSSFRow row = xssfSheet.getRow(i);
-                if (row != null && hasDataInRow(row,5)) {
+//                if (row != null && hasDataInRow(row,5)) {
+//                    allRows.add(row);
+//                }
+                if (row != null) {
                     allRows.add(row);
                 }
             }
@@ -2060,11 +2094,25 @@ public class AssetServiceImpl implements AssetService {
                 }
             }
         }
+        int maxLength = Math.max(originOfFormationNameArray.length, originOfFormationValuesArray.length);
         List<Map<String, Object>> originOfFormationList = new ArrayList<>();
-        for (int i = 0; i < originOfFormationNameArray.length; i++) {
+        for (int i = 0; i < maxLength; i++) {
             Map<String, Object> originOfFormation = new HashMap<>();
-            originOfFormation.put("idOriginOfFormation", originalOfFormationMap.get(originOfFormationNameArray[i]).getIdOriginalOfFormation());
-            originOfFormation.put("value", originOfFormationValuesArray[i]);
+            if( originOfFormationNameArray.length - 1 < i){
+                originOfFormation.put("idOriginOfFormation", null);
+                originOfFormation.put("nameOriginOfFormation", null);
+            }
+            else {
+                originOfFormation.put("idOriginOfFormation", originalOfFormationMap.get(originOfFormationNameArray[i]).getIdOriginalOfFormation());
+                originOfFormation.put("nameOriginOfFormation", originOfFormationNameArray[i]);
+            }
+            if(originOfFormationValuesArray.length - 1 < i){
+                originOfFormation.put("value", null);
+            }
+            else {
+                originOfFormation.put("value", originOfFormationValuesArray[i]);
+            }
+
             originOfFormationList.add(originOfFormation);
         }
 
@@ -2072,14 +2120,21 @@ public class AssetServiceImpl implements AssetService {
         commonData.put("codeAsset", generateCodeAsset(Constants.PREFIX_ASSET));
         commonData.put("name", nameAsset);
         commonData.put("idAssetCategory", extractIdValueFromExcel(category));
+        commonData.put("nameAssetCategory", extractNameAfterIDFromExcel(category));
 //        commonData.put("idInstance", assetInstanceCategoriesMap.get(instanceCategory).getIdAssetCategory());
         commonData.put("idInstance",extractIdSTTFromExcel(instanceCategory));
+        commonData.put("nameInstance",extractNameAfterIdSTTFromExcel(instanceCategory));
         commonData.put("idDepartment", extractIdSTTFromExcel(department));
+        commonData.put("nameDepartment", extractNameAfterIdSTTFromExcel(department));
         commonData.put("codeDepartment", departmentOptional.map(Department::getCode).orElse(null));
         commonData.put("idLocation", extractIdValueFromExcel(location));
+        commonData.put("nameLocation", extractNameAfterIDFromExcel(location));
         commonData.put("idUnit", extractIdValueFromExcel(unit));
+        commonData.put("nameUnit", extractNameAfterIDFromExcel(unit));
         commonData.put("idDocumentAttack", extractIdValueFromExcel(documentAttack));
+        commonData.put("nameDocumentAttack", extractNameAfterIDFromExcel(documentAttack));
         commonData.put("idProjects", extractIdValueFromExcel(project));
+        commonData.put("nameProjects", extractNameAfterIDFromExcel(project));
 //        commonData.put("idLevelTypeAsset", extractIdValueFromExcel(levelTypeAsset));
         commonData.put("originOfFormation", originOfFormationList);
 
@@ -2088,6 +2143,7 @@ public class AssetServiceImpl implements AssetService {
         commonData.put("description", description);
         commonData.put("quantity", 1);
         commonData.put("idDepartmentDefault", extractIdValueFromExcel(departmentDefault));
+        commonData.put("nameDepartmentDefault", extractNameAfterIDFromExcel(departmentDefault));
         // Các lỗi liên quan validate các trường
         commonData.put("error", errorList);
         return commonData;
@@ -2117,16 +2173,22 @@ public class AssetServiceImpl implements AssetService {
                     moduleDataDetails.put("serial", ExcelUtil.convertValue(row.getCell(18), CellType.STRING));
                     moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(19), CellType.STRING));
                     moduleDataDetails.put("idCountryProducer",  extractIdValueFromExcel(countryProducer));
+                    moduleDataDetails.put("nameCountryProducer",  extractNameAfterIDFromExcel(countryProducer));
                     moduleDataDetails.put("codeUser",  userNameToCodeMap.get(extractUserNameUsedAsset(userNameMachine)));
+                    moduleDataDetails.put("userName",  extractUserNameUsedAsset(userNameMachine));
                     moduleDataDetails.put("idTypeUse", extractIdValueFromExcel(typeUse));
+                    moduleDataDetails.put("nameTypeUse", extractNameAfterIDFromExcel(typeUse));
                     break;
                 case "GroundModule":
                     String provinceGround = (String)ExcelUtil.convertValue(row.getCell(23), CellType.STRING);
                     String districtGround = (String)ExcelUtil.convertValue(row.getCell(24), CellType.STRING);
                     String wardGround = (String)ExcelUtil.convertValue(row.getCell(25), CellType.STRING);
                     moduleDataDetails.put("provinceCode", extractCodeValueFromExcel(provinceGround));
+                    moduleDataDetails.put("provinceName", extractNameAfterCodeValueFromExcel(provinceGround));
                     moduleDataDetails.put("districtCode", extractCodeValueFromExcel(districtGround));
+                    moduleDataDetails.put("districtName", extractNameAfterCodeValueFromExcel(districtGround));
                     moduleDataDetails.put("wardCode", extractCodeValueFromExcel(wardGround));
+                    moduleDataDetails.put("wardName", extractNameAfterCodeValueFromExcel(wardGround));
                     moduleDataDetails.put("addressDetail", ExcelUtil.convertValue(row.getCell(26), CellType.STRING));
                     break;
                 case "HouseModule":
@@ -2139,14 +2201,18 @@ public class AssetServiceImpl implements AssetService {
                     if (valueIsManagerGround != null && valueIsManagerGround.equals("Có")) {
                         moduleDataDetails.put("isManageGround",1);
                         moduleDataDetails.put("idInstance", extractIdValueFromExcel(houseBelongLand));
+                        moduleDataDetails.put("nameInstance", extractNameAfterIDFromExcel(houseBelongLand));
                     }
                     else{
                         moduleDataDetails.put("isManageGround", -1);
                         moduleDataDetails.put("idInstance", null);
                     }
                     moduleDataDetails.put("provinceCode", extractCodeValueFromExcel(provinceHouse));
+                    moduleDataDetails.put("provinceName", extractNameAfterCodeValueFromExcel(provinceHouse));
                     moduleDataDetails.put("districtCode", extractCodeValueFromExcel(districtHouse));
+                    moduleDataDetails.put("districtName", extractNameAfterCodeValueFromExcel(districtHouse));
                     moduleDataDetails.put("wardCode", extractCodeValueFromExcel(wardHouse));
+                    moduleDataDetails.put("wardName", extractNameAfterCodeValueFromExcel(wardHouse));
                     moduleDataDetails.put("addressDetail", ExcelUtil.convertValue(row.getCell(32), CellType.STRING));
                     moduleDataDetails.put("floorsNumber", ExcelUtil.convertValue(row.getCell(33), CellType.STRING));
                     moduleDataDetails.put("acreage", ExcelUtil.convertValue(row.getCell(34), CellType.STRING));
@@ -2157,11 +2223,13 @@ public class AssetServiceImpl implements AssetService {
 //                    Optional<CountryProducer> countryProducerArchitectureOptional=countryProducerRepository.findCountryProducerByNameAndStatus(countryProducerArchitecture,1);
                     String architectureBelongLand = (String) ExcelUtil.convertValue(row.getCell(36), CellType.STRING);
                     moduleDataDetails.put("idInstance", extractIdValueFromExcel(architectureBelongLand));
+                    moduleDataDetails.put("nameInstance", extractNameAfterIDFromExcel(architectureBelongLand));
                     moduleDataDetails.put("length", ExcelUtil.convertValue(row.getCell(37), CellType.STRING));
                     moduleDataDetails.put("acreage", ExcelUtil.convertValue(row.getCell(38), CellType.STRING));
                     moduleDataDetails.put("volume", ExcelUtil.convertValue(row.getCell(39), CellType.STRING));
                     moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(40), CellType.STRING));
                     moduleDataDetails.put("idCountryProducer", extractIdValueFromExcel(countryProducerArchitecture));
+                    moduleDataDetails.put("nameCountryProducer", extractNameAfterIDFromExcel(countryProducerArchitecture));
                     break;
                 case "CarModule":
                     String countryProducerCar = (String)ExcelUtil.convertValue(row.getCell(55), CellType.STRING);
@@ -2195,15 +2263,20 @@ public class AssetServiceImpl implements AssetService {
                     moduleDataDetails.put("machineNumber", ExcelUtil.convertValue(row.getCell(53), CellType.STRING));
                     moduleDataDetails.put("publishYear", ExcelUtil.convertValue(row.getCell(54), CellType.STRING));
                     moduleDataDetails.put("idCountryProducer",  extractIdValueFromExcel(countryProducerCar));
+                    moduleDataDetails.put("nameCountryProducer",  extractIdValueFromExcel(countryProducerCar));
                     moduleDataDetails.put("licenseCertificateRegister", ExcelUtil.convertValue(row.getCell(56), CellType.STRING));
                     moduleDataDetails.put("publishDateLicense", ExcelUtil.convertValue(row.getCell(57), CellType.STRING));
                     moduleDataDetails.put("companyRegister", ExcelUtil.convertValue(row.getCell(58), CellType.STRING));
                     moduleDataDetails.put("source", ExcelUtil.convertValue(row.getCell(59), CellType.STRING));
                     moduleDataDetails.put("color", ExcelUtil.convertValue(row.getCell(60), CellType.STRING));
                     moduleDataDetails.put("codeUser",  userNameToCodeMap.get(extractUserNameUsedAsset(userNameCar)));
+                    moduleDataDetails.put("userName",  extractUserNameUsedAsset(userNameCar));
                     moduleDataDetails.put("idTypeUse", extractIdValueFromExcel(typeUseCar));
+                    moduleDataDetails.put("nameTypeUse", extractNameAfterIDFromExcel(typeUseCar));
                     moduleDataDetails.put("idPositionName", extractIdValueFromExcel(positionNameCar));
+                    moduleDataDetails.put("namePositionName", extractNameAfterIDFromExcel(positionNameCar));
                     moduleDataDetails.put("idPositionNameOther", extractIdValueFromExcel(positionNameOtherCar));
+                    moduleDataDetails.put("namePositionNameOther", extractNameAfterIDFromExcel(positionNameOtherCar));
                     break;
                 case "OtherVehicleTransportModule":
                     String countryProducerOtherVehicle = (String)ExcelUtil.convertValue(row.getCell(74), CellType.STRING);
@@ -2224,14 +2297,18 @@ public class AssetServiceImpl implements AssetService {
                     moduleDataDetails.put("machineNumber", ExcelUtil.convertValue(row.getCell(72), CellType.STRING));
                     moduleDataDetails.put("publishYear", ExcelUtil.convertValue(row.getCell(73), CellType.STRING));
                     moduleDataDetails.put("idCountryProducer",  extractIdValueFromExcel(countryProducerOtherVehicle));
+                    moduleDataDetails.put("nameCountryProducer",  extractNameAfterIDFromExcel(countryProducerOtherVehicle));
                     moduleDataDetails.put("licenseCertificateRegister", ExcelUtil.convertValue(row.getCell(75), CellType.STRING));
                     moduleDataDetails.put("publishDateLicense", ExcelUtil.convertValue(row.getCell(76), CellType.STRING));
                     moduleDataDetails.put("companyRegister", ExcelUtil.convertValue(row.getCell(77), CellType.STRING));
                     moduleDataDetails.put("source", ExcelUtil.convertValue(row.getCell(78), CellType.STRING));
                     moduleDataDetails.put("color", ExcelUtil.convertValue(row.getCell(79), CellType.STRING));
                     moduleDataDetails.put("codeUser",  userNameToCodeMap.get(extractUserNameUsedAsset(userNameOtherVehicle)));
+                    moduleDataDetails.put("userName",  extractUserNameUsedAsset(userNameOtherVehicle));
                     moduleDataDetails.put("idTypeUse", extractIdValueFromExcel(typeUseOtherVehicle));
+                    moduleDataDetails.put("nameTypeUse", extractNameAfterIDFromExcel(typeUseOtherVehicle));
                     moduleDataDetails.put("idPositionName", extractIdValueFromExcel(positionNameVehicle));
+                    moduleDataDetails.put("namePositionName", extractNameAfterIDFromExcel(positionNameVehicle));
                     break;
 
                 case "TreeAndAnimalModule":
@@ -2241,7 +2318,9 @@ public class AssetServiceImpl implements AssetService {
 //                    Optional<TypeUse> typeUseOptionalTreeAndAnimal=typeUseRepository.findTypeUseByName(typeUseTreeAndAnimal);
                     moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(83), CellType.STRING));
                     moduleDataDetails.put("idTypeUse", extractIdValueFromExcel(typeUseTreeAndAnimal));
+                    moduleDataDetails.put("nameTypeUse", extractNameAfterIDFromExcel(typeUseTreeAndAnimal));
                     moduleDataDetails.put("idCountryProducer", extractIdValueFromExcel(countryProducerTreeAndAnimal));
+                    moduleDataDetails.put("nameCountryProducer", extractNameAfterIDFromExcel(countryProducerTreeAndAnimal));
                     break;
                 case "OtherAssetModule":
                     String countryProducerOther = (String)ExcelUtil.convertValue(row.getCell(90), CellType.STRING);
@@ -2256,8 +2335,11 @@ public class AssetServiceImpl implements AssetService {
                     moduleDataDetails.put("serial", ExcelUtil.convertValue(row.getCell(88), CellType.STRING));
                     moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(89), CellType.STRING));
                     moduleDataDetails.put("idCountryProducer", extractIdValueFromExcel(countryProducerOther));
+                    moduleDataDetails.put("nameCountryProducer", extractNameAfterIDFromExcel(countryProducerOther));
                     moduleDataDetails.put("codeUser",  userNameToCodeMap.get(extractUserNameUsedAsset(userNameOther)));
+                    moduleDataDetails.put("userName",  extractUserNameUsedAsset(userNameOther));
                     moduleDataDetails.put("idTypeUse", extractIdValueFromExcel(typeUseOther));
+                    moduleDataDetails.put("nameTypeUse", extractNameAfterIDFromExcel(typeUseOther));
                     break;
                 case "MedicineModule":
                     String medicineType = (String)ExcelUtil.convertValue(row.getCell(93), CellType.STRING);
@@ -2265,7 +2347,9 @@ public class AssetServiceImpl implements AssetService {
                     String medicineGroup = (String)ExcelUtil.convertValue(row.getCell(94), CellType.STRING);
 //                    Optional<MedicineGroup> medicineGroupOptional=medicineGroupRepository.findMedicineGroupByName(medicineGroup);
                     moduleDataDetails.put("idMedicineType", extractIdValueFromExcel(medicineType));
+                    moduleDataDetails.put("nameMedicineType", extractNameAfterIDFromExcel(medicineType));
                     moduleDataDetails.put("idMedicineGroup", extractIdValueFromExcel(medicineGroup));
+                    moduleDataDetails.put("nameMedicineGroup", extractNameAfterIDFromExcel(medicineGroup));
                     moduleDataDetails.put("publishDate", ExcelUtil.convertValue(row.getCell(95), CellType.STRING));
                     moduleDataDetails.put("expiryDate", ExcelUtil.convertValue(row.getCell(96), CellType.STRING));
                     moduleDataDetails.put("circulationNumber", ExcelUtil.convertValue(row.getCell(97), CellType.STRING));
@@ -2427,6 +2511,7 @@ public class AssetServiceImpl implements AssetService {
 //                declareData.put("acreage", ExcelUtil.convertValue(row.getCell(20), CellType.STRING));
                 String goalsUseGround=(String) ExcelUtil.convertValue(row.getCell(119), CellType.STRING);
                 declareData.put("idGoalsUseGround", extractIdValueFromExcel(goalsUseGround));
+                declareData.put("nameGoalsUseGround", extractNameAfterIDFromExcel(goalsUseGround));
                 declareData.put("licenseCertificateUseGround", ExcelUtil.convertValue(row.getCell(120), CellType.STRING));
                 declareData.put("dateLicenseCertificateUseGround", ExcelUtil.convertValue(row.getCell(121), CellType.STRING));
                 declareData.put("numberDecisionDeliverGround", ExcelUtil.convertValue(row.getCell(122), CellType.STRING));
@@ -2451,6 +2536,7 @@ public class AssetServiceImpl implements AssetService {
         if(original !=null){
             Optional<Original> originalOptional = originalRepository.findOriginalById(extractIdValueFromExcel(original));
             departmentInFor.put("idOriginal", extractIdValueFromExcel(original));
+            departmentInFor.put("nameOriginal", extractNameAfterIDFromExcel(original));
             departmentInFor.put("typeOriginal", originalOptional.map(Original::getHardCodeDev).orElse(null));
         }
         else {
