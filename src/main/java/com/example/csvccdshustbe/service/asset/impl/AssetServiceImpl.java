@@ -1450,18 +1450,19 @@ public class AssetServiceImpl implements AssetService {
     List<Map<String, Object>> assetRequests = handleUploadFileAsset(file);
         //Lưu Request vào bảng tạm, rồi sao khi xử lý thì lưu vào assete sau.
         //common:error
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    String assetRequestsJson = objectMapper.writeValueAsString(assetRequests);
-    String dateNow = String.valueOf(new Date().getTime());
-    CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    AssetInstance assetInstance= new AssetInstance();
-    assetInstance.setIdUser(csvcUser.getIdUser());
-    assetInstance.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());
-    assetInstance.setTimeCreated(dateNow);
-    assetInstance.setTimeModified(dateNow);
-    assetInstance.setValue(assetRequestsJson);
-    assetInstanceRepository.save(assetInstance);
+    for (Map<String, Object> data: assetRequests) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String assetRequestsJson = objectMapper.writeValueAsString(data);
+        String dateNow = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AssetInstance assetInstance = new AssetInstance();
+        assetInstance.setIdUser(csvcUser.getIdUser());
+        assetInstance.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());
+        assetInstance.setTimeCreated(dateNow);
+        assetInstance.setTimeModified(dateNow);
+        assetInstance.setValue(assetRequestsJson);
+//        assetInstanceRepository.save(assetInstance);
+    }
 
         //lưu bảng tạm
         //khi chọn bảng tạm
