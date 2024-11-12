@@ -1729,12 +1729,12 @@ public class AssetServiceImpl implements AssetService {
             List<XSSFRow> allRows = new ArrayList<>();
             for (int i = indexRowStartToReadData; i <= totalRow; i++) {
                 XSSFRow row = xssfSheet.getRow(i);
-//                if (row != null && hasDataInRow(row,5)) {
-//                    allRows.add(row);
-//                }
-                if (row != null) {
+                if (row != null && hasDataInRow(row,1)) {
                     allRows.add(row);
                 }
+//                if (row != null) {
+//                    allRows.add(row);
+//                }
             }
             int batchSize = Constants.SIZE_HANDLE;
             for (int start = 0; start < allRows.size(); start += batchSize) {
