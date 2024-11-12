@@ -695,7 +695,7 @@ public class AssetServiceImpl implements AssetService {
         childAsset.setPurpose(assetParent.getPurpose());
         childAsset.setNotes(assetParent.getNotes());
         childAsset.setDescription(assetParent.getDescription());
-        childAsset.setQuantity(assetParent.getQuantity());
+        childAsset.setQuantity(Constants.QUANTITY_DEFAULT);
         childAsset.setFileAttack(assetParent.getFileAttack());
         String timeCurrent = String.valueOf(new Date().getTime());
         childAsset.setTimeModified(timeCurrent);

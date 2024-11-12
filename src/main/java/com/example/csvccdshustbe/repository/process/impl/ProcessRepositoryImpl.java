@@ -18,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 
@@ -251,7 +250,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
     private void setConditionFindAllProcessBeAssigned(FindAllProcessBeAssignedRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getCodeTypeProcess())){
-            sb.append(" and ts.code = :typeProcess  ");
+            sb.append(" and tp.code = :typeProcess  ");
         }
         if (StringUtils.isNotBlank(request.getCodeDocument())) {
             sb.append(" and (dc.code REGEXP :codeDocument )  ");
