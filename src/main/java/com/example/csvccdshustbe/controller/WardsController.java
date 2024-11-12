@@ -47,16 +47,5 @@ public class WardsController {
         }
     }
 
-    @GetMapping("/test-send-mail")
-    public ResponseEntity<?> testSendMail(){
-        try{
-            EmailUtil.send();
-            return ApiResponseDto.createdWithMessage(
-                    "Test send mail success!", HttpStatus.OK);
-        } catch (Exception e){
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
-        }
-    }
-
 
 }
