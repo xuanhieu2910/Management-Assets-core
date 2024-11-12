@@ -1461,7 +1461,7 @@ public class AssetServiceImpl implements AssetService {
         assetInstance.setTimeCreated(dateNow);
         assetInstance.setTimeModified(dateNow);
         assetInstance.setValue(assetRequestsJson);
-//        assetInstanceRepository.save(assetInstance);
+        assetInstanceRepository.save(assetInstance);
     }
 
         //lưu bảng tạm
