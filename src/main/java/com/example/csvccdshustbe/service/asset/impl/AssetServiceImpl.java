@@ -2079,41 +2079,62 @@ public class AssetServiceImpl implements AssetService {
         String originalOfFormationValues = (String) ExcelUtil.convertValue(row.getCell(14), CellType.STRING);
 
         Optional<Department> departmentOptional = departmentRepository.findDepartmentById(extractIdSTTFromExcel(department));
-
-
-        String[] originOfFormationNameArray = originalOfFormationName.split(";");
-        String[] originOfFormationValuesArray = originalOfFormationValues.split(";");
-        if (originOfFormationNameArray.length != originOfFormationValuesArray.length) {
-            errorList.add("Số lượng giá trị của 2 cột nguồn hình thành không bằng nhau");
-        }
-        else {
-
-            for (int i = 0; i < originOfFormationNameArray.length; i++) {
-                if (originOfFormationNameArray[i].isEmpty() || originOfFormationValuesArray[i].isEmpty()) {
-                    errorList.add("Dữ liệu nguồn hình thành không hợp lệ");
-                }
-            }
-        }
-        int maxLength = Math.max(originOfFormationNameArray.length, originOfFormationValuesArray.length);
         List<Map<String, Object>> originOfFormationList = new ArrayList<>();
-        for (int i = 0; i < maxLength; i++) {
+        if (originalOfFormationName == null && originalOfFormationValues== null){
             Map<String, Object> originOfFormation = new HashMap<>();
-            if( originOfFormationNameArray.length - 1 < i){
+            originOfFormation.put("idOriginOfFormation", null);
+            originOfFormation.put("nameOriginOfFormation", null);
+            originOfFormation.put("value", null);
+        }else if(originalOfFormationName == null && originalOfFormationValues != null){
+            String[] originOfFormationValuesArray = originalOfFormationValues.split(";");
+            for (int i = 0; i < originOfFormationValuesArray.length; i++) {
+                Map<String, Object> originOfFormation = new HashMap<>();
                 originOfFormation.put("idOriginOfFormation", null);
                 originOfFormation.put("nameOriginOfFormation", null);
-            }
-            else {
-                originOfFormation.put("idOriginOfFormation", originalOfFormationMap.get(originOfFormationNameArray[i]).getIdOriginalOfFormation());
-                originOfFormation.put("nameOriginOfFormation", originOfFormationNameArray[i]);
-            }
-            if(originOfFormationValuesArray.length - 1 < i){
-                originOfFormation.put("value", null);
-            }
-            else {
                 originOfFormation.put("value", originOfFormationValuesArray[i]);
             }
+        }
+        else if(originalOfFormationName != null && originalOfFormationValues == null){
+            String[] originOfFormationNameArray = originalOfFormationValues.split(";");
+            for (int i = 0; i < originOfFormationNameArray.length; i++) {
+                Map<String, Object> originOfFormation = new HashMap<>();
+                originOfFormation.put("idOriginOfFormation", originalOfFormationMap.get(originOfFormationNameArray[i]).getIdOriginalOfFormation());
+                originOfFormation.put("nameOriginOfFormation", originOfFormationNameArray[i]);
+                originOfFormation.put("value", null);
+            }
+        }
+        else {
+            String[] originOfFormationNameArray = originalOfFormationName.split(";");
+            String[] originOfFormationValuesArray = originalOfFormationValues.split(";");
+            if (originOfFormationNameArray.length != originOfFormationValuesArray.length) {
+                errorList.add("Số lượng giá trị của 2 cột nguồn hình thành không bằng nhau");
+            } else {
 
-            originOfFormationList.add(originOfFormation);
+                for (int i = 0; i < originOfFormationNameArray.length; i++) {
+                    if (originOfFormationNameArray[i].isEmpty() || originOfFormationValuesArray[i].isEmpty()) {
+                        errorList.add("Dữ liệu nguồn hình thành không hợp lệ");
+                    }
+                }
+            }
+            int maxLength = Math.max(originOfFormationNameArray.length, originOfFormationValuesArray.length);
+
+            for (int i = 0; i < maxLength; i++) {
+                Map<String, Object> originOfFormation = new HashMap<>();
+                if (originOfFormationNameArray.length - 1 < i) {
+                    originOfFormation.put("idOriginOfFormation", null);
+                    originOfFormation.put("nameOriginOfFormation", null);
+                } else {
+                    originOfFormation.put("idOriginOfFormation", originalOfFormationMap.get(originOfFormationNameArray[i]).getIdOriginalOfFormation());
+                    originOfFormation.put("nameOriginOfFormation", originOfFormationNameArray[i]);
+                }
+                if (originOfFormationValuesArray.length - 1 < i) {
+                    originOfFormation.put("value", null);
+                } else {
+                    originOfFormation.put("value", originOfFormationValuesArray[i]);
+                }
+
+                originOfFormationList.add(originOfFormation);
+            }
         }
 
 

@@ -64,7 +64,7 @@ public class AssetInstanceRepositoryImpl implements AssetInstanceRepositoryCusto
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         query.setParameter("idsAssetInstance", idsAssetInstance);
         query.setParameter("idUser", csvcUser.getIdUser());
-        query.setParameter("idDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
+        query.setParameter("idDepartmentOriginal", csvcUser.getIdDepartmentCurrent());
         List<Object[]> result = query.getResultList();
         List<AssetInstance> assetInstance = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
