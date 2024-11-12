@@ -5,7 +5,10 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.province.FindAllProvinceRequest;
 import com.example.csvccdshustbe.request.wards.FindAllWardsRequest;
 import com.example.csvccdshustbe.service.wards.WardsService;
+import com.example.csvccdshustbe.utility.EmailUtil;
+import com.example.csvccdshustbe.utility.MailDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -43,5 +46,17 @@ public class WardsController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @GetMapping("/test-send-mail")
+    public ResponseEntity<?> testSendMail(){
+        try{
+            EmailUtil.send();
+            return ApiResponseDto.createdWithMessage(
+                    "Test send mail success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 
 }
