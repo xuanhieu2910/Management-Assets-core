@@ -69,7 +69,7 @@ public class TaskSendDetailMail {
     @Column(name = "opening_system_last")
     private String openingSystemLast;
     @Column(name = "device_last")
-    private Integer deviceLast;
+    private String deviceLast;
     @Column(name = "id_department_original")
     private Integer idDepartmentOriginal;
 
