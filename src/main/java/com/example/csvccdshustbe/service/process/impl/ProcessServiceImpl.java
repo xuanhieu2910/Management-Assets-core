@@ -99,19 +99,26 @@ public class ProcessServiceImpl implements ProcessService {
                 idDepartment);
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
-        createTaskSendMail(userRoles, document);
+        createTaskSendMailIncrease(userRoles, document);
     }
 
-    private void createTaskSendMail(List<UserRoleDto> userRoleDtos, Document document) {
+    private void createTaskSendMailIncrease(List<UserRoleDto> userRoleDtos, Document document) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String timeCurrent = String.valueOf(new Date().getTime());
         for (UserRoleDto stakeHolder : userRoleDtos){
             TaskSendMail taskSendMail = new TaskSendMail();
+            taskSendMail.setCodeTaskSendMail(String.valueOf(UUID.randomUUID()));
             taskSendMail.setAddressFrom(PropertiesUtil.getEmailProperty("mail.user"));
             taskSendMail.setAddressTo(stakeHolder.getUserName());
             taskSendMail.setAddressCc(csvcUser.getUsername());
-            taskSendMail.setSubject(EmailUtil.SUBJECTS_PROCESS[5]);
-//            taskSendMail.setContent(EmailUtil.);
-//            taskSendMail.setRetry();
+            taskSendMail.setSubject(EmailUtil.SUBJECTS_PROCESS[0]);
+            taskSendMail.setStatus(Constants.STATUS_NOT_YET_TASK_SEND_MAIL);
+            taskSendMail.setContent(EmailUtil.content_test.replace(EmailUtil.KEYWORD_REPLACE,EmailUtil.CONTENT_DOMAIN)
+                    .replace(EmailUtil.KEYWORD_CODE_TASK_SEND_MAIL,taskSendMail.getCodeTaskSendMail()));
+            taskSendMail.setRetry(Constants.INIT_RETRY);
+            taskSendMail.setTimeCreated(timeCurrent);
+            taskSendMail.setTimeModified(timeCurrent);
+            taskSendMailService.saveTaskSendMail(taskSendMail);
         }
     }
 
@@ -128,15 +135,38 @@ public class ProcessServiceImpl implements ProcessService {
         transitionService.saveTransition(constructionTransition(process, states));
         Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
                 states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
+        List<String> usersName = new ArrayList<>();
+        request.getCouncilInventory().forEach(x->usersName.add(x.getUserName()));
+        List<FindAllUserDto> usersDto = csvcUserService.findIdsUserByUsersName(usersName);
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
-        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderInventory(processRequest, request.getCouncilInventory()));
+        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderInventory(processRequest, request.getCouncilInventory(),usersDto));
+        createTaskSendMailInventory(usersDto, document);
     }
 
+    private void createTaskSendMailInventory(List<FindAllUserDto> userRoleDtos, Document document) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        for (FindAllUserDto stakeHolder : userRoleDtos){
+            TaskSendMail taskSendMail = new TaskSendMail();
+            taskSendMail.setCodeTaskSendMail(String.valueOf(UUID.randomUUID()));
+            taskSendMail.setAddressFrom(PropertiesUtil.getEmailProperty("mail.user"));
+            taskSendMail.setAddressTo(stakeHolder.getUserName());
+            taskSendMail.setAddressCc(csvcUser.getUsername());
+            taskSendMail.setSubject(EmailUtil.SUBJECTS_PROCESS[5]);
+            taskSendMail.setStatus(Constants.STATUS_NOT_YET_TASK_SEND_MAIL);
+            taskSendMail.setContent(EmailUtil.content_test.replace(EmailUtil.KEYWORD_REPLACE,EmailUtil.CONTENT_DOMAIN)
+                    .replace(EmailUtil.KEYWORD_CODE_TASK_SEND_MAIL,taskSendMail.getCodeTaskSendMail()));
+            taskSendMail.setRetry(Constants.INIT_RETRY);
+            taskSendMail.setTimeCreated(timeCurrent);
+            taskSendMail.setTimeModified(timeCurrent);
+            taskSendMailService.saveTaskSendMail(taskSendMail);
+        }
+    }
+
+
     private List<RequestStakeHolder> constructionRequestStakeHolderInventory(Request processRequest,
-                                                                             List<CreateCouncilInventoryRequest> councilInventories) {
-        List<String> usersName = new ArrayList<>();
-        councilInventories.forEach(x->usersName.add(x.getUserName()));
-        List<FindAllUserDto> usersDto = csvcUserService.findIdsUserByUsersName(usersName);
+                                                                             List<CreateCouncilInventoryRequest> councilInventories,
+                                                                             List<FindAllUserDto> usersDto) {
         List<RequestStakeHolder> stakeHolders = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
         for (CreateCouncilInventoryRequest council : councilInventories){

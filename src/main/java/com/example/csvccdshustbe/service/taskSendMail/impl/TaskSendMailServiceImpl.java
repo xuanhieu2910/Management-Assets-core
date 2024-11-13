@@ -32,14 +32,14 @@ public class TaskSendMailServiceImpl implements TaskSendMailService {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication();
         String timeCurrent = String.valueOf(new Date().getTime());
         TaskSendDetailMail sendDetailMail = new TaskSendDetailMail();
-        sendDetailMail.setIdTaskSendMail(taskSendMail.getIdTaskSendMail());
+        sendDetailMail.setCodeTaskSendMail(taskSendMail.getCodeTaskSendMail());
         sendDetailMail.setIdUser(csvcUser.getIdUser());
         sendDetailMail.setAddressFrom(taskSendMail.getAddressFrom());
         sendDetailMail.setAddressTo(taskSendMail.getAddressTo());
         sendDetailMail.setAddressCc(taskSendMail.getAddressCc());
         sendDetailMail.setSubject(taskSendMail.getSubject());
         sendDetailMail.setContent(taskSendMail.getContent());
-        sendDetailMail.setStatus(Constants.STATUS_TASK_SEND_DETAIL_MAIL_PENDING);
+        sendDetailMail.setStatus(Constants.STATUS_TASK_SEND_MAIL_DETAIL_PENDING);
         sendDetailMail.setReason(null);
         sendDetailMail.setTimeCreated(timeCurrent);
         sendDetailMail.setTimeModified(timeCurrent);

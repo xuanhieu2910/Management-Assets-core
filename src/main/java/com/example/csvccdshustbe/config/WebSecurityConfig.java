@@ -64,7 +64,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     public final static String PREFERRED_USERNAME = "preferred_username";
     public final static String INFORMATION_USER = "informationUser";
-    public final static String DOMAIN_DEV = "https://csvc-development.hust.edu.vn";
+    public final static String DOMAIN_FE = "https://csvc-development.hust.edu.vn";
+    public final static String DOMAIN_BE = "https://csvc-development-be.hust.edu.vn/csvc-be";
 //    public final static String DOMAIN_DEV = "http://localhost:3000";
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -138,7 +139,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
 //        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        configuration.setAllowedOrigins(List.of(DOMAIN_DEV));
+        configuration.setAllowedOrigins(List.of(DOMAIN_FE));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));

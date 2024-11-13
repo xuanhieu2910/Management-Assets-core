@@ -387,13 +387,6 @@ public class Constants {
     /**
      * Constant Status Report
      * */
-    public static Integer STATUS_TASK_SEND_DETAIL_MAIL_FALSE = -1;
-    public static Integer STATUS_TASK_SEND_DETAIL_MAIL_PENDING = 1;
-    public static Integer STATUS_TASK_SEND_DETAIL_MAIL_SUCCESS = 2;
-    /*----------------------------------------------------*/
-    /**
-     * Constant Status Report
-     * */
     public static Integer STATUS_TASK_SEND_DETAIL_MAIL_NOT_YET_OPEN = -1;
     public static Integer STATUS_TASK_SEND_DETAIL_MAIL_IS_OPEN = 1;
     /*----------------------------------------------------*/
@@ -445,5 +438,28 @@ public class Constants {
     "38_C54 - HD_Bien ban giao nhan TSCD sua chua lon hoan thanh.xlsx",
     "39_C55a-HD_Bang tinh hao mon TSCD.xlsx",
     "40_C55b - HD_Bang tinh va phan bo khau hao TSCD.xlsx"};
+
+
+    /**
+     * Constants LIMIT_QUERY EACH TIME
+     * */
+    public final static Integer STATUS_NOT_YET_TASK_SEND_MAIL = -1;
+    public final static Integer STATUS_TASK_SEND_MAIL = 1;
+    /*-----------------------------------------------------*/
+
+    /**
+     * Constants status task send mail detail
+     * */
+    public final static Integer STATUS_TASK_SEND_MAIL_DETAIL_FALSE = -1;
+    public final static Integer STATUS_TASK_SEND_MAIL_DETAIL_PENDING = 1;
+    public final static Integer STATUS_TASK_SEND_MAIL_DETAIL_SUCCESS = 2;
+    /*-----------------------------------------------------*/
+    /**
+     * Constants RETRY
+     * */
+    public final static Integer INIT_RETRY = 0;
+    public final static Integer MAX_RETRY = 3;
+
+    /*-----------------------------------------------------*/
 
 }

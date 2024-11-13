@@ -16,8 +16,8 @@ public class TaskSendDetailMail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tasl_send_detail")
     private Integer idTaskSendDetail;
-    @Column(name = "id_task_send_mail")
-    private Integer idTaskSendMail;
+    @Column(name = "code_task_send_mail")
+    private String codeTaskSendMail;
     @Column(name = "id_user")
     private Integer idUser;
     @Column(name = "address_from")
