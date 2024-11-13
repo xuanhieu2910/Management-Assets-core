@@ -29,7 +29,7 @@ public class TaskSendMailServiceImpl implements TaskSendMailService {
     }
 
     private TaskSendDetailMail contructionCreateTaskSendDetailMail(TaskSendMail taskSendMail) {
-        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication();
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String timeCurrent = String.valueOf(new Date().getTime());
         TaskSendDetailMail sendDetailMail = new TaskSendDetailMail();
         sendDetailMail.setCodeTaskSendMail(taskSendMail.getCodeTaskSendMail());
@@ -43,7 +43,7 @@ public class TaskSendMailServiceImpl implements TaskSendMailService {
         sendDetailMail.setReason(null);
         sendDetailMail.setTimeCreated(timeCurrent);
         sendDetailMail.setTimeModified(timeCurrent);
-        sendDetailMail.setIdOpened(Constants.STATUS_TASK_SEND_DETAIL_MAIL_NOT_YET_OPEN);
+        sendDetailMail.setIsOpened(Constants.STATUS_TASK_SEND_DETAIL_MAIL_NOT_YET_OPEN);
         sendDetailMail.setOpenCount(Constants.STATUS_TASK_SEND_DETAIL_MAIL_DEFAULT_COUNT_OPEN);
         sendDetailMail.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());
         return sendDetailMail;

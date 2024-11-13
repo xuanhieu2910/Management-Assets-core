@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "task_send_mail")
+@Table(name = "task_send_detail_mail")
 public class TaskSendDetailMail {
 
     @Id
@@ -38,8 +38,8 @@ public class TaskSendDetailMail {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
-    @Column(name = "id_opened")
-    private Integer idOpened;
+    @Column(name = "is_opened")
+    private Integer isOpened;
     @Column(name = "open_count")
     private Integer openCount;
     @Column(name = "time_first_open")

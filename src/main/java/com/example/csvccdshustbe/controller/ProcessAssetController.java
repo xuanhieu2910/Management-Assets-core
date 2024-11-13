@@ -5,7 +5,6 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
 import com.example.csvccdshustbe.request.process.CreateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
-import com.example.csvccdshustbe.request.process.document.CreateDocumentInventoryAssetRequest;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -32,8 +31,10 @@ public class ProcessAssetController {
             processService.createIncreaseAsset(request);
             return ApiResponseDto.createdWithMessage("Create increase asset success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

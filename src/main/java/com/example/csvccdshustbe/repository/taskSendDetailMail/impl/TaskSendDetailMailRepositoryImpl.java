@@ -48,7 +48,7 @@ public class TaskSendDetailMailRepositoryImpl implements TaskSendDetailMailRepos
                 sendDetailMail.setReason(ValueUtil.getStringByObject(obj[9]));
                 sendDetailMail.setTimeCreated(ValueUtil.getStringByObject(obj[10]));
                 sendDetailMail.setTimeModified(ValueUtil.getStringByObject(obj[11]));
-                sendDetailMail.setIdOpened(ValueUtil.getIntegerByObject(obj[12]));
+                sendDetailMail.setIsOpened(ValueUtil.getIntegerByObject(obj[12]));
                 sendDetailMail.setOpenCount(ValueUtil.getIntegerByObject(obj[13]));
                 sendDetailMail.setTimeFirstOpen(ValueUtil.getStringByObject(obj[14]));
                 sendDetailMail.setIpAddressFirst(ValueUtil.getStringByObject(obj[15]));

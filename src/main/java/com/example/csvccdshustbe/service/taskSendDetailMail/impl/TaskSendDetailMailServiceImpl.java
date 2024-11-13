@@ -28,8 +28,8 @@ public class TaskSendDetailMailServiceImpl implements TaskSendDetailMailService 
                 taskSendDetailMailRepository.findByCodeTaskSendMail(taskSendDetailMailDto.getCodeTaskSendMail());
         String currentTime = String.valueOf(new Date().getTime());
         if (taskSendDetailMail.isPresent()){
-            if (taskSendDetailMail.get().getIdOpened().equals(Constants.STATUS_TASK_SEND_DETAIL_MAIL_NOT_YET_OPEN)) {
-                taskSendDetailMail.get().setIdOpened(Constants.STATUS_TASK_SEND_DETAIL_MAIL_IS_OPEN);
+            if (taskSendDetailMail.get().getIsOpened().equals(Constants.STATUS_TASK_SEND_DETAIL_MAIL_NOT_YET_OPEN)) {
+                taskSendDetailMail.get().setIsOpened(Constants.STATUS_TASK_SEND_DETAIL_MAIL_IS_OPEN);
                 taskSendDetailMail.get().setOpenCount( (Constants.STATUS_TASK_SEND_DETAIL_MAIL_DEFAULT_COUNT_OPEN + 1));
                 taskSendDetailMail.get().setTimeFirstOpen(currentTime);
                 taskSendDetailMail.get().setIpAddressFirst(taskSendDetailMailDto.getIpAddressRemote());
