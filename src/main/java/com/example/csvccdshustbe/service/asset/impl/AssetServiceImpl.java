@@ -1981,6 +1981,8 @@ public class AssetServiceImpl implements AssetService {
 
                 Map<String, OriginalOfFormation> originalOfFormationMap = ofFormationList.stream()
                         .collect(Collectors.toMap(OriginalOfFormation::getName, Function.identity(), (existing, replacement) -> existing));
+                Map<Integer, AssetCategories> AssetCategoriesInstanceMap = assetInstanceCategoryNamesList.stream()
+                        .collect(Collectors.toMap(AssetCategories::getIdAssetCategory, Function.identity(), (existing, replacement) -> existing));
                 Map<String, String> userNameToCodeMap = IntStream.range(0, userUsedInModuleExcel.size())
                         .boxed()
                         .collect(Collectors.toMap(
@@ -1990,7 +1992,7 @@ public class AssetServiceImpl implements AssetService {
                 for (int i = start; i < Math.min(start + batchSize, allRows.size()); i++) {
                     XSSFRow row = allRows.get(i);
                     if (row != null) {
-                        assetRequests.add(convertExcelRowToMap(row,originalOfFormationMap,userNameToCodeMap));
+                        assetRequests.add(convertExcelRowToMap(row,originalOfFormationMap,AssetCategoriesInstanceMap,userNameToCodeMap));
                     }
                 }
             }
@@ -2003,11 +2005,11 @@ public class AssetServiceImpl implements AssetService {
     }
 
 
-    private Map<String, Object> convertExcelRowToMap(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap, Map<String, String> userNameToCodeMap) {
+    private Map<String, Object> convertExcelRowToMap(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap, Map<Integer, AssetCategories> AssetCategoriesInstanceMap,Map<String, String> userNameToCodeMap) {
         Map<String, Object> createAssetRequest = new HashMap<>();
 
         // Gọi hàm xử lý commonData
-        Map<String, Object> commonData = processCommonData(row,originalOfFormationMap);
+        Map<String, Object> commonData = processCommonData(row,originalOfFormationMap,AssetCategoriesInstanceMap);
         createAssetRequest.put(Constants.KEY_COMMON, commonData);
 
         // Gọi hàm xử lý modulesDataAsset
@@ -2033,7 +2035,7 @@ public class AssetServiceImpl implements AssetService {
         }
         return (String) ExcelUtil.convertValue(cell, CellType.STRING);
     }
-    private Map<String, Object> processCommonData(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap) {
+    private Map<String, Object> processCommonData(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap,Map<Integer, AssetCategories> AssetCategoriesInstanceMap) {
         Map<String, Object> commonData = new HashMap<>();
 
         List<String> errorList = new ArrayList<>();
@@ -2150,7 +2152,9 @@ public class AssetServiceImpl implements AssetService {
         commonData.put("nameAssetCategory", extractNameAfterIDFromExcel(category));
 //        commonData.put("idInstance", assetInstanceCategoriesMap.get(instanceCategory).getIdAssetCategory());
         commonData.put("idInstance",extractIdSTTFromExcel(instanceCategory));
+        commonData.put("codeInstance",AssetCategoriesInstanceMap.get(extractIdSTTFromExcel(instanceCategory)).getCodeName());
         commonData.put("nameInstance",extractNameAfterIdSTTFromExcel(instanceCategory));
+        commonData.put("idParentInstance",AssetCategoriesInstanceMap.get(extractIdSTTFromExcel(instanceCategory)).getParent());
         commonData.put("idDepartment", extractIdSTTFromExcel(department));
         commonData.put("nameDepartment", extractNameAfterIdSTTFromExcel(department));
         commonData.put("codeDepartment", departmentOptional.map(Department::getCode).orElse(null));
