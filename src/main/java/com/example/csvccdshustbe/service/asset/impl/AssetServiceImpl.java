@@ -357,6 +357,9 @@ public class AssetServiceImpl implements AssetService {
 
     private void updateDataAssetLot(Map<String, Object> dataUpdateAssetRequest) throws ValidateFiledException, IllegalAccessException {
         Asset assetParent = updateAttributeAssetLotParent(dataUpdateAssetRequest);
+        //original of formation for assetParent
+        Map<String,Object> commonDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_COMMON);
+        updateOriginalOfFormation(assetParent, commonDataAsset);
         updateAssetDepreciation(dataUpdateAssetRequest, assetParent);
         updateModulesDataAsset(dataUpdateAssetRequest, assetParent);
         updateOriginalDataAsset(dataUpdateAssetRequest, assetParent);
@@ -1114,6 +1117,9 @@ public class AssetServiceImpl implements AssetService {
     private void storeNewAssetLot(Map<String, Object> createAssetLotRequest) throws ValidateFiledException {
         log.info("Init store asset");
         Asset assetParent = createDataAssetParentLot(createAssetLotRequest);
+        //CREATE ORIGINAL OF FORMATION FOR ASSSETPARENT
+        Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetLotRequest.get(Constants.KEY_COMMON);
+        saveAssetOriginalOfFormations(assetParent, commonDataAsset);
         storeDepreciation(createAssetLotRequest, assetParent);
         storeModulesDataAsset(createAssetLotRequest, assetParent);
         storeOriginalDataAsset(createAssetLotRequest, assetParent);
