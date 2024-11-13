@@ -127,24 +127,23 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Optional<FindDetailsDocumentDto> findDetailDocumentByCodeDocument(String codeDocument, List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select dc.id_document, dc.code,  " +
-                "        cu.user_name, cu.full_name,  " +
-                "       dc.time_created, dc.time_modified,  " +
-                "       dc.time_increase, dc.time_document,  " +
+        sb.append("select dc.id_document, dc.code,     " +
+                "        cu.user_name, cu.full_name,     " +
+                "       dc.time_created, dc.time_modified,     " +
+                "       dc.time_increase, dc.time_document,     " +
                 "       dc.id_department, dc.description,  " +
                 "       st.id_state, st.status statusState,  " +
                 "       ts.code codeTypeState, ts.id_type_state,  " +
-                "       ts.name nameTypeState, pr.id_process,pr.status,reason.name,rsh.description  " +
+                "       ts.name nameTypeState,  " +
+                "       pr.id_process,pr.status  " +
                 "from document dc  " +
-                "    inner join department de on dc.id_department_original = de.id_department  " +
-                "    inner join process pr on dc.id_process = pr.id_process  " +
-                "    inner join csvc_user cu on pr.id_user_created = cu.id_user  " +
+                "    inner join department de on dc.id_department_original = de.id_department     " +
+                "    inner join process pr on dc.id_process = pr.id_process     " +
+                "    inner join csvc_user cu on pr.id_user_created = cu.id_user     " +
                 "    inner join state st on pr.id_process = st.id_process  " +
                 "    inner join type_state ts on st.id_type_state = ts.id_type_state  " +
-                "    inner join  request on pr.id_process=request.id_process " +
-                "    inner join  request_stake_holder rsh on request.id_request=rsh.id_request " +
-                "    left join reason on rsh.id_reason=reason.id_reason " +
-                "    where dc.code = :codeDocument  " +
+                "    inner join  request on pr.id_process=request.id_process  " +
+                "    where dc.code = :codeDocument     " +
                 "    and de.id_department in (:idsDepartment)  " +
                 "    and cu.is_actived = 1 ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -190,8 +189,6 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
         dto.setDescription(ValueUtil.getStringByObject(obj[9]));
         dto.setStatus(ValueUtil.getIntegerByObject(obj[16]));
-        dto.setNameReason(ValueUtil.getStringByObject(obj[17]));
-        dto.setDescriptionRefuse(ValueUtil.getStringByObject(obj[18]));
 
     }
 

@@ -110,8 +110,6 @@ public class DocumentServiceImpl implements DocumentService {
         response.setTimeModified(DateUtil.formatToPattern(new Date(findDetailsDocumentDto.getTimeModified()), DateUtil.DATE_FORMAT));
         response.setTimeIncrease(findDetailsDocumentDto.getTimeIncrease());
         response.setTimeDocument(findDetailsDocumentDto.getTimeDocument());
-        response.setDescriptionRefuse(findDetailsDocumentDto.getDescriptionRefuse());
-        response.setNameReason(findDetailsDocumentDto.getNameReason());
         List<BluePrintStateResponse> bluePrintStateResponses = new ArrayList<>();
         for (BluePrintStateDto printStateDto : findDetailsDocumentDto.getBluePrintStateDto()){
             BluePrintStateResponse printStateResponse = new BluePrintStateResponse();

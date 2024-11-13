@@ -22,7 +22,5 @@ public class FindDetailsDocumentDto {
     private String timeDocument;
     private Integer idDepartment;
     private List<BluePrintStateDto> bluePrintStateDto;
-    private String descriptionRefuse;
-    private String nameReason;
 
 }
