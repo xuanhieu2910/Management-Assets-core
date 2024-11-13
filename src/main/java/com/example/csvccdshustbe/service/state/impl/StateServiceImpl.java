@@ -81,7 +81,7 @@ public class StateServiceImpl implements StateService {
         }
         List<RequestDetailsDto> requestDetailsDtos = requestService.findRequestDetailsByIdState(stateDetailsDto
                 .get()
-                .getIdTypeState());
+                .getIdState());
         for (RequestDetailsDto dto : requestDetailsDtos){
             dto.setRequestData(requestDataService.findRequestDataDetailsByIdRequest(dto.getIdRequest()));
             dto.setRequestStakeHolder(requestStakeHolderService.findRequestStakeHolderDetailsByIdRequest(dto.getIdRequest()));
