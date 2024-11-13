@@ -61,7 +61,7 @@ public class RequestStakeHolderServiceImpl implements RequestStakeHolderService 
     private void validateDataApprovedRequestStakeHolder(ApprovedRequestStakeHolderRequest request) throws ValidateFiledException {
         if (request.getStatus().equals(Constants.STATUS_REQUEST_STAKE_HOLDER_FALSE)){
             if (StringUtils.isBlank(request.getDescription()) || Objects.isNull(request.getIdReason())){
-                throw new ValidateFiledException("Validata data request!");
+                throw new ValidateFiledException("Validate data request!");
             }
         }
     }
