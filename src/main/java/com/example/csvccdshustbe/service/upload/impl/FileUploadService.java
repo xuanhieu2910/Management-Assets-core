@@ -401,7 +401,7 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 119, 119);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 120, 120);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -434,7 +434,7 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 94, 94);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 95, 95);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -467,7 +467,7 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 93, 93);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 94, 94);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -520,7 +520,7 @@ public class FileUploadService implements FilesStorageService {
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
 
             CellRangeAddressList categoryAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 82, 82);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 83, 83);
             DataValidation categoryValidation_2 = dvHelper.createValidation(categoryConstraint, categoryAddressList_2);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -574,7 +574,7 @@ public class FileUploadService implements FilesStorageService {
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
 
             CellRangeAddressList categoryAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 81, 81);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 82, 82);
             DataValidation categoryValidation_2 = dvHelper.createValidation(categoryConstraint, categoryAddressList_2);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -585,7 +585,7 @@ public class FileUploadService implements FilesStorageService {
 
 
             CellRangeAddressList categoryAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 85, 85);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 86, 86);
             DataValidation categoryValidation_3 = dvHelper.createValidation(categoryConstraint, categoryAddressList_3);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -596,7 +596,7 @@ public class FileUploadService implements FilesStorageService {
 
 
             CellRangeAddressList categoryAddressList_4 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 92, 92);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 93, 93);
             DataValidation categoryValidation_4 = dvHelper.createValidation(categoryConstraint, categoryAddressList_4);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -694,7 +694,7 @@ public class FileUploadService implements FilesStorageService {
         String formula_2 = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $D4)";
         DataValidationConstraint productConstraint_2 = dvHelper_2.createFormulaListConstraint(formula_2);
         CellRangeAddressList productAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 80,80);
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 81,81);
         DataValidation productValidation_2 = dvHelper.createValidation(productConstraint_2, productAddressList_2);
         productValidation.setShowErrorBox(true);
         productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -708,7 +708,7 @@ public class FileUploadService implements FilesStorageService {
         String formula_3 = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $D4)";
         DataValidationConstraint productConstraint_3 = dvHelper_3.createFormulaListConstraint(formula_3);
         CellRangeAddressList productAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 91,91);
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 92,92);
         DataValidation productValidation_3 = dvHelper.createValidation(productConstraint_3, productAddressList_3);
         productValidation.setShowErrorBox(true);
         productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -795,7 +795,7 @@ public class FileUploadService implements FilesStorageService {
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_2);
 
             CellRangeAddressList categoryAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 74, 74);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 75, 75);
             DataValidation categoryValidation_3 = dvHelper.createValidation(categoryConstraint, categoryAddressList_3);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -805,7 +805,7 @@ public class FileUploadService implements FilesStorageService {
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_3);
 
             CellRangeAddressList categoryAddressList_4 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 90, 90);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 91, 91);
             DataValidation categoryValidation_4 = dvHelper.createValidation(categoryConstraint, categoryAddressList_4);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -815,7 +815,7 @@ public class FileUploadService implements FilesStorageService {
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_4);
 
             CellRangeAddressList categoryAddressList_5 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 84, 84);
+                    TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 85, 85);
             DataValidation categoryValidation_5 = dvHelper.createValidation(categoryConstraint, categoryAddressList_5);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -1409,10 +1409,10 @@ public class FileUploadService implements FilesStorageService {
             if (row == null) {
                 row = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).createRow(rowIndex); // Create row if it doesn't exist
             }
-            Cell cellMinDepreciation = row.createCell(142);
-            Cell cellMaxDepreciation = row.createCell(143);
-            Cell cellValueWearTear  = row.createCell(137);
-            Cell cellYearUsedWearTear = row.createCell(136);
+            Cell cellMinDepreciation = row.createCell(143);
+            Cell cellMaxDepreciation = row.createCell(144);
+            Cell cellValueWearTear  = row.createCell(138);
+            Cell cellYearUsedWearTear = row.createCell(137);
 
             String formulaMinDepreciation = "IF(NOT(ISBLANK($B"+ (rowIndex + 1) + ")),VLOOKUP($B" + (rowIndex + 1) +"," + NAME_SHEET_DATA_ASSET_CATEGORY + "!$A:$E,2,0),\"\")";
             String formulaMaxDepreciation = "IF(NOT(ISBLANK($B"+ (rowIndex + 1) + ")),VLOOKUP($B" + (rowIndex + 1) +"," + NAME_SHEET_DATA_ASSET_CATEGORY + "!$A:$E,3,0),\"\")";
