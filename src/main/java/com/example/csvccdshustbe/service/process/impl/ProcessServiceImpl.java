@@ -99,10 +99,10 @@ public class ProcessServiceImpl implements ProcessService {
                 idDepartment);
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
-        createTaskSendMailIncrease(userRoles, document);
+        createTaskSendMailIncrease(userRoles, document, process);
     }
 
-    private void createTaskSendMailIncrease(List<UserRoleDto> userRoleDtos, Document document) {
+    private void createTaskSendMailIncrease(List<UserRoleDto> userRoleDtos, Document document, Process process) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String timeCurrent = String.valueOf(new Date().getTime());
         for (UserRoleDto stakeHolder : userRoleDtos){
@@ -113,7 +113,12 @@ public class ProcessServiceImpl implements ProcessService {
             taskSendMail.setAddressCc(csvcUser.getUsername());
             taskSendMail.setSubject(EmailUtil.SUBJECTS_PROCESS[0]);
             taskSendMail.setStatus(Constants.STATUS_NOT_YET_TASK_SEND_MAIL);
-            taskSendMail.setContent(EmailUtil.content_test.replace(EmailUtil.KEYWORD_REPLACE,EmailUtil.CONTENT_DOMAIN)
+            taskSendMail.setContent(EmailUtil.CONTENT_DOCUMENT
+                            .replace(EmailUtil.KEY_TYPE_PROCESS,process.getName())
+                            .replace(EmailUtil.KEY_CODE_DOCUMENT,document.getCode())
+                            .replace(EmailUtil.KEY_FULL_NAME,csvcUser.getUsername())
+                            .replace(EmailUtil.KEY_DESCRIPTION,document.getDescription())
+                    .replace(EmailUtil.KEYWORD_REPLACE,EmailUtil.CONTENT_DOMAIN)
                     .replace(EmailUtil.KEYWORD_CODE_TASK_SEND_MAIL,taskSendMail.getCodeTaskSendMail()));
             taskSendMail.setRetry(Constants.INIT_RETRY);
             taskSendMail.setTimeCreated(timeCurrent);
@@ -140,10 +145,10 @@ public class ProcessServiceImpl implements ProcessService {
         List<FindAllUserDto> usersDto = csvcUserService.findIdsUserByUsersName(usersName);
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderInventory(processRequest, request.getCouncilInventory(),usersDto));
-        createTaskSendMailInventory(usersDto, document);
+        createTaskSendMailInventory(usersDto, document, process);
     }
 
-    private void createTaskSendMailInventory(List<FindAllUserDto> userRoleDtos, Document document) {
+    private void createTaskSendMailInventory(List<FindAllUserDto> userRoleDtos, Document document, Process process) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String timeCurrent = String.valueOf(new Date().getTime());
         for (FindAllUserDto stakeHolder : userRoleDtos){
@@ -154,7 +159,12 @@ public class ProcessServiceImpl implements ProcessService {
             taskSendMail.setAddressCc(csvcUser.getUsername());
             taskSendMail.setSubject(EmailUtil.SUBJECTS_PROCESS[5]);
             taskSendMail.setStatus(Constants.STATUS_NOT_YET_TASK_SEND_MAIL);
-            taskSendMail.setContent(EmailUtil.content_test.replace(EmailUtil.KEYWORD_REPLACE,EmailUtil.CONTENT_DOMAIN)
+            taskSendMail.setContent(EmailUtil.CONTENT_DOCUMENT
+                    .replace(EmailUtil.KEY_TYPE_PROCESS,process.getName())
+                    .replace(EmailUtil.KEY_CODE_DOCUMENT,document.getCode())
+                    .replace(EmailUtil.KEY_FULL_NAME,csvcUser.getUsername())
+                    .replace(EmailUtil.KEY_DESCRIPTION,document.getDescription())
+                    .replace(EmailUtil.KEYWORD_REPLACE,EmailUtil.CONTENT_DOMAIN)
                     .replace(EmailUtil.KEYWORD_CODE_TASK_SEND_MAIL,taskSendMail.getCodeTaskSendMail()));
             taskSendMail.setRetry(Constants.INIT_RETRY);
             taskSendMail.setTimeCreated(timeCurrent);
