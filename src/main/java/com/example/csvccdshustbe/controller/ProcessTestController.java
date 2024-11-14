@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.dto.taskSendDetailMail.TaskSendDetailMailDto;
+import com.example.csvccdshustbe.request.taskSendDetailMail.UpdateTaskSendDetailMailRequest;
 import com.example.csvccdshustbe.service.taskSendDetailMail.TaskSendDetailMailService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,16 +33,16 @@ public class ProcessTestController {
         }
     }
 
-    private TaskSendDetailMailDto contructionTaskSendMail(HttpServletRequest request) {
-        TaskSendDetailMailDto taskSendDetailMailDto = new TaskSendDetailMailDto();
-        taskSendDetailMailDto.setCodeTaskSendMail( request.getParameter("utm_content"));
+    private UpdateTaskSendDetailMailRequest contructionTaskSendMail(HttpServletRequest request) {
+        UpdateTaskSendDetailMailRequest taskSendDetailMailRequest = new UpdateTaskSendDetailMailRequest();
+        taskSendDetailMailRequest.setCodeTaskSendMail( request.getParameter("utm_content"));
         String ipAddress = request.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null || ipAddress.isEmpty()) {
             ipAddress = request.getRemoteAddr();
         }
-        taskSendDetailMailDto.setIpAddressRemote(ipAddress);
-        taskSendDetailMailDto.setDevice(getBrowserInfo(request.getHeader("User-Agent")));
-        return taskSendDetailMailDto;
+        taskSendDetailMailRequest.setIpAddressRemote(ipAddress);
+        taskSendDetailMailRequest.setDevice(getBrowserInfo(request.getHeader("User-Agent")));
+        return taskSendDetailMailRequest;
     }
 
     public String  getBrowserInfo( String Information )

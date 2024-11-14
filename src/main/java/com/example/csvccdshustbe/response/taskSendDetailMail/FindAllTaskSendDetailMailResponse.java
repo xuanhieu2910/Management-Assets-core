@@ -61,6 +61,8 @@ public class FindAllTaskSendDetailMailResponse {
     private String openingSystemLast;
     @JsonProperty("device_last")
     private String deviceLast;
-
-
+    @JsonProperty("state_region_last")
+    private String stateRegionLast;
+    @JsonProperty("location_last")
+    private String locationLast;
 }
