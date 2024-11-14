@@ -1493,7 +1493,12 @@ public class AssetServiceImpl implements AssetService {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
         request.setIdsDepartmentOriginal(idsDepartment);
-        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDocumentByCodeDocument(request, pageable);
+        Page<FindAllAssetDto> findAllAssetDtos = null;
+        if (request.getTypeProcess().equals(Constants.CODE_TYPE_PROCESS_INVENTORY)) {
+            findAllAssetDtos = assetRepository.findAllAssetDocumentInventoryByCodeDocument(request, pageable);
+        } else {
+            findAllAssetDtos = assetRepository.findAllAssetDocumentByCodeDocument(request, pageable);
+        }
         return new PageImpl<>(convertToFindAllAssetDocument(findAllAssetDtos.getContent()),
                 pageable, findAllAssetDtos.getTotalElements());
     }

@@ -17,4 +17,5 @@ public class FindAllAssetDocumentRequest extends RequestPageBase {
     private Integer idAssetCategory;
     private Integer idDepartment;
     private List<Integer> idsDepartmentOriginal;
+    private String typeProcess;
 }

@@ -35,4 +35,6 @@ public interface AssetRepositoryCustom {
     Optional<Asset> findAssetLotByIdDepartmentOrigin(Integer idDepartmentOrigin);
     List<Asset> findAllAssetChildrenByParentId(Integer idAsset);
     Page<FindAllAssetDto> findAllAssetDtoToInventory(FindAllAssetToInventoryRequest inventoryRequest, Pageable pageable);
+
+    Page<FindAllAssetDto> findAllAssetDocumentInventoryByCodeDocument(FindAllAssetDocumentRequest request, Pageable pageable);
 }
