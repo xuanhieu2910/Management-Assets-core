@@ -634,7 +634,7 @@ public class FileUploadService implements FilesStorageService {
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation.createPromptBox(PROMPT, "Chọn tài sản khuôn viên đất nếu tài sản Nhà \"Có quản lý đất\".");
             categoryValidation.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation);
 
@@ -644,7 +644,7 @@ public class FileUploadService implements FilesStorageService {
             categoryValidation_1.setShowErrorBox(true);
             categoryValidation_1.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
             categoryValidation_1.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation_1.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_1.createPromptBox(PROMPT, "Chọn khuôn viên đất nếu Vật kiến trúc thuộc khuôn viên nào đó.");
             categoryValidation_1.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
         }
