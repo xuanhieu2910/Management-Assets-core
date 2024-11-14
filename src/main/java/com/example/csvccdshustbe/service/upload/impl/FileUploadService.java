@@ -512,21 +512,21 @@ public class FileUploadService implements FilesStorageService {
             CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 64, 64);
             DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_1.setShowErrorBox(true);
+            categoryValidation_1.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_1.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_1.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_1.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
 
             CellRangeAddressList categoryAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 83, 83);
             DataValidation categoryValidation_2 = dvHelper.createValidation(categoryConstraint, categoryAddressList_2);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_2.setShowErrorBox(true);
+            categoryValidation_2.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_2.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_2.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_2.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_2);
         }
         workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_POSITION_NAME), true);
@@ -566,43 +566,43 @@ public class FileUploadService implements FilesStorageService {
             CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 62, 62);
             DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_1.setShowErrorBox(true);
+            categoryValidation_1.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_1.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_1.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_1.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
 
             CellRangeAddressList categoryAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 82, 82);
             DataValidation categoryValidation_2 = dvHelper.createValidation(categoryConstraint, categoryAddressList_2);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_2.setShowErrorBox(true);
+            categoryValidation_2.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_2.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_2.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_2.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_2);
 
 
             CellRangeAddressList categoryAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 86, 86);
             DataValidation categoryValidation_3 = dvHelper.createValidation(categoryConstraint, categoryAddressList_3);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_3.setShowErrorBox(true);
+            categoryValidation_3.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_3.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_3.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_3.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_3);
 
 
             CellRangeAddressList categoryAddressList_4 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 93, 93);
             DataValidation categoryValidation_4 = dvHelper.createValidation(categoryConstraint, categoryAddressList_4);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_4.setShowErrorBox(true);
+            categoryValidation_4.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_4.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_4.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_4.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_4);
         }
         workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_TYPE_USED), true);
@@ -641,11 +641,11 @@ public class FileUploadService implements FilesStorageService {
             CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 36, 36);
             DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_1.setShowErrorBox(true);
+            categoryValidation_1.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_1.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_1.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_1.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
         }
         workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ASSET_GROUND), true);
@@ -683,11 +683,11 @@ public class FileUploadService implements FilesStorageService {
         CellRangeAddressList productAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 61,61);
         DataValidation productValidation_1 = dvHelper.createValidation(productConstraint_1, productAddressList_1);
-        productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-        productValidation.setShowPromptBox(true);
+        productValidation_1.setShowErrorBox(true);
+        productValidation_1.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+        productValidation_1.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation_1.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+        productValidation_1.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_1);
 
         DataValidationHelper dvHelper_2 = workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).getDataValidationHelper();
@@ -696,11 +696,11 @@ public class FileUploadService implements FilesStorageService {
         CellRangeAddressList productAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 81,81);
         DataValidation productValidation_2 = dvHelper.createValidation(productConstraint_2, productAddressList_2);
-        productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-        productValidation.setShowPromptBox(true);
+        productValidation_2.setShowErrorBox(true);
+        productValidation_2.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+        productValidation_2.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation_2.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+        productValidation_2.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_2);
 
 
@@ -710,11 +710,11 @@ public class FileUploadService implements FilesStorageService {
         CellRangeAddressList productAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 92,92);
         DataValidation productValidation_3 = dvHelper.createValidation(productConstraint_3, productAddressList_3);
-        productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-        productValidation.setShowPromptBox(true);
+        productValidation_3.setShowErrorBox(true);
+        productValidation_3.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+        productValidation_3.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation_3.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+        productValidation_3.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_3);
         workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_USER_USED), true);
     }
@@ -777,51 +777,51 @@ public class FileUploadService implements FilesStorageService {
             CellRangeAddressList categoryAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 41, 41);
             DataValidation categoryValidation_1 = dvHelper.createValidation(categoryConstraint, categoryAddressList_1);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_1.setShowErrorBox(true);
+            categoryValidation_1.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_1.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_1.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_1.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_1);
 
             CellRangeAddressList categoryAddressList_2 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 55, 55);
             DataValidation categoryValidation_2 = dvHelper.createValidation(categoryConstraint, categoryAddressList_2);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_2.setShowErrorBox(true);
+            categoryValidation_2.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_2.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_2.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_2.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_2);
 
             CellRangeAddressList categoryAddressList_3 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 75, 75);
             DataValidation categoryValidation_3 = dvHelper.createValidation(categoryConstraint, categoryAddressList_3);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_3.setShowErrorBox(true);
+            categoryValidation_3.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_3.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_3.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_3.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_3);
 
             CellRangeAddressList categoryAddressList_4 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 91, 91);
             DataValidation categoryValidation_4 = dvHelper.createValidation(categoryConstraint, categoryAddressList_4);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_4.setShowErrorBox(true);
+            categoryValidation_4.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_4.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_4.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_4.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_4);
 
             CellRangeAddressList categoryAddressList_5 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                     TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 85, 85);
             DataValidation categoryValidation_5 = dvHelper.createValidation(categoryConstraint, categoryAddressList_5);
-            categoryValidation.setShowErrorBox(true);
-            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-            categoryValidation.setShowPromptBox(true);
+            categoryValidation_5.setShowErrorBox(true);
+            categoryValidation_5.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation_5.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation_5.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation_5.setShowPromptBox(true);
             workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(categoryValidation_5);
             workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_COUNTRY_PRODUCER), true);
         }
@@ -910,11 +910,11 @@ public class FileUploadService implements FilesStorageService {
         CellRangeAddressList productAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 31,31);
         DataValidation productValidation_1 = dvHelper.createValidation(productConstraint_1, productAddressList_1);
-        productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-        productValidation.setShowPromptBox(true);
+        productValidation_1.setShowErrorBox(true);
+        productValidation_1.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+        productValidation_1.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation_1.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+        productValidation_1.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_1);
         workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_WARDS), true);
     }
@@ -1010,11 +1010,11 @@ public class FileUploadService implements FilesStorageService {
         CellRangeAddressList productAddressList_1 = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
                 TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 30,30);
         DataValidation productValidation_1 = dvHelper.createValidation(productConstraint_1, productAddressList_1);
-        productValidation.setShowErrorBox(true);
-        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
-        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
-        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
-        productValidation.setShowPromptBox(true);
+        productValidation_1.setShowErrorBox(true);
+        productValidation_1.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+        productValidation_1.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation_1.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+        productValidation_1.setShowPromptBox(true);
         workbook.getSheet(NAME_SHEET_IMPORT_ASSET_CATEGORY).addValidationData(productValidation_1);
         workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_DISTRICTS), true);
     }
