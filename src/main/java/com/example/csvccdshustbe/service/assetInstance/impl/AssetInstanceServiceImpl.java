@@ -9,6 +9,8 @@ import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetInstance.AssetInstanceService;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -76,7 +78,8 @@ public class AssetInstanceServiceImpl implements AssetInstanceService {
         }
         Gson gson = new Gson();
         for (AssetInstance instance : assetInstances){
-            Map<String, Object> createAssetRequest =  gson.fromJson(gson.toJson(instance.getValue()),Map.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> createAssetRequest =  objectMapper.readValue((instance.getValue()), new TypeReference<Map<String, Object>>() {});
             assetService.createAssetFromFile(createAssetRequest);
         }
     }

@@ -76,7 +76,7 @@ public class AssetInstanceController {
     public ResponseEntity<?> createAssets(@RequestBody CreateAssetInstanceRequest request){
         try {
             assetInstanceService.createAssetInstance(request);
-            return ApiResponseDto.createdWithMessage("Update asset instance success!", HttpStatus.OK);
+            return ApiResponseDto.createdWithMessage("Create asset instance success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
