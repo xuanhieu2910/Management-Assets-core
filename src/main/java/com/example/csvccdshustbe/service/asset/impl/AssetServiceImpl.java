@@ -1785,14 +1785,14 @@ public class AssetServiceImpl implements AssetService {
                     String idCountryProducerMachineExcel = (String) ExcelUtil.convertValue(row.getCell(20), CellType.STRING);
                     String idCountryProducerArchitectureExcel = (String) ExcelUtil.convertValue(row.getCell(41), CellType.STRING);
                     String idCountryProducerCarExcel = (String) ExcelUtil.convertValue(row.getCell(55), CellType.STRING);
-                    String idCountryProducerVehicleExcel = (String) ExcelUtil.convertValue(row.getCell(74), CellType.STRING);
-                    String idCountryProducerAnimalTreeExcel = (String) ExcelUtil.convertValue(row.getCell(84), CellType.STRING);
-                    String idCountryProducerOtherAssetExcel = (String) ExcelUtil.convertValue(row.getCell(90), CellType.STRING);
+                    String idCountryProducerVehicleExcel = (String) ExcelUtil.convertValue(row.getCell(75), CellType.STRING);
+                    String idCountryProducerAnimalTreeExcel = (String) ExcelUtil.convertValue(row.getCell(85), CellType.STRING);
+                    String idCountryProducerOtherAssetExcel = (String) ExcelUtil.convertValue(row.getCell(91), CellType.STRING);
                     String idTypeUseMachineExcel = (String) ExcelUtil.convertValue(row.getCell(22), CellType.STRING);
                     String idTypeUseCarExcel = (String) ExcelUtil.convertValue(row.getCell(62), CellType.STRING);
-                    String idTypeUseVehicleExcel = (String) ExcelUtil.convertValue(row.getCell(81), CellType.STRING);
-                    String idTypeUseAnimalTreeExcel = (String) ExcelUtil.convertValue(row.getCell(85), CellType.STRING);
-                    String idTypeUseOtherAssetExcel = (String) ExcelUtil.convertValue(row.getCell(92), CellType.STRING);
+                    String idTypeUseVehicleExcel = (String) ExcelUtil.convertValue(row.getCell(82), CellType.STRING);
+                    String idTypeUseAnimalTreeExcel = (String) ExcelUtil.convertValue(row.getCell(86), CellType.STRING);
+                    String idTypeUseOtherAssetExcel = (String) ExcelUtil.convertValue(row.getCell(93), CellType.STRING);
                     String idProvincesGroundExcel = (String) ExcelUtil.convertValue(row.getCell(23), CellType.STRING);
                     String idDistrictsGroundExcel = (String) ExcelUtil.convertValue(row.getCell(24), CellType.STRING);
                     String idWardsGroundExcel = (String) ExcelUtil.convertValue(row.getCell(25), CellType.STRING);
@@ -1801,13 +1801,13 @@ public class AssetServiceImpl implements AssetService {
                     String idProvincesHouseExcel = (String) ExcelUtil.convertValue(row.getCell(29), CellType.STRING);
                     String idDistrictsHouseExcel = (String) ExcelUtil.convertValue(row.getCell(30), CellType.STRING);
                     String idWardsHouseExcel = (String) ExcelUtil.convertValue(row.getCell(31), CellType.STRING);
-                    String idPositionNameOtherVehicleExcel = (String) ExcelUtil.convertValue(row.getCell(82), CellType.STRING);
-                    String idMedicineTypeExcel = (String) ExcelUtil.convertValue(row.getCell(93), CellType.STRING);
-                    String idMedicineGroupExcel = (String) ExcelUtil.convertValue(row.getCell(94), CellType.STRING);
+                    String idPositionNameOtherVehicleExcel = (String) ExcelUtil.convertValue(row.getCell(83), CellType.STRING);
+                    String idMedicineTypeExcel = (String) ExcelUtil.convertValue(row.getCell(94), CellType.STRING);
+                    String idMedicineGroupExcel = (String) ExcelUtil.convertValue(row.getCell(95), CellType.STRING);
                     String userNameUsedMachine = (String) ExcelUtil.convertValue(row.getCell(21), CellType.STRING);
                     String userNameUsedCar = (String) ExcelUtil.convertValue(row.getCell(61), CellType.STRING);
-                    String userNameUsedOtherVehicle = (String) ExcelUtil.convertValue(row.getCell(80), CellType.STRING);
-                    String userNameUsedOtherAsset = (String) ExcelUtil.convertValue(row.getCell(91), CellType.STRING);
+                    String userNameUsedOtherVehicle = (String) ExcelUtil.convertValue(row.getCell(81), CellType.STRING);
+                    String userNameUsedOtherAsset = (String) ExcelUtil.convertValue(row.getCell(92), CellType.STRING);
 
                     if (idInstanceCategoryExcel != null) {
 
