@@ -2090,7 +2090,10 @@ public class AssetServiceImpl implements AssetService {
         String notes = (String) ExcelUtil.convertValue(row.getCell(11), CellType.STRING);
         String originalOfFormationName = (String) ExcelUtil.convertValue(row.getCell(13), CellType.STRING);
         String originalOfFormationValues = (String) ExcelUtil.convertValue(row.getCell(14), CellType.STRING);
-
+        String maximumTimeDepreciation = (String) ExcelUtil.convertValue(row.getCell(144), CellType.STRING);
+        String minimumTimeDepreciation = (String) ExcelUtil.convertValue(row.getCell(143), CellType.STRING);
+        String valueWearTear = (String) ExcelUtil.convertValue(row.getCell(138), CellType.STRING);
+        String yearUsedWearTear = (String) ExcelUtil.convertValue(row.getCell(137), CellType.STRING);
         Optional<Department> departmentOptional = departmentRepository.findDepartmentById(extractIdSTTFromExcel(department));
         List<Map<String, Object>> originOfFormationList = new ArrayList<>();
         if (originalOfFormationName == null && originalOfFormationValues== null){
@@ -2180,6 +2183,11 @@ public class AssetServiceImpl implements AssetService {
         commonData.put("quantity", 1);
         commonData.put("idDepartmentDefault", extractIdValueFromExcel(departmentDefault));
         commonData.put("nameDepartmentDefault", extractNameAfterIDFromExcel(departmentDefault));
+
+        commonData.put("maximumTimeDepreciation", maximumTimeDepreciation);
+        commonData.put("minimumTimeDepreciation", minimumTimeDepreciation);
+        commonData.put("valueWearTear", valueWearTear);
+        commonData.put("yearUsedWearTear", yearUsedWearTear);
         // Các lỗi liên quan validate các trường
         commonData.put("error", errorList);
         return commonData;
@@ -2558,7 +2566,7 @@ public class AssetServiceImpl implements AssetService {
                 declareData.put("dateNumberDecisionRentGround", ExcelUtil.convertValue(row.getCell(128), CellType.STRING));
                 declareData.put("contractNumberRentGround", ExcelUtil.convertValue(row.getCell(129), CellType.STRING));
                 declareData.put("dateContractNumberRentGround", ExcelUtil.convertValue(row.getCell(130), CellType.STRING));
-                declareData.put("anotherContract", ExcelUtil.convertValue(row.getCell(131), CellType.STRING));
+                    declareData.put("anotherContract", ExcelUtil.convertValue(row.getCell(131), CellType.STRING));
 //                declareData.put("idTypeDeclareAsset", ExcelUtil.convertValue(row.getCell(200), CellType.STRING));
                 break;
 
@@ -2622,7 +2630,7 @@ public class AssetServiceImpl implements AssetService {
         if (amountMonthsDepreciation != null && !amountMonthsDepreciation.isEmpty()) {
                 amountMonthsDepreciationNumber = Integer.parseInt(amountMonthsDepreciation);
         }
-        Double cumulative = convertStringToDouble(ExcelUtil.convertValue(row.getCell(144), CellType.STRING));
+        Double cumulative = convertStringToDouble(ExcelUtil.convertValue(row.getCell(145), CellType.STRING));
         if (cumulative == null) {
             cumulative = 0.0;
         }
