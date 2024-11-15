@@ -76,12 +76,12 @@ public class AssetInstanceServiceImpl implements AssetInstanceService {
         if (CollectionUtils.isEmpty(assetInstances) || assetInstances.size() != idsAssetInstance.size()){
             throw new NotFoundException("Don't exits asset instance by ids!");
         }
-        Gson gson = new Gson();
         for (AssetInstance instance : assetInstances){
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> createAssetRequest =  objectMapper.readValue((instance.getValue()), new TypeReference<Map<String, Object>>() {});
             assetService.createAssetFromFile(createAssetRequest);
         }
+        assetInstanceRepository.deleteAll(assetInstances);
     }
 
     private List<FindAllAssetInstanceResponse> convertToAssetInstance(List<AssetInstance> assetInstances) {
