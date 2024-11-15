@@ -2632,7 +2632,7 @@ public class AssetServiceImpl implements AssetService {
         }
         Double cumulative = convertStringToDouble(ExcelUtil.convertValue(row.getCell(145), CellType.STRING));
         if (cumulative == null) {
-            cumulative = 0.0;
+            cumulative = (double) 0;
         }
         Object valueTypeCalculate = (String) ExcelUtil.convertValue(row.getCell(132), CellType.STRING);
         if (valueTypeCalculate != null) {
