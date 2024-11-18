@@ -1997,7 +1997,7 @@ public class AssetServiceImpl implements AssetService {
                                 userUsedInModuleExcel::get,      // Khóa là tên người dùng từ danh sách userUsedInModuleExcel
                                 codeUserNameUsedAssetList::get   // Giá trị là mã code tương ứng từ danh sách codeUserNameUsedAssetList
                         ));
-                for (int indexRow = start; indexRow < Math.min(start + batchSize, allRows.size()); i++) {
+                for (int indexRow = start; indexRow < Math.min(start + batchSize, allRows.size()); indexRow++) {
                     XSSFRow row = allRows.get(indexRow);
                     if (row != null) {
                         assetRequests.add(convertExcelRowToMap(indexRow,row,originalOfFormationMap,AssetCategoriesInstanceMap,userNameToCodeMap));
