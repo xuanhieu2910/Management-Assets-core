@@ -1457,8 +1457,10 @@ public class AssetServiceImpl implements AssetService {
         //Lưu Request vào bảng tạm, rồi sao khi xử lý thì lưu vào assete sau.
         //common:error
     for (Map<String, Object> data: assetRequests) {
+        Map<String,Object> commonDataAsset = (Map<String, Object>) data.get(Constants.KEY_COMMON);
         ObjectMapper objectMapper = new ObjectMapper();
         String assetRequestsJson = objectMapper.writeValueAsString(data);
+        String assetErrorRequestsJson = objectMapper.writeValueAsString(commonDataAsset.get("error"));
         String dateNow = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AssetInstance assetInstance = new AssetInstance();
@@ -1467,6 +1469,7 @@ public class AssetServiceImpl implements AssetService {
         assetInstance.setTimeCreated(dateNow);
         assetInstance.setTimeModified(dateNow);
         assetInstance.setValue(assetRequestsJson);
+        assetInstance.setError(assetErrorRequestsJson);
         assetInstanceRepository.save(assetInstance);
     }
 
@@ -1994,10 +1997,11 @@ public class AssetServiceImpl implements AssetService {
                                 userUsedInModuleExcel::get,      // Khóa là tên người dùng từ danh sách userUsedInModuleExcel
                                 codeUserNameUsedAssetList::get   // Giá trị là mã code tương ứng từ danh sách codeUserNameUsedAssetList
                         ));
-                for (int i = start; i < Math.min(start + batchSize, allRows.size()); i++) {
-                    XSSFRow row = allRows.get(i);
+                for (int indexRow = start; indexRow < Math.min(start + batchSize, allRows.size()); i++) {
+                    XSSFRow row = allRows.get(indexRow);
                     if (row != null) {
-                        assetRequests.add(convertExcelRowToMap(row,originalOfFormationMap,AssetCategoriesInstanceMap,userNameToCodeMap));
+                        assetRequests.add(convertExcelRowToMap(indexRow,row,originalOfFormationMap,AssetCategoriesInstanceMap,userNameToCodeMap));
+
                     }
                 }
             }
@@ -2010,9 +2014,10 @@ public class AssetServiceImpl implements AssetService {
     }
 
 
-    private Map<String, Object> convertExcelRowToMap(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap, Map<Integer, AssetCategories> AssetCategoriesInstanceMap,Map<String, String> userNameToCodeMap) {
+    private Map<String, Object> convertExcelRowToMap(int indexRow,XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap, Map<Integer, AssetCategories> AssetCategoriesInstanceMap,Map<String, String> userNameToCodeMap) {
         Map<String, Object> createAssetRequest = new HashMap<>();
 
+        createAssetRequest.put(Constants.INDEX_ROW, indexRow+1);
         // Gọi hàm xử lý commonData
         Map<String, Object> commonData = processCommonData(row,originalOfFormationMap,AssetCategoriesInstanceMap);
         createAssetRequest.put(Constants.KEY_COMMON, commonData);

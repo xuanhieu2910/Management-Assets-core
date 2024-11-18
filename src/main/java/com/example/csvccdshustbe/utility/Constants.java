@@ -461,5 +461,10 @@ public class Constants {
     public final static Integer MAX_RETRY = 3;
 
     /*-----------------------------------------------------*/
+    /**
+     * Constants Index Row
+     * */
+    public static String INDEX_ROW = "index";
+    /*-----------------------------------------------------*/
 
 }
