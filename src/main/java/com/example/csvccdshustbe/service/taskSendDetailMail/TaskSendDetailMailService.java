@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.service.taskSendDetailMail;
 import com.example.csvccdshustbe.dto.taskSendDetailMail.TaskSendDetailMailDto;
 import com.example.csvccdshustbe.entity.TaskSendDetailMail;
 import com.example.csvccdshustbe.request.taskSendDetailMail.FindAllTaskSendDetailMailRequest;
+import com.example.csvccdshustbe.request.taskSendDetailMail.ListTaskSendDetailMailRequest;
 import com.example.csvccdshustbe.request.taskSendDetailMail.UpdateTaskSendDetailMailRequest;
 import com.example.csvccdshustbe.response.taskSendDetailMail.FindAllTaskSendDetailMailResponse;
 import org.springframework.data.domain.Page;

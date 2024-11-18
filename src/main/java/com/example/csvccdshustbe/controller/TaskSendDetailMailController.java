@@ -43,14 +43,14 @@ public class TaskSendDetailMailController {
     public ResponseEntity<?> deleteListTaskSendDetailMail(@RequestBody ListTaskSendDetailMailRequest request){
         try {
             taskSendDetailMailService.deleteTaskSendDetailMailByIds(request.getIdsTaskSendDetailMail());
-            return ApiResponseDto.createdWithMessage("Find list task send detail mail success!", HttpStatus.OK);
+            return ApiResponseDto.createdWithMessage("Delete task send detail mail success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
 
     @PostMapping("/re-send")
-    public ResponseEntity<?> resendMail(@RequestBody String codeTaskSendMail){
+    public ResponseEntity<?> resendMail(@RequestParam String codeTaskSendMail){
         try {
             taskSendDetailMailService.reSendTaskSendDetailMail(codeTaskSendMail);
             return ApiResponseDto.createdWithMessage("Re-send mail success!", HttpStatus.OK);

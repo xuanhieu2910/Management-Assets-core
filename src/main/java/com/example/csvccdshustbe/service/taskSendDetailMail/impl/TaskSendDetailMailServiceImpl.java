@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.entity.TaskSendDetailMail;
 import com.example.csvccdshustbe.entity.TaskSendMail;
 import com.example.csvccdshustbe.repository.taskSendDetailMail.TaskSendDetailMailRepository;
 import com.example.csvccdshustbe.request.taskSendDetailMail.FindAllTaskSendDetailMailRequest;
+import com.example.csvccdshustbe.request.taskSendDetailMail.ListTaskSendDetailMailRequest;
 import com.example.csvccdshustbe.request.taskSendDetailMail.UpdateTaskSendDetailMailRequest;
 import com.example.csvccdshustbe.response.taskSendDetailMail.FindAllTaskSendDetailMailResponse;
 import com.example.csvccdshustbe.service.taskSendDetailMail.TaskSendDetailMailService;

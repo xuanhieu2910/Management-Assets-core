@@ -12,4 +12,5 @@ import java.util.List;
 public class ListTaskSendDetailMailRequest {
 
     private List<Integer> idsTaskSendDetailMail;
+    private List<String> codeTaskSendMail;
 }
