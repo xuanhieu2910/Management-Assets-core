@@ -2002,7 +2002,7 @@ public class AssetServiceImpl implements AssetService {
                 for (int indexRow = start; indexRow < Math.min(start + batchSize, allRows.size()); indexRow++) {
                     XSSFRow row = allRows.get(indexRow);
                     if (row != null) {
-                        assetRequests.add(convertExcelRowToMap(indexRow,row,originalOfFormationMap,AssetCategoriesInstanceMap,userNameToCodeMap));
+                        assetRequests.add(convertExcelRowToMap(row,originalOfFormationMap,AssetCategoriesInstanceMap,userNameToCodeMap));
 
                     }
                 }
@@ -2016,10 +2016,9 @@ public class AssetServiceImpl implements AssetService {
     }
 
 
-    private Map<String, Object> convertExcelRowToMap(int indexRow,XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap, Map<Integer, AssetCategories> AssetCategoriesInstanceMap,Map<String, String> userNameToCodeMap) {
+    private Map<String, Object> convertExcelRowToMap(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap, Map<Integer, AssetCategories> AssetCategoriesInstanceMap,Map<String, String> userNameToCodeMap) {
         Map<String, Object> createAssetRequest = new HashMap<>();
 
-        createAssetRequest.put(Constants.INDEX_ROW, indexRow+1);
         List<String> errorList = new ArrayList<>();
 
         // Gọi hàm xử lý commonData
