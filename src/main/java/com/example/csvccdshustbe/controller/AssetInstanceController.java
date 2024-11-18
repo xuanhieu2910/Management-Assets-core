@@ -37,10 +37,8 @@ public class AssetInstanceController {
             return ApiResponseDto.createdWithState(assetInstanceService.findAllAssetInstance(request),
                     "Find all asset instance success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -52,10 +50,8 @@ public class AssetInstanceController {
             assetInstanceService.updateAssetInstance(request);
             return ApiResponseDto.createdWithMessage("Update asset instance success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

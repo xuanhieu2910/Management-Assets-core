@@ -12,4 +12,6 @@ public interface AssetInstanceRepositoryCustom {
 
     List<AssetInstance> findAllAssetInstanceByIds(List<Integer> idsAssetInstance);
 
+    long totalError();
+
 }

@@ -27,4 +27,6 @@ public class AssetInstance {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+    @Column(name = "error")
+    private String error;
 }

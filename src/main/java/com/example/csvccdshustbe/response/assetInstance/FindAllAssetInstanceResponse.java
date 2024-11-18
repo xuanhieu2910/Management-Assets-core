@@ -14,6 +14,7 @@ public class FindAllAssetInstanceResponse {
     private Integer idAssetInstance;
     @JsonProperty("value")
     private String value;
-
+    @JsonProperty("total_error")
+    private long totalError = 0;
 
 }

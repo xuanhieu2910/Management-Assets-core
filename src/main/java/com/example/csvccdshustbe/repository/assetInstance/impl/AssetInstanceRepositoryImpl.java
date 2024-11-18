@@ -26,7 +26,8 @@ public class AssetInstanceRepositoryImpl implements AssetInstanceRepositoryCusto
     public Page<AssetInstance> findAllAssetInstance(Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select id_asset_instance, id_user, value,   " +
-                "       id_department_original, time_created, time_modified  " +
+                "       id_department_original, time_created, time_modified,  " +
+                "       error " +
                 "from asset_instance assetStance  " +
                 "where assetStance.id_user = :idUser  " +
                 "and assetStance.id_department_original = :idDepartmentOriginal ");
@@ -44,6 +45,7 @@ public class AssetInstanceRepositoryImpl implements AssetInstanceRepositoryCusto
                 instance.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[3]));
                 instance.setTimeCreated(ValueUtil.getStringByObject(obj[4]));
                 instance.setTimeModified(ValueUtil.getStringByObject(obj[5]));
+                instance.setError(ValueUtil.getStringByObject(obj[6]));
                 assetInstance.add(instance);
             }
         }
@@ -80,6 +82,19 @@ public class AssetInstanceRepositoryImpl implements AssetInstanceRepositoryCusto
             }
         }
         return assetInstance;
+    }
+
+    @Override
+    public long totalError() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) " +
+                "from asset_instance assetStance " +
+                "where assetStance.id_user = :idUser " +
+                "and assetStance.id_department_original = :idDepartmentOriginal " +
+                "and assetStance.error is not null ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllAssetInstance(query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
     }
 
     private void setParameterFindAllAssetInstance(Query query) {

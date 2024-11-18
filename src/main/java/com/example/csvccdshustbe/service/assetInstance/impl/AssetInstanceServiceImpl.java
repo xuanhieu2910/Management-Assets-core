@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.gson.Gson;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -36,7 +37,9 @@ public class AssetInstanceServiceImpl implements AssetInstanceService {
     public Page<FindAllAssetInstanceResponse> findAllAssetInstance(FindAllAssetInstanceRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<AssetInstance> assetInstances = assetInstanceRepository.findAllAssetInstance(pageable);
-        return new PageImpl<>(convertToAssetInstance(assetInstances.get().collect(Collectors.toList())), pageable, assetInstances.getTotalElements());
+        long totalError = assetInstanceRepository.totalError();
+        return new PageImpl<>(convertToAssetInstance(assetInstances.get().collect(Collectors.toList()), totalError), pageable,
+                assetInstances.getTotalElements());
     }
 
     @Override
@@ -84,12 +87,14 @@ public class AssetInstanceServiceImpl implements AssetInstanceService {
         assetInstanceRepository.deleteAll(assetInstances);
     }
 
-    private List<FindAllAssetInstanceResponse> convertToAssetInstance(List<AssetInstance> assetInstances) {
+    private List<FindAllAssetInstanceResponse> convertToAssetInstance(List<AssetInstance> assetInstances,
+                                                                      long totalError) {
         List<FindAllAssetInstanceResponse> responses = new ArrayList<>();
         for (AssetInstance instance : assetInstances){
             FindAllAssetInstanceResponse response = new FindAllAssetInstanceResponse();
             response.setIdAssetInstance(instance.getIdAssetInstance());
             response.setValue(instance.getValue());
+            response.setTotalError(totalError);
             responses.add(response);
         }
         return responses;
