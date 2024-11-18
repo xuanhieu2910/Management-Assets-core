@@ -172,6 +172,7 @@ public class Constants {
      * Constant Asset blue print
      * */
     public static final String KEY_COMMON = "common";
+    public static final String KEY_ERROR = "error";
     public static final String KEY_DEPRECIATION = "depreciation";
     public static final String KEY_MODULE = "modules";
     public static final String KEY_ORIGINAL_ASSET = "original";
@@ -253,7 +254,7 @@ public class Constants {
      * Constant Excel
      * */
     public static String[] FILE_EXCEL = {"xls", "xlsx", "xlsm"};
-    public static  final Integer SIZE_HANDLE = 50;
+    public static  final Integer SIZE_HANDLE = 200;
     /*----------------------------------------------------*/
     /**
      * Constant Type Process

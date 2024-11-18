@@ -1457,10 +1457,11 @@ public class AssetServiceImpl implements AssetService {
         //Lưu Request vào bảng tạm, rồi sao khi xử lý thì lưu vào assete sau.
         //common:error
     for (Map<String, Object> data: assetRequests) {
-        Map<String,Object> commonDataAsset = (Map<String, Object>) data.get(Constants.KEY_COMMON);
+        Map<String,Object> ErrorDataAsset = (Map<String, Object>) data.get(Constants.KEY_ERROR);
+        data.remove(Constants.KEY_ERROR);
         ObjectMapper objectMapper = new ObjectMapper();
         String assetRequestsJson = objectMapper.writeValueAsString(data);
-        String assetErrorRequestsJson = objectMapper.writeValueAsString(commonDataAsset.get("error"));
+        String assetErrorRequestsJson = objectMapper.writeValueAsString(ErrorDataAsset);
         String dateNow = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AssetInstance assetInstance = new AssetInstance();
@@ -2018,8 +2019,10 @@ public class AssetServiceImpl implements AssetService {
         Map<String, Object> createAssetRequest = new HashMap<>();
 
         createAssetRequest.put(Constants.INDEX_ROW, indexRow+1);
+        List<String> errorList = new ArrayList<>();
+
         // Gọi hàm xử lý commonData
-        Map<String, Object> commonData = processCommonData(row,originalOfFormationMap,AssetCategoriesInstanceMap);
+        Map<String, Object> commonData = processCommonData(row,originalOfFormationMap,AssetCategoriesInstanceMap,errorList);
         createAssetRequest.put(Constants.KEY_COMMON, commonData);
 
         // Gọi hàm xử lý modulesDataAsset
@@ -2035,6 +2038,7 @@ public class AssetServiceImpl implements AssetService {
         Map<String, Object> depreciationData = processDepreciationData(row);
         createAssetRequest.put(Constants.KEY_DEPRECIATION, depreciationData);
 
+        createAssetRequest.put(Constants.KEY_ERROR, errorList);
         return createAssetRequest;
 
     }
@@ -2045,10 +2049,11 @@ public class AssetServiceImpl implements AssetService {
         }
         return (String) ExcelUtil.convertValue(cell, CellType.STRING);
     }
-    private Map<String, Object> processCommonData(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap,Map<Integer, AssetCategories> AssetCategoriesInstanceMap) {
+    private Map<String, Object> processCommonData(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap,
+                                                  Map<Integer, AssetCategories> AssetCategoriesInstanceMap,
+                                                  List<String> errorList) {
         Map<String, Object> commonData = new HashMap<>();
 
-        List<String> errorList = new ArrayList<>();
 
         String instanceCategory = (String) ExcelUtil.convertValue(row.getCell(0), CellType.STRING);
         if (instanceCategory == null) {
@@ -2194,7 +2199,7 @@ public class AssetServiceImpl implements AssetService {
         commonData.put("valueWearTear", valueWearTear);
         commonData.put("yearUsedWearTear", yearUsedWearTear);
         // Các lỗi liên quan validate các trường
-        commonData.put("error", errorList);
+
         return commonData;
     }
 
