@@ -144,7 +144,7 @@ public class TaskSendDetailMailRepositoryImpl implements TaskSendDetailMailRepos
                 response.setLocationLast(ValueUtil.getStringByObject(obj[24]));
                 response.setOpeningSystemLast(ValueUtil.getStringByObject(obj[25]));
                 response.setDeviceLast(ValueUtil.getStringByObject(obj[26]));
-                response.setFullName(ValueUtil.getStringByObject(obj[27]));
+                response.setFullName(ValueUtil.getStringByObject(obj[28]));
                 responses.add(response);
             }
         }
