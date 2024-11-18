@@ -65,4 +65,6 @@ public class FindAllTaskSendDetailMailResponse {
     private String stateRegionLast;
     @JsonProperty("location_last")
     private String locationLast;
+    @JsonProperty("full_name")
+    private String fullName;
 }

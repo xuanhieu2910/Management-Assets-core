@@ -93,19 +93,21 @@ public class TaskSendDetailMailRepositoryImpl implements TaskSendDetailMailRepos
     public Page<FindAllTaskSendDetailMailResponse>
     findAllTaskSendDetailMail(Pageable pageable, FindAllTaskSendDetailMailRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select id_task_send_detail, code_task_send_mail, id_user,    " +
-                "        address_from, address_to, address_cc, subject,     " +
-                "        status, reason, time_created, time_modified,    " +
-                "        is_opened, open_count, time_first_open, ip_address_first,    " +
-                "        country_first, state_region_first, location_first,    " +
-                "        opening_system_first, device_first, time_last_open,     " +
-                "        ip_address_last, country_last, state_region_last,     " +
-                "        location_last, opening_system_last, device_last,    " +
-                "        id_department_original    " +
-                " from task_send_detail_mail    " +
-                " where 1 = 1  " +
-                "  and id_user = :idUser " +
-                "  and id_department_original = :idDepartmentOriginal ");
+        sb.append("select id_task_send_detail, code_task_send_mail, csvc_user.id_user,   " +
+                "         address_from, address_to, address_cc, subject,   " +
+                "         status, reason, task_send_detail_mail.time_created,   " +
+                "         task_send_detail_mail.time_modified,   " +
+                "         is_opened, open_count, time_first_open, ip_address_first,   " +
+                "         country_first, state_region_first, location_first,   " +
+                "         opening_system_first, device_first, time_last_open,   " +
+                "         ip_address_last, country_last, state_region_last,   " +
+                "         location_last, opening_system_last, device_last,   " +
+                "         id_department_original, csvc_user.full_name   " +
+                "  from task_send_detail_mail   " +
+                "    inner join csvc_user on task_send_detail_mail.id_user = csvc_user.id_user   " +
+                "  where 1 = 1       " +
+                "   and csvc_user.id_user = :idUser      " +
+                "   and task_send_detail_mail.id_department_original = :idDepartmentOriginal  ");
         setConditionFindAllTaskSendDetailMail(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllTaskSendDetailMail(query, request);
@@ -142,6 +144,7 @@ public class TaskSendDetailMailRepositoryImpl implements TaskSendDetailMailRepos
                 response.setLocationLast(ValueUtil.getStringByObject(obj[24]));
                 response.setOpeningSystemLast(ValueUtil.getStringByObject(obj[25]));
                 response.setDeviceLast(ValueUtil.getStringByObject(obj[26]));
+                response.setFullName(ValueUtil.getStringByObject(obj[27]));
                 responses.add(response);
             }
         }
