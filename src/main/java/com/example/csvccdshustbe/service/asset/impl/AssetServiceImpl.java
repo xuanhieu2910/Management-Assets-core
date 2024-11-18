@@ -1457,11 +1457,12 @@ public class AssetServiceImpl implements AssetService {
         //Lưu Request vào bảng tạm, rồi sao khi xử lý thì lưu vào assete sau.
         //common:error
     for (Map<String, Object> data: assetRequests) {
-        Map<String,Object> ErrorDataAsset = (Map<String, Object>) data.get(Constants.KEY_ERROR);
-        data.remove(Constants.KEY_ERROR);
+
         ObjectMapper objectMapper = new ObjectMapper();
+        String assetErrorRequestsJson = objectMapper.writeValueAsString(data.get(Constants.KEY_ERROR));
+        data.remove(Constants.KEY_ERROR);
         String assetRequestsJson = objectMapper.writeValueAsString(data);
-        String assetErrorRequestsJson = objectMapper.writeValueAsString(ErrorDataAsset);
+
         String dateNow = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AssetInstance assetInstance = new AssetInstance();
