@@ -3,11 +3,14 @@ package com.example.csvccdshustbe.repository.assetInstance.impl;
 import com.example.csvccdshustbe.entity.AssetInstance;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.repository.assetInstance.AssetInstanceRepositoryCustom;
+import com.example.csvccdshustbe.request.assetInstance.FindAllAssetInstanceRequest;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +26,7 @@ public class AssetInstanceRepositoryImpl implements AssetInstanceRepositoryCusto
     EntityManager entityManager;
 
     @Override
-    public Page<AssetInstance> findAllAssetInstance(Pageable pageable) {
+    public Page<AssetInstance> findAllAssetInstance(FindAllAssetInstanceRequest request,Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select id_asset_instance, id_user, value,   " +
                 "       id_department_original, time_created, time_modified,  " +
@@ -31,6 +34,7 @@ public class AssetInstanceRepositoryImpl implements AssetInstanceRepositoryCusto
                 "from asset_instance assetStance  " +
                 "where assetStance.id_user = :idUser  " +
                 "and assetStance.id_department_original = :idDepartmentOriginal ");
+        setConditionFindAllAssetInstance(request,sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetInstance(query);
         PageUtils.buildQuery(pageable, query);
@@ -49,7 +53,7 @@ public class AssetInstanceRepositoryImpl implements AssetInstanceRepositoryCusto
                 assetInstance.add(instance);
             }
         }
-        return new PageImpl<>(assetInstance, pageable, countFindAllAssetInstance());
+        return new PageImpl<>(assetInstance, pageable, countFindAllAssetInstance(request));
     }
 
     @Override
@@ -96,20 +100,28 @@ public class AssetInstanceRepositoryImpl implements AssetInstanceRepositoryCusto
         setParameterFindAllAssetInstance(query);
         return ValueUtil.getLongByObject(query.getSingleResult());
     }
-
+    private void setConditionFindAllAssetInstance(FindAllAssetInstanceRequest request, StringBuilder sb) {
+        if (ObjectUtils.isNotEmpty(request.getIsError()) && request.getIsError().equals(Constants.IS_NOT_ERROR_INSTANCE)) {
+            sb.append(" and assetStance.error is not null ");
+        }
+        else if (ObjectUtils.isNotEmpty(request.getIsError()) && request.getIsError().equals(Constants.IS_ERROR_INSTANCE)) {
+            sb.append(" and assetStance.error is null ");
+        }
+    }
     private void setParameterFindAllAssetInstance(Query query) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         query.setParameter("idUser", csvcUser.getIdUser());
         query.setParameter("idDepartmentOriginal", csvcUser.getIdDepartmentCurrent());
     }
 
-    private long countFindAllAssetInstance() {
+    private long countFindAllAssetInstance(FindAllAssetInstanceRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0)  " +
                 "from asset_instance assetStance  " +
                 "where assetStance.id_user = :idUser  " +
                 "and assetStance.id_department_original = :idDepartmentOriginal ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        setConditionFindAllAssetInstance(request,sb);
         setParameterFindAllAssetInstance(query);
         return ValueUtil.getLongByObject(query.getSingleResult());
     }

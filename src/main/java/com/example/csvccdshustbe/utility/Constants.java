@@ -483,6 +483,10 @@ public class Constants {
     public final static Integer IS_NOT_DECREASED = -1;
 
     /*-----------------------------------------------------*/
-
-
+    /**
+     * Constants ERROR
+     * */
+    public static Integer IS_ERROR_INSTANCE = 1;
+    public static Integer IS_NOT_ERROR_INSTANCE = -1;
+    /*-----------------------------------------------------*/
 }

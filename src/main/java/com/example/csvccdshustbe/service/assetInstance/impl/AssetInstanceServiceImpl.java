@@ -11,8 +11,6 @@ import com.example.csvccdshustbe.utility.PageUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.shaded.gson.Gson;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -36,7 +34,7 @@ public class AssetInstanceServiceImpl implements AssetInstanceService {
     @Override
     public Page<FindAllAssetInstanceResponse> findAllAssetInstance(FindAllAssetInstanceRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-        Page<AssetInstance> assetInstances = assetInstanceRepository.findAllAssetInstance(pageable);
+        Page<AssetInstance> assetInstances = assetInstanceRepository.findAllAssetInstance(request, pageable);
         long totalError = assetInstanceRepository.totalError();
         return new PageImpl<>(convertToAssetInstance(assetInstances.get().collect(Collectors.toList()), totalError), pageable,
                 assetInstances.getTotalElements());
