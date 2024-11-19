@@ -120,8 +120,8 @@ public class AssetInstanceRepositoryImpl implements AssetInstanceRepositoryCusto
                 "from asset_instance assetStance  " +
                 "where assetStance.id_user = :idUser  " +
                 "and assetStance.id_department_original = :idDepartmentOriginal ");
-        Query query = entityManager.createNativeQuery(sb.toString());
         setConditionFindAllAssetInstance(request,sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetInstance(query);
         return ValueUtil.getLongByObject(query.getSingleResult());
     }
