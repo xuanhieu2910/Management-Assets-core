@@ -1439,6 +1439,8 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());
         asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
+        asset.setIsIncrease(Constants.IS_NOT_INCREASED);
+        asset.setIsDecrease(Constants.IS_NOT_DECREASED);
         return asset;
     }
 
@@ -2244,8 +2246,6 @@ public class AssetServiceImpl implements AssetService {
         commonData.put("minimumTimeDepreciation", minimumTimeDepreciation);
         commonData.put("valueWearTear", valueWearTear);
         commonData.put("yearUsedWearTear", yearUsedWearTear);
-        commonData.put("isIncrease",Constants.IS_NOT_INCREASED);
-        commonData.put("isDecrease",Constants.IS_NOT_DECREASED);
         // Các lỗi liên quan validate các trường
 
         return commonData;
