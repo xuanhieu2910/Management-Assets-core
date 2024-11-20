@@ -101,10 +101,10 @@ public class AssetInstanceRepositoryImpl implements AssetInstanceRepositoryCusto
         return ValueUtil.getLongByObject(query.getSingleResult());
     }
     private void setConditionFindAllAssetInstance(FindAllAssetInstanceRequest request, StringBuilder sb) {
-        if (ObjectUtils.isNotEmpty(request.getIsError()) && request.getIsError().equals(Constants.IS_NOT_ERROR_INSTANCE)) {
+        if (ObjectUtils.isNotEmpty(request.getIsError()) && request.getIsError().equals(Constants.IS_ERROR_INSTANCE)) {
             sb.append(" and assetStance.error is not null ");
         }
-        else if (ObjectUtils.isNotEmpty(request.getIsError()) && request.getIsError().equals(Constants.IS_ERROR_INSTANCE)) {
+        else if (ObjectUtils.isNotEmpty(request.getIsError()) && request.getIsError().equals(Constants.IS_NOT_ERROR_INSTANCE)) {
             sb.append(" and assetStance.error is null ");
         }
     }
