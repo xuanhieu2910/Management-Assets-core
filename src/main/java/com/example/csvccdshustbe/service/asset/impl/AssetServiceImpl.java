@@ -1497,21 +1497,6 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Page<FindAllAssetDocumentResponse> findAllAssetDocumentByCodeDocument(FindAllAssetDocumentRequest request) {
-        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
-        request.setIdsDepartmentOriginal(idsDepartment);
-        Page<FindAllAssetDto> findAllAssetDtos = null;
-        if (request.getTypeProcess().equals(Constants.CODE_TYPE_PROCESS_INVENTORY)) {
-            findAllAssetDtos = assetRepository.findAllAssetDocumentInventoryByCodeDocument(request, pageable);
-        } else {
-            findAllAssetDtos = assetRepository.findAllAssetDocumentByCodeDocument(request, pageable);
-        }
-        return new PageImpl<>(convertToFindAllAssetDocument(findAllAssetDtos.getContent()),
-                pageable, findAllAssetDtos.getTotalElements());
-    }
-
-    @Override
     public String generateCodeAsset(String prefix) {
         if (prefix.equals(Constants.PREFIX_ASSET_LOT)){
             return prefixAssetLot(prefix);
@@ -1601,22 +1586,6 @@ public class AssetServiceImpl implements AssetService {
     }
 
 
-    private List<FindAllAssetDocumentResponse> convertToFindAllAssetDocument(List<FindAllAssetDto> content) {
-        List<FindAllAssetDocumentResponse> responses = new ArrayList<>();
-        for (FindAllAssetDto dto : content) {
-            FindAllAssetDocumentResponse response = new FindAllAssetDocumentResponse();
-            response.setCodeAsset(dto.getCodeAsset());
-            response.setNameAsset(dto.getNameAsset());
-            response.setNameAssetCategory(dto.getNameAssetCategory());
-            response.setCodeAssetCategory(dto.getCodeAssetCategory());
-            response.setCodeDepartment(dto.getCodeDepartment());
-            response.setNameDepartment(dto.getNameDepartment());
-            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
-            response.setTimeModified(DateUtil.formatToPattern( new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
-            responses.add(response);
-        }
-        return responses;
-    }
 
     @Override
     public void createAssetFromFile(Map<String, Object> createAssetRequest) throws JsonProcessingException,

@@ -950,16 +950,14 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private long countFindAllAssetToIncrease(FinaAllAssetToIncreaseRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) count  " +
-                " from asset asset " +
-                " inner join asset_categories assetCategories " +
-                " on asset.id_asset_category = assetCategories.id_asset_category " +
-                " inner join department de on asset.id_department = de.id_department " +
-                " left join location lo on asset.id_location = lo.id_location " +
-                " where 1 = 1  and asset.quantity = 1 " +
-                " and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                " and (asset.id_process_current is null or asset.is_decrease = 1) " +
-                " and asset.is_increase =-1 " +
-                " and (asset.status_process_current is null or asset.status_process_current != 1)  ");
+                " from asset asset    " +
+                "     inner join asset_categories assetCategories    " +
+                "             on asset.id_asset_category = assetCategories.id_asset_category    " +
+                "     inner join department de on asset.id_department = de.id_department    " +
+                "     left join location lo on asset.id_location = lo.id_location  " +
+                "     left join data_document dataDocument on asset.id_asset = dataDocument.id_asset  " +
+                " where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "    and dataDocument.id_asset is null   ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToIncrease(request,query);
