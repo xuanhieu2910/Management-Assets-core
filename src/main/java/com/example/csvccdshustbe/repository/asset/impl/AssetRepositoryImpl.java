@@ -729,15 +729,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select id_asset, name, code_asset, id_asset_category, " +
-                "       id_document_attack, id_department, id_location,  " +
-                "       id_unit, id_projects, purpose, notes, file_attack, " +
-                "       time_created, time_modified, id_department_default, " +
-                "       id_level_type_asset, id_user_created, id_user_modified,  " +
-                "       description, quantity, id_instance, id_department_origin,  " +
-                "       parent, salt, id_process_current, status_process_current,  " +
-                "       id_type_process_current " +
-                "from asset where id_asset in (:idsAsset) ");
+        sb.append("select id_asset, name, code_asset, id_asset_category,    " +
+                "          id_document_attack, id_department, id_location,   " +
+                "          id_unit, id_projects, purpose, notes, file_attack,   " +
+                "          time_created, time_modified, id_department_default,   " +
+                "          id_level_type_asset, id_user_created, id_user_modified,   " +
+                "          description, quantity, id_instance, id_department_origin,   " +
+                "          parent, salt, id_process_current, status_process_current,   " +
+                "          id_type_process_current, is_increase, is_decrease   " +
+                "from asset where id_asset in (:idsAsset)  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsAsset", idsAsset);
         List<Object[]> result = query.getResultList();
@@ -772,6 +772,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdProcessCurrent(ValueUtil.getIntegerByObject(obj[24]));
                 asset.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[25]));
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
+                asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
+                asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
                 assets.add(asset);
             }
         }
@@ -791,6 +793,22 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         query.setParameter("isIncreased", Constants.IS_INCREASED);
         query.setParameter("isNotDecreased", Constants.IS_NOT_DECREASED);
         query.setParameter("isStatusPending", Constants.STATUS_PENDING_PROCESS);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+    @Override
+    public Integer countAssetByIdsAssetAndNotIncreaseOrDecreasedOrPending(List<Integer> idsAsset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(asset.id_asset) count   " +
+                "from  asset   " +
+                "where asset.id_asset in (:idsAsset)   " +
+                "and (is_increase = :isNotIncrease or is_decrease = :isDecrease   " +
+                "    or status_process_current = :isPending) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsAsset", idsAsset);
+        query.setParameter("isNotIncrease", Constants.IS_NOT_INCREASED);
+        query.setParameter("isDecrease", Constants.IS_DECREASED);
+        query.setParameter("isPending", Constants.STATUS_PENDING_PROCESS);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
     }
 

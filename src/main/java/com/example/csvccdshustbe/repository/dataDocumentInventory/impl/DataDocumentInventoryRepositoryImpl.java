@@ -1,7 +1,0 @@
-package com.example.csvccdshustbe.repository.dataDocumentInventory.impl;
-
-import com.example.csvccdshustbe.repository.dataDocumentInventory.DataDocumentInventoryRepositoryCustom;
-
-
-public class DataDocumentInventoryRepositoryImpl implements DataDocumentInventoryRepositoryCustom {
-}

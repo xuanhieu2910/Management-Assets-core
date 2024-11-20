@@ -1649,7 +1649,7 @@ public class AssetServiceImpl implements AssetService {
 
     @Override
     public Integer countAssetByIdsAssetAndNotIncreasedOrDecreasedOrPending(List<Integer> idsAsset) {
-        return assetRepository.countAssetByIdsAssetAndNotIncreaseOrDecreasedOrPending();
+        return assetRepository.countAssetByIdsAssetAndNotIncreaseOrDecreasedOrPending(idsAsset);
     }
 
     private void storeNewAssetFromFile(Map<String, Object> createAssetRequest) throws ValidateFiledException {

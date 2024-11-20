@@ -4,12 +4,10 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetIncreaseRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetInventoryRequest;
-import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +21,6 @@ import org.webjars.NotFoundException;
 public class DataProcessAssetController {
 
 
-    @Autowired
-    DataDocumentService dataDocumentService;
-
 
     @GetMapping("/find-all-increase")
     public ResponseEntity<?> findAllProcessAssetIncrease(@And({
@@ -34,8 +29,7 @@ public class DataProcessAssetController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllProcessAssetIncreaseRequest findAllProcessAssetRequest){
         try {
-            return ApiResponseDto.createdWithState(dataDocumentService.findAllDataProcessAssetIncrease(findAllProcessAssetRequest),
-                    "Find all process asset success!", HttpStatus.OK);
+            return null;
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -50,8 +44,7 @@ public class DataProcessAssetController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllProcessAssetInventoryRequest findAllProcessAssetRequest){
         try {
-            return ApiResponseDto.createdWithState(dataDocumentService.findAllDataProcessAssetInventory(findAllProcessAssetRequest),
-                    "Find all process asset success!", HttpStatus.OK);
+            return null;
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){

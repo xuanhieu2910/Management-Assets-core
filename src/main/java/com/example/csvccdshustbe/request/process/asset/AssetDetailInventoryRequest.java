@@ -10,8 +10,5 @@ import lombok.Setter;
 public class AssetDetailInventoryRequest {
 
     private Integer idAsset;
-    private Integer quantity;
-    private String originalValue;
-    private String restValue;
-
+    private String value;
 }

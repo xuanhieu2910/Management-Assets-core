@@ -40,4 +40,6 @@ public interface AssetRepositoryCustom {
     List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset);
 
     Integer countAssetIncreasedNotDecreasedByIdsAssetOrPending(List<Integer> idsAsset);
+
+    Integer countAssetByIdsAssetAndNotIncreaseOrDecreasedOrPending(List<Integer> idsAsset);
 }
