@@ -812,15 +812,18 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "               on asset.id_asset_category = assetCategories.id_asset_category   " +
                 "       inner join department de on asset.id_department = de.id_department   " +
                 "       left join location lo on asset.id_location = lo.id_location   " +
+                "       inner join data_document dataDocument on asset.id_asset = dataDocument.id_asset     " +
+                "       inner join document document on dataDocument.id_document = document.id_document     " +
+                "       inner join process process on document.id_process = process.id_process     " +
+                "       inner join type_process typeProcess on process.id_type_process = typeProcess.id_type_process     " +
                 "       inner join asset_original_of_formation assetOriginalOfFormation        " +
                 "           on asset.id_asset = assetOriginalOfFormation.id_asset        " +
                 "       inner join asset_depreciation assetDepreciation     " +
                 "          on asset.id_asset = assetDepreciation.id_asset        " +
                 "   where 1 = 1 and asset.quantity = 1        " +
                 "         and asset.id_department_origin in (:idsDepartmentOriginal)     " +
-                "  and  asset.is_increase = :isIncrease " +
-                "  and asset.is_decrease =:isDecrease " +
-                "  and (asset.status_process_current is null or asset.status_process_current != :statusProcess)   ");
+                "         and process.status = :statusProcess     " +
+                "         and typeProcess.code != :codeTypeProcess    ");
         setCountConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToInventory(request,query);
@@ -830,9 +833,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("isDecrease", Constants.IS_DECREASED);
-        query.setParameter("isIncrease",Constants.IS_NOT_INCREASED);
-        query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }
@@ -846,10 +846,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAssetDtoToInventory(FindAllAssetToInventoryRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("isIncrease", Constants.IS_INCREASED);
-        query.setParameter("isDecrease", Constants.IS_NOT_DECREASED);
-        query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
-
+        query.setParameter("statusProcess", Constants.STATUS_SUCCESS_PROCESS);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DECREASE);
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }
@@ -1120,6 +1118,43 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         setConditionFindAllAssetLotChildren(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetLotChildren(request, query);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+
+    private long countFindAllAssetDocument(FindAllAssetDocumentRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select count(0) count  " +
+                "from asset asset  " +
+                "      left join asset_categories assetCategories     " +
+                "              on asset.id_asset_category = assetCategories.id_asset_category     " +
+                "      left join department de on asset.id_department = de.id_department     " +
+                "      left join location lo on asset.id_location = lo.id_location  " +
+                "      left join data_document dd on asset.id_asset = dd.id_asset  " +
+                "      left join document do on dd.id_document = do.id_document  " +
+                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "and do.code = :codeDocument ");
+        setConditionFindAllAssetDocument(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllAssetDocument(request, query);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+    private long countFindAllAssetDocumentInventory(FindAllAssetDocumentRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select count(0) count  " +
+                "from asset asset  " +
+                "      left join asset_categories assetCategories     " +
+                "              on asset.id_asset_category = assetCategories.id_asset_category     " +
+                "      left join department de on asset.id_department = de.id_department     " +
+                "      left join location lo on asset.id_location = lo.id_location  " +
+                "      left join data_document_inventory dd on asset.id_asset = dd.id_asset  " +
+                "      left join document do on dd.id_document = do.id_document  " +
+                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "and do.code = :codeDocument ");
+        setConditionFindAllAssetDocumentInventory(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllAssetDocumentInventory(request, query);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
     }
 
