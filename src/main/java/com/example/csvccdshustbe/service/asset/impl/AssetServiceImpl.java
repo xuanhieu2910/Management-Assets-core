@@ -1438,8 +1438,6 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());
         asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
-        asset.setIsIncrease(Constants.IS_NOT_INCREASED);
-        asset.setIsDecrease(Constants.IS_NOT_DECREASED);
         return asset;
     }
 
