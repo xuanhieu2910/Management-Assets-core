@@ -309,26 +309,6 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public Process updateProcessByIdProcessAndStatus(Integer idProcess, Integer status) {
-        Optional<Process> process =  processRepository.findProcessByIdProcess(idProcess);
-        if (process.isEmpty()){
-            throw new NotFoundException("Don't exits process by id process!");
-        }
-        process.get().setStatus(status);
-        processRepository.save(process.get());
-        TypeProcess typeProcess = typeProcessService.findTypeProcessByIdTypeProcess(process.get().getIdTypeProcess());
-        if ( (typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_INCREASE) ||
-                typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_DECREASE))
-            && status.equals(Constants.STATUS_SUCCESS_PROCESS)){
-            assetService.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.get().getIdProcess(),
-                    status, typeProcess.getCode());
-        } else {
-            assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.get().getIdProcess(), status);
-        }
-        return process.get();
-    }
-
-    @Override
     public Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedResponse(FindAllProcessBeAssignedRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         return processRepository.findAllProcessBeAssigned(request, pageable);
@@ -343,7 +323,6 @@ public class ProcessServiceImpl implements ProcessService {
     public ProcessStatisticsInventoryResponse getStatisticInventory() {
         return processRepository.getStatisticsInventory();
     }
-
 
     /***
      *
