@@ -31,14 +31,11 @@ public class ProcessAssetController {
             processService.createIncreaseAsset(request);
             return ApiResponseDto.createdWithMessage("Create increase asset success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-
     @PostMapping("/inventory")
     public ResponseEntity<?> createInventory(@RequestBody CreateInventoryAssetRequest request){
         try {

@@ -384,6 +384,12 @@ public class Constants {
     public static Integer STATUS_GOVERNMENT_ACTIVE = 1;
     public static Integer STATUS_GOVERNMENT_UN_ACTIVE = -1;
     /*----------------------------------------------------*/
+    /**
+     * Constant Status Asset Process
+     * */
+    public static Integer STATUS_ASSET_PROCESS_ACTIVE = 1;
+    public static Integer STATUS_ASSET_PROCESS_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
 
     /**
      * Constant Status Report
@@ -460,6 +466,21 @@ public class Constants {
      * */
     public final static Integer INIT_RETRY = 0;
     public final static Integer MAX_RETRY = 3;
+
+    /*-----------------------------------------------------*/
+    /**
+     * Constants BATCH_SIZE_EXCUSE
+     * */
+    public final static Integer BATCH_SIZE_EXCUSE = 50;
+
+    /*-----------------------------------------------------*/
+    /**
+     * Constants IS_INCREASE_AND_DECREASE
+     * */
+    public final static Integer IS_INCREASED = 1;
+    public final static Integer IS_NOT_INCREASED = -1;
+    public final static Integer IS_DECREASED = 1;
+    public final static Integer IS_NOT_DECREASED = -1;
 
     /*-----------------------------------------------------*/
 

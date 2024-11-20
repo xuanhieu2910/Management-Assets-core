@@ -8,6 +8,7 @@ import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
 import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
 import com.example.csvccdshustbe.entity.*;
+import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.FileExcelException;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -1438,6 +1439,8 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());
         asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
+        asset.setIsIncrease(Constants.IS_NOT_INCREASED);
+        asset.setIsDecrease(Constants.IS_NOT_DECREASED);
         return asset;
     }
 
@@ -1624,6 +1627,31 @@ public class AssetServiceImpl implements AssetService {
 
         storeNewAssetFromFile(dataCreateAssetRequest);
     }
+
+    @Override
+    public void updateInformationProcessCurrentAsset(List<Integer> idsAsset, Process process) {
+        List<Asset> assets = assetRepository.findAllAssetByIdsAsset(idsAsset);
+        if (assets.size() != idsAsset.size()){
+            throw new NotFoundException("Don't exits asset by ids!");
+        }
+        assets.forEach(x->{
+            x.setIdProcessCurrent(process.getIdProcess());
+            x.setStatusProcessCurrent(process.getStatus());
+            x.setIdTypeProcessCurrent(process.getIdTypeProcess());
+        });
+        assetRepository.saveAll(assets);
+    }
+
+    @Override
+    public Integer countAssetIncreasedNotDecreasedOrNotPending(List<Integer> idsAsset) {
+        return assetRepository.countAssetIncreasedNotDecreasedByIdsAssetOrPending(idsAsset);
+    }
+
+    @Override
+    public Integer countAssetByIdsAssetAndNotIncreasedOrDecreasedOrPending(List<Integer> idsAsset) {
+        return assetRepository.countAssetByIdsAssetAndNotIncreaseOrDecreasedOrPending();
+    }
+
     private void storeNewAssetFromFile(Map<String, Object> createAssetRequest) throws ValidateFiledException {
         log.info("Init store asset");
         Asset asset = storeCommonData(createAssetRequest);

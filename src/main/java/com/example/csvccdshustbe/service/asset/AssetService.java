@@ -1,5 +1,7 @@
 package com.example.csvccdshustbe.service.asset;
 
+import com.example.csvccdshustbe.entity.AssetProcess;
+import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.FileExcelException;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -11,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface AssetService {
@@ -35,4 +38,7 @@ public interface AssetService {
     String generateCodeAsset(String prefix);
     Page<FindAllAssetResponseToInventory> findAllAssetToInventory(FindAllAssetToInventoryRequest inventoryRequest);
     void createAssetFromFile(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException;
+    void updateInformationProcessCurrentAsset(List<Integer> idsAsset, Process process);
+    Integer countAssetIncreasedNotDecreasedOrNotPending(List<Integer> idsAsset);
+    Integer countAssetByIdsAssetAndNotIncreasedOrDecreasedOrPending(List<Integer> idsAsset);
 }

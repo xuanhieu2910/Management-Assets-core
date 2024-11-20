@@ -74,10 +74,8 @@ public class AssetController {
             assetService.updateAssetLot(updateAssetRequest);
             return ApiResponseDto.createdWithMessage("Update asset lot success!", HttpStatus.OK);
         } catch (ValidateFiledException | JsonProcessingException | NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -90,10 +88,8 @@ public class AssetController {
             return ApiResponseDto.createdWithState(assetService.findDetailsAssetBySaltAsset(saltAsset),
                     "Find asset details success!", HttpStatus.OK);
         } catch (NotFoundException e) {
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -236,7 +232,6 @@ public class AssetController {
             return ApiResponseDto.createdWithState(assetService.findAllAssetToInventory(inventoryRequest),
                     "Find all asset to inventory success!", HttpStatus.OK);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

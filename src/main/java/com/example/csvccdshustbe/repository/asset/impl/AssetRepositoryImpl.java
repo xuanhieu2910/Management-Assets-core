@@ -726,6 +726,75 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         return new PageImpl<>(responses, pageable, countFindAllAssetDocumentInventory(request));
     }
 
+    @Override
+    public List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_asset, name, code_asset, id_asset_category, " +
+                "       id_document_attack, id_department, id_location,  " +
+                "       id_unit, id_projects, purpose, notes, file_attack, " +
+                "       time_created, time_modified, id_department_default, " +
+                "       id_level_type_asset, id_user_created, id_user_modified,  " +
+                "       description, quantity, id_instance, id_department_origin,  " +
+                "       parent, salt, id_process_current, status_process_current,  " +
+                "       id_type_process_current " +
+                "from asset where id_asset in (:idsAsset) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsAsset", idsAsset);
+        List<Object[]> result = query.getResultList();
+        List<Asset> assets = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Asset asset = new Asset();
+                asset.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
+                asset.setName(ValueUtil.getStringByObject(obj[1]));
+                asset.setCodeAsset(ValueUtil.getStringByObject(obj[2]));
+                asset.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
+                asset.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[4]));
+                asset.setIdDepartment(ValueUtil.getIntegerByObject(obj[5]));
+                asset.setIdLocation(ValueUtil.getIntegerByObject(obj[6]));
+                asset.setIdUnit(ValueUtil.getIntegerByObject(obj[7]));
+                asset.setIdProjects(ValueUtil.getIntegerByObject(obj[8]));
+                asset.setPurpose(ValueUtil.getStringByObject(obj[9]));
+                asset.setNotes(ValueUtil.getStringByObject(obj[10]));
+                asset.setFileAttack(ValueUtil.getStringByObject(obj[11]));
+                asset.setTimeCreated(ValueUtil.getStringByObject(obj[12]));
+                asset.setTimeModified(ValueUtil.getStringByObject(obj[13]));
+                asset.setIdDepartmentDefault(ValueUtil.getIntegerByObject(obj[14]));
+                asset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(obj[15]));
+                asset.setIdUserCreated(ValueUtil.getIntegerByObject(obj[16]));
+                asset.setIdUserModified(ValueUtil.getIntegerByObject(obj[17]));
+                asset.setDescription(ValueUtil.getStringByObject(obj[18]));
+                asset.setQuantity(ValueUtil.getIntegerByObject(obj[19]));
+                asset.setIdInstance(ValueUtil.getIntegerByObject(obj[20]));
+                asset.setIdDepartmentOrigin(ValueUtil.getIntegerByObject(obj[21]));
+                asset.setParent(ValueUtil.getIntegerByObject(obj[22]));
+                asset.setSalt(ValueUtil.getStringByObject(obj[23]));
+                asset.setIdProcessCurrent(ValueUtil.getIntegerByObject(obj[24]));
+                asset.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[25]));
+                asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
+                assets.add(asset);
+            }
+        }
+        return assets;
+    }
+
+    @Override
+    public Integer countAssetIncreasedNotDecreasedByIdsAssetOrPending(List<Integer> idsAsset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(asset.id_asset) count  " +
+                "from asset  " +
+                "where id_asset in (:idsAsset)  " +
+                "and ((is_increase = :isIncreased and is_decrease = :isNotDecreased)  " +
+                "    or status_process_current = :isStatusPending) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsAsset", idsAsset);
+        query.setParameter("isIncreased", Constants.IS_INCREASED);
+        query.setParameter("isNotDecreased", Constants.IS_NOT_DECREASED);
+        query.setParameter("isStatusPending", Constants.STATUS_PENDING_PROCESS);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+
     private void setParameterFindAllAssetDocument(FindAllAssetDocumentRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("codeDocument", request.getCodeDocument());

@@ -10,12 +10,15 @@ import com.example.csvccdshustbe.repository.process.ProcessRepository;
 import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
 import com.example.csvccdshustbe.request.process.CreateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
+import com.example.csvccdshustbe.request.process.asset.InformationAssetInventoryRequest;
 import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilInventoryRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
 import com.example.csvccdshustbe.response.process.ProcessStatisticsIncreaseResponse;
 import com.example.csvccdshustbe.response.process.ProcessStatisticsInventoryResponse;
+import com.example.csvccdshustbe.service.asset.AssetService;
+import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import com.example.csvccdshustbe.service.dataDocument.DataDocumentService;
 import com.example.csvccdshustbe.service.dataDocumentInventory.DataDocumentInventoryService;
 import com.example.csvccdshustbe.service.document.DocumentService;
@@ -30,10 +33,7 @@ import com.example.csvccdshustbe.service.typeProcessService.TypeProcessService;
 import com.example.csvccdshustbe.service.typeState.TypeStateService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
-import com.example.csvccdshustbe.utility.Constants;
-import com.example.csvccdshustbe.utility.EmailUtil;
-import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.PropertiesUtil;
+import com.example.csvccdshustbe.utility.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -75,6 +75,11 @@ public class ProcessServiceImpl implements ProcessService {
     DataDocumentInventoryService dataDocumentInventoryService;
     @Autowired
     TaskSendMailService taskSendMailService;
+    @Autowired
+    AssetProcessService assetProcessService;
+    @Autowired
+    AssetService assetService;
+
 
     @Override
     public Process saveProcess(Process process) {
@@ -83,13 +88,19 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException {
+        List<Integer> idsAsset = new ArrayList<>();
+        request.getAssetProcessValue().forEach(x->idsAsset.add(x.getIdAsset()));
+        validateAssetProcessIncrease(idsAsset);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(contructionDocumentIncrease(request.getDocument(), process));
+        assetProcessService.saveListAssetProcess(contructionAssetProcess(request.getAssetProcessValue(), process));
+        updateInformationProcessCurrentAsset(idsAsset, process);
         dataDocumentService.createNewDataProcessAssetIncrease(request, document);
-        List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
-                Constants.CODE_TYPE_STATE_COMPLETED);
-        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(codeTypeStates);
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
+                Arrays.asList(Constants.CODE_TYPE_STATE_INIT,
+                Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                Constants.CODE_TYPE_STATE_COMPLETED));
         List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
         transitionService.saveTransition(constructionTransition(process, states));
         Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
@@ -100,6 +111,34 @@ public class ProcessServiceImpl implements ProcessService {
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
         createTaskSendMailIncrease(userRoles, document, process);
+    }
+
+    private void updateInformationProcessCurrentAsset(List<Integer> idsAsset, Process process) {
+        assetService.updateInformationProcessCurrentAsset(idsAsset, process);
+    }
+
+    private void validateAssetProcessIncrease(List<Integer> idsAsset) throws ValidateFiledException {
+        Integer count = assetService.countAssetIncreasedNotDecreasedOrNotPending(idsAsset);
+        if (count != null && count > 0){
+            throw new ValidateFiledException("Validate data to increase asset!");
+        }
+    }
+
+    private List<AssetProcess> contructionAssetProcess(List<InformationAssetInventoryRequest> assetProcessValue, Process process) {
+        List<AssetProcess> assetProcessList = new ArrayList<>();
+        String currentTime = String.valueOf(new Date().getTime());
+        for (InformationAssetInventoryRequest assetProcessRequest: assetProcessValue){
+            AssetProcess assetProcess = new AssetProcess();
+            assetProcess.setIdAsset(assetProcessRequest.getIdAsset());
+            assetProcess.setIdProcess(process.getIdProcess());
+            assetProcess.setIdTypeProcess(process.getIdTypeProcess());
+            assetProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+            assetProcess.setValue(assetProcessRequest.getValue());
+            assetProcess.setTimeCreated(currentTime);
+            assetProcess.setTimeModified(currentTime);
+            assetProcessList.add(assetProcess);
+        }
+        return assetProcessList;
     }
 
     private void createTaskSendMailIncrease(List<UserRoleDto> userRoleDtos, Document document, Process process) {
@@ -129,6 +168,9 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void createInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException {
+        List<Integer> idsAsset = new ArrayList<>();
+        request.getAssetDetail().forEach(x->idsAsset.add(x.getIdAsset()));
+        validateAssetProcessInventory(idsAsset);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(contructionDocumentInventory(request.getDocument(), process));
@@ -146,6 +188,10 @@ public class ProcessServiceImpl implements ProcessService {
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderInventory(processRequest, request.getCouncilInventory(),usersDto));
         createTaskSendMailInventory(usersDto, document, process);
+    }
+
+    private void validateAssetProcessInventory(List<Integer> idsAsset) {
+        Integer countAsset = assetService.countAssetByIdsAssetAndNotIncreasedOrDecreasedOrPending(idsAsset);
     }
 
     private void createTaskSendMailInventory(List<FindAllUserDto> userRoleDtos, Document document, Process process) {

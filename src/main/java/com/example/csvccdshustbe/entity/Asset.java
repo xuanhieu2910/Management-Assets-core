@@ -63,4 +63,14 @@ public class Asset {
     private Integer parent;
     @Column(name = "salt")
     private String salt;
+    @Column(name = "id_process_current")
+    private Integer idProcessCurrent;
+    @Column(name = "status_process_current")
+    private Integer statusProcessCurrent;
+    @Column(name = "id_type_process_current")
+    private Integer idTypeProcessCurrent;
+    @Column(name = "is_increase")
+    private Integer isIncrease;
+    @Column(name = "is_decrease")
+    private Integer isDecrease;
 }

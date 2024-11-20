@@ -37,4 +37,7 @@ public interface AssetRepositoryCustom {
     Page<FindAllAssetDto> findAllAssetDtoToInventory(FindAllAssetToInventoryRequest inventoryRequest, Pageable pageable);
 
     Page<FindAllAssetDto> findAllAssetDocumentInventoryByCodeDocument(FindAllAssetDocumentRequest request, Pageable pageable);
+    List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset);
+
+    Integer countAssetIncreasedNotDecreasedByIdsAssetOrPending(List<Integer> idsAsset);
 }
