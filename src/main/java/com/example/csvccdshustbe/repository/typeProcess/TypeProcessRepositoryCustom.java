@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface TypeProcessRepositoryCustom {
 
     Optional<TypeProcess> findTypeProcessByCode(String codeProcess);
+
+    Optional<TypeProcess> findTypeProcessById(Integer idTypeProcess);
 }

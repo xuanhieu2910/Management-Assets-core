@@ -9,5 +9,4 @@ public interface TransitionService {
 
     Transition saveTransition(Transition transition);
     Transition findTransitionByIdProcess(Integer idProcess);
-    void updateStatusProcessByIdProcess(Integer idProcess, Integer status);
 }

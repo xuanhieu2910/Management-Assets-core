@@ -42,4 +42,9 @@ public interface AssetRepositoryCustom {
     Integer countAssetIncreasedNotDecreasedByIdsAssetOrPending(List<Integer> idsAsset);
 
     Integer countAssetByIdsAssetAndNotIncreaseOrDecreasedOrPending(List<Integer> idsAsset);
+
+    void updateAssetStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer statusProcessCurrent);
+    void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status,
+                                                                   Integer isIncrease, Integer isDecrease);
+
 }

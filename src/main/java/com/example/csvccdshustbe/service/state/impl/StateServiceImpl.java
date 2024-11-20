@@ -14,6 +14,7 @@ import com.example.csvccdshustbe.response.request.RequestDetailsResponse;
 import com.example.csvccdshustbe.response.requestData.RequestDataDetailsResponse;
 import com.example.csvccdshustbe.response.requestStakeHolder.RequestStakeHolderDetailsResponse;
 import com.example.csvccdshustbe.response.state.StateDetailsResponse;
+import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.example.csvccdshustbe.service.request.RequestService;
 import com.example.csvccdshustbe.service.requestData.RequestDataService;
@@ -175,7 +176,7 @@ public class StateServiceImpl implements StateService {
         }
         transitionService.saveTransition(transition);
         if (transition.getIdStateCurrent().equals(transition.getIdStateNext())){
-            transitionService.updateStatusProcessByIdProcess(transition.getIdProcess(), Constants.STATUS_SUCCESS_PROCESS);
+            processService.updateProcessByIdProcessAndStatus(transition.getIdProcess(),  Constants.STATUS_SUCCESS_PROCESS);
         }
     }
 
@@ -237,7 +238,7 @@ public class StateServiceImpl implements StateService {
                 state.setStatus(Constants.STATUS_STATE_FALSE);
                 state.setTimeModified(String.valueOf(new Date().getTime()));
                 stateRepository.save(state);
-                updateStatusProcessByState(state);
+                processService.updateProcessByIdProcessAndStatus(state.getIdProcess(), Constants.STATUS_FALSE_PROCESS);
                 return;
             }
         }
@@ -245,11 +246,5 @@ public class StateServiceImpl implements StateService {
         state.setTimeModified(String.valueOf(new Date().getTime()));
         stateRepository.save(state);
         handleStateNext(state);
-    }
-
-    private void updateStatusProcessByState(State state) {
-        Process process = processService.findProcessByIdProcess(state.getIdProcess());
-        process.setStatus(Constants.STATUS_FALSE_PROCESS);
-        processService.saveProcess(process);
     }
 }

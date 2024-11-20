@@ -41,4 +41,6 @@ public interface AssetService {
     void updateInformationProcessCurrentAsset(List<Integer> idsAsset, Process process);
     Integer countAssetIncreasedNotDecreasedOrNotPending(List<Integer> idsAsset);
     Integer countAssetByIdsAssetAndNotIncreasedOrDecreasedOrPending(List<Integer> idsAsset);
+    void updateAssetStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer statusProcessCurrent);
+    void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status, String typeProcess);
 }

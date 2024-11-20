@@ -36,11 +36,5 @@ public class TransitionServiceImpl implements TransitionService {
         return transition.get();
     }
 
-    @Override
-    public void updateStatusProcessByIdProcess(Integer idProcess, Integer status) {
-        Process process = processService.findProcessByIdProcess(idProcess);
-        process.setStatus(status);
-        processService.saveProcess(process);
-    }
 
 }

@@ -838,6 +838,40 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
 
+    @Transactional
+    @Modifying
+    @Override
+    public void updateAssetStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer statusProcessCurrent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update asset set status_process_current = :statusProcessCurrent " +
+                "where asset.id_process_current = :idProcessCurrent ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusProcessCurrent", statusProcessCurrent);
+        query.setParameter("idProcessCurrent", idProcessCurrent);
+        query.executeUpdate();
+    }
+
+
+    @Transactional
+    @Modifying
+    @Override
+    public void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status,
+                                                                          Integer isIncrease, Integer isDecrease) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update asset " +
+                "set status_process_current = :statusProcessCurrent " +
+                "and is_increase = :isIncrease " +
+                "and is_decrease = :isDecrease " +
+                "where asset.id_process_current = :idProcessCurrent ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusProcessCurrent", status);
+        query.setParameter("isIncrease", isIncrease);
+        query.setParameter("isDecrease", isDecrease);
+        query.setParameter("idProcessCurrent", idProcess);
+        query.executeUpdate();
+    }
+
+
     private void setParameterFindAllAssetDocument(FindAllAssetDocumentRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("codeDocument", request.getCodeDocument());

@@ -1652,6 +1652,26 @@ public class AssetServiceImpl implements AssetService {
         return assetRepository.countAssetByIdsAssetAndNotIncreaseOrDecreasedOrPending(idsAsset);
     }
 
+    @Override
+    public void updateAssetStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer statusProcessCurrent) {
+        assetRepository.updateAssetStatusProcessCurrentByIdProcessCurrent(idProcessCurrent, statusProcessCurrent);
+    }
+
+    @Override
+    public void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status,
+                                                                          String typeProcess) {
+        if (typeProcess.equals(Constants.CODE_TYPE_PROCESS_INCREASE)) {
+            assetRepository.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(idProcess, status,
+                    Constants.IS_INCREASED,
+                    Constants.IS_NOT_DECREASED);
+        }
+        if (typeProcess.equals(Constants.CODE_TYPE_PROCESS_DECREASE)) {
+            assetRepository.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(idProcess, status,
+                    Constants.IS_NOT_INCREASED,
+                    Constants.IS_DECREASED);
+        }
+    }
+
     private void storeNewAssetFromFile(Map<String, Object> createAssetRequest) throws ValidateFiledException {
         log.info("Init store asset");
         Asset asset = storeCommonData(createAssetRequest);

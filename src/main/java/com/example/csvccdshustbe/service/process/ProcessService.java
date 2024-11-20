@@ -16,6 +16,7 @@ public interface ProcessService {
     void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException;
     void createInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException;
     Process findProcessByIdProcess(Integer idProcess);
+    Process updateProcessByIdProcessAndStatus(Integer idProcess, Integer status);
     Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedResponse(FindAllProcessBeAssignedRequest request);
     ProcessStatisticsIncreaseResponse getStatisticIncrease();
     ProcessStatisticsInventoryResponse getStatisticInventory();

@@ -23,4 +23,13 @@ public class TypeProcessServiceImpl implements TypeProcessService {
         }
         return process.get();
     }
+
+    @Override
+    public TypeProcess findTypeProcessByIdTypeProcess(Integer idTypeProcess) {
+        Optional<TypeProcess> process = typeProcessRepository.findTypeProcessById(idTypeProcess);
+        if (process.isEmpty()){
+            throw new NotFoundException("Don't exist type process by code");
+        }
+        return process.get();
+    }
 }
