@@ -13,6 +13,7 @@ public interface ProcessService {
     void createInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException;
     void createDecreaseAsset(CreateDecreaseAssetRequest request) throws ValidateFiledException;
     void createChangeAsset(CreateChangeAssetRequest request) throws ValidateFiledException;
+    void createRevaluationAsset(CreateRevaluationAssetRequest request) throws ValidateFiledException;
     Process findProcessByIdProcess(Integer idProcess);
     Process updateProcessByIdProcessAndStatus(Integer idProcess, Integer status);
     Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedResponse(FindAllProcessBeAssignedRequest request);
@@ -20,4 +21,5 @@ public interface ProcessService {
     ProcessStatisticsInventoryResponse getStatisticInventory();
     ProcessStatisticsDecreaseResponse getStatisticDecrease();
     ProcessStatisticsChangeResponse getStatisticChange();
+    ProcessStatisticsRevaluationResponse getStatisticRevaluation();
 }

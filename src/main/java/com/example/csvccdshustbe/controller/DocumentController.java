@@ -151,6 +151,19 @@ public class DocumentController {
     }
 
 
+    @PostMapping("/revaluation")
+    public ResponseEntity<?> revaluationAsset(@RequestBody CreateRevaluationAssetRequest request){
+        try {
+            processService.createRevaluationAsset(request);
+            return ApiResponseDto.createdWithMessage("Create revaluation asset success!", HttpStatus.OK);
+        } catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
     @GetMapping("/be-assigned")
     public ResponseEntity<?> findAllProcessBeAssigned(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
@@ -200,6 +213,16 @@ public class DocumentController {
         try {
             return ApiResponseDto.createdWithState(processService.getStatisticChange(),
                     "Get statistic change success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/statistic-revaluation")
+    public ResponseEntity<?> getStatisticRevaluation(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticRevaluation(),
+                    "Get statistic revaluation success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }

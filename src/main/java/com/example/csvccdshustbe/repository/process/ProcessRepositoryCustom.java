@@ -16,4 +16,5 @@ public interface ProcessRepositoryCustom {
     ProcessStatisticsInventoryResponse getStatisticsInventory();
     ProcessStatisticsDecreaseResponse getStatisticsDecrease();
     ProcessStatisticsChangeResponse getStatisticsChange();
+    ProcessStatisticsRevaluationResponse getStatisticsRevaluation();
 }
