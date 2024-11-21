@@ -216,7 +216,8 @@ public class AssetController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FinaAllAssetToIncreaseRequest request){
         try {
-            return ApiResponseDto.createdWithState(assetService.findAllAssetToIncrease(request), "Find all asset to increase success!", HttpStatus.OK);
+            return ApiResponseDto.createdWithState(assetService.findAllAssetToIncrease(request),
+                    "Find all asset to increase success!", HttpStatus.OK);
         } catch (Exception e){
             e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
@@ -237,19 +238,6 @@ public class AssetController {
         }
     }
 
-    @GetMapping("/assets-document")
-    public ResponseEntity<?> findAllAssetByCodeDocument(@And({
-            @Spec(path = "page", params = "page", spec = Like.class),
-            @Spec(path = "size", params = "size", spec = Like.class),
-            @Spec(path = "keyword", params = "keyword", spec = Like.class)
-    }) FindAllAssetDocumentRequest request){
-        try {
-            return ApiResponseDto.createdWithState(assetService.findAllAssetDocumentByCodeDocument(request),
-                    "Find all data asset document success!", HttpStatus.OK);
-        } catch (Exception e){
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
-        }
-    }
 
     @GetMapping("/generate-code")
     public ResponseEntity<?> generateCodeAsset(){

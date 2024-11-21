@@ -358,6 +358,14 @@ public class Constants {
      * Constant PREFIX_DOCUMENT
      * */
     public static String PREFIX_DOCUMENT = "MC";
+    public static String TYPE_GENERATE_DOCUMENT_INCREASE = "TA";
+    public static String TYPE_GENERATE_DOCUMENT_DECREASE = "GI";
+    public static String TYPE_GENERATE_DOCUMENT_CHANGE = "TDTT";
+    public static String TYPE_GENERATE_DOCUMENT_REMOVE = "X";
+    public static String TYPE_GENERATE_DOCUMENT_REVALUATION = "DGL";
+    public static String TYPE_GENERATE_DOCUMENT_INVENTORY = "KK";
+
+
     /*----------------------------------------------------*/
     /**
      * Constant PREFIX_ASSET

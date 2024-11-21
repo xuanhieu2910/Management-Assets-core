@@ -16,33 +16,19 @@ public interface AssetRepositoryCustom {
 
     Page<FindAllAssetDto> findAllAssetDtoByIdsDepartment(FindAllAssetRequest request, Pageable pageable);
     Page<FindAllAssetDto> findAllAssetLotChildrenDtoByIdsDepartment(FindAllAssetLotChildrenRequest request, Pageable pageable);
-
     Optional<AssetBluePrintDto> findDetailAssetBySaltAsset(String saltAsset);
-
     Optional<Asset> findAssetBySalt(String salt);
-
     void deleteByIdAsset(Integer idAsset);
-
     Page<FindAllGroundAssetResponse> findAllGroundAsset(Pageable pageable, FindAllGroundAssetRequest request);
-
     List<FindAllGroundAssetDto> findAllGroundAssetToDownload();
-
     Page<FindAllAssetDto> findAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable);
-
-    Page<FindAllAssetDto> findAllAssetDocumentByCodeDocument(FindAllAssetDocumentRequest request, Pageable pageable);
-
     Optional<Asset> findAssetByIdDepartmentOrigin(Integer idDepartmentOrigin);
     Optional<Asset> findAssetLotByIdDepartmentOrigin(Integer idDepartmentOrigin);
     List<Asset> findAllAssetChildrenByParentId(Integer idAsset);
     Page<FindAllAssetDto> findAllAssetDtoToInventory(FindAllAssetToInventoryRequest inventoryRequest, Pageable pageable);
-
-    Page<FindAllAssetDto> findAllAssetDocumentInventoryByCodeDocument(FindAllAssetDocumentRequest request, Pageable pageable);
     List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset);
-
     Integer countAssetIncreasedNotDecreasedByIdsAssetOrPending(List<Integer> idsAsset);
-
     Integer countAssetByIdsAssetAndNotIncreaseOrDecreasedOrPending(List<Integer> idsAsset);
-
     void updateAssetStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer statusProcessCurrent);
     void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status,
                                                                    Integer isIncrease, Integer isDecrease);

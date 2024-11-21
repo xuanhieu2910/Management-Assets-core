@@ -1,4 +1,4 @@
-package com.example.csvccdshustbe.request.asset;
+package com.example.csvccdshustbe.request.assetProcess;
 
 import com.example.csvccdshustbe.request.RequestPageBase;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class FindAllAssetDocumentRequest extends RequestPageBase {
+public class FindAllAssetProcessRequest extends RequestPageBase {
 
     @NotNull
     private String codeDocument;
@@ -17,5 +17,5 @@ public class FindAllAssetDocumentRequest extends RequestPageBase {
     private Integer idAssetCategory;
     private Integer idDepartment;
     private List<Integer> idsDepartmentOriginal;
-    private String typeProcess;
+
 }

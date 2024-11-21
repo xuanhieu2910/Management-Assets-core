@@ -1,4 +1,4 @@
-package com.example.csvccdshustbe.response.asset;
+package com.example.csvccdshustbe.response.assetProcess;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FindAllAssetDocumentResponse {
+public class FindAllAssetProcessResponse {
 
     @JsonProperty("code_asset")
     private String codeAsset;
