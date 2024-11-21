@@ -7,17 +7,13 @@ import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.process.ProcessRepository;
-import com.example.csvccdshustbe.request.process.CreateIncreaseAssetRequest;
-import com.example.csvccdshustbe.request.process.CreateInventoryAssetRequest;
-import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
+import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.request.process.asset.AssetDetailInventoryRequest;
 import com.example.csvccdshustbe.request.process.asset.InformationAssetInventoryRequest;
 import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilInventoryRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
-import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
-import com.example.csvccdshustbe.response.process.ProcessStatisticsIncreaseResponse;
-import com.example.csvccdshustbe.response.process.ProcessStatisticsInventoryResponse;
+import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import com.example.csvccdshustbe.service.document.DocumentService;
@@ -347,6 +343,7 @@ public class ProcessServiceImpl implements ProcessService {
     public ProcessStatisticsInventoryResponse getStatisticInventory() {
         return processRepository.getStatisticsInventory();
     }
+
 
     /***
      *

@@ -432,54 +432,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     @Override
-    public Page<FindAllAssetDto> findAllAssetDocumentByCodeDocument(FindAllAssetDocumentRequest request, Pageable pageable) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,     " +
-                "        asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,     " +
-                "        assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,     " +
-                "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,     " +
-                "        lo.id_location idLocation, lo.name nameLocation,     " +
-                "        asset.time_created, asset.time_modified, asset.parent, asset.salt   " +
-                "from asset asset    " +
-                "     left join asset_categories assetCategories     " +
-                "             on asset.id_asset_category = assetCategories.id_asset_category     " +
-                "     left join department de on asset.id_department = de.id_department     " +
-                "     left join location lo on asset.id_location = lo.id_location    " +
-                "     left join data_document dd on asset.id_asset = dd.id_asset    " +
-                "     left join document do on dd.id_document = do.id_document    " +
-                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)    " +
-                "and do.code = :codeDocument  ");
-        setConditionFindAllAssetDocument(request, sb);
-        Query query = entityManager.createNativeQuery(sb.toString());
-        setParameterFindAllAssetDocument(request, query);
-        PageUtils.buildQuery(pageable, query);
-        List<Object[]> result = query.getResultList();
-        List<FindAllAssetDto> responses = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(result)) {
-            for (Object[] obj : result) {
-                FindAllAssetDto findAllAssetDto = new FindAllAssetDto();
-                findAllAssetDto.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
-                findAllAssetDto.setCodeAsset(ValueUtil.getStringByObject(obj[1]));
-                findAllAssetDto.setNameAsset(ValueUtil.getStringByObject(obj[2]));
-                findAllAssetDto.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
-                findAllAssetDto.setNameAssetCategory(ValueUtil.getStringByObject(obj[4]));
-                findAllAssetDto.setCodeAssetCategory(ValueUtil.getStringByObject(obj[5]));
-                findAllAssetDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
-                findAllAssetDto.setCodeDepartment(ValueUtil.getStringByObject(obj[7]));
-                findAllAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
-                findAllAssetDto.setIdLocation(ValueUtil.getIntegerByObject(obj[9]));
-                findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
-                findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[11]));
-                findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
-                findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
-                findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
-                responses.add(findAllAssetDto);
-            }
-        }
-        return new PageImpl<>(responses, pageable, countFindAllAssetDocument(request));
-    }
-
-    @Override
     public Optional<Asset> findAssetByIdDepartmentOrigin(Integer idDepartmentOrigin) {
         StringBuilder sb = new StringBuilder();
         sb.append("select id_asset, name, code_asset, id_asset_category,    " +
@@ -700,54 +652,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllAssetToInventory(request));
-    }
-
-    @Override
-    public Page<FindAllAssetDto> findAllAssetDocumentInventoryByCodeDocument(FindAllAssetDocumentRequest request, Pageable pageable) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,       " +
-                "        asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,       " +
-                "        assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,       " +
-                "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,       " +
-                "        lo.id_location idLocation, lo.name nameLocation,       " +
-                "        asset.time_created, asset.time_modified, asset.parent, asset.salt     " +
-                " from asset asset      " +
-                "     left join asset_categories assetCategories       " +
-                "             on asset.id_asset_category = assetCategories.id_asset_category       " +
-                "     left join department de on asset.id_department = de.id_department       " +
-                "     left join location lo on asset.id_location = lo.id_location      " +
-                "     left join data_document_inventory dd on asset.id_asset = dd.id_asset " +
-                "     left join document do on dd.id_document = do.id_document      " +
-                " where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)      " +
-                " and do.code = :codeDocument ");
-        setConditionFindAllAssetDocumentInventory(request, sb);
-        Query query = entityManager.createNativeQuery(sb.toString());
-        setParameterFindAllAssetDocumentInventory(request, query);
-        PageUtils.buildQuery(pageable, query);
-        List<Object[]> result = query.getResultList();
-        List<FindAllAssetDto> responses = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(result)) {
-            for (Object[] obj : result) {
-                FindAllAssetDto findAllAssetDto = new FindAllAssetDto();
-                findAllAssetDto.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
-                findAllAssetDto.setCodeAsset(ValueUtil.getStringByObject(obj[1]));
-                findAllAssetDto.setNameAsset(ValueUtil.getStringByObject(obj[2]));
-                findAllAssetDto.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
-                findAllAssetDto.setNameAssetCategory(ValueUtil.getStringByObject(obj[4]));
-                findAllAssetDto.setCodeAssetCategory(ValueUtil.getStringByObject(obj[5]));
-                findAllAssetDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
-                findAllAssetDto.setCodeDepartment(ValueUtil.getStringByObject(obj[7]));
-                findAllAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
-                findAllAssetDto.setIdLocation(ValueUtil.getIntegerByObject(obj[9]));
-                findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
-                findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[11]));
-                findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
-                findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
-                findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
-                responses.add(findAllAssetDto);
-            }
-        }
-        return new PageImpl<>(responses, pageable, countFindAllAssetDocumentInventory(request));
     }
 
     @Override
@@ -1216,43 +1120,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         setConditionFindAllAssetLotChildren(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetLotChildren(request, query);
-        return ValueUtil.getIntegerByObject(query.getSingleResult());
-    }
-
-
-    private long countFindAllAssetDocument(FindAllAssetDocumentRequest request) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("select count(0) count  " +
-                "from asset asset  " +
-                "      left join asset_categories assetCategories     " +
-                "              on asset.id_asset_category = assetCategories.id_asset_category     " +
-                "      left join department de on asset.id_department = de.id_department     " +
-                "      left join location lo on asset.id_location = lo.id_location  " +
-                "      left join data_document dd on asset.id_asset = dd.id_asset  " +
-                "      left join document do on dd.id_document = do.id_document  " +
-                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "and do.code = :codeDocument ");
-        setConditionFindAllAssetDocument(request, sb);
-        Query query = entityManager.createNativeQuery(sb.toString());
-        setParameterFindAllAssetDocument(request, query);
-        return ValueUtil.getIntegerByObject(query.getSingleResult());
-    }
-
-    private long countFindAllAssetDocumentInventory(FindAllAssetDocumentRequest request) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("select count(0) count  " +
-                "from asset asset  " +
-                "      left join asset_categories assetCategories     " +
-                "              on asset.id_asset_category = assetCategories.id_asset_category     " +
-                "      left join department de on asset.id_department = de.id_department     " +
-                "      left join location lo on asset.id_location = lo.id_location  " +
-                "      left join data_document_inventory dd on asset.id_asset = dd.id_asset  " +
-                "      left join document do on dd.id_document = do.id_document  " +
-                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "and do.code = :codeDocument ");
-        setConditionFindAllAssetDocumentInventory(request, sb);
-        Query query = entityManager.createNativeQuery(sb.toString());
-        setParameterFindAllAssetDocumentInventory(request, query);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
     }
 

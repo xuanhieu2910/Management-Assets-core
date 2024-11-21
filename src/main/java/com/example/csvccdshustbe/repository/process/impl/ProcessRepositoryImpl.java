@@ -1,8 +1,10 @@
 package com.example.csvccdshustbe.repository.process.impl;
 
+import com.example.csvccdshustbe.dto.process.FindAllProcessAssetIncreaseDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.repository.process.ProcessRepositoryCustom;
+import com.example.csvccdshustbe.request.process.FindAllProcessAssetIncreaseRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
 import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
 import com.example.csvccdshustbe.response.process.ProcessStatisticsIncreaseResponse;
@@ -14,6 +16,7 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,10 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
