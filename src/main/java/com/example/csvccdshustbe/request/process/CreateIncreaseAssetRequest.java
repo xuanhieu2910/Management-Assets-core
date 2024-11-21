@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.request.process;
 
+import com.example.csvccdshustbe.request.process.asset.AssetDetailIncreaseRequest;
 import com.example.csvccdshustbe.request.process.asset.InformationAssetInventoryRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
 import lombok.Getter;
@@ -12,6 +13,6 @@ import java.util.List;
 public class CreateIncreaseAssetRequest {
 
     private CreateDocumentRequest document;
-    private List<InformationAssetInventoryRequest> assetProcessValue;
+    private List<AssetDetailIncreaseRequest> assetDetail;
     private String typeProcess;
 }

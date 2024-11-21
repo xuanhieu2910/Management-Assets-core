@@ -125,6 +125,32 @@ public class DocumentController {
         }
     }
 
+    @PostMapping("/decrease")
+    public ResponseEntity<?> decreaseAsset(@RequestBody CreateDecreaseAssetRequest request){
+        try {
+            processService.createDecreaseAsset(request);
+            return ApiResponseDto.createdWithMessage("Create decrease asset success!", HttpStatus.OK);
+        } catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
+    @PostMapping("/change")
+    public ResponseEntity<?> changeAsset(@RequestBody CreateChangeAssetRequest request){
+        try {
+            processService.createChangeAsset(request);
+            return ApiResponseDto.createdWithMessage("Create change asset success!", HttpStatus.OK);
+        } catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
     @GetMapping("/be-assigned")
     public ResponseEntity<?> findAllProcessBeAssigned(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
@@ -154,6 +180,26 @@ public class DocumentController {
         try {
             return ApiResponseDto.createdWithState(processService.getStatisticInventory(),
                     "Get statistic inventory success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/statistic-decrease")
+    public ResponseEntity<?> getStatisticDecrease(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticDecrease(),
+                    "Get statistic decrease success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/statistic-change")
+    public ResponseEntity<?> getStatisticChange(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticChange(),
+                    "Get statistic change success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }

@@ -1,14 +1,10 @@
 package com.example.csvccdshustbe.repository.process.impl;
 
-import com.example.csvccdshustbe.dto.process.FindAllProcessAssetIncreaseDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.repository.process.ProcessRepositoryCustom;
-import com.example.csvccdshustbe.request.process.FindAllProcessAssetIncreaseRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
-import com.example.csvccdshustbe.response.process.FindAllProcessBeAssignedResponse;
-import com.example.csvccdshustbe.response.process.ProcessStatisticsIncreaseResponse;
-import com.example.csvccdshustbe.response.process.ProcessStatisticsInventoryResponse;
+import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -16,7 +12,6 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,7 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
@@ -212,6 +210,110 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 response.setTotalInventoryPendingApproved(ValueUtil.getIntegerByObject(obj[0]));
                 response.setTotalInventoryPendingBeApproved(ValueUtil.getIntegerByObject(obj[1]));
                 response.setTotalInventoryRejected(ValueUtil.getIntegerByObject(obj[2]));
+            }
+        }
+        return response;
+    }
+
+    @Override
+    public ProcessStatisticsDecreaseResponse getStatisticsDecrease() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select sum(totalStatistic.countTotalPending) as countTotalPending,  " +
+                "       sum(totalStatistic.countTotalBeApproved) as countTotalReject, " +
+                "       sum(totalStatistic.countTotalReject) as countTotalBeApproved " +
+                "from (select count(0) countTotalPending, 0 countTotalReject, 0 countTotalBeApproved " +
+                "from process pr " +
+                "     inner join department de on pr.id_department = de.id_department " +
+                "     inner join type_process tp on pr.id_type_process = tp.id_type_process " +
+                "where pr.status = :statusPending " +
+                "and tp.code = :codeTypeProcess " +
+                "and de.id_department in (:idsDepartmentOriginal) " +
+                "union all " +
+                "select 0 countTotalPending,count(0) countTotalReject, 0 countTotalBeApproved " +
+                "from process pr " +
+                "      inner join department de on pr.id_department = de.id_department " +
+                "      inner join type_process tp on pr.id_type_process = tp.id_type_process " +
+                "where pr.status = :statusReject " +
+                "  and tp.code = :codeTypeProcess " +
+                "  and de.id_department in (:idsDepartmentOriginal) " +
+                "union all " +
+                "select 0 countTotalPending, 0 countTotalReject, count(0) countTotalBeApproved " +
+                "from request_stake_holder rsh " +
+                "      inner join request rq on rsh.id_request = rq.id_request " +
+                "      inner join state st on rq.id_state = st.id_state " +
+                "      inner join process pr on st.id_process = pr.id_process " +
+                "      inner join type_process tp on pr.id_type_process = tp.id_type_process " +
+                "      inner join csvc_user csvcUser on rsh.id_user = csvcUser.id_user " +
+                "where rsh.status = :statusRequestPending " +
+                "  and tp.code = :codeTypeProcess " +
+                "  and csvcUser.id_user = :idUser) totalStatistic ");
+        CsvcUser csvcUser = (CsvcUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
+        query.setParameter("statusReject", Constants.STATUS_FALSE_PROCESS);
+        query.setParameter("statusRequestPending", Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DECREASE);
+        query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
+        query.setParameter("idUser", csvcUser.getIdUser());
+        List<Object[]> result = query.getResultList();
+        ProcessStatisticsDecreaseResponse response = new ProcessStatisticsDecreaseResponse();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                response.setTotalDecreasePendingApproved(ValueUtil.getIntegerByObject(obj[0]));
+                response.setTotalDecreasePendingBeApproved(ValueUtil.getIntegerByObject(obj[1]));
+                response.setTotalDecreaseRejected(ValueUtil.getIntegerByObject(obj[2]));
+            }
+        }
+        return response;
+    }
+
+    @Override
+    public ProcessStatisticsChangeResponse getStatisticsChange() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select sum(totalStatistic.countTotalPending) as countTotalPending,  " +
+                "       sum(totalStatistic.countTotalBeApproved) as countTotalReject, " +
+                "       sum(totalStatistic.countTotalReject) as countTotalBeApproved " +
+                "from (select count(0) countTotalPending, 0 countTotalReject, 0 countTotalBeApproved " +
+                "from process pr " +
+                "     inner join department de on pr.id_department = de.id_department " +
+                "     inner join type_process tp on pr.id_type_process = tp.id_type_process " +
+                "where pr.status = :statusPending " +
+                "and tp.code = :codeTypeProcess " +
+                "and de.id_department in (:idsDepartmentOriginal) " +
+                "union all " +
+                "select 0 countTotalPending,count(0) countTotalReject, 0 countTotalBeApproved " +
+                "from process pr " +
+                "      inner join department de on pr.id_department = de.id_department " +
+                "      inner join type_process tp on pr.id_type_process = tp.id_type_process " +
+                "where pr.status = :statusReject " +
+                "  and tp.code = :codeTypeProcess " +
+                "  and de.id_department in (:idsDepartmentOriginal) " +
+                "union all " +
+                "select 0 countTotalPending, 0 countTotalReject, count(0) countTotalBeApproved " +
+                "from request_stake_holder rsh " +
+                "      inner join request rq on rsh.id_request = rq.id_request " +
+                "      inner join state st on rq.id_state = st.id_state " +
+                "      inner join process pr on st.id_process = pr.id_process " +
+                "      inner join type_process tp on pr.id_type_process = tp.id_type_process " +
+                "      inner join csvc_user csvcUser on rsh.id_user = csvcUser.id_user " +
+                "where rsh.status = :statusRequestPending " +
+                "  and tp.code = :codeTypeProcess " +
+                "  and csvcUser.id_user = :idUser) totalStatistic ");
+        CsvcUser csvcUser = (CsvcUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
+        query.setParameter("statusReject", Constants.STATUS_FALSE_PROCESS);
+        query.setParameter("statusRequestPending", Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_CHANGE);
+        query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
+        query.setParameter("idUser", csvcUser.getIdUser());
+        List<Object[]> result = query.getResultList();
+        ProcessStatisticsChangeResponse response = new ProcessStatisticsChangeResponse();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                response.setTotalChangePendingApproved(ValueUtil.getIntegerByObject(obj[0]));
+                response.setTotalChangePendingBeApproved(ValueUtil.getIntegerByObject(obj[1]));
+                response.setTotalChangeRejected(ValueUtil.getIntegerByObject(obj[2]));
             }
         }
         return response;

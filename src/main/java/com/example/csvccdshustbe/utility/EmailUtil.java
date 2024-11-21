@@ -34,8 +34,8 @@ public class EmailUtil implements Runnable {
     private static SmtpAuthenticator smtpAuthenticator;
     private Queue<MailDto> mailDtoQueue;
 
-    public final static String[] SUBJECTS_PROCESS = {"Kiểm tra/Đánh giá ghi tăng tài sản", "Kiểm tra/Đánh giá Giảm tài sản",
-            "Kiểm tra/Đánh giá điều chuyển tài sản", "Kiểm tra/Đánh giá lại tài sản", "Kiểm tra/Đánh giá", "Kiểm tra/Đánh giá kiểm kê tài sản"};
+    public final static String[] SUBJECTS_PROCESS = {"Ghi tăng tài sản", "Giảm tài sản",
+            "Điều chuyển tài sản", "Đánh giá lại tài sản", "Thay đổi thông tin tài sản", "Kiểm kê tài sản"};
 
 
 

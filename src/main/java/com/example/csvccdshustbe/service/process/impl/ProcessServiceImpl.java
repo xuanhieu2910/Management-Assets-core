@@ -8,9 +8,14 @@ import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.process.ProcessRepository;
 import com.example.csvccdshustbe.request.process.*;
+import com.example.csvccdshustbe.request.process.asset.AssetDetailDecreaseRequest;
+import com.example.csvccdshustbe.request.process.asset.AssetDetailIncreaseRequest;
 import com.example.csvccdshustbe.request.process.asset.AssetDetailInventoryRequest;
 import com.example.csvccdshustbe.request.process.asset.InformationAssetInventoryRequest;
+import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilDecreaseRequest;
 import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilInventoryRequest;
+import com.example.csvccdshustbe.request.process.document.CreateDocumentChangeAssetRequest;
+import com.example.csvccdshustbe.request.process.document.CreateDocumentDecreaseAssetRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentInventoryAssetRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
 import com.example.csvccdshustbe.response.process.*;
@@ -80,12 +85,12 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException {
         List<Integer> idsAsset = new ArrayList<>();
-        request.getAssetProcessValue().forEach(x->idsAsset.add(x.getIdAsset()));
+        request.getAssetDetail().forEach(x->idsAsset.add(x.getIdAsset()));
         validateAssetProcessIncrease(idsAsset);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(contructionDocumentIncrease(request.getDocument(), process));
-        assetProcessService.saveListAssetProcess(contructionAssetProcess(request.getAssetProcessValue(), process));
+        assetProcessService.saveListAssetProcess(contructionAssetProcessIncrease(request.getAssetDetail(), process));
         updateInformationProcessCurrentAsset(idsAsset, process);
         List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
                 Arrays.asList(Constants.CODE_TYPE_STATE_INIT,
@@ -114,10 +119,10 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private List<AssetProcess> contructionAssetProcess(List<InformationAssetInventoryRequest> assetProcessValue, Process process) {
+    private List<AssetProcess> contructionAssetProcessIncrease(List<AssetDetailIncreaseRequest> assetProcessValue, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String currentTime = String.valueOf(new Date().getTime());
-        for (InformationAssetInventoryRequest assetProcessRequest: assetProcessValue){
+        for (AssetDetailIncreaseRequest assetProcessRequest: assetProcessValue){
             AssetProcess assetProcess = new AssetProcess();
             assetProcess.setIdAsset(assetProcessRequest.getIdAsset());
             assetProcess.setIdProcess(process.getIdProcess());
@@ -156,6 +161,31 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
+    private void createTaskSendMailChange(List<UserRoleDto> userRoleDtos, Document document, Process process) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        for (UserRoleDto stakeHolder : userRoleDtos){
+            TaskSendMail taskSendMail = new TaskSendMail();
+            taskSendMail.setCodeTaskSendMail(String.valueOf(UUID.randomUUID()));
+            taskSendMail.setAddressFrom(PropertiesUtil.getEmailProperty("mail.user"));
+            taskSendMail.setAddressTo(stakeHolder.getUserName());
+            taskSendMail.setAddressCc(csvcUser.getUsername());
+            taskSendMail.setSubject(EmailUtil.SUBJECTS_PROCESS[4]);
+            taskSendMail.setStatus(Constants.STATUS_NOT_YET_TASK_SEND_MAIL);
+            taskSendMail.setContent(EmailUtil.CONTENT_DOCUMENT
+                    .replace(EmailUtil.KEY_TYPE_PROCESS,process.getName())
+                    .replace(EmailUtil.KEY_CODE_DOCUMENT,document.getCode())
+                    .replace(EmailUtil.KEY_FULL_NAME,csvcUser.getUsername())
+                    .replace(EmailUtil.KEY_DESCRIPTION,document.getDescription())
+                    .replace(EmailUtil.KEYWORD_REPLACE,EmailUtil.CONTENT_DOMAIN)
+                    .replace(EmailUtil.KEYWORD_CODE_TASK_SEND_MAIL,taskSendMail.getCodeTaskSendMail()));
+            taskSendMail.setRetry(Constants.INIT_RETRY);
+            taskSendMail.setTimeCreated(timeCurrent);
+            taskSendMail.setTimeModified(timeCurrent);
+            taskSendMailService.saveTaskSendMail(taskSendMail);
+        }
+    }
+
     @Override
     public void createInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException {
         List<Integer> idsAsset = new ArrayList<>();
@@ -181,6 +211,69 @@ public class ProcessServiceImpl implements ProcessService {
         createTaskSendMailInventory(usersDto, document, process);
     }
 
+    @Override
+    public void createDecreaseAsset(CreateDecreaseAssetRequest request) throws ValidateFiledException {
+        List<Integer> idsAsset = new ArrayList<>();
+        request.getAssetDetail().forEach(x-> idsAsset.add(x.getIdAsset()));
+        validateAssetProcessDecrease(idsAsset);
+        TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
+        Process process = processRepository.save(constructionProcess(typeProcess));
+        Document document = documentService.saveDocument(contructionDocumentDecrease(request.getDocument(), process));
+        assetProcessService.saveListAssetProcess(contructionAssetProcessDecrease(request, process));
+        updateInformationProcessCurrentAsset(idsAsset, process);
+        List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                Constants.CODE_TYPE_STATE_COMPLETED);
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(codeTypeStates);
+        List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
+        transitionService.saveTransition(constructionTransition(process, states));
+        Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
+                states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
+        List<String> usersName = new ArrayList<>();
+        request.getCouncilDecrease().forEach(x->usersName.add(x.getUserName()));
+        List<FindAllUserDto> usersDto = csvcUserService.findIdsUserByUsersName(usersName);
+        requestDataService.createNewRequestData(constructionRequestData(processRequest));
+        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderDecrease(processRequest, request.getCouncilDecrease(),usersDto));
+        createTaskSendMailDecrease(usersDto, document, process);
+    }
+
+    @Override
+    public void createChangeAsset(CreateChangeAssetRequest request) throws ValidateFiledException {
+        validateAssetProcessChange(List.of(request.getAssetDetail().getIdAsset()));
+        TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
+        Process process = processRepository.save(constructionProcess(typeProcess));
+        Document document = documentService.saveDocument(contructionDocumentChange(request.getDocument(), process));
+        assetProcessService.saveListAssetProcess(contructionAssetProcessChange(request, process));
+        updateInformationProcessCurrentAsset(List.of(request.getAssetDetail().getIdAsset()), process);
+        List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                Constants.CODE_TYPE_STATE_COMPLETED);
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(codeTypeStates);
+        List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
+        transitionService.saveTransition(constructionTransition(process, states));
+        Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
+                states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
+        Integer idDepartment = process.getIdDepartment();
+        List<UserRoleDto> userRoles = userRoleService.findUserRoleByNameRoleAndIdDepartment(RolePattern.ManagerDepartment.name(),
+                idDepartment);
+        requestDataService.createNewRequestData(constructionRequestData(processRequest));
+        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
+        createTaskSendMailChange(userRoles, document, process);
+    }
+
+    private void validateAssetProcessDecrease(List<Integer> idsAsset) throws ValidateFiledException {
+        Integer countAsset = assetService.countAssetByIdsAssetAndNotIncreasedOrDecreasedOrPending(idsAsset);
+        if (countAsset != null && countAsset > 0) {
+            throw new ValidateFiledException("Validate asset process to decreased!");
+        }
+    }
+
+    private void validateAssetProcessChange(List<Integer> idsAsset) throws ValidateFiledException {
+        Integer countAsset = assetService.countAssetByIdsAssetAndNotIncreasedOrDecreasedOrPending(idsAsset);
+        if (countAsset != null && countAsset > 0) {
+            throw new ValidateFiledException("Validate asset process to decreased!");
+        }
+    }
+
+
     private List<AssetProcess> contructionAssetProcessInventory(CreateInventoryAssetRequest request, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
@@ -195,6 +288,38 @@ public class ProcessServiceImpl implements ProcessService {
             assetProcess.setTimeModified(timeCurrent);
             assetProcessList.add(assetProcess);
         }
+        return assetProcessList;
+    }
+
+    private List<AssetProcess> contructionAssetProcessDecrease(CreateDecreaseAssetRequest request, Process process) {
+        List<AssetProcess> assetProcessList = new ArrayList<>();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        for (AssetDetailDecreaseRequest inventoryRequest : request.getAssetDetail()){
+            AssetProcess assetProcess = new AssetProcess();
+            assetProcess.setIdAsset(inventoryRequest.getIdAsset());
+            assetProcess.setIdProcess(process.getIdProcess());
+            assetProcess.setIdTypeProcess(process.getIdTypeProcess());
+            assetProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+            assetProcess.setValue(inventoryRequest.getValue());
+            assetProcess.setTimeCreated(timeCurrent);
+            assetProcess.setTimeModified(timeCurrent);
+            assetProcessList.add(assetProcess);
+        }
+        return assetProcessList;
+    }
+
+    private List<AssetProcess> contructionAssetProcessChange(CreateChangeAssetRequest request, Process process) {
+        List<AssetProcess> assetProcessList = new ArrayList<>();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        AssetProcess assetProcess = new AssetProcess();
+        assetProcess.setIdAsset(request.getAssetDetail().getIdAsset());
+        assetProcess.setIdProcess(process.getIdProcess());
+        assetProcess.setIdTypeProcess(process.getIdTypeProcess());
+        assetProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+        assetProcess.setValue(request.getAssetDetail().getValue());
+        assetProcess.setTimeCreated(timeCurrent);
+        assetProcess.setTimeModified(timeCurrent);
+        assetProcessList.add(assetProcess);
         return assetProcessList;
     }
 
@@ -215,6 +340,31 @@ public class ProcessServiceImpl implements ProcessService {
             taskSendMail.setAddressTo(stakeHolder.getUserName());
             taskSendMail.setAddressCc(csvcUser.getUsername());
             taskSendMail.setSubject(EmailUtil.SUBJECTS_PROCESS[5]);
+            taskSendMail.setStatus(Constants.STATUS_NOT_YET_TASK_SEND_MAIL);
+            taskSendMail.setContent(EmailUtil.CONTENT_DOCUMENT
+                    .replace(EmailUtil.KEY_TYPE_PROCESS,process.getName())
+                    .replace(EmailUtil.KEY_CODE_DOCUMENT,document.getCode())
+                    .replace(EmailUtil.KEY_FULL_NAME,csvcUser.getUsername())
+                    .replace(EmailUtil.KEY_DESCRIPTION,document.getDescription())
+                    .replace(EmailUtil.KEYWORD_REPLACE,EmailUtil.CONTENT_DOMAIN)
+                    .replace(EmailUtil.KEYWORD_CODE_TASK_SEND_MAIL,taskSendMail.getCodeTaskSendMail()));
+            taskSendMail.setRetry(Constants.INIT_RETRY);
+            taskSendMail.setTimeCreated(timeCurrent);
+            taskSendMail.setTimeModified(timeCurrent);
+            taskSendMailService.saveTaskSendMail(taskSendMail);
+        }
+    }
+
+    private void createTaskSendMailDecrease(List<FindAllUserDto> userRoleDtos, Document document, Process process) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        for (FindAllUserDto stakeHolder : userRoleDtos){
+            TaskSendMail taskSendMail = new TaskSendMail();
+            taskSendMail.setCodeTaskSendMail(String.valueOf(UUID.randomUUID()));
+            taskSendMail.setAddressFrom(PropertiesUtil.getEmailProperty("mail.user"));
+            taskSendMail.setAddressTo(stakeHolder.getUserName());
+            taskSendMail.setAddressCc(csvcUser.getUsername());
+            taskSendMail.setSubject(EmailUtil.SUBJECTS_PROCESS[1]);
             taskSendMail.setStatus(Constants.STATUS_NOT_YET_TASK_SEND_MAIL);
             taskSendMail.setContent(EmailUtil.CONTENT_DOCUMENT
                     .replace(EmailUtil.KEY_TYPE_PROCESS,process.getName())
@@ -252,6 +402,27 @@ public class ProcessServiceImpl implements ProcessService {
         return stakeHolders;
     }
 
+    private List<RequestStakeHolder> constructionRequestStakeHolderDecrease(Request processRequest,
+                                                                             List<CreateCouncilDecreaseRequest> councilDecrease,
+                                                                             List<FindAllUserDto> usersDto) {
+        List<RequestStakeHolder> stakeHolders = new ArrayList<>();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        for (CreateCouncilDecreaseRequest council : councilDecrease){
+            RequestStakeHolder stakeHolder = new RequestStakeHolder();
+            stakeHolder.setIdRequest(processRequest.getIdRequest());
+            stakeHolder.setIdUser(usersDto.stream().filter(x->x.getUserName().equals(council.getUserName())).findFirst().get().getIdUser());
+            stakeHolder.setStatus(Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
+            stakeHolder.setTimeCreated(timeCurrent);
+            stakeHolder.setTimeModified(timeCurrent);
+            stakeHolder.setIdDepartment(council.getIdDepartment());
+            stakeHolder.setPosition(council.getPosition());
+            stakeHolder.setPositionInstance(council.getPositionInstance());
+            stakeHolder.setLevel(council.getLevel());
+            stakeHolders.add(stakeHolder);
+        }
+        return stakeHolders;
+    }
+
 
     private void validateCreateNewDocumentIncrease(CreateDocumentRequest request) throws ValidateFiledException {
         if (StringUtils.isBlank(request.getCodeDocument()) || StringUtils.isBlank(request.getTimeIncrease())
@@ -263,6 +434,20 @@ public class ProcessServiceImpl implements ProcessService {
     private void validateCreateNewDocumentInventory(CreateDocumentInventoryAssetRequest request) throws ValidateFiledException {
         if (StringUtils.isBlank(request.getCodeDocument()) || StringUtils.isBlank(request.getTimeCreatedDocument())
                 || StringUtils.isBlank(request.getTimeInventory())){
+            throw new ValidateFiledException("Validate data create document!");
+        }
+    }
+
+    private void validateCreateNewDocumentDecrease(CreateDocumentDecreaseAssetRequest request) throws ValidateFiledException {
+        if (StringUtils.isBlank(request.getCodeDocument()) || StringUtils.isBlank(request.getTimeDocument())
+                || StringUtils.isBlank(request.getTimeDecrease())){
+            throw new ValidateFiledException("Validate data create document!");
+        }
+    }
+
+    private void validateCreateNewDocumentChange(CreateDocumentChangeAssetRequest request) throws ValidateFiledException {
+        if (StringUtils.isBlank(request.getCodeDocument()) || StringUtils.isBlank(request.getTimeDocument())
+                || StringUtils.isBlank(request.getTimeChange())){
             throw new ValidateFiledException("Validate data create document!");
         }
     }
@@ -279,6 +464,7 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeIncrease(request.getTimeIncrease());
         document.setTimeDocument(request.getTimeDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
+        document.setIdDepartment(null);
         return document;
     }
 
@@ -295,6 +481,38 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(request.getTimeCreatedDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(request.getIdDepartment());
+        return document;
+    }
+
+    private Document contructionDocumentDecrease(CreateDocumentDecreaseAssetRequest request, Process process) throws ValidateFiledException {
+        validateCreateNewDocumentDecrease(request);
+        Document document = new Document();
+        String dateNow = String.valueOf(new Date().getTime());
+        document.setCode(request.getCodeDocument());
+        document.setIdProcess(process.getIdProcess());
+        document.setDescription(request.getDescription());
+        document.setTimeCreated(dateNow);
+        document.setTimeModified(dateNow);
+        document.setTimeIncrease(request.getTimeDecrease());
+        document.setTimeDocument(request.getTimeDocument());
+        document.setIdDepartmentOriginal(process.getIdDepartment());
+        document.setIdDepartment(null);
+        return document;
+    }
+
+    private Document contructionDocumentChange(CreateDocumentChangeAssetRequest request, Process process) throws ValidateFiledException {
+        validateCreateNewDocumentChange(request);
+        Document document = new Document();
+        String dateNow = String.valueOf(new Date().getTime());
+        document.setCode(request.getCodeDocument());
+        document.setIdProcess(process.getIdProcess());
+        document.setDescription(request.getDescription());
+        document.setTimeCreated(dateNow);
+        document.setTimeModified(dateNow);
+        document.setTimeIncrease(request.getTimeChange());
+        document.setTimeDocument(request.getTimeDocument());
+        document.setIdDepartmentOriginal(process.getIdDepartment());
+        document.setIdDepartment(null);
         return document;
     }
 
@@ -342,6 +560,16 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public ProcessStatisticsInventoryResponse getStatisticInventory() {
         return processRepository.getStatisticsInventory();
+    }
+
+    @Override
+    public ProcessStatisticsDecreaseResponse getStatisticDecrease() {
+        return processRepository.getStatisticsDecrease();
+    }
+
+    @Override
+    public ProcessStatisticsChangeResponse getStatisticChange() {
+        return processRepository.getStatisticsChange();
     }
 
     /***
