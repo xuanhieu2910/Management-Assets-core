@@ -10,5 +10,5 @@ public class AssetInstanceRequest {
 
     private Integer idAssetInstance;
     private String value;
-
+    private String error;
 }

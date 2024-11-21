@@ -2,13 +2,13 @@ package com.example.csvccdshustbe.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Data
 @Entity
 @Table(name = "asset_instance")
 public class AssetInstance {

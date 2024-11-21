@@ -22,6 +22,7 @@ import org.webjars.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +52,11 @@ public class AssetInstanceServiceImpl implements AssetInstanceService {
         }
         for (AssetInstanceRequest assetInstanceRequest : assetInstanceRequests) {
             assetInstances.stream().filter(x->x.getIdAssetInstance()
-                    .equals(assetInstanceRequest.getIdAssetInstance())).findFirst().get().setValue(assetInstanceRequest.getValue());
+                    .equals(assetInstanceRequest.getIdAssetInstance())).findFirst()
+                    .ifPresent(assetInstance->{
+                        assetInstance.setValue(assetInstanceRequest.getValue());
+                        assetInstance.setError(assetInstance.getError());
+                    });
         }
         assetInstanceRepository.saveAll(assetInstances);
     }
@@ -95,6 +100,7 @@ public class AssetInstanceServiceImpl implements AssetInstanceService {
             response.setTotalError(totalError);
             responses.add(response);
         }
+
         return responses;
     }
 }
