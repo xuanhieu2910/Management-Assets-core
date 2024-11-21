@@ -1124,42 +1124,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
 
-    private long countFindAllAssetDocument(FindAllAssetDocumentRequest request) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("select count(0) count  " +
-                "from asset asset  " +
-                "      left join asset_categories assetCategories     " +
-                "              on asset.id_asset_category = assetCategories.id_asset_category     " +
-                "      left join department de on asset.id_department = de.id_department     " +
-                "      left join location lo on asset.id_location = lo.id_location  " +
-                "      left join data_document dd on asset.id_asset = dd.id_asset  " +
-                "      left join document do on dd.id_document = do.id_document  " +
-                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "and do.code = :codeDocument ");
-        setConditionFindAllAssetDocument(request, sb);
-        Query query = entityManager.createNativeQuery(sb.toString());
-        setParameterFindAllAssetDocument(request, query);
-        return ValueUtil.getIntegerByObject(query.getSingleResult());
-    }
-
-    private long countFindAllAssetDocumentInventory(FindAllAssetDocumentRequest request) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("select count(0) count  " +
-                "from asset asset  " +
-                "      left join asset_categories assetCategories     " +
-                "              on asset.id_asset_category = assetCategories.id_asset_category     " +
-                "      left join department de on asset.id_department = de.id_department     " +
-                "      left join location lo on asset.id_location = lo.id_location  " +
-                "      left join data_document_inventory dd on asset.id_asset = dd.id_asset  " +
-                "      left join document do on dd.id_document = do.id_document  " +
-                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "and do.code = :codeDocument ");
-        setConditionFindAllAssetDocumentInventory(request, sb);
-        Query query = entityManager.createNativeQuery(sb.toString());
-        setParameterFindAllAssetDocumentInventory(request, query);
-        return ValueUtil.getIntegerByObject(query.getSingleResult());
-    }
-
     private void setParameterFindAllAsset(FindAllAssetRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         if (StringUtils.isNotBlank(request.getNameAsset())){
