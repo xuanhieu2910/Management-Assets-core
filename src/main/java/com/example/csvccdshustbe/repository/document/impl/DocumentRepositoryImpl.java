@@ -96,11 +96,12 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         sb.append(" SELECT document.code,type_process.code,type_process.name,user.full_name,process.status,  " +
                 "                  document.description,document.time_created, de.code codeDepartment, de.name nameDepartment" +
                 "                  FROM document   " +
-                "                           LEFT JOIN process ON document.id_process = process.id_process" +
-                "                           LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process  " +
-                "                           LEFT JOIN csvc_user user ON process.id_user_created = user.id_user      " +
-                "                           LEFT JOIN department de ON process.id_department = de.id_department    " +
-                "                           LEFT JOIN asset ON process.id_process = asset.id_process_current    " +
+                "                  INNER JOIN process ON document.id_process = process.id_process" +
+                "                  INNER JOIN type_process ON process.id_type_process = type_process.id_type_process" +
+                "                  LEFT JOIN csvc_user user ON process.id_user_created = user.id_user      " +
+                "                  LEFT JOIN department de ON process.id_department = de.id_department" +
+                "                  LEFT join asset_process on process.id_process = asset_process.id_process" +
+                "                  INNER JOIN asset ON asset_process.id_asset = asset.id_asset  " +
                 "                  WHERE process.id_department IN (:idsDepartmentOriginal)  " );
         setConditionFindAllDocumentAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -200,11 +201,12 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT count(0)  " +
                 "    FROM document      " +
-                "    LEFT JOIN process ON document.id_process = process.id_process   " +
-                "    LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process     " +
-                "    LEFT JOIN csvc_user user ON process.id_user_created = user.id_user         " +
-                "    LEFT JOIN department de ON process.id_department = de.id_department       " +
-                "    LEFT JOIN asset ON process.id_process = asset.id_process_current       " +
+                "   INNER JOIN process ON document.id_process = process.id_process" +
+                "   INNER JOIN type_process ON process.id_type_process = type_process.id_type_process" +
+                "   LEFT JOIN csvc_user user ON process.id_user_created = user.id_user      " +
+                "   LEFT JOIN department de ON process.id_department = de.id_department" +
+                "   LEFT join asset_process on process.id_process = asset_process.id_process" +
+                "   INNER JOIN asset ON asset_process.id_asset = asset.id_asset  " +
                 "WHERE process.id_department IN (:idsDepartmentOriginal)   ");
         setConditionFindAllDocumentAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
