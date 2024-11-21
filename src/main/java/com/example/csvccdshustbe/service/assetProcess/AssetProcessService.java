@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface AssetProcessService {
     List<AssetProcess> saveListAssetProcess(List<AssetProcess> assetProcessList);
+//    Page<FindAllDocumentAssetResponse> findAllDocumentByAsset(FindAllDocumentAssetRequest request);
 }

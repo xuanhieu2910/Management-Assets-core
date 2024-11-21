@@ -397,9 +397,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 " left join location lo on asset.id_location = lo.id_location " +
                 " where 1 = 1  and asset.quantity = 1 " +
                 " and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                " and (asset.id_process_current is null or asset.is_decrease = 1) " +
-                " and asset.is_increase =-1 " +
-                " and (asset.status_process_current is null or asset.status_process_current != 1) ");
+                " and (asset.id_process_current is null or asset.is_decrease =:isDecrease) " +
+                " and asset.is_increase =:isIncrease " +
+                " and (asset.status_process_current is null or asset.status_process_current != :statusProcess) ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToIncrease(request, query);
@@ -666,9 +666,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "  on asset.id_asset = assetDepreciation.id_asset  " +
                 "  where 1 = 1 and asset.quantity = 1  " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                "  and  asset.is_increase = 1 " +
-                "  and asset.is_decrease =-1 " +
-                "  and (asset.status_process_current is null or asset.status_process_current != 1)" );
+                "  and  asset.is_increase = :isIncrease " +
+                "  and asset.is_decrease =:isDecrease " +
+                "  and (asset.status_process_current is null or asset.status_process_current != :statusProcess)" );
         setConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToInventory(request, query);
@@ -871,93 +871,22 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
 
-    private void setParameterFindAllAssetDocument(FindAllAssetDocumentRequest request, Query query) {
-        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("codeDocument", request.getCodeDocument());
-        if (StringUtils.isNotBlank(request.getNameAsset())){
-            query.setParameter("nameAsset", request.getNameAsset());
-        }
-        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
-            query.setParameter("idAssetCategory", request.getIdAssetCategory());
-        }
-        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
-            query.setParameter("idDepartment", request.getIdDepartment());
-        }
-    }
 
-    private void setParameterFindAllAssetDocumentInventory(FindAllAssetDocumentRequest request, Query query) {
-        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("codeDocument", request.getCodeDocument());
-        if (StringUtils.isNotBlank(request.getNameAsset())){
-            query.setParameter("nameAsset", request.getNameAsset());
-        }
-        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
-            query.setParameter("idAssetCategory", request.getIdAssetCategory());
-        }
-        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
-            query.setParameter("idDepartment", request.getIdDepartment());
-        }
-    }
 
-    private void setConditionFindAllAssetDocument(FindAllAssetDocumentRequest request, StringBuilder sb) {
-        if (StringUtils.isNotBlank(request.getNameAsset())){
-            sb.append(" and (asset.name REGEXP :nameAsset ) ");
-        }
-        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
-            sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
-        }
-        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
-            sb.append(" and de.id_department = :idDepartment ");
-        }
-        if (StringUtils.isNotBlank(request.getSortBy())){
-            sb.append("ORDER BY ");
-            if (request.getSortBy().equals("nameAsset")) {
-                sb.append(" asset.name ");
-            }
-            if (request.getSortBy().equals("nameDepartment")) {
-                sb.append(" de.name ");
-            }
-            sb.append(" ").append(request.getSortOrder());
-        } else {
-            sb.append(" ORDER BY asset.id_asset desc ");
-        }
-    }
-
-    private void setConditionFindAllAssetDocumentInventory(FindAllAssetDocumentRequest request, StringBuilder sb) {
-        if (StringUtils.isNotBlank(request.getNameAsset())){
-            sb.append(" and (asset.name REGEXP :nameAsset ) ");
-        }
-        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
-            sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
-        }
-        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
-            sb.append(" and de.id_department = :idDepartment ");
-        }
-        if (StringUtils.isNotBlank(request.getSortBy())){
-            sb.append("ORDER BY ");
-            if (request.getSortBy().equals("nameAsset")) {
-                sb.append(" asset.name ");
-            }
-            if (request.getSortBy().equals("nameDepartment")) {
-                sb.append(" de.name ");
-            }
-            sb.append(" ").append(request.getSortOrder());
-        } else {
-            sb.append(" ORDER BY asset.id_asset desc ");
-        }
-    }
 
     private long countFindAllAssetToIncrease(FinaAllAssetToIncreaseRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) count  " +
-                " from asset asset    " +
-                "     inner join asset_categories assetCategories    " +
-                "             on asset.id_asset_category = assetCategories.id_asset_category    " +
-                "     inner join department de on asset.id_department = de.id_department    " +
-                "     left join location lo on asset.id_location = lo.id_location  " +
-                "     left join data_document dataDocument on asset.id_asset = dataDocument.id_asset  " +
-                " where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "    and dataDocument.id_asset is null   ");
+                " from asset asset " +
+                " inner join asset_categories assetCategories " +
+                " on asset.id_asset_category = assetCategories.id_asset_category " +
+                " inner join department de on asset.id_department = de.id_department " +
+                " left join location lo on asset.id_location = lo.id_location " +
+                " where 1 = 1  and asset.quantity = 1 " +
+                " and asset.id_department_origin in (:idsDepartmentOriginal) " +
+                " and (asset.id_process_current is null or asset.is_decrease =:isDecrease) " +
+                " and asset.is_increase =:isIncrease " +
+                " and (asset.status_process_current is null or asset.status_process_current != :statusProcess) ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToIncrease(request,query);
@@ -979,18 +908,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "               on asset.id_asset_category = assetCategories.id_asset_category   " +
                 "       inner join department de on asset.id_department = de.id_department   " +
                 "       left join location lo on asset.id_location = lo.id_location   " +
-                "       inner join data_document dataDocument on asset.id_asset = dataDocument.id_asset     " +
-                "       inner join document document on dataDocument.id_document = document.id_document     " +
-                "       inner join process process on document.id_process = process.id_process     " +
-                "       inner join type_process typeProcess on process.id_type_process = typeProcess.id_type_process     " +
                 "       inner join asset_original_of_formation assetOriginalOfFormation        " +
                 "           on asset.id_asset = assetOriginalOfFormation.id_asset        " +
                 "       inner join asset_depreciation assetDepreciation     " +
                 "          on asset.id_asset = assetDepreciation.id_asset        " +
                 "   where 1 = 1 and asset.quantity = 1        " +
                 "         and asset.id_department_origin in (:idsDepartmentOriginal)     " +
-                "         and process.status = :statusProcess     " +
-                "         and typeProcess.code != :codeTypeProcess    ");
+                "  and  asset.is_increase = :isIncrease " +
+                "  and asset.is_decrease =:isDecrease " +
+                "  and (asset.status_process_current is null or asset.status_process_current != :statusProcess)   ");
         setCountConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToInventory(request,query);
@@ -1000,6 +926,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("isDecrease", Constants.IS_DECREASED);
+        query.setParameter("isIncrease",Constants.IS_NOT_INCREASED);
+        query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }
@@ -1013,8 +942,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAssetDtoToInventory(FindAllAssetToInventoryRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("statusProcess", Constants.STATUS_SUCCESS_PROCESS);
-        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DECREASE);
+        query.setParameter("isIncrease", Constants.IS_INCREASED);
+        query.setParameter("isDecrease", Constants.IS_NOT_DECREASED);
+        query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
+
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }

@@ -2,14 +2,20 @@ package com.example.csvccdshustbe.service.document.impl;
 
 import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
 import com.example.csvccdshustbe.dto.document.FindDetailsDocumentDto;
+import com.example.csvccdshustbe.dto.process.FindAllProcessAssetIncreaseDto;
+import com.example.csvccdshustbe.dto.process.FindAllProcessAssetInventoryDto;
 import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.repository.document.DocumentRepository;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
+import com.example.csvccdshustbe.request.process.FindAllProcessAssetIncreaseRequest;
+import com.example.csvccdshustbe.request.process.FindAllProcessAssetInventoryRequest;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
+import com.example.csvccdshustbe.response.process.FindAllProcessAssetIncreaseResponse;
+import com.example.csvccdshustbe.response.process.FindAllProcessAssetInventoryResponse;
 import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.document.DocumentService;
@@ -145,6 +151,73 @@ public class DocumentServiceImpl implements DocumentService {
     private void setIdsDepartmentOriginal(FindAllDocumentAssetRequest request) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+    }
+
+    @Override
+    public Page<FindAllProcessAssetIncreaseResponse> findAllDataProcessAssetIncrease(FindAllProcessAssetIncreaseRequest request){
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllProcessAssetIncreaseDto> findAllProcessAssetDtos =
+                documentRepository.findAllProcessAssetIncreaseDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllProcessAssetIncreaseResponse(findAllProcessAssetDtos.stream().toList()),
+                pageable, findAllProcessAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllProcessAssetInventoryResponse> findAllDataProcessAssetInventory(FindAllProcessAssetInventoryRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllProcessAssetInventoryDto> findAllProcessAssetDtos =
+                documentRepository.findAllProcessAssetInventoryDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllProcessAssetInventoryResponse(findAllProcessAssetDtos.stream().toList()),
+                pageable, findAllProcessAssetDtos.getTotalElements());
+    }
+
+    private List<FindAllProcessAssetIncreaseResponse>
+    convertToFindAllProcessAssetIncreaseResponse(List<FindAllProcessAssetIncreaseDto> collect) {
+        List<FindAllProcessAssetIncreaseResponse> responses = new ArrayList<>();
+        for (FindAllProcessAssetIncreaseDto dto : collect) {
+            FindAllProcessAssetIncreaseResponse response = new FindAllProcessAssetIncreaseResponse();
+            response.setCodeDocument(dto.getCodeDocument());
+            response.setIdUserCreate(dto.getIdUserCreate());
+            response.setCodeUserCreate(dto.getCodeUserCreate());
+            response.setNameUserCreate(dto.getNameUserCreate());
+            response.setStatus(dto.getStatus());
+            response.setTimeIncrease(dto.getTimeIncrease());
+
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setTimeDocument(dto.getTimeDocument());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+
+    private List<FindAllProcessAssetInventoryResponse>
+    convertToFindAllProcessAssetInventoryResponse(List<FindAllProcessAssetInventoryDto> collect) {
+        List<FindAllProcessAssetInventoryResponse> responses = new ArrayList<>();
+        for (FindAllProcessAssetInventoryDto dto : collect) {
+            FindAllProcessAssetInventoryResponse response = new FindAllProcessAssetInventoryResponse();
+            response.setCodeDocument(dto.getCodeDocument());
+            response.setIdUserCreate(dto.getIdUserCreate());
+            response.setCodeUserCreate(dto.getCodeUserCreate());
+            response.setNameUserCreate(dto.getNameUserCreate());
+            response.setStatus(dto.getStatus());
+            response.setTimeInventory(dto.getTimeInventory());
+
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setTimeDocument(dto.getTimeDocument());
+            responses.add(response);
+        }
+        return responses;
     }
 
 }
