@@ -151,8 +151,9 @@ public class TaskSendDetailMailRepositoryImpl implements TaskSendDetailMailRepos
         return new PageImpl<>(responses, pageable, countFindAllTaskSendMailDetail(request));
     }
 
-    @Transactional
+
     @Modifying
+    @Transactional
     @Override
     public void deleteTaskSendDetailMailByIds(List<Integer> idsTaskSendMail) {
         StringBuilder sb = new StringBuilder();
