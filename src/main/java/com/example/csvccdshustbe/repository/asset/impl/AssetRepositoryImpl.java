@@ -762,10 +762,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     public void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status,
                                                                           Integer isIncrease, Integer isDecrease) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" update asset " +
-                "set status_process_current = :statusProcessCurrent " +
-                "and is_increase = :isIncrease " +
-                "and is_decrease = :isDecrease " +
+        sb.append("update asset  " +
+                "set status_process_current = :statusProcessCurrent, " +
+                "    is_increase = :isIncrease, " +
+                "    is_decrease = :isDecrease " +
                 "where asset.id_process_current = :idProcessCurrent ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("statusProcessCurrent", status);
