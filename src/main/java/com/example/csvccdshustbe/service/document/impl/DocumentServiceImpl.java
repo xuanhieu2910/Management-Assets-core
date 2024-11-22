@@ -2,23 +2,17 @@ package com.example.csvccdshustbe.service.document.impl;
 
 import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
 import com.example.csvccdshustbe.dto.document.FindDetailsDocumentDto;
-import com.example.csvccdshustbe.dto.process.FindAllProcessAssetDecreaseDto;
-import com.example.csvccdshustbe.dto.process.FindAllProcessAssetIncreaseDto;
-import com.example.csvccdshustbe.dto.process.FindAllProcessAssetInventoryDto;
+import com.example.csvccdshustbe.dto.process.*;
 import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.repository.document.DocumentRepository;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
-import com.example.csvccdshustbe.request.process.FindAllProcessAssetDecreaseRequest;
-import com.example.csvccdshustbe.request.process.FindAllProcessAssetIncreaseRequest;
-import com.example.csvccdshustbe.request.process.FindAllProcessAssetInventoryRequest;
+import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
-import com.example.csvccdshustbe.response.process.FindAllProcessAssetDecreaseResponse;
-import com.example.csvccdshustbe.response.process.FindAllProcessAssetIncreaseResponse;
-import com.example.csvccdshustbe.response.process.FindAllProcessAssetInventoryResponse;
+import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.document.DocumentService;
@@ -256,4 +250,69 @@ public class DocumentServiceImpl implements DocumentService {
         return responses;
     }
 
+    @Override
+    public Page<FindAllProcessAssetChangeResponse> findAllDataProcessAssetChange(FindAllProcessAssetChangeRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllProcessAssetChangeDto> findAllProcessAssetDtos =
+                documentRepository.findAllProcessAssetChangeDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllProcessAssetChangeResponse(findAllProcessAssetDtos.stream().toList()),
+                pageable, findAllProcessAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllProcessAssetRevaluationResponse> findAllDataProcessAssetRevaluation(FindAllProcessAssetRevaluationRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllProcessAssetRevaluationDto> findAllProcessAssetDtos =
+                documentRepository.findAllProcessAssetRevaluationDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllProcessAssetRevaluationResponse(findAllProcessAssetDtos.stream().toList()),
+                pageable, findAllProcessAssetDtos.getTotalElements());
+    }
+
+    private List<FindAllProcessAssetChangeResponse>
+    convertToFindAllProcessAssetChangeResponse(List<FindAllProcessAssetChangeDto> collect) {
+        List<FindAllProcessAssetChangeResponse> responses = new ArrayList<>();
+        for (FindAllProcessAssetChangeDto dto : collect) {
+            FindAllProcessAssetChangeResponse response = new FindAllProcessAssetChangeResponse();
+            response.setCodeDocument(dto.getCodeDocument());
+            response.setIdUserCreate(dto.getIdUserCreate());
+            response.setCodeUserCreate(dto.getCodeUserCreate());
+            response.setNameUserCreate(dto.getNameUserCreate());
+            response.setStatus(dto.getStatus());
+            response.setTimeChange(dto.getTimeChange());
+
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setTimeDocument(dto.getTimeDocument());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    private List<FindAllProcessAssetRevaluationResponse>
+    convertToFindAllProcessAssetRevaluationResponse(List<FindAllProcessAssetRevaluationDto> collect) {
+        List<FindAllProcessAssetRevaluationResponse> responses = new ArrayList<>();
+        for (FindAllProcessAssetRevaluationDto dto : collect) {
+            FindAllProcessAssetRevaluationResponse response = new FindAllProcessAssetRevaluationResponse();
+            response.setCodeDocument(dto.getCodeDocument());
+            response.setIdUserCreate(dto.getIdUserCreate());
+            response.setCodeUserCreate(dto.getCodeUserCreate());
+            response.setNameUserCreate(dto.getNameUserCreate());
+            response.setStatus(dto.getStatus());
+            response.setTimeRevaluation(dto.getTimeRevaluation());
+
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setTimeDocument(dto.getTimeDocument());
+            responses.add(response);
+        }
+        return responses;
+    }
 }

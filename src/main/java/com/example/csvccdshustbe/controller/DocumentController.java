@@ -117,6 +117,36 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+    @GetMapping("/find-all-change")
+    public ResponseEntity<?> findAllProcessAssetInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllProcessAssetChangeRequest findAllProcessAssetRequest){
+        try {
+            return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetChange(findAllProcessAssetRequest),
+                    "Find all document change by asset success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+    @GetMapping("/find-all-revaluation")
+    public ResponseEntity<?> findAllProcessAssetInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllProcessAssetRevaluationRequest findAllProcessAssetRequest){
+        try {
+            return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetRevaluation(findAllProcessAssetRequest),
+                    "Find all document revaluation by asset success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
     @PostMapping("/increase")
     public ResponseEntity<?> increaseAsset(@RequestBody CreateIncreaseAssetRequest request){
         try {

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class FindAllProcessChangeRequest extends RequestPageBase {
+public class FindAllProcessAssetChangeRequest extends RequestPageBase {
     private String codeDocument;
     private Integer status;
     private String nameUserCreate;
