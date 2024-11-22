@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.document.impl;
 
 import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
 import com.example.csvccdshustbe.dto.document.FindDetailsDocumentDto;
+import com.example.csvccdshustbe.dto.process.FindAllProcessAssetDecreaseDto;
 import com.example.csvccdshustbe.dto.process.FindAllProcessAssetIncreaseDto;
 import com.example.csvccdshustbe.dto.process.FindAllProcessAssetInventoryDto;
 import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
@@ -10,10 +11,12 @@ import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.repository.document.DocumentRepository;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
+import com.example.csvccdshustbe.request.process.FindAllProcessAssetDecreaseRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetIncreaseRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetInventoryRequest;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
+import com.example.csvccdshustbe.response.process.FindAllProcessAssetDecreaseResponse;
 import com.example.csvccdshustbe.response.process.FindAllProcessAssetIncreaseResponse;
 import com.example.csvccdshustbe.response.process.FindAllProcessAssetInventoryResponse;
 import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
@@ -209,6 +212,39 @@ public class DocumentServiceImpl implements DocumentService {
             response.setNameUserCreate(dto.getNameUserCreate());
             response.setStatus(dto.getStatus());
             response.setTimeInventory(dto.getTimeInventory());
+
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setTimeDocument(dto.getTimeDocument());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    @Override
+    public Page<FindAllProcessAssetDecreaseResponse> findAllDataProcessAssetDecrease(FindAllProcessAssetDecreaseRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllProcessAssetDecreaseDto> findAllProcessAssetDtos =
+                documentRepository.findAllProcessAssetDecreaseDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllProcessAssetDecreaseResponse(findAllProcessAssetDtos.stream().toList()),
+                pageable, findAllProcessAssetDtos.getTotalElements());
+    }
+
+    private List<FindAllProcessAssetDecreaseResponse>
+    convertToFindAllProcessAssetDecreaseResponse(List<FindAllProcessAssetDecreaseDto> collect) {
+        List<FindAllProcessAssetDecreaseResponse> responses = new ArrayList<>();
+        for (FindAllProcessAssetDecreaseDto dto : collect) {
+            FindAllProcessAssetDecreaseResponse response = new FindAllProcessAssetDecreaseResponse();
+            response.setCodeDocument(dto.getCodeDocument());
+            response.setIdUserCreate(dto.getIdUserCreate());
+            response.setCodeUserCreate(dto.getCodeUserCreate());
+            response.setNameUserCreate(dto.getNameUserCreate());
+            response.setStatus(dto.getStatus());
+            response.setTimeDecrease(dto.getTimeDecrease());
 
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());

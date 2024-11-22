@@ -2,10 +2,12 @@ package com.example.csvccdshustbe.repository.document;
 
 import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
 import com.example.csvccdshustbe.dto.document.FindDetailsDocumentDto;
+import com.example.csvccdshustbe.dto.process.FindAllProcessAssetDecreaseDto;
 import com.example.csvccdshustbe.dto.process.FindAllProcessAssetIncreaseDto;
 import com.example.csvccdshustbe.dto.process.FindAllProcessAssetInventoryDto;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
+import com.example.csvccdshustbe.request.process.FindAllProcessAssetDecreaseRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetIncreaseRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetInventoryRequest;
 import org.springframework.data.domain.Page;
@@ -27,4 +29,7 @@ public interface DocumentRepositoryCustom {
 
     Page<FindAllProcessAssetInventoryDto> findAllProcessAssetInventoryDtoByIdsDepartment(FindAllProcessAssetInventoryRequest request,
                                                                                          Pageable pageable);
+
+    Page<FindAllProcessAssetDecreaseDto> findAllProcessAssetDecreaseDtoByIdsDepartment(FindAllProcessAssetDecreaseRequest request,
+                                                                                       Pageable pageable);
 }

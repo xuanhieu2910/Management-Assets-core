@@ -1,7 +1,6 @@
 package com.example.csvccdshustbe.request.process;
 
 import com.example.csvccdshustbe.request.process.asset.AssetDetailIncreaseRequest;
-import com.example.csvccdshustbe.request.process.asset.InformationAssetInventoryRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentRequest;
 import lombok.Getter;
 import lombok.Setter;

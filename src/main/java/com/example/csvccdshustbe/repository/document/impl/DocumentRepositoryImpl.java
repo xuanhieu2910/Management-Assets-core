@@ -2,12 +2,14 @@ package com.example.csvccdshustbe.repository.document.impl;
 
 import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
 import com.example.csvccdshustbe.dto.document.FindDetailsDocumentDto;
+import com.example.csvccdshustbe.dto.process.FindAllProcessAssetDecreaseDto;
 import com.example.csvccdshustbe.dto.process.FindAllProcessAssetIncreaseDto;
 import com.example.csvccdshustbe.dto.process.FindAllProcessAssetInventoryDto;
 import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.repository.document.DocumentRepositoryCustom;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
+import com.example.csvccdshustbe.request.process.FindAllProcessAssetDecreaseRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetIncreaseRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessAssetInventoryRequest;
 import com.example.csvccdshustbe.utility.Constants;
@@ -529,6 +531,138 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         setConditionFindAllProcessAssetIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllProcessAssetIncrease(request, query);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+
+    @Override
+    public Page<FindAllProcessAssetDecreaseDto>
+    findAllProcessAssetDecreaseDtoByIdsDepartment(FindAllProcessAssetDecreaseRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT process.id_process idProcess, document.code codeDocument,  " +
+                "       user.id_user, user.code_user, user.full_name,  " +
+                "        de.id_department idDepartment, de.code codeDepartment,  " +
+                "        de.name nameDepartment, document.time_created,  " +
+                "        document.time_modified,document.time_increase,  " +
+                "        document.time_document,process.status  " +
+                " FROM process   " +
+                "          INNER JOIN document ON process.id_process = document.id_process  " +
+                "          INNER JOIN type_process ON process.id_type_process = type_process.id_type_process  " +
+                "          LEFT JOIN csvc_user user ON process.id_user_created = user.id_user   " +
+                "          LEFT JOIN department de ON process.id_department = de.id_department  " +
+                " WHERE process.id_department IN (:idsDepartmentOriginal)  " +
+                " AND type_process.code = :codeTypeProcess ");
+        setConditionFindAllProcessAssetDecrease(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllProcessAssetDecrease(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllProcessAssetDecreaseDto> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                FindAllProcessAssetDecreaseDto findAllProcessAssetDecreaseDto = new FindAllProcessAssetDecreaseDto();
+                findAllProcessAssetDecreaseDto.setIdProcess(ValueUtil.getIntegerByObject(obj[0]));
+                findAllProcessAssetDecreaseDto.setCodeDocument(ValueUtil.getStringByObject(obj[1]));
+                findAllProcessAssetDecreaseDto.setIdUserCreate(ValueUtil.getIntegerByObject(obj[2]));
+                findAllProcessAssetDecreaseDto.setCodeUserCreate(ValueUtil.getStringByObject(obj[3]));
+                findAllProcessAssetDecreaseDto.setNameUserCreate(ValueUtil.getStringByObject(obj[4]));
+                findAllProcessAssetDecreaseDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[5]));
+                findAllProcessAssetDecreaseDto.setCodeDepartment(ValueUtil.getStringByObject(obj[6]));
+                findAllProcessAssetDecreaseDto.setNameDepartment(ValueUtil.getStringByObject(obj[7]));
+                findAllProcessAssetDecreaseDto.setTimeCreated(ValueUtil.getLongByObject(obj[8]));
+                findAllProcessAssetDecreaseDto.setTimeModified(ValueUtil.getLongByObject(obj[9]));
+                findAllProcessAssetDecreaseDto.setTimeDecrease(ValueUtil.getStringByObject(obj[10]));
+                findAllProcessAssetDecreaseDto.setTimeDocument(ValueUtil.getStringByObject(obj[11]));
+                findAllProcessAssetDecreaseDto.setStatus(ValueUtil.getIntegerByObject(obj[12]));
+                responses.add(findAllProcessAssetDecreaseDto);
+            }
+        }
+        return new PageImpl<>(responses, pageable, countFindAllProcessAssetDecrease(request));
+    }
+
+    private void setConditionFindAllProcessAssetDecrease(FindAllProcessAssetDecreaseRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getNameUserCreate())){
+            sb.append(" and (user.full_name REGEXP :nameUserCreate ) ");
+        }
+        if (StringUtils.isNotBlank(request.getCodeDocument())){
+            sb.append(" and document.code = :codeDocument ");
+        }
+        if (StringUtils.isNotBlank(request.getTimeCreated())){
+            sb.append(" and document.time_created = :timeCreate ");
+        }
+        if (StringUtils.isNotBlank(request.getNameDepartment())){
+            sb.append(" and de.name = :nameDepartment ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            sb.append(" and process.id_department = :idDepartment ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatus())){
+            sb.append(" and process.status = :status ");
+        }
+        if (StringUtils.isNotBlank(request.getTimeDocument())){
+            sb.append(" and document.time_document REGEXP :timeDocument ");
+        }
+        if (StringUtils.isNotBlank(request.getTimeDecrease())){
+            sb.append(" and document.time_increase REGEXP :timeDecrease ");
+        }
+        if (StringUtils.isNotBlank(request.getSortBy())){
+            sb.append("ORDER BY ");
+            if (request.getSortBy().equals("timeCreate")) {
+                sb.append(" document.time_created ");
+            }
+            if (request.getSortBy().equals("timeDocument")) {
+                sb.append(" document.time_document ");
+            }
+            if (request.getSortBy().equals("timeInventory")) {
+                sb.append(" document.time_increase ");
+            }
+            sb.append(" ").append(request.getSortOrder());
+        } else {
+            sb.append(" ORDER BY document.time_created desc ");
+        }
+    }
+
+    private void setParameterFindAllProcessAssetDecrease(FindAllProcessAssetDecreaseRequest request, Query query) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DECREASE);
+        if (StringUtils.isNotBlank(request.getCodeDocument())){
+            query.setParameter("codeDocument", request.getCodeDocument());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (StringUtils.isNotBlank(request.getTimeCreated())){
+            query.setParameter("timeCreate", request.getTimeCreated());
+        }
+        if (StringUtils.isNotBlank(request.getNameDepartment())) {
+            query.setParameter("nameDepartment", request.getNameDepartment());
+        }
+        if (StringUtils.isNotBlank(request.getNameUserCreate())){
+            query.setParameter("nameUserCreate", request.getNameUserCreate());
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatus())){
+            query.setParameter("status", request.getStatus());
+        }
+        if (StringUtils.isNotBlank(request.getTimeDocument())){
+            query.setParameter("timeDocument", request.getTimeDocument());
+        }
+        if (StringUtils.isNotBlank(request.getTimeDecrease())){
+            query.setParameter("timeDecrease", request.getTimeDecrease());
+        }
+    }
+    private long countFindAllProcessAssetDecrease(FindAllProcessAssetDecreaseRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT count(0)  " +
+                "FROM process  " +
+                "         INNER JOIN document ON process.id_process = document.id_process  " +
+                "         INNER JOIN type_process ON process.id_type_process = type_process.id_type_process  " +
+                "         LEFT JOIN csvc_user user ON process.id_user_created = user.id_user  " +
+                "         LEFT JOIN department de ON process.id_department = de.id_department  " +
+                "WHERE process.id_department IN (:idsDepartmentOriginal)  " +
+                "  AND type_process.code = :codeTypeProcess  ");
+        setConditionFindAllProcessAssetDecrease(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllProcessAssetDecrease(request, query);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
     }
 }

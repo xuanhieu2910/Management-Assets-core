@@ -102,6 +102,21 @@ public class DocumentController {
         }
     }
 
+    @GetMapping("/find-all-decrease")
+    public ResponseEntity<?> findAllProcessAssetInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllProcessAssetDecreaseRequest findAllProcessAssetRequest){
+        try {
+            return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetDecrease(findAllProcessAssetRequest),
+                    "Find all document decrease by asset success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
     @PostMapping("/increase")
     public ResponseEntity<?> increaseAsset(@RequestBody CreateIncreaseAssetRequest request){
         try {
