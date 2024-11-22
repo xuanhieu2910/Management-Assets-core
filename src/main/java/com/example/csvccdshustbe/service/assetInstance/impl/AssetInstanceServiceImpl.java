@@ -55,7 +55,7 @@ public class AssetInstanceServiceImpl implements AssetInstanceService {
                     .equals(assetInstanceRequest.getIdAssetInstance())).findFirst()
                     .ifPresent(assetInstance->{
                         assetInstance.setValue(assetInstanceRequest.getValue());
-                        assetInstance.setError(assetInstance.getError());
+                        assetInstance.setError(assetInstanceRequest.getError());
                     });
         }
         assetInstanceRepository.saveAll(assetInstances);
