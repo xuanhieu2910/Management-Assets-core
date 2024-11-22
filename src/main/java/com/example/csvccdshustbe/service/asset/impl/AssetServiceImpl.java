@@ -991,6 +991,41 @@ public class AssetServiceImpl implements AssetService {
         return responses;
     }
 
+    private List<FindAllAssetResponseToChange> convertToFindAllAssetToChangeResponse(List<FindAllAssetDto> collect) {
+        List<FindAllAssetResponseToChange> responses = new ArrayList<>();
+        for (FindAllAssetDto dto : collect) {
+            FindAllAssetResponseToChange response = new FindAllAssetResponseToChange();
+            response.setCodeAsset(dto.getCodeAsset());
+            response.setIdAsset(dto.getIdAsset());
+            response.setNameAsset(dto.getNameAsset());
+            response.setNameAssetCategory(dto.getNameAssetCategory());
+            response.setCodeAssetCategory(dto.getCodeAssetCategory());
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    private List<FindAllAssetResponseToRevaluation> convertToFindAllAssetToRevaluationResponse(List<FindAllAssetDto> collect) {
+        List<FindAllAssetResponseToRevaluation> responses = new ArrayList<>();
+        for (FindAllAssetDto dto : collect) {
+            FindAllAssetResponseToRevaluation response = new FindAllAssetResponseToRevaluation();
+            response.setCodeAsset(dto.getCodeAsset());
+            response.setIdAsset(dto.getIdAsset());
+            response.setNameAsset(dto.getNameAsset());
+            response.setNameAssetCategory(dto.getNameAssetCategory());
+            response.setCodeAssetCategory(dto.getCodeAssetCategory());
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            responses.add(response);
+        }
+        return responses;
+    }
 
     private void validateDataCreateAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
         validateDataCommonCreateAsset(createAssetRequest);
@@ -1547,6 +1582,34 @@ public class AssetServiceImpl implements AssetService {
         return response;
     }
 
+
+    private List<FindAllAssetResponseToDecrease> convertToFindAllAssetToDecreaseResponse(List<FindAllAssetDto> content) {
+        List<FindAllAssetResponseToDecrease> response = new ArrayList<>();
+        for (FindAllAssetDto dto : content){
+            FindAllAssetResponseToDecrease decrease = new FindAllAssetResponseToDecrease();
+            decrease.setCodeAsset(dto.getCodeAsset());
+            decrease.setNameAsset(dto.getNameAsset());
+            decrease.setNameAssetCategory(dto.getNameAssetCategory());
+            decrease.setCodeAssetCategory(dto.getCodeAssetCategory());
+            decrease.setCodeDepartment(dto.getCodeDepartment());
+            decrease.setNameDepartment(dto.getNameDepartment());
+            decrease.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
+            decrease.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
+            decrease.setIdAsset(dto.getIdAsset());
+            decrease.setSalt(dto.getSalt());
+            decrease.setQuantity(dto.getQuantity());
+            decrease.setRestValue(dto.getRestValue());
+            decrease.setTotalOriginalOfFormation(String.valueOf(
+                    Arrays.stream(dto.getOriginalOfFormation().split("-"))
+                            .mapToLong(Long::parseLong)
+                            .sum()
+            ));
+            decrease.setCumulative(dto.getCumulative());
+            response.add(decrease);
+        }
+        return response;
+    }
+
     private String prefixAsset(String prefix) {
         int minLength = 4;
         Integer idDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdDepartmentCurrent();
@@ -1641,6 +1704,36 @@ public class AssetServiceImpl implements AssetService {
                     Constants.IS_NOT_INCREASED,
                     Constants.IS_DECREASED);
         }
+    }
+
+    @Override
+    public Page<FindAllAssetResponseToChange> findAllAssetToChange(FindAllAssetToChangeRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoToChange(request, pageable);
+        return new PageImpl<>(convertToFindAllAssetToChangeResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllAssetResponseToRevaluation> findAllAssetToRevaluation(FindAllAssetToRevaluationRequest revaluationRequest) {
+        Pageable pageable = PageUtils.buildPage(revaluationRequest.getPage(), revaluationRequest.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        revaluationRequest.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoToRevaluation(revaluationRequest, pageable);
+        return new PageImpl<>(convertToFindAllAssetToRevaluationResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllAssetResponseToDecrease> findAllAssetToDecrease(FindAllAssetToDecreaseRequest decreaseRequest) {
+        Pageable pageable = PageUtils.buildPage(decreaseRequest.getPage(), decreaseRequest.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        decreaseRequest.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoToDecrease(decreaseRequest, pageable);
+        return new PageImpl<>(convertToFindAllAssetToDecreaseResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
     }
 
     private void storeNewAssetFromFile(Map<String, Object> createAssetRequest) throws ValidateFiledException {

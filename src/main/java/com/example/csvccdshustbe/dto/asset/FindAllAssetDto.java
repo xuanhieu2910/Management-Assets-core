@@ -27,4 +27,5 @@ public class FindAllAssetDto {
     private String salt;
     private String originalOfFormation;
     private String restValue;
+    private String cumulative;
 }

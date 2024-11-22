@@ -42,4 +42,7 @@ public interface AssetService {
     Integer countAssetByIdsAssetAndNotIncreasedOrDecreasedOrPending(List<Integer> idsAsset);
     void updateAssetStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer statusProcessCurrent);
     void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status, String typeProcess);
+    Page<FindAllAssetResponseToChange> findAllAssetToChange(FindAllAssetToChangeRequest changeRequest);
+    Page<FindAllAssetResponseToRevaluation> findAllAssetToRevaluation(FindAllAssetToRevaluationRequest changeRequest);
+    Page<FindAllAssetResponseToDecrease> findAllAssetToDecrease(FindAllAssetToDecreaseRequest decreaseRequest);
 }
