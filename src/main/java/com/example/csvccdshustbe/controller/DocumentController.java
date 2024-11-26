@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
@@ -201,7 +202,7 @@ public class DocumentController {
         try {
             processService.createRevaluationAsset(request);
             return ApiResponseDto.createdWithMessage("Create revaluation asset success!", HttpStatus.OK);
-        } catch (ValidateFiledException e){
+        } catch (ValidateFiledException | JsonProcessingException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);

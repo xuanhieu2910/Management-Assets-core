@@ -91,10 +91,59 @@ public class ModulesServiceFactory {
         assetModulesService.save(createAssetModules(moduleDataAsset, idInstance));
     }
 
+    public void duplication(IModules modules, String typeModule, Integer idModule, Integer idAsset) throws ValidateFiledException {
+        EnumModuleFactory enumModuleFactory = Enum.valueOf(EnumModuleFactory.class, typeModule);
+        Integer idInstance;
+        switch (enumModuleFactory) {
+            case MedicineModule -> {
+                idInstance =  medicineModuleService.save((MedicineModule) modules).getIdMedicineModule();
+            }
+            case MachineModule -> {
+                idInstance = machineModuleService.save((MachineModule) modules).getIdMachineModule();
+            }
+            case HouseModule -> {
+                idInstance = houseModuleService.save((HouseModule) modules).getIdHouseModule();
+            }
+            case GroundModule -> {
+                idInstance = groundModuleService.save((GroundModule) modules).getIdGroundModule();
+            }
+            case CarModule -> {
+                idInstance = carModuleService.save((CarModule) modules).getIdCarModule();
+            }
+            case TreeAndAnimalModule -> {
+                idInstance = treeAndAnimalModuleService.save((AnimalTreeModule) modules).getIdAnimalTreeModule();
+            }
+            case ArchitectureModule -> {
+                idInstance = architectureModuleService.save((ArchitectureModule) modules).getIdArchitectureModule();
+            }
+            case OtherAssetModule -> {
+                idInstance = otherAssetModuleService.save((OtherAssetModule) modules).getIdOtherAssetModule();
+            }
+            case OtherVehicleTransportModule -> {
+                idInstance = otherVehicleTransportModuleService.save((OtherVehicleTransportModule) modules).getIdOtherVehicleTransportModule();
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type modules!");
+            }
+        }
+        assetModulesService.save(duplicationAssetModules(idAsset, idModule, idInstance));
+    }
+
     private AssetModules createAssetModules(Map<String,Object> moduleDataAsset, Integer idInstance ){
         AssetModules assetModules = new AssetModules();
         assetModules.setIdAsset(ValueUtil.getIntegerByObject(moduleDataAsset.get("idAsset")));
         assetModules.setIdModule(ValueUtil.getIntegerByObject(moduleDataAsset.get("idModule")));
+        assetModules.setIdInstance(idInstance);
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetModules.setTimeCreated(timeCurrent);
+        assetModules.setTimeModified(timeCurrent);
+        return assetModules;
+    }
+
+    private AssetModules duplicationAssetModules(Integer idAsset, Integer idModule, Integer idInstance ){
+        AssetModules assetModules = new AssetModules();
+        assetModules.setIdAsset(idAsset);
+        assetModules.setIdModule(idModule);
         assetModules.setIdInstance(idInstance);
         String timeCurrent = String.valueOf(new Date().getTime());
         assetModules.setTimeCreated(timeCurrent);

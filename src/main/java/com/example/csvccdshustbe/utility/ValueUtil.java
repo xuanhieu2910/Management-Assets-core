@@ -21,6 +21,7 @@ public class ValueUtil {
     public final static String MESSAGE_STRONG_PASSWORD = "Must be 8 characters long and combination of uppercase letters, lowercase letters, numbers, special characters.";
     public final static String PATTERN_STRONG_PASSWORD = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*()]).{8,}$";
     public final static String PATTERN_NUMBER_CHARACTER = "^[a-zA-Z0-9 ]+$";
+    public final static String PATTERN_NON_NUMBER = "[^\\d+]";
     public final static String REGEX_letter_digit_period_underscore  = "[^a-zA-Z0-9._]";
 
     public static String convertToVietnamese(String str){

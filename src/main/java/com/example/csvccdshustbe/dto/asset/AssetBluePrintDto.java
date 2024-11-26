@@ -15,6 +15,7 @@ import com.example.csvccdshustbe.dto.originalOfFormation.AssetOriginalOfFormDto;
 import com.example.csvccdshustbe.dto.projects.BluePrintProjectsDto;
 import com.example.csvccdshustbe.dto.unit.BluePrintUnitDto;
 import com.example.csvccdshustbe.entity.AssetDepreciation;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -49,4 +50,14 @@ public class AssetBluePrintDto {
     private AssetDepreciationDto assetDepreciationDto;
     private Integer parent;
     private String salt;
+    private Integer idDepartmentOrigin;
+    private Integer idProcessCurrent;
+    private Integer statusProcessCurrent;
+    private Integer idTypeProcessCurrent;
+    private Integer isIncrease;
+    private Integer isDecrease;
+    private Integer status;
+    private Integer idAssetRoot;
+    private Integer idUserCreated;
+    private Integer idUserModified;
 }

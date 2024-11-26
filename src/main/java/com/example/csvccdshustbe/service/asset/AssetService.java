@@ -45,4 +45,5 @@ public interface AssetService {
     Page<FindAllAssetResponseToChange> findAllAssetToChange(FindAllAssetToChangeRequest changeRequest);
     Page<FindAllAssetResponseToRevaluation> findAllAssetToRevaluation(FindAllAssetToRevaluationRequest changeRequest);
     Page<FindAllAssetResponseToDecrease> findAllAssetToDecrease(FindAllAssetToDecreaseRequest decreaseRequest);
+    void duplicationAssetBySaltAsset(String saltAsset) throws ValidateFiledException, IllegalAccessException;
 }

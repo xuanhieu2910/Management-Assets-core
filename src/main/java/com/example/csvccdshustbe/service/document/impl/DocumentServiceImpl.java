@@ -19,6 +19,7 @@ import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -76,7 +77,8 @@ public class DocumentServiceImpl implements DocumentService {
         if (document == null) {
             return prefix + String.format("%0" + minLength + "d", codeValueCurrent) + "-";
         }
-        codeValueCurrent = Integer.parseInt(document.getCode().replace(prefix,"").split("-")[0]);
+        String codeDocument = document.getCode().split("-")[0];
+        codeValueCurrent = Integer.parseInt(codeDocument.replaceAll(ValueUtil.PATTERN_NON_NUMBER, ""));
         if (String.valueOf(codeValueCurrent).length() > minLength) {
             minLength = minLength + 2;
         }

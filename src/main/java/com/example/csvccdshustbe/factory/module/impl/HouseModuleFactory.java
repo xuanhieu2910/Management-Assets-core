@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.module.impl;
 
+import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.entity.HouseModule;
 import com.example.csvccdshustbe.entity.IModules;
 import com.example.csvccdshustbe.factory.module.ModuleFactory;
@@ -42,6 +43,25 @@ public class HouseModuleFactory implements ModuleFactory {
         houseModule.setFloorsNumber(ValueUtil.getIntegerByObject(mapModuleUpdate.get("floorsNumber")));
         houseModule.setAcreage(ValueUtil.getDoubleByObject(mapModuleUpdate.get("acreage")));
         houseModule.setPublishYear(ValueUtil.getStringByObject(mapModuleUpdate.get("publishYear")));
+        return houseModule;
+    }
+
+    @Override
+    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+        HouseModule houseModuleRoot = (HouseModule) assetModulesDto.getDataDetails();
+        HouseModule houseModule = new HouseModule();
+        houseModule.setIdAsset(idAsset);
+        houseModule.setIsManageGround(houseModuleRoot.getIsManageGround());
+        if (houseModule.getIsManageGround().equals(Constants.HOUSE_MODULES_IS_MANAGE_HOUSE)) {
+            houseModule.setIdInstance(houseModule.getIdInstance());
+        }
+        houseModule.setProvinceCode(houseModuleRoot.getProvinceCode());
+        houseModule.setDistrictCode(houseModuleRoot.getDistrictCode());
+        houseModule.setWardCode(houseModuleRoot.getWardCode());
+        houseModule.setAddressDetail(houseModuleRoot.getAddressDetail());
+        houseModule.setFloorsNumber(houseModuleRoot.getFloorsNumber());
+        houseModule.setAcreage(houseModuleRoot.getAcreage());
+        houseModule.setPublishYear(houseModuleRoot.getPublishYear());
         return houseModule;
     }
 }

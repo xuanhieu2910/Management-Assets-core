@@ -9,5 +9,5 @@ public class AssetDetailChangeRequest {
 
     private Integer idAsset;
     private String value;
-
+    private String salt;
 }

@@ -33,6 +33,9 @@ import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.EmailUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.PropertiesUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -284,12 +287,15 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public void createRevaluationAsset(CreateRevaluationAssetRequest request) throws ValidateFiledException {
+    public void createRevaluationAsset(CreateRevaluationAssetRequest request) throws ValidateFiledException,
+            JsonProcessingException, IllegalAccessException {
         validateAssetProcessChange(List.of(request.getAssetDetail().getIdAsset()));
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(contructionDocumentRevaluation(request.getDocument(), process));
         assetProcessService.saveListAssetProcess(contructionAssetProcessRevaluation(request, process));
+        assetService.duplicationAssetBySaltAsset(request.getAssetDetail().getSalt());
+//        transformValueRevaluationToHashMap(request.getAssetDetail().getValue())
         updateInformationProcessCurrentAsset(List.of(request.getAssetDetail().getIdAsset()), process);
         List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
                 Constants.CODE_TYPE_STATE_COMPLETED);
@@ -304,6 +310,11 @@ public class ProcessServiceImpl implements ProcessService {
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
         createTaskSendMailRevaluation(userRoles, document, process);
+    }
+
+    private HashMap<String, Object> transformValueRevaluationToHashMap(String value) throws JsonProcessingException {
+        HashMap<String, Object> dataUpdateAsset = (new ObjectMapper()).readValue(value, new TypeReference<>() {});
+        return dataUpdateAsset;
     }
 
     private void validateAssetProcessDecrease(List<Integer> idsAsset) throws ValidateFiledException {

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.module.impl;
 
+import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.entity.GroundModule;
 import com.example.csvccdshustbe.entity.IModules;
 import com.example.csvccdshustbe.factory.module.ModuleFactory;
@@ -27,6 +28,18 @@ public class GroundModuleFactory implements ModuleFactory {
         groundModule.setDistrictCode(ValueUtil.getStringByObject(mapModuleUpdate.get("districtCode")));
         groundModule.setWardCode(ValueUtil.getStringByObject(mapModuleUpdate.get("wardCode")));
         groundModule.setAddressDetail(ValueUtil.getStringByObject(mapModuleUpdate.get("addressDetail")));
+        return groundModule;
+    }
+
+    @Override
+    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+        GroundModule groundModuleRoot = (GroundModule) assetModulesDto.getDataDetails();
+        GroundModule groundModule = new GroundModule();
+        groundModule.setIdAsset(groundModuleRoot.getIdAsset());
+        groundModule.setProvinceCode(groundModuleRoot.getProvinceCode());
+        groundModule.setDistrictCode(groundModuleRoot.getDistrictCode());
+        groundModule.setWardCode(groundModuleRoot.getWardCode());
+        groundModule.setAddressDetail(groundModuleRoot.getAddressDetail());
         return groundModule;
     }
 }
