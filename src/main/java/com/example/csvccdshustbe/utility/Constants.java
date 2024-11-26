@@ -497,4 +497,13 @@ public class Constants {
     public static Integer IS_ERROR_INSTANCE = 1;
     public static Integer IS_NOT_ERROR_INSTANCE = -1;
     /*-----------------------------------------------------*/
+    /**
+     * Constants REASON
+     * */
+    public static final String REASON_INCREASE = "increaseReason";
+    public static final String REASON_CHANGE_INFORMATION = "changeInformationReason";
+    public static final String REASON_REVALUATION = "revaluationReason";
+    public static final String REASON_TRANSFER = "transferReason";
+    public static final String REASON_DECREASE = "decreaseReason";
+    public static final String REASON_INVENTORY = "inventoryReason";
 }

@@ -1,8 +1,6 @@
 package com.example.csvccdshustbe.dto.reason;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -14,4 +12,5 @@ public class FindAllReasonDto {
     private Integer status;
     private Long timeCreated;
     private Long timeModified;
+    private String typeAction;
 }

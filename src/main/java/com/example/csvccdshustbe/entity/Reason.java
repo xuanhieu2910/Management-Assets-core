@@ -26,5 +26,6 @@ public class Reason {
     private Integer status;
     @Column(name = "type_reason")
     private Integer typeReason;
-
+    @Column(name ="type_action")
+    private Integer typeAction;
 }

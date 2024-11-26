@@ -21,4 +21,6 @@ public class FindAllReasonResponse {
     private String timeCreated;
     @JsonProperty("time_modified")
     private String timeModified;
+    @JsonProperty("type_action")
+    private String typeAction;
 }
