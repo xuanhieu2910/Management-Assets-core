@@ -59,4 +59,24 @@ public class CommonAssetDto {
     private String salt;
     @JsonProperty("parent")
     private Integer parent;
+    @JsonProperty("id_department_origin")
+    private Integer idDepartmentOrigin;
+    @JsonProperty("id_process_current")
+    private Integer idProcessCurrent;
+    @JsonProperty("status_process_current")
+    private Integer statusProcessCurrent;
+    @JsonProperty("id_type_process_current")
+    private Integer idTypeProcessCurrent;
+    @JsonProperty("is_increase")
+    private Integer isIncrease;
+    @JsonProperty("is_decrease")
+    private Integer isDecrease;
+    @JsonProperty("status")
+    private Integer status;
+    @JsonProperty("id_asset_root")
+    private Integer idAssetRoot;
+    @JsonProperty("id_user_created")
+    private Integer idUserCreated;
+    @JsonProperty("id_user_modified")
+    private Integer idUserModified;
 }

@@ -27,6 +27,7 @@ public interface AssetRepositoryCustom {
     List<Asset> findAllAssetChildrenByParentId(Integer idAsset);
     Page<FindAllAssetDto> findAllAssetDtoToInventory(FindAllAssetToInventoryRequest inventoryRequest, Pageable pageable);
     List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset);
+    Optional<Asset> findAllAssetByIdAsset(Integer idAsset);
     Integer countAssetIncreasedNotDecreasedByIdsAssetOrPending(List<Integer> idsAsset);
     Integer countAssetByIdsAssetAndNotIncreaseOrDecreasedOrPending(List<Integer> idsAsset);
     void updateAssetStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer statusProcessCurrent);

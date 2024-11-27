@@ -506,4 +506,10 @@ public class Constants {
     public static final String REASON_TRANSFER = "transferReason";
     public static final String REASON_DECREASE = "decreaseReason";
     public static final String REASON_INVENTORY = "inventoryReason";
+    /**
+     * Constants ASSET
+     * */
+    public static Integer STATUS_ASSET_IN_ACTIVE = -1;
+    public static Integer STATUS_ASSET_ACTIVE = 1;
+    /*-----------------------------------------------------*/
 }

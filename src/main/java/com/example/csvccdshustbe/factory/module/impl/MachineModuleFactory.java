@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.module.impl;
 
+import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.entity.IModules;
 import com.example.csvccdshustbe.entity.MachineModule;
 import com.example.csvccdshustbe.factory.module.ModuleFactory;
@@ -35,6 +36,22 @@ public class MachineModuleFactory implements ModuleFactory {
         machineModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idUser")));
         machineModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
         machineModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
+        return machineModule;
+    }
+
+    @Override
+    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+        MachineModule machineModuleRoot = (MachineModule) assetModulesDto.getDataDetails();
+        MachineModule machineModule = new MachineModule();
+        machineModule.setIdAsset(idAsset);
+        machineModule.setLabelMachine(machineModuleRoot.getLabelMachine());
+        machineModule.setModel(machineModuleRoot.getModel());
+        machineModule.setSerial(machineModuleRoot.getSerial());
+        machineModule.setPublishDate(machineModuleRoot.getPublishDate());
+        machineModule.setIdCountryProducer(machineModuleRoot.getIdCountryProducer());
+        machineModule.setIdUser(machineModuleRoot.getIdUser());
+        machineModule.setIdTypeUse(machineModuleRoot.getIdTypeUse());
+        machineModule.setSparePartsAttack(machineModuleRoot.getSparePartsAttack());
         return machineModule;
     }
 }

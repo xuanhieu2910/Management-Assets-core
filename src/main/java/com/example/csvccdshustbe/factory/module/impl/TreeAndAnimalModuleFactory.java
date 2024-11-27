@@ -1,8 +1,8 @@
 package com.example.csvccdshustbe.factory.module.impl;
 
+import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.entity.AnimalTreeModule;
 import com.example.csvccdshustbe.entity.IModules;
-import com.example.csvccdshustbe.entity.Modules;
 import com.example.csvccdshustbe.factory.module.ModuleFactory;
 import com.example.csvccdshustbe.utility.ValueUtil;
 
@@ -28,6 +28,18 @@ public class TreeAndAnimalModuleFactory implements ModuleFactory {
         animalTreeModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
         animalTreeModule.setIdCountryProducer(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idCountryProducer")));
         animalTreeModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
+        return animalTreeModule;
+    }
+
+    @Override
+    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+        AnimalTreeModule animalTreeModuleRoot = (AnimalTreeModule) assetModulesDto.getDataDetails();
+        AnimalTreeModule animalTreeModule = new AnimalTreeModule();
+        animalTreeModule.setIdAsset(idAsset);
+        animalTreeModule.setPublishDate(animalTreeModuleRoot.getPublishDate());
+        animalTreeModule.setIdTypeUse(animalTreeModuleRoot.getIdTypeUse());
+        animalTreeModule.setIdCountryProducer(animalTreeModuleRoot.getIdCountryProducer());
+        animalTreeModule.setSparePartsAttack(animalTreeModuleRoot.getSparePartsAttack());
         return animalTreeModule;
     }
 }

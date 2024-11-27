@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.module.impl;
 
+import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.entity.CarModule;
 import com.example.csvccdshustbe.entity.IModules;
 import com.example.csvccdshustbe.factory.module.ModuleFactory;
@@ -72,6 +73,41 @@ public class CarModuleFactory implements ModuleFactory {
         carModule.setIdPositionName(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idPositionName")));
         carModule.setIdPositionNameOther(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idPositionNameOther")));
         String timeCurrent = String.valueOf(new Date().getTime());
+        carModule.setTimeModified(timeCurrent);
+        return carModule;
+    }
+
+    @Override
+    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+        CarModule carModuleRoot = (CarModule) assetModulesDto.getDataDetails();
+        CarModule carModule = new CarModule();
+        carModule.setIdAsset(idAsset);
+        carModule.setIsFreeTax(carModuleRoot.getIsFreeTax());
+        carModule.setValueTax(carModuleRoot.getValueTax());
+        carModule.setLicensePlate(carModuleRoot.getLicensePlate());
+        carModule.setLabelCar(carModuleRoot.getLabelCar());
+        carModule.setTypeCar(carModuleRoot.getTypeCar());
+        carModule.setLoadCapacity(carModuleRoot.getLoadCapacity());
+        carModule.setNumberSeats(carModuleRoot.getNumberSeats());
+        carModule.setCapacity(carModuleRoot.getCapacity());
+        carModule.setCylinderCapacity(carModuleRoot.getCylinderCapacity());
+        carModule.setClutchNumber(carModuleRoot.getClutchNumber());
+        carModule.setVehicleIdentificationNumber(carModuleRoot.getVehicleIdentificationNumber());
+        carModule.setMachineNumber(carModuleRoot.getMachineNumber());
+        carModule.setPublishYear(carModuleRoot.getPublishYear());
+        carModule.setIdCountryProducer(carModuleRoot.getIdCountryProducer());
+        carModule.setLicenseCertificateRegister(carModuleRoot.getLicenseCertificateRegister());
+        carModule.setPublishDateLicense(carModuleRoot.getPublishDateLicense());
+        carModule.setCompanyRegister(carModuleRoot.getCompanyRegister());
+        carModule.setSource(carModuleRoot.getSource());
+        carModule.setColor(carModuleRoot.getColor());
+        carModule.setIdUser(carModuleRoot.getIdUser());
+        carModule.setIdTypeUse(carModuleRoot.getIdTypeUse());
+        carModule.setSparePartsAttack(carModuleRoot.getSparePartsAttack());
+        carModule.setIdPositionName(carModuleRoot.getIdPositionName());
+        carModule.setIdPositionNameOther(carModuleRoot.getIdPositionNameOther());
+        String timeCurrent = String.valueOf(new Date().getTime());
+        carModule.setTimeCreated(timeCurrent);
         carModule.setTimeModified(timeCurrent);
         return carModule;
     }

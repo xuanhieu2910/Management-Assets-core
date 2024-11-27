@@ -177,46 +177,49 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Optional<AssetBluePrintDto> findDetailAssetBySaltAsset(String saltAsset) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset, asset.name, asset.code_asset, assetCategory.id_asset_category idAssetCategory,    " +
-                "        assetCategory.name nameAssetCategory, de.code codeDepartment, de.id_department idDepartment, de.name nameDepartment,    " +
-                "        documentAttack.id_document_attack idDocumentAttack, documentAttack.name nameDocumentAttack,    " +
-                "        location.id_location idLocation, location.name nameLocation, unit.id_unit idUnit, unit.name nameUnit,    " +
-                "        project.id_project idProject, project.name nameProject, asset.purpose, asset.notes, asset.description, asset.file_attack,    " +
-                "        departmentDefault.id_department idDepartmentDefault, departmentDefault.name nameDepartmentDefault,    " +
-                "        levelTypeAsset.id_level_type_asset idLevelTypeAsset, levelTypeAsset.name nameLevelTypeAsset,    " +
-                "        modules.hard_code typeModules, modules.id_module, modules.name nameModules,    " +
-                "        assetModules.id_instance idInstanceModule,    " +
-                "        original.hard_code_dev typeOriginal, original.id_original, original.name nameOriginal,    " +
-                "        assetOriginal.id_instance idInstanceOriginal,    " +
-                "        decl.hard_code typeDeclare, decl.id_declare, decl.name nameDeclare,    " +
-                "        assetDeclare.id_instance inInstanceDeclare,     " +
-                "        asset.id_instance assetIdInstance, assetDepreciation.id_asset_depreciation,    " +
-                "        assetDepreciation.time_started_depreciation, assetDepreciation.amount_months_depreciation,     " +
-                "        assetDepreciation.value_depreciation, assetDepreciation.type_depreciation,     " +
-                "        assetDepreciation.value_type_depreciation, assetDepreciation.amount_rest_months_depreciation,     " +
-                "        assetDepreciation.cumulative, assetDepreciation.rest_value, assetDepreciation.time_started_wear_tear,     " +
-                "        assetDepreciation.time_end_wear_tear, assetDepreciation.type_calculate, assetDepreciation.time_buy,     " +
-                "        assetDepreciation.time_started_used, assetDepreciation.time_started_increase,     " +
-                "        assetDepreciation.time_year_tracking, assetDepreciation.time_created, assetDepreciation.time_modified ,    " +
-                "        assetCategory.value_wear_tear, assetCategory.year_used_wear_tear, assetCategory.minimum_time_depreciation,    " +
-                "        assetCategory.maximum_time_depreciation, asset.parent, asset.salt  " +
-                "from asset asset     " +
-                "     left join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category    " +
-                "     left join department de on asset.id_department = de.id_department    " +
-                "     left join document_attack documentAttack on asset.id_document_attack = documentAttack.id_document_attack    " +
-                "     left join location location on asset.id_location = location.id_location    " +
-                "     left join units unit on asset.id_unit = unit.id_unit    " +
-                "     left join projects project on asset.id_projects = project.id_project    " +
-                "     left join department departmentDefault on asset.id_department_default = departmentDefault.id_department    " +
-                "     left join level_type_asset levelTypeAsset on asset.id_level_type_asset = levelTypeAsset.id_level_type_asset    " +
-                "     left join asset_modules assetModules on asset.id_asset = assetModules.id_asset    " +
-                "     left join modules modules on assetModules.id_module = modules.id_module    " +
-                "     left join asset_original assetOriginal on asset.id_asset = assetOriginal.id_asset    " +
-                "     left join original original on assetOriginal.id_original = original.id_original    " +
-                "     left join asset_declare assetDeclare on asset.id_asset = assetDeclare.id_asset    " +
-                "     left join `declare` decl on assetDeclare.id_declare = decl.id_declare     " +
-                "     left join asset_depreciation assetDepreciation on asset.id_asset = assetDepreciation.id_asset  " +
-                "where asset.salt = :saltAsset ");
+        sb.append("select asset.id_asset, asset.name, asset.code_asset, assetCategory.id_asset_category idAssetCategory,      " +
+                "         assetCategory.name nameAssetCategory, de.code codeDepartment, de.id_department idDepartment, de.name nameDepartment,      " +
+                "         documentAttack.id_document_attack idDocumentAttack, documentAttack.name nameDocumentAttack,      " +
+                "         location.id_location idLocation, location.name nameLocation, unit.id_unit idUnit, unit.name nameUnit,      " +
+                "         project.id_project idProject, project.name nameProject, asset.purpose, asset.notes, asset.description, asset.file_attack,      " +
+                "         departmentDefault.id_department idDepartmentDefault, departmentDefault.name nameDepartmentDefault,      " +
+                "         levelTypeAsset.id_level_type_asset idLevelTypeAsset, levelTypeAsset.name nameLevelTypeAsset,      " +
+                "         modules.hard_code typeModules, modules.id_module, modules.name nameModules,      " +
+                "         assetModules.id_instance idInstanceModule,      " +
+                "         original.hard_code_dev typeOriginal, original.id_original, original.name nameOriginal,      " +
+                "         assetOriginal.id_instance idInstanceOriginal,      " +
+                "         decl.hard_code typeDeclare, decl.id_declare, decl.name nameDeclare,      " +
+                "         assetDeclare.id_instance inInstanceDeclare,       " +
+                "         asset.id_instance assetIdInstance, assetDepreciation.id_asset_depreciation,      " +
+                "         assetDepreciation.time_started_depreciation, assetDepreciation.amount_months_depreciation,       " +
+                "         assetDepreciation.value_depreciation, assetDepreciation.type_depreciation,       " +
+                "         assetDepreciation.value_type_depreciation, assetDepreciation.amount_rest_months_depreciation,       " +
+                "         assetDepreciation.cumulative, assetDepreciation.rest_value, assetDepreciation.time_started_wear_tear,       " +
+                "         assetDepreciation.time_end_wear_tear, assetDepreciation.type_calculate, assetDepreciation.time_buy,       " +
+                "         assetDepreciation.time_started_used, assetDepreciation.time_started_increase,       " +
+                "         assetDepreciation.time_year_tracking, assetDepreciation.time_created, assetDepreciation.time_modified ,      " +
+                "         assetCategory.value_wear_tear, assetCategory.year_used_wear_tear, assetCategory.minimum_time_depreciation,      " +
+                "         assetCategory.maximum_time_depreciation, asset.parent, asset.salt, asset.quantity, " +
+                "         asset.id_department_origin, asset.id_process_current, asset.status_process_current, " +
+                "         asset.id_type_process_current, asset.is_increase, asset.is_decrease, asset.status, " +
+                "         asset.id_asset_root, asset.id_user_created, asset.id_user_modified " +
+                " from asset asset       " +
+                "      left join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category      " +
+                "      left join department de on asset.id_department = de.id_department      " +
+                "      left join document_attack documentAttack on asset.id_document_attack = documentAttack.id_document_attack      " +
+                "      left join location location on asset.id_location = location.id_location      " +
+                "      left join units unit on asset.id_unit = unit.id_unit      " +
+                "      left join projects project on asset.id_projects = project.id_project      " +
+                "      left join department departmentDefault on asset.id_department_default = departmentDefault.id_department      " +
+                "      left join level_type_asset levelTypeAsset on asset.id_level_type_asset = levelTypeAsset.id_level_type_asset      " +
+                "      left join asset_modules assetModules on asset.id_asset = assetModules.id_asset      " +
+                "      left join modules modules on assetModules.id_module = modules.id_module      " +
+                "      left join asset_original assetOriginal on asset.id_asset = assetOriginal.id_asset      " +
+                "      left join original original on assetOriginal.id_original = original.id_original      " +
+                "      left join asset_declare assetDeclare on asset.id_asset = assetDeclare.id_asset      " +
+                "      left join `declare` decl on assetDeclare.id_declare = decl.id_declare       " +
+                "      left join asset_depreciation assetDepreciation on asset.id_asset = assetDepreciation.id_asset    " +
+                " where asset.salt = :saltAsset ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("saltAsset", saltAsset);
         List<Object[]> result = query.getResultList();
@@ -263,18 +266,18 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Optional<Asset> findAssetBySalt(String salt) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset, asset.name, asset.code_asset,    " +
-                "          asset.id_asset_category, asset.id_document_attack,    " +
-                "          asset.id_department, asset.id_location,    " +
-                "          asset.id_unit, asset.id_projects, asset.description,    " +
-                "          asset.purpose, asset.notes, asset.file_attack,    " +
-                "          asset.time_created, asset.time_modified, asset.id_department_default,    " +
-                "          asset.id_level_type_asset, asset.id_user_created,    " +
-                "          asset.id_user_modified, asset.quantity, asset.id_instance,    " +
-                "          asset.id_department_origin, asset.parent, asset.salt,    " +
-                "          asset.id_process_current, asset.id_type_process_current,    " +
-                "          asset.is_increase, asset.is_decrease    " +
-                "from asset    " +
+        sb.append("select asset.id_asset, asset.name, asset.code_asset,  " +
+                "        asset.id_asset_category, asset.id_document_attack,  " +
+                "        asset.id_department, asset.id_location,  " +
+                "        asset.id_unit, asset.id_projects, asset.description,  " +
+                "        asset.purpose, asset.notes, asset.file_attack,  " +
+                "        asset.time_created, asset.time_modified, asset.id_department_default,  " +
+                "        asset.id_level_type_asset, asset.id_user_created,  " +
+                "        asset.id_user_modified, asset.quantity, asset.id_instance,  " +
+                "        asset.id_department_origin, asset.parent, asset.salt,  " +
+                "        asset.id_process_current, asset.id_type_process_current,  " +
+                "        asset.is_increase, asset.is_decrease, asset.status, asset.id_asset_root  " +
+                "from asset       " +
                 "where asset.salt = :salt ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("salt", salt);
@@ -311,6 +314,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatus(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setIdAssetRoot(ValueUtil.getIntegerByObject(obj[30]));
                 return Optional.of(asset);
             }
         }
@@ -434,15 +439,16 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Optional<Asset> findAssetByIdDepartmentOrigin(Integer idDepartmentOrigin) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select id_asset, name, code_asset, id_asset_category,    " +
-                "          id_document_attack, id_department, id_location,    " +
-                "          id_unit, id_projects, purpose, notes, file_attack,    " +
-                "          time_created, time_modified, id_department_default,    " +
-                "          id_level_type_asset, id_user_created, id_user_modified,     " +
-                "          description, quantity, id_instance, id_department_origin,     " +
-                "          parent, salt, id_process_current, status_process_current,    " +
-                "          id_type_process_current, is_increase, is_decrease    " +
-                "from asset where id_department_origin = :idDepartmentOrigin       " +
+        sb.append("select id_asset, name, code_asset, id_asset_category,  " +
+                "       id_document_attack, id_department, id_location,  " +
+                "       id_unit, id_projects, purpose, notes, file_attack,  " +
+                "       time_created, time_modified, id_department_default,  " +
+                "       id_level_type_asset, id_user_created, id_user_modified,       " +
+                "       description, quantity, id_instance, id_department_origin,  " +
+                "       parent, salt, id_process_current, status_process_current,  " +
+                "       id_type_process_current, is_increase, is_decrease, status,   " +
+                "       id_asset_root  " +
+                "from asset where id_department_origin = :idDepartmentOrigin  " +
                 "order by id_asset desc limit 1 ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idDepartmentOrigin", idDepartmentOrigin);
@@ -479,6 +485,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatus(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setIdAssetRoot(ValueUtil.getIntegerByObject(obj[30]));
                 return Optional.of(asset);
             }
         }
@@ -488,18 +496,19 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Optional<Asset> findAssetLotByIdDepartmentOrigin(Integer idDepartmentOrigin) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select id_asset, name, code_asset, id_asset_category,     " +
-                "          id_document_attack, id_department, id_location,    " +
-                "          id_unit, id_projects, purpose, notes, file_attack,     " +
-                "          time_created, time_modified, id_department_default,    " +
-                "          id_level_type_asset, id_user_created, id_user_modified,    " +
-                "          description, quantity, id_instance, id_department_origin,    " +
-                "          parent, salt, id_process_current, status_process_current,    " +
-                "          id_type_process_current, is_increase, is_decrease    " +
-                "   from asset          " +
-                "   where id_department_origin = :idDepartmentOrigin          " +
-                "   and parent is not null          " +
-                "   order by id_asset desc limit 1  ");
+        sb.append("select id_asset, name, code_asset, id_asset_category,  " +
+                "        id_document_attack, id_department, id_location,  " +
+                "        id_unit, id_projects, purpose, notes, file_attack,  " +
+                "        time_created, time_modified, id_department_default,  " +
+                "        id_level_type_asset, id_user_created, id_user_modified,  " +
+                "        description, quantity, id_instance, id_department_origin,  " +
+                "        parent, salt, id_process_current, status_process_current,  " +
+                "        id_type_process_current, is_increase, is_decrease,  " +
+                "        status, id_asset_root  " +
+                " from asset             " +
+                " where id_department_origin = :idDepartmentOrigin             " +
+                " and parent is not null             " +
+                " order by id_asset desc limit 1  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idDepartmentOrigin", idDepartmentOrigin);
         List<Object[]> result = query.getResultList();
@@ -535,6 +544,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatus(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setIdAssetRoot(ValueUtil.getIntegerByObject(obj[30]));
                 return Optional.of(asset);
             }
         }
@@ -544,16 +555,17 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public List<Asset> findAllAssetChildrenByParentId(Integer idAsset) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select id_asset, name, code_asset, id_asset_category, " +
-                "          id_document_attack, id_department, id_location, " +
-                "          id_unit, id_projects, purpose, notes, file_attack, " +
-                "          time_created, time_modified, id_department_default, " +
-                "          id_level_type_asset, id_user_created, id_user_modified, " +
-                "          description, quantity, id_instance, id_department_origin, " +
-                "          parent, salt, id_process_current, status_process_current, " +
-                "          id_type_process_current, is_increase, is_decrease " +
-                "   from asset      " +
-                "   where asset.parent = :idAssetParent  ");
+        sb.append("select id_asset, name, code_asset, id_asset_category,  " +
+                "        id_document_attack, id_department, id_location,  " +
+                "        id_unit, id_projects, purpose, notes, file_attack,  " +
+                "        time_created, time_modified, id_department_default,  " +
+                "        id_level_type_asset, id_user_created, id_user_modified,  " +
+                "        description, quantity, id_instance, id_department_origin,  " +
+                "        parent, salt, id_process_current, status_process_current,  " +
+                "        id_type_process_current, is_increase, is_decrease,  " +
+                "        status, id_asset_root  " +
+                " from asset  " +
+                " where asset.parent = :idAssetParent  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAssetParent", idAsset);
         List<Object[]> result = query.getResultList();
@@ -590,6 +602,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatus(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setIdAssetRoot(ValueUtil.getIntegerByObject(obj[30]));
                 assetChildren.add(asset);
             }
         }
@@ -658,15 +672,16 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select id_asset, name, code_asset, id_asset_category,    " +
-                "          id_document_attack, id_department, id_location,   " +
-                "          id_unit, id_projects, purpose, notes, file_attack,   " +
-                "          time_created, time_modified, id_department_default,   " +
-                "          id_level_type_asset, id_user_created, id_user_modified,   " +
-                "          description, quantity, id_instance, id_department_origin,   " +
-                "          parent, salt, id_process_current, status_process_current,   " +
-                "          id_type_process_current, is_increase, is_decrease   " +
-                "from asset where id_asset in (:idsAsset)  ");
+        sb.append("select id_asset, name, code_asset, id_asset_category,  " +
+                "        id_document_attack, id_department, id_location,  " +
+                "        id_unit, id_projects, purpose, notes, file_attack,  " +
+                "        time_created, time_modified, id_department_default,  " +
+                "        id_level_type_asset, id_user_created, id_user_modified,      " +
+                "        description, quantity, id_instance, id_department_origin,  " +
+                "        parent, salt, id_process_current, status_process_current,  " +
+                "        id_type_process_current, is_increase, is_decrease,  " +
+                "        status, id_asset_root  " +
+                "from asset where id_asset in (:idsAsset) ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsAsset", idsAsset);
         List<Object[]> result = query.getResultList();
@@ -703,10 +718,68 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatus(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setIdAssetRoot(ValueUtil.getIntegerByObject(obj[30]));
                 assets.add(asset);
             }
         }
         return assets;
+    }
+
+    @Override
+    public Optional<Asset> findAllAssetByIdAsset(Integer idAsset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select id_asset, name, code_asset, id_asset_category,  " +
+                "        id_document_attack, id_department, id_location,  " +
+                "        id_unit, id_projects, purpose, notes, file_attack,  " +
+                "        time_created, time_modified, id_department_default,  " +
+                "        id_level_type_asset, id_user_created, id_user_modified,      " +
+                "        description, quantity, id_instance, id_department_origin,  " +
+                "        parent, salt, id_process_current, status_process_current,  " +
+                "        id_type_process_current, is_increase, is_decrease,  " +
+                "        status, id_asset_root  " +
+                "from asset where id_asset = :idAsset ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idAsset", idAsset);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Asset asset = new Asset();
+                asset.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
+                asset.setName(ValueUtil.getStringByObject(obj[1]));
+                asset.setCodeAsset(ValueUtil.getStringByObject(obj[2]));
+                asset.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
+                asset.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[4]));
+                asset.setIdDepartment(ValueUtil.getIntegerByObject(obj[5]));
+                asset.setIdLocation(ValueUtil.getIntegerByObject(obj[6]));
+                asset.setIdUnit(ValueUtil.getIntegerByObject(obj[7]));
+                asset.setIdProjects(ValueUtil.getIntegerByObject(obj[8]));
+                asset.setPurpose(ValueUtil.getStringByObject(obj[9]));
+                asset.setNotes(ValueUtil.getStringByObject(obj[10]));
+                asset.setFileAttack(ValueUtil.getStringByObject(obj[11]));
+                asset.setTimeCreated(ValueUtil.getStringByObject(obj[12]));
+                asset.setTimeModified(ValueUtil.getStringByObject(obj[13]));
+                asset.setIdDepartmentDefault(ValueUtil.getIntegerByObject(obj[14]));
+                asset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(obj[15]));
+                asset.setIdUserCreated(ValueUtil.getIntegerByObject(obj[16]));
+                asset.setIdUserModified(ValueUtil.getIntegerByObject(obj[17]));
+                asset.setDescription(ValueUtil.getStringByObject(obj[18]));
+                asset.setQuantity(ValueUtil.getIntegerByObject(obj[19]));
+                asset.setIdInstance(ValueUtil.getIntegerByObject(obj[20]));
+                asset.setIdDepartmentOrigin(ValueUtil.getIntegerByObject(obj[21]));
+                asset.setParent(ValueUtil.getIntegerByObject(obj[22]));
+                asset.setSalt(ValueUtil.getStringByObject(obj[23]));
+                asset.setIdProcessCurrent(ValueUtil.getIntegerByObject(obj[24]));
+                asset.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[25]));
+                asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
+                asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
+                asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatus(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setIdAssetRoot(ValueUtil.getIntegerByObject(obj[30]));
+                return Optional.of(asset);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -1459,6 +1532,17 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         dto.setIdInstance(ValueUtil.getIntegerByObject(obj[36]));
         dto.setParent(ValueUtil.getIntegerByObject(obj[59]));
         dto.setSalt(ValueUtil.getStringByObject(obj[60]));
+        dto.setQuantity(ValueUtil.getIntegerByObject(obj[61]));
+        dto.setIdDepartmentOrigin(ValueUtil.getIntegerByObject(obj[62]));
+        dto.setIdProcessCurrent(ValueUtil.getIntegerByObject(obj[63]));
+        dto.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[64]));
+        dto.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[65]));
+        dto.setIsIncrease(ValueUtil.getIntegerByObject(obj[66]));
+        dto.setIsDecrease(ValueUtil.getIntegerByObject(obj[67]));
+        dto.setStatus(ValueUtil.getIntegerByObject(obj[68]));
+        dto.setIdAssetRoot(ValueUtil.getIntegerByObject(obj[69]));
+        dto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[70]));
+        dto.setIdUserModified(ValueUtil.getIntegerByObject(obj[71]));
     }
 
     private void setBluePrintDepartmentLevelTypeAsset(AssetBluePrintDto dto, Object[] obj) {

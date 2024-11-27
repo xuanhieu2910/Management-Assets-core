@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.module.impl;
 
+import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.entity.IModules;
 import com.example.csvccdshustbe.entity.OtherVehicleTransportModule;
 import com.example.csvccdshustbe.factory.module.ModuleFactory;
@@ -64,6 +65,37 @@ public class OtherVehicleTransportModuleFactory implements ModuleFactory {
         module.setTimeModified(timeCurrent);
         module.setIdPositionName(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idPositionName")));
         module.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
+        return module;
+    }
+
+    @Override
+    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+        OtherVehicleTransportModule otherVehicleTransportModuleRoot = (OtherVehicleTransportModule) assetModulesDto.getDataDetails();
+        OtherVehicleTransportModule  module = new OtherVehicleTransportModule();
+        module.setIdAsset(idAsset);
+        module.setLicensePlate(otherVehicleTransportModuleRoot.getLicensePlate());
+        module.setLabel(otherVehicleTransportModuleRoot.getLabel());
+        module.setLoadCapacity(otherVehicleTransportModuleRoot.getLoadCapacity());
+        module.setNumberSeats(otherVehicleTransportModuleRoot.getNumberSeats());
+        module.setCapacity(otherVehicleTransportModuleRoot.getCapacity());
+        module.setCylinderCapacity(otherVehicleTransportModuleRoot.getCylinderCapacity());
+        module.setClutchNumber(otherVehicleTransportModuleRoot.getClutchNumber());
+        module.setVehicleIdentificationNumber(otherVehicleTransportModuleRoot.getVehicleIdentificationNumber());
+        module.setMachineNumber(otherVehicleTransportModuleRoot.getMachineNumber());
+        module.setPublishYear(otherVehicleTransportModuleRoot.getPublishYear());
+        module.setIdCountryProducer(otherVehicleTransportModuleRoot.getIdCountryProducer());
+        module.setLicenseCertificateRegister(otherVehicleTransportModuleRoot.getLicenseCertificateRegister());
+        module.setPublishDateLicense(otherVehicleTransportModuleRoot.getPublishDateLicense());
+        module.setCompanyRegister(otherVehicleTransportModuleRoot.getCompanyRegister());
+        module.setSource(otherVehicleTransportModuleRoot.getSource());
+        module.setColor(otherVehicleTransportModuleRoot.getColor());
+        module.setIdUser(otherVehicleTransportModuleRoot.getIdUser());
+        module.setIdTypeUse(otherVehicleTransportModuleRoot.getIdTypeUse());
+        String timeCurrent = String.valueOf(new Date().getTime());
+        module.setTimeCreated(timeCurrent);
+        module.setTimeModified(timeCurrent);
+        module.setIdPositionName(otherVehicleTransportModuleRoot.getIdPositionName());
+        module.setSparePartsAttack(otherVehicleTransportModuleRoot.getSparePartsAttack());
         return module;
     }
 }

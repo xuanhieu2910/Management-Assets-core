@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.module.impl;
 
+import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.entity.IModules;
 import com.example.csvccdshustbe.entity.Modules;
 import com.example.csvccdshustbe.entity.OtherAssetModule;
@@ -36,6 +37,22 @@ public class OtherAssetModuleFactory implements ModuleFactory {
         otherAssetModule.setIdUser(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idUser")));
         otherAssetModule.setIdTypeUse(ValueUtil.getIntegerByObject(mapModuleUpdate.get("idTypeUse")));
         otherAssetModule.setSparePartsAttack(ValueUtil.getStringByObject(mapModuleUpdate.get("sparePartsAttack")));
+        return otherAssetModule;
+    }
+
+    @Override
+    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+        OtherAssetModule otherAssetModuleRoot = (OtherAssetModule) assetModulesDto.getDataDetails();
+        OtherAssetModule otherAssetModule = new OtherAssetModule();
+        otherAssetModule.setIdAsset(idAsset);
+        otherAssetModule.setLabel(otherAssetModuleRoot.getLabel());
+        otherAssetModule.setModel(otherAssetModuleRoot.getModel());
+        otherAssetModule.setSerial(otherAssetModuleRoot.getSerial());
+        otherAssetModule.setPublishDate(otherAssetModuleRoot.getPublishDate());
+        otherAssetModule.setIdCountryProducer(otherAssetModuleRoot.getIdCountryProducer());
+        otherAssetModule.setIdUser(otherAssetModuleRoot.getIdUser());
+        otherAssetModule.setIdTypeUse(otherAssetModuleRoot.getIdTypeUse());
+        otherAssetModule.setSparePartsAttack(otherAssetModuleRoot.getSparePartsAttack());
         return otherAssetModule;
     }
 }

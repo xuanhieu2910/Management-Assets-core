@@ -3,10 +3,14 @@ package com.example.csvccdshustbe.service.asset.impl;
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.assetDepreciation.AssetDepreciationDto;
+import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
 import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
 import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
+import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
+import com.example.csvccdshustbe.dto.originalOfFormation.AssetOriginalOfFormDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.FileExcelException;
@@ -920,6 +924,16 @@ public class AssetServiceImpl implements AssetService {
         commonAssetDto.setIdInstance(assetBluePrintDto.getIdInstance());
         commonAssetDto.setParent(assetBluePrintDto.getParent());
         commonAssetDto.setSalt(assetBluePrintDto.getSalt());
+        commonAssetDto.setIdDepartmentOrigin(assetBluePrintDto.getIdDepartmentOrigin());
+        commonAssetDto.setIdProcessCurrent(assetBluePrintDto.getIdProcessCurrent());
+        commonAssetDto.setStatusProcessCurrent(assetBluePrintDto.getStatusProcessCurrent());
+        commonAssetDto.setIdTypeProcessCurrent(assetBluePrintDto.getIdTypeProcessCurrent());
+        commonAssetDto.setIsIncrease(assetBluePrintDto.getIsIncrease());
+        commonAssetDto.setIsDecrease(assetBluePrintDto.getIsDecrease());
+        commonAssetDto.setStatus(assetBluePrintDto.getStatus());
+        commonAssetDto.setIdAssetRoot(assetBluePrintDto.getIdAssetRoot());
+        commonAssetDto.setIdUserCreated(assetBluePrintDto.getIdUserCreated());
+        commonAssetDto.setIdUserModified(assetBluePrintDto.getIdUserModified());
         return commonAssetDto;
     }
 
@@ -1479,6 +1493,8 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
         asset.setIsIncrease(Constants.IS_NOT_INCREASED);
         asset.setIsDecrease(Constants.IS_NOT_DECREASED);
+        asset.setStatus(Constants.STATUS_ASSET_ACTIVE);
+        asset.setIdAssetRoot(null);
         return asset;
     }
 
@@ -1737,6 +1753,135 @@ public class AssetServiceImpl implements AssetService {
                 pageable, findAllAssetDtos.getTotalElements());
     }
 
+    @Override
+    public void duplicationAssetBySaltAsset(String salt)
+            throws ValidateFiledException, IllegalAccessException {
+        FindDetailsAssetResponse assetRoot = findDetailsAssetBySaltAsset(salt);
+        if (assetRoot.getCommon().getQuantity() > Constants.QUANTITY_DEFAULT){
+            duplicationAssetLot(assetRoot);
+        } else {
+            duplicationAsset(assetRoot);
+        }
+    }
+
+    private void duplicationAssetLot(FindDetailsAssetResponse assetRoot) {
+    }
+
+    private void duplicationAsset(FindDetailsAssetResponse assetRoot) throws ValidateFiledException {
+        Asset assetDup = storeDuplicationCommonAsset(assetRoot.getCommon());
+        storeDuplicationDepreciationAsset(assetDup.getIdAsset(), assetRoot.getAssetDepreciationDto());
+        storeDuplicationModulesAsset(assetDup.getIdAsset(), assetRoot.getModules());
+        storeDuplicationOriginalAsset(assetDup.getIdAsset(), assetRoot.getOriginal());
+        storeDuplicationDeclareAsset(assetDup.getIdAsset(), assetRoot.getDeclare());
+    }
+
+    private void storeDuplicationDeclareAsset(Integer idAsset, AssetDeclareDto declare) {
+    }
+
+    private void storeDuplicationOriginalAsset(Integer idAsset, AssetOriginalDto original) throws ValidateFiledException {
+        OriginalFactory originalFactory = (OriginalFactory) ProxyInitDataAssetUtil.
+                proxyInitOriginalDataAsset(ValueUtil.getStringByObject(original.getBluePrintAssetOriginalDto().getTypeOriginal()));
+//        IOriginal iOriginal = originalFactory.createOriginal(originalDataAsset);
+    }
+
+    private Asset storeDuplicationCommonAsset(CommonAssetDto commonAsset) {
+        Asset assetDup = assetRepository.save(contructionDupliationAsset(commonAsset));
+        storeDuplicationOriginalOfFormations(assetDup.getIdAsset(), commonAsset.getOriginOfFormation());
+        return assetDup;
+    }
+
+    private void storeDuplicationOriginalOfFormations(Integer idAsset, List<AssetOriginalOfFormDto> originOfFormation) {
+        List<AssetOriginalOfFormation> assetOriginalOfFormations = new ArrayList<>();
+        for (AssetOriginalOfFormDto assetOriginalOfFormDto: originOfFormation){
+            assetOriginalOfFormations.add(contructionDuplicationAssetOriginalOfFormation(assetOriginalOfFormDto,idAsset));
+        }
+        assetOriginalOfFormationService.saveAll(assetOriginalOfFormations);
+    }
+
+    private AssetOriginalOfFormation
+    contructionDuplicationAssetOriginalOfFormation(AssetOriginalOfFormDto assetOriginalOfFormDto, Integer idAsset) {
+        String timeCurrent = String.valueOf(new Date().getTime());
+        AssetOriginalOfFormation original = new AssetOriginalOfFormation();
+        original.setIdOriginalOfFormation(assetOriginalOfFormDto.getIdOriginalOfFormation());
+        original.setIdAsset(idAsset);
+        original.setTimeCreated(timeCurrent);
+        original.setTimeModified(timeCurrent);
+        original.setValue(original.getValue());
+        return original;
+    }
+
+    private void storeDuplicationDepreciationAsset(Integer idAsset, AssetDepreciationDto assetDepreciationDto) {
+        AssetDepreciation assetDepreciation = new AssetDepreciation();
+        assetDepreciation.setIdAsset(idAsset);
+        assetDepreciation.setTimeStartedDepreciation(assetDepreciationDto.getTimeStartedDepreciation());
+        assetDepreciation.setAmountMonthsDepreciation(assetDepreciationDto.getAmountMonthsDepreciation());
+        assetDepreciation.setValueDepreciation(assetDepreciationDto.getValueDepreciation());
+        assetDepreciation.setTypeDepreciation(assetDepreciation.getTypeDepreciation());
+        assetDepreciation.setValueTypeDepreciation(assetDepreciationDto.getValueTypeDepreciation());
+        assetDepreciation.setAmountRestMonthsDepreciation(assetDepreciationDto.getAmountRestMonthsDepreciation());
+        assetDepreciation.setCumulative(assetDepreciationDto.getCumulative());
+        assetDepreciation.setRestValue(assetDepreciationDto.getRestValue());
+        assetDepreciation.setTimeStartedWearTear(assetDepreciationDto.getTimeStartedWearTear());
+        assetDepreciation.setTimeEndWearTear(assetDepreciationDto.getTimeEndWearTear());
+        assetDepreciation.setTypeCalculate(assetDepreciationDto.getTypeCalculate());
+        assetDepreciation.setTimeBuy(assetDepreciationDto.getTimeBuy());
+        assetDepreciation.setTimeStartedUsed(assetDepreciationDto.getTimeStartedUsed());
+        assetDepreciation.setTimeStartedIncrease(assetDepreciationDto.getTimeStartedIncrease());
+        assetDepreciation.setTimeYearTracking(assetDepreciationDto.getTimeYearTracking());
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetDepreciation.setTimeCreated(timeCurrent);
+        assetDepreciation.setTimeModified(timeCurrent);
+        assetDepreciationService.save(assetDepreciation);
+    }
+
+    private void storeDuplicationModulesAsset(Integer idAsset, List<AssetModulesDto> modules) throws ValidateFiledException {
+        for (AssetModulesDto module: modules){
+            ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
+                    proxyInitModuleDataAsset(ValueUtil.getStringByObject(module.getBluePrintAssetModules().getTypeModules()));
+            IModules iModules = moduleFactory.createModule(module, idAsset);
+            modulesServiceFactory.duplication(iModules, module.getBluePrintAssetModules().getTypeModules(),
+                    module.getBluePrintAssetModules().getIdModules(), idAsset );
+        }
+    }
+
+
+
+    private Asset contructionDupliationAsset(CommonAssetDto assetRoot) {
+        Asset assetDup = new Asset();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetDup.setName(assetRoot.getName());
+        assetDup.setCodeAsset(assetRoot.getCodeAsset());
+        assetDup.setIdAssetCategory(assetRoot.getAssetCategory().getIdAssetCategory());
+        assetDup.setIdDocumentAttack(assetRoot.getDocumentAttack().getIdDocumentAttack());
+        assetDup.setIdDepartment(assetRoot.getDepartment().getIdDepartment());
+        assetDup.setIdLocation(assetRoot.getLocation().getIdLocation());
+        assetDup.setIdUnit(assetRoot.getUnits().getIdUnit());
+        assetDup.setIdProjects(assetRoot.getProjects().getIdProjects());
+        assetDup.setPurpose(assetRoot.getPurpose());
+        assetDup.setNotes(assetRoot.getNotes());
+        assetDup.setFileAttack(assetRoot.getFileAttack());
+        assetDup.setTimeCreated(timeCurrent);
+        assetDup.setTimeModified(timeCurrent);
+        assetDup.setIdDepartmentDefault(assetRoot.getDepartmentDefault().getIdDefaultDepartment());
+        assetDup.setIdLevelTypeAsset(assetRoot.getLevelTypeAsset().getIdLevelTypeAsset());
+        assetDup.setIdUserCreated(assetRoot.getIdUserCreated());
+        assetDup.setIdUserModified(assetRoot.getIdUserModified());
+        assetDup.setDescription(assetRoot.getDescription());
+        assetDup.setQuantity(assetRoot.getQuantity());
+        assetDup.setIdInstance(assetRoot.getIdInstance());
+        assetDup.setIdDepartmentOrigin(assetRoot.getIdDepartmentOrigin());
+        assetDup.setParent(assetRoot.getParent());
+        assetDup.setSalt(String.valueOf(UUID.randomUUID()));
+        assetDup.setIdProcessCurrent(assetRoot.getIdProcessCurrent());
+        assetDup.setStatusProcessCurrent(assetRoot.getStatusProcessCurrent());
+        assetDup.setIdTypeProcessCurrent(assetRoot.getIdTypeProcessCurrent());
+        assetDup.setIsIncrease(assetRoot.getIsIncrease());
+        assetDup.setIsDecrease(assetRoot.getIsDecrease());
+        assetDup.setStatus(Constants.STATUS_ASSET_IN_ACTIVE);
+        assetDup.setIdAssetRoot(assetRoot.getIdAssetRoot());
+        return assetDup;
+    }
+
     private void storeNewAssetFromFile(Map<String, Object> createAssetRequest) throws ValidateFiledException {
         log.info("Init store asset");
         Asset asset = storeCommonData(createAssetRequest);
@@ -1746,8 +1891,6 @@ public class AssetServiceImpl implements AssetService {
         storeDepreciation(createAssetRequest, asset);
 
     }
-
-
 
     //extract ID IN STT_ID_...
     public Integer extractIdSTTFromExcel(String input) {
@@ -2156,12 +2299,6 @@ public class AssetServiceImpl implements AssetService {
 
     }
 
-    private String getCellValue(Cell cell) {
-        if (cell == null || cell.getCellType() == CellType.BLANK) {
-            return "";
-        }
-        return (String) ExcelUtil.convertValue(cell, CellType.STRING);
-    }
     private Map<String, Object> processCommonData(XSSFRow row, Map<String, OriginalOfFormation> originalOfFormationMap,
                                                   Map<Integer, AssetCategories> AssetCategoriesInstanceMap,
                                                   List<String> errorList) {

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.module.impl;
 
+import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.entity.IModules;
 import com.example.csvccdshustbe.entity.MedicineModule;
 import com.example.csvccdshustbe.factory.module.ModuleFactory;
@@ -35,6 +36,22 @@ public class MedicineModuleFactory implements ModuleFactory {
         medicineModule.setNumberBatchOfGoods(ValueUtil.getStringByObject(mapModuleUpdate.get("numberBatchOfGoods")));
         medicineModule.setOwnNameCirculationNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("ownNameCirculationNumber")));
         medicineModule.setOwnAddressCirculationNumber(ValueUtil.getStringByObject(mapModuleUpdate.get("ownAddressCirculationNumber")));
+        return medicineModule;
+    }
+
+    @Override
+    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+        MedicineModule medicineModuleRoot = (MedicineModule) assetModulesDto.getDataDetails();
+        MedicineModule medicineModule = new MedicineModule();
+        medicineModule.setIdAsset(idAsset);
+        medicineModule.setIdMedicineType(medicineModuleRoot.getIdMedicineType());
+        medicineModule.setIdMedicineGroup(medicineModuleRoot.getIdMedicineGroup());
+        medicineModule.setPublishDate(medicineModuleRoot.getPublishDate());
+        medicineModule.setExpiryDate(medicineModuleRoot.getExpiryDate());
+        medicineModule.setCirculationNumber(medicineModuleRoot.getCirculationNumber());
+        medicineModule.setNumberBatchOfGoods(medicineModuleRoot.getNumberBatchOfGoods());
+        medicineModule.setOwnNameCirculationNumber(medicineModuleRoot.getOwnNameCirculationNumber());
+        medicineModule.setOwnAddressCirculationNumber(medicineModuleRoot.getOwnAddressCirculationNumber());
         return medicineModule;
     }
 }
