@@ -1522,10 +1522,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         dto.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[65]));
         dto.setIsIncrease(ValueUtil.getIntegerByObject(obj[66]));
         dto.setIsDecrease(ValueUtil.getIntegerByObject(obj[67]));
-        dto.setStatus(ValueUtil.getIntegerByObject(obj[68]));
-        dto.setIdAssetRoot(ValueUtil.getIntegerByObject(obj[69]));
-        dto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[70]));
-        dto.setIdUserModified(ValueUtil.getIntegerByObject(obj[71]));
+        dto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[68]));
+        dto.setIdUserModified(ValueUtil.getIntegerByObject(obj[69]));
     }
 
     private void setBluePrintDepartmentLevelTypeAsset(AssetBluePrintDto dto, Object[] obj) {
