@@ -120,10 +120,75 @@ public class OriginalServiceFactory {
         assetOriginalService.save(createAssetOriginal(originalDataAsset, idInstance));
     }
 
+    public void save(IOriginal original,Integer idOriginal, Integer idAsset,
+                     String typeOriginal) throws ValidateFiledException {
+        EnumOriginalFactory enumDeclareFactory = Enum.valueOf(EnumOriginalFactory.class, typeOriginal);
+        Integer idInstance;
+        switch (enumDeclareFactory){
+            case ShapeOriginalAssetBuy -> {
+                idInstance =  originalAssetBuyService.save((ShapeOriginalAssetBuy) original).getIdShapeOriginalAssetBuy();
+            }
+            case ShapeOriginalAssetConnectActor -> {
+                idInstance = originalAssetConnectActorService.save((ShapeOriginalAssetConnectActor) original).getIdShapeOriginalAssetConnectActor();
+            }
+            case ShapeOriginalAssetConnectWoActor -> {
+                idInstance =  originalAssetConnectWoActorService.save((ShapeOriginalAssetConnectWoActor) original).getIdShapeOriginalAssetConnectWoActor();
+            }
+            case ShapeOriginalAssetEvaluate -> {
+                idInstance = originalAssetEvaluateService.save((ShapeOriginalAssetEvaluate) original).getIdShapeOriginalAssetEvaluate();
+            }
+            case ShapeOriginalAssetGift -> {
+                idInstance = originalAssetGiftService.save((ShapeOriginalAssetGift) original).getIdShapeOriginalAssetGift();
+            }
+            case ShapeOriginalAssetInvest -> {
+                idInstance = originalAssetInvestService.save((ShapeOriginalAssetInvest) original).getIdShapeOriginalAssetInvest();
+            }
+            case ShapeOriginalAssetTransfer -> {
+                idInstance = originalAssetTransferService.save((ShapeOriginalAssetTransfer) original).getIdShapeOriginalAssetTransfer();
+            }
+            case NoShapeOriginalAssetGift -> {
+                idInstance = noOriginalAssetGiftService.save((NoShapeOriginalAssetGift) original).getIdNoShapeOriginalAssetGift();
+            }
+            case NoShapeOriginalAssetBuy -> {
+                idInstance = noOriginalAssetBuyService.save((NoShapeOriginalAssetBuy) original).getIdNoShapeOriginalAssetBuy();
+            }
+            case NoShapeOriginalAssetUseLand -> {
+                idInstance = noOriginalAssetUseLandService.save((NoShapeOriginalAssetUseLand) original).getIdNoShapeOriginalAssetUseLand();
+            }
+            case NoShapeOriginalAssetEvaluate -> {
+                idInstance = noOriginalAssetEvaluateService.save((NoShapeOriginalAssetEvaluate) original).getIdNoShapeOriginalAssetEvaluate();
+            }
+            case NoShapeOriginalAssetTransfer -> {
+                idInstance = noOriginalAssetTransferService.save((NoShapeOriginalAssetTransfer) original).getIdNoShapeOriginalAssetTransfer();
+            }
+            case NoShapeOriginalAssetRentLand ->  {
+                idInstance = noOriginalAssetRentLandService.save((NoShapeOriginalAssetRentLand) original).getIdNoShapeOriginalAssetRentLand();
+            }
+            case NoShapeOriginalAssetTransferLand -> {
+                idInstance = noOriginalAssetTransferLandService.save((NoShapeOriginalAssetTransferLand) original).getIdNoShapeOriginalAssetTransferLand();
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type original!");
+            }
+        }
+        assetOriginalService.save(duplicationAssetOriginal(idAsset, idOriginal, idInstance));
+    }
+
     private AssetOriginal createAssetOriginal(Map<String, Object> originalDataAsset, Integer idInstance) {
         AssetOriginal original = new AssetOriginal();
         original.setIdAsset(ValueUtil.getIntegerByObject(originalDataAsset.get("idAsset")));
         original.setIdOriginal(ValueUtil.getIntegerByObject(originalDataAsset.get("idOriginal")));
+        original.setIdInstance(idInstance);
+        String timeCurrent = String.valueOf(new Date().getTime());
+        original.setTimeCreated(timeCurrent);
+        original.setTimeModified(timeCurrent);
+        return original;
+    }
+
+    private AssetOriginal duplicationAssetOriginal(Integer idAsset, Integer idOriginal, Integer idInstance) {
+        AssetOriginal original = new AssetOriginal();
+        original.setIdAsset(idAsset);
+        original.setIdOriginal(idOriginal);
         original.setIdInstance(idInstance);
         String timeCurrent = String.valueOf(new Date().getTime());
         original.setTimeCreated(timeCurrent);

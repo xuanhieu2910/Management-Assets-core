@@ -40,7 +40,7 @@ public class MachineModuleFactory implements ModuleFactory {
     }
 
     @Override
-    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+    public IModules copyModule(AssetModulesDto assetModulesDto, Integer idAsset) {
         MachineModule machineModuleRoot = (MachineModule) assetModulesDto.getDataDetails();
         MachineModule machineModule = new MachineModule();
         machineModule.setIdAsset(idAsset);

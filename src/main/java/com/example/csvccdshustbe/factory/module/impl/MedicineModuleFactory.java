@@ -40,7 +40,7 @@ public class MedicineModuleFactory implements ModuleFactory {
     }
 
     @Override
-    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+    public IModules copyModule(AssetModulesDto assetModulesDto, Integer idAsset) {
         MedicineModule medicineModuleRoot = (MedicineModule) assetModulesDto.getDataDetails();
         MedicineModule medicineModule = new MedicineModule();
         medicineModule.setIdAsset(idAsset);

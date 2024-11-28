@@ -10,5 +10,5 @@ public interface ModuleFactory {
 
     IModules createModule(Map<String, Object> mapModuleCreate);
     IModules updateModule(Map<String,Object> mapModuleUpdate, IModules iModules);
-    IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset);
+    IModules copyModule(AssetModulesDto assetModulesDto, Integer idAsset);
 }

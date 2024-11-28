@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.original.impl.noShape;
 
+import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.NoShapeOriginalAssetRentLand;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
@@ -16,6 +17,20 @@ public class NoShapeOriginalAssetRentLandFactory implements OriginalFactory {
         rentLand.setValueRent(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueRent")));
         rentLand.setValueWork(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueWork")));
         rentLand.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        rentLand.setTimeCreated(timeCurrent);
+        rentLand.setTimeModified(timeCurrent);
+        return rentLand;
+    }
+
+    @Override
+    public IOriginal copyOriginal(AssetOriginalDto assetOriginalDto, Integer idAsset) {
+        NoShapeOriginalAssetRentLand rentLandRoot = (NoShapeOriginalAssetRentLand) assetOriginalDto.getDataDetails();
+        NoShapeOriginalAssetRentLand rentLand = new NoShapeOriginalAssetRentLand();
+        rentLand.setIdAsset(idAsset);
+        rentLand.setValueRent(rentLandRoot.getValueRent());
+        rentLand.setValueWork(rentLandRoot.getValueWork());
+        rentLand.setValueOther(rentLandRoot.getValueOther());
         String timeCurrent = String.valueOf(new Date().getTime());
         rentLand.setTimeCreated(timeCurrent);
         rentLand.setTimeModified(timeCurrent);

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.declare.impl;
 
+import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
 import com.example.csvccdshustbe.entity.HouseDeclare;
 import com.example.csvccdshustbe.entity.IDeclare;
 import com.example.csvccdshustbe.factory.declare.DeclareFactory;
@@ -27,6 +28,29 @@ public class HouseDeclareFactory implements DeclareFactory {
         declare.setOtherUse(ValueUtil.getDoubleByObject(mapDeclareRequest.get("otherUse")));
         declare.setAcreage(ValueUtil.getDoubleByObject(mapDeclareRequest.get("acreage")));
         declare.setIdTypeDeclareAsset(ValueUtil.getIntegerByObject(mapDeclareRequest.get("idTypeDeclareAsset")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        declare.setTimeCreated(timeCurrent);
+        declare.setTimeModified(timeCurrent);
+        return declare;
+    }
+
+    @Override
+    public IDeclare copyDeclare(AssetDeclareDto assetDeclareDto, Integer idAsset) {
+        HouseDeclare declareRoot = (HouseDeclare) assetDeclareDto.getDataDetail();
+        HouseDeclare declare = new HouseDeclare();
+        declare.setIdAsset(idAsset);
+        declare.setWorkplace(declareRoot.getWorkplace());
+        declare.setHdsnNoBussiness(declareRoot.getHdsnNoBussiness());
+        declare.setHdsnBussiness(declareRoot.getHdsnBussiness());
+        declare.setHdsnRent(declareRoot.getHdsnRent());
+        declare.setHdsnBonds(declareRoot.getHdsnBonds());
+        declare.setLivePlace(declareRoot.getLivePlace());
+        declare.setBlankPlace(declareRoot.getBlankPlace());
+        declare.setEncroachedPlace(declareRoot.getEncroachedPlace());
+        declare.setSyntheticUse(declareRoot.getSyntheticUse());
+        declare.setOtherUse(declareRoot.getOtherUse());
+        declare.setAcreage(declareRoot.getAcreage());
+        declare.setIdTypeDeclareAsset(declareRoot.getIdTypeDeclareAsset());
         String timeCurrent = String.valueOf(new Date().getTime());
         declare.setTimeCreated(timeCurrent);
         declare.setTimeModified(timeCurrent);

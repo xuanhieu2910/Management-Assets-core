@@ -188,6 +188,11 @@ public class Constants {
     public static final String KEY_CHILDREN_DISTRIBUTION = "distribution";
     /*----------------------------------------------------*/
     /**
+     * Constant Asset LOT LIST ASSET CHILDREN
+     * */
+    public static final String KEY_OLD_INFORMATION = "old_information";
+    /*----------------------------------------------------*/
+    /**
      * Constant Original
      * */
     public static final Integer ORIGINAL_VISIBLE = 1;
@@ -497,15 +502,6 @@ public class Constants {
     public static Integer IS_ERROR_INSTANCE = 1;
     public static Integer IS_NOT_ERROR_INSTANCE = -1;
     /*-----------------------------------------------------*/
-    /**
-     * Constants REASON
-     * */
-    public static final String REASON_INCREASE = "increaseReason";
-    public static final String REASON_CHANGE_INFORMATION = "changeInformationReason";
-    public static final String REASON_REVALUATION = "revaluationReason";
-    public static final String REASON_TRANSFER = "transferReason";
-    public static final String REASON_DECREASE = "decreaseReason";
-    public static final String REASON_INVENTORY = "inventoryReason";
     /**
      * Constants ASSET
      * */

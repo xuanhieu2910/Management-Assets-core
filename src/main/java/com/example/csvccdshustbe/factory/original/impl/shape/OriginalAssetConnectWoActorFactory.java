@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.original.impl.shape;
 
+import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetConnectWoActor;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
@@ -16,6 +17,20 @@ public class OriginalAssetConnectWoActorFactory implements OriginalFactory {
         connectWoActor.setValueBuy(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueBuy")));
         connectWoActor.setValueTax(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueTax")));
         connectWoActor.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        connectWoActor.setTimeCreated(timeCurrent);
+        connectWoActor.setTimeModified(timeCurrent);
+        return connectWoActor;
+    }
+
+    @Override
+    public IOriginal copyOriginal(AssetOriginalDto assetOriginalDto, Integer idAsset) {
+        ShapeOriginalAssetConnectWoActor connectWoActorRoot = (ShapeOriginalAssetConnectWoActor) assetOriginalDto.getDataDetails();
+        ShapeOriginalAssetConnectWoActor connectWoActor = new ShapeOriginalAssetConnectWoActor();
+        connectWoActor.setIdAsset(idAsset);
+        connectWoActor.setValueBuy(connectWoActorRoot.getValueBuy());
+        connectWoActor.setValueTax(connectWoActorRoot.getValueTax());
+        connectWoActor.setValueOther(connectWoActorRoot.getValueOther());
         String timeCurrent = String.valueOf(new Date().getTime());
         connectWoActor.setTimeCreated(timeCurrent);
         connectWoActor.setTimeModified(timeCurrent);

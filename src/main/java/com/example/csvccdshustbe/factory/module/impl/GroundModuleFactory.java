@@ -32,7 +32,7 @@ public class GroundModuleFactory implements ModuleFactory {
     }
 
     @Override
-    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+    public IModules copyModule(AssetModulesDto assetModulesDto, Integer idAsset) {
         GroundModule groundModuleRoot = (GroundModule) assetModulesDto.getDataDetails();
         GroundModule groundModule = new GroundModule();
         groundModule.setIdAsset(groundModuleRoot.getIdAsset());

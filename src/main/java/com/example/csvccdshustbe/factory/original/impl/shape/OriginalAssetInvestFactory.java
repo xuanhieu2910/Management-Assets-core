@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.original.impl.shape;
 
+import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.Original;
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetInvest;
@@ -15,6 +16,18 @@ public class OriginalAssetInvestFactory implements OriginalFactory {
         ShapeOriginalAssetInvest assetInvest = new ShapeOriginalAssetInvest();
         assetInvest.setIdAsset(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idAsset")));
         assetInvest.setValueBuy(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueBuy")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetInvest.setTimeCreated(timeCurrent);
+        assetInvest.setTimeModified(timeCurrent);
+        return assetInvest;
+    }
+
+    @Override
+    public IOriginal copyOriginal(AssetOriginalDto assetOriginalDto, Integer idAsset) {
+        ShapeOriginalAssetInvest assetInvestRoot = (ShapeOriginalAssetInvest) assetOriginalDto.getDataDetails();
+        ShapeOriginalAssetInvest assetInvest = new ShapeOriginalAssetInvest();
+        assetInvest.setIdAsset(idAsset);
+        assetInvest.setValueBuy(assetInvestRoot.getValueBuy());
         String timeCurrent = String.valueOf(new Date().getTime());
         assetInvest.setTimeCreated(timeCurrent);
         assetInvest.setTimeModified(timeCurrent);

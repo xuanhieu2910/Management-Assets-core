@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.original.impl.shape;
 
+import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.Original;
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetGift;
@@ -19,6 +20,22 @@ public class OriginalAssetGiftFactory implements OriginalFactory {
         assetGift.setValueRecallWork(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueRecallWork")));
         assetGift.setValueTax(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueTax")));
         assetGift.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetGift.setTimeCreated(timeCurrent);
+        assetGift.setTimeModified(timeCurrent);
+        return assetGift;
+    }
+
+    @Override
+    public IOriginal copyOriginal(AssetOriginalDto assetOriginalDto, Integer idAsset) {
+        ShapeOriginalAssetGift assetGiftRoot = (ShapeOriginalAssetGift) assetOriginalDto.getDataDetails();
+        ShapeOriginalAssetGift assetGift = new ShapeOriginalAssetGift();
+        assetGift.setIdAsset(idAsset);
+        assetGift.setValueBuy(assetGiftRoot.getValueBuy());
+        assetGift.setValueWork(assetGiftRoot.getValueWork());
+        assetGift.setValueRecallWork(assetGiftRoot.getValueRecallWork());
+        assetGift.setValueTax(assetGiftRoot.getValueTax());
+        assetGift.setValueOther(assetGiftRoot.getValueOther());
         String timeCurrent = String.valueOf(new Date().getTime());
         assetGift.setTimeCreated(timeCurrent);
         assetGift.setTimeModified(timeCurrent);

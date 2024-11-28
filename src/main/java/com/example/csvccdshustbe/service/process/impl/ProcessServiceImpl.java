@@ -223,9 +223,12 @@ public class ProcessServiceImpl implements ProcessService {
         Document document = documentService.saveDocument(contructionDocumentInventory(request.getDocument(), process));
         assetProcessService.saveListAssetProcess(contructionAssetProcessInventory(request, process));
         updateInformationProcessCurrentAsset(idsAsset, process);
-        List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
-                Constants.CODE_TYPE_STATE_COMPLETED);
-        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(codeTypeStates);
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
+                Arrays.asList(
+                        Constants.CODE_TYPE_STATE_INIT,
+                        Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                        Constants.CODE_TYPE_STATE_COMPLETED)
+                );
         List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
         transitionService.saveTransition(constructionTransition(process, states));
         Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
@@ -248,9 +251,12 @@ public class ProcessServiceImpl implements ProcessService {
         Document document = documentService.saveDocument(contructionDocumentDecrease(request.getDocument(), process));
         assetProcessService.saveListAssetProcess(contructionAssetProcessDecrease(request, process));
         updateInformationProcessCurrentAsset(idsAsset, process);
-        List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
-                Constants.CODE_TYPE_STATE_COMPLETED);
-        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(codeTypeStates);
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
+                Arrays.asList(
+                        Constants.CODE_TYPE_STATE_INIT,
+                        Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                        Constants.CODE_TYPE_STATE_COMPLETED)
+        );
         List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
         transitionService.saveTransition(constructionTransition(process, states));
         Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
@@ -271,9 +277,12 @@ public class ProcessServiceImpl implements ProcessService {
         Document document = documentService.saveDocument(contructionDocumentChange(request.getDocument(), process));
         assetProcessService.saveListAssetProcess(contructionAssetProcessChange(request, process));
         updateInformationProcessCurrentAsset(List.of(request.getAssetDetail().getIdAsset()), process);
-        List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
-                Constants.CODE_TYPE_STATE_COMPLETED);
-        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(codeTypeStates);
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
+                Arrays.asList(
+                        Constants.CODE_TYPE_STATE_INIT,
+                        Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                        Constants.CODE_TYPE_STATE_COMPLETED)
+        );
         List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
         transitionService.saveTransition(constructionTransition(process, states));
         Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
@@ -287,19 +296,17 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public void createRevaluationAsset(CreateRevaluationAssetRequest request) throws ValidateFiledException,
-            JsonProcessingException, IllegalAccessException {
+    public void createRevaluationAsset(CreateRevaluationAssetRequest request) throws ValidateFiledException{
         validateAssetProcessChange(List.of(request.getAssetDetail().getIdAsset()));
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(contructionDocumentRevaluation(request.getDocument(), process));
         assetProcessService.saveListAssetProcess(contructionAssetProcessRevaluation(request, process));
-        assetService.duplicationAssetBySaltAsset(request.getAssetDetail().getSalt());
-//        transformValueRevaluationToHashMap(request.getAssetDetail().getValue())
         updateInformationProcessCurrentAsset(List.of(request.getAssetDetail().getIdAsset()), process);
-        List<String> codeTypeStates = Arrays.asList(Constants.CODE_TYPE_STATE_INIT, Constants.CODE_TYPE_STATE_TEST_APPROVED,
-                Constants.CODE_TYPE_STATE_COMPLETED);
-        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(codeTypeStates);
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
+                Arrays.asList(Constants.CODE_TYPE_STATE_INIT,
+                Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                Constants.CODE_TYPE_STATE_COMPLETED));
         List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
         transitionService.saveTransition(constructionTransition(process, states));
         Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
@@ -310,11 +317,6 @@ public class ProcessServiceImpl implements ProcessService {
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
         createTaskSendMailRevaluation(userRoles, document, process);
-    }
-
-    private HashMap<String, Object> transformValueRevaluationToHashMap(String value) throws JsonProcessingException {
-        HashMap<String, Object> dataUpdateAsset = (new ObjectMapper()).readValue(value, new TypeReference<>() {});
-        return dataUpdateAsset;
     }
 
     private void validateAssetProcessDecrease(List<Integer> idsAsset) throws ValidateFiledException {
@@ -632,11 +634,16 @@ public class ProcessServiceImpl implements ProcessService {
         process.get().setStatus(status);
         processRepository.save(process.get());
         TypeProcess typeProcess = typeProcessService.findTypeProcessByIdTypeProcess(process.get().getIdTypeProcess());
-        if ( (typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_INCREASE) ||
-                typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_DECREASE))
-            && status.equals(Constants.STATUS_SUCCESS_PROCESS)){
-            assetService.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.get().getIdProcess(),
-                    status, typeProcess.getCode());
+        if (status.equals(Constants.STATUS_SUCCESS_PROCESS)){
+            if ((typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_INCREASE) ||
+                    typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_DECREASE))) {
+                assetService.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.get().getIdProcess(),
+                        status, typeProcess.getCode());
+            }
+            else if (typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_CHANGE) ||
+                     typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_REVALUATION)) {
+                assetService.updateInformationAssetByProcess(process.get());
+            }
         } else {
             assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.get().getIdProcess(), status);
         }

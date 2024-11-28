@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.original.impl.noShape;
 
+import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.NoShapeOriginalAssetBuy;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
@@ -18,6 +19,22 @@ public class NoOriginalAssetBuyFactory implements OriginalFactory {
         noShapeOriginalAssetBuy.setValueBuy(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueBuy")));
         noShapeOriginalAssetBuy.setValueTax(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueTax")));
         noShapeOriginalAssetBuy.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        noShapeOriginalAssetBuy.setTimeCreated(timeCurrent);
+        noShapeOriginalAssetBuy.setTimeModified(timeCurrent);
+        return noShapeOriginalAssetBuy;
+    }
+
+    @Override
+    public IOriginal copyOriginal(AssetOriginalDto assetOriginalDto, Integer idAsset) {
+        NoShapeOriginalAssetBuy noShapeOriginalAssetBuyRoot = (NoShapeOriginalAssetBuy) assetOriginalDto.getDataDetails();
+        NoShapeOriginalAssetBuy noShapeOriginalAssetBuy = new NoShapeOriginalAssetBuy();
+        noShapeOriginalAssetBuy.setIdAsset(idAsset);
+        noShapeOriginalAssetBuy.setIdMethodBuyAsset(noShapeOriginalAssetBuyRoot.getIdMethodBuyAsset());
+        noShapeOriginalAssetBuy.setIdTypeBuyAsset(noShapeOriginalAssetBuyRoot.getIdTypeBuyAsset());
+        noShapeOriginalAssetBuy.setValueBuy(noShapeOriginalAssetBuyRoot.getValueBuy());
+        noShapeOriginalAssetBuy.setValueTax(noShapeOriginalAssetBuyRoot.getValueTax());
+        noShapeOriginalAssetBuy.setValueOther(noShapeOriginalAssetBuyRoot.getValueOther());
         String timeCurrent = String.valueOf(new Date().getTime());
         noShapeOriginalAssetBuy.setTimeCreated(timeCurrent);
         noShapeOriginalAssetBuy.setTimeModified(timeCurrent);

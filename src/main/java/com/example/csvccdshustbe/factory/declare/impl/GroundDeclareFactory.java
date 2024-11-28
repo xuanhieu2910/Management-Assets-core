@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.declare.impl;
 
+import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
 import com.example.csvccdshustbe.entity.GroundDeclare;
 import com.example.csvccdshustbe.entity.IDeclare;
 import com.example.csvccdshustbe.factory.declare.DeclareFactory;
@@ -41,6 +42,41 @@ public class GroundDeclareFactory implements DeclareFactory {
         declare.setDateContractNumberTransferGround(ValueUtil.getStringByObject(mapDeclareRequest.get("dateContractNumberTransferGround")));
         declare.setNumberDecisionRentGround(ValueUtil.getStringByObject(mapDeclareRequest.get("numberDecisionRentGround")));
         declare.setDateNumberDecisionRentGround(ValueUtil.getStringByObject(mapDeclareRequest.get("dateNumberDecisionRentGround")));
+        return declare;
+    }
+
+    @Override
+    public IDeclare copyDeclare(AssetDeclareDto assetDeclareDto, Integer idAsset) {
+        GroundDeclare declareRoot = (GroundDeclare) assetDeclareDto.getDataDetail();
+        GroundDeclare declare = new GroundDeclare();
+        declare.setIdAsset(idAsset);
+        declare.setIdGoalsUseGround(declareRoot.getIdGoalsUseGround());
+        declare.setWorkplace(declareRoot.getWorkplace());
+        declare.setHdsnNoBussiness(declareRoot.getHdsnNoBussiness());
+        declare.setHdsnBussiness(declare.getHdsnNoBussiness());
+        declare.setHdsnRent(declare.getHdsnRent());
+        declare.setHdsnBonds(declare.getHdsnBonds());
+        declare.setLivePlace(declare.getLivePlace());
+        declare.setBlankPlace(declare.getBlankPlace());
+        declare.setEncroachedPlace(declare.getEncroachedPlace());
+        declare.setSyntheticUse(declare.getSyntheticUse());
+        declare.setOtherUse(declare.getOtherUse());
+        declare.setAcreage(declare.getAcreage());
+        declare.setLicenseCertificateUseGround(declare.getLicenseCertificateUseGround());
+        declare.setDateLicenseCertificateUseGround(declare.getDateLicenseCertificateUseGround());
+        declare.setNumberDecisionDeliverGround(declare.getNumberDecisionDeliverGround());
+        declare.setDateNumberDecisionDeliverGround(declare.getDateNumberDecisionDeliverGround());
+        declare.setContractNumberRentGround(declare.getContractNumberRentGround());
+        declare.setDateContractNumberRentGround(declare.getDateContractNumberRentGround());
+        declare.setAnotherContract(declare.getAnotherContract());
+        declare.setIdTypeDeclareAsset(declare.getIdTypeDeclareAsset());
+        String timeCurrent = String.valueOf(new Date().getTime());
+        declare.setTimeCreated(timeCurrent);
+        declare.setTimeModified(timeCurrent);
+        declare.setContractNumberTransferGround(declare.getContractNumberTransferGround());
+        declare.setDateContractNumberTransferGround(declare.getDateContractNumberTransferGround());
+        declare.setNumberDecisionRentGround(declare.getNumberDecisionRentGround());
+        declare.setDateNumberDecisionRentGround(declare.getDateNumberDecisionRentGround());
         return declare;
     }
 

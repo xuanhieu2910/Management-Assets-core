@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.original.impl.noShape;
 
+import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.NoShapeOriginalAssetGift;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
@@ -17,6 +18,21 @@ public class NoOriginalAssetGiftFactory implements OriginalFactory {
         gift.setValueWork(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueWork")));
         gift.setValueTax(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueTax")));
         gift.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        gift.setTimeCreated(timeCurrent);
+        gift.setTimeModified(timeCurrent);
+        return gift;
+    }
+
+    @Override
+    public IOriginal copyOriginal(AssetOriginalDto assetOriginalDto, Integer idAsset) {
+        NoShapeOriginalAssetGift assetGift = (NoShapeOriginalAssetGift) assetOriginalDto.getDataDetails();
+        NoShapeOriginalAssetGift gift = new NoShapeOriginalAssetGift();
+        gift.setIdAsset(idAsset);
+        gift.setValueBuy(assetGift.getValueBuy());
+        gift.setValueWork(assetGift.getValueWork());
+        gift.setValueTax(assetGift.getValueTax());
+        gift.setValueOther(assetGift.getValueOther());
         String timeCurrent = String.valueOf(new Date().getTime());
         gift.setTimeCreated(timeCurrent);
         gift.setTimeModified(timeCurrent);

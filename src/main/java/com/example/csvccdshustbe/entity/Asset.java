@@ -73,8 +73,4 @@ public class Asset {
     private Integer isIncrease;
     @Column(name = "is_decrease")
     private Integer isDecrease;
-    @Column(name = "status")
-    private Integer status;
-    @Column(name = "id_asset_root")
-    private Integer idAssetRoot;
 }

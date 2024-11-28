@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.original.impl.noShape;
 
+import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.NoShapeOriginalAssetTransferLand;
 import com.example.csvccdshustbe.factory.original.OriginalFactory;
@@ -16,6 +17,20 @@ public class NoShapeOriginalAssetTransferLandFactory implements OriginalFactory 
         transferLand.setValueUse(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueUse")));
         transferLand.setValueTax(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueTax")));
         transferLand.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        transferLand.setTimeCreated(timeCurrent);
+        transferLand.setTimeModified(timeCurrent);
+        return transferLand;
+    }
+
+    @Override
+    public IOriginal copyOriginal(AssetOriginalDto assetOriginalDto, Integer idAsset) {
+        NoShapeOriginalAssetTransferLand transferLandRoot = (NoShapeOriginalAssetTransferLand) assetOriginalDto.getDataDetails();
+        NoShapeOriginalAssetTransferLand transferLand = new NoShapeOriginalAssetTransferLand();
+        transferLand.setIdAsset(idAsset);
+        transferLand.setValueUse(transferLandRoot.getValueUse());
+        transferLand.setValueTax(transferLandRoot.getValueTax());
+        transferLand.setValueOther(transferLandRoot.getValueOther());
         String timeCurrent = String.valueOf(new Date().getTime());
         transferLand.setTimeCreated(timeCurrent);
         transferLand.setTimeModified(timeCurrent);

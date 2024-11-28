@@ -78,7 +78,7 @@ public class CarModuleFactory implements ModuleFactory {
     }
 
     @Override
-    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+    public IModules copyModule(AssetModulesDto assetModulesDto, Integer idAsset) {
         CarModule carModuleRoot = (CarModule) assetModulesDto.getDataDetails();
         CarModule carModule = new CarModule();
         carModule.setIdAsset(idAsset);

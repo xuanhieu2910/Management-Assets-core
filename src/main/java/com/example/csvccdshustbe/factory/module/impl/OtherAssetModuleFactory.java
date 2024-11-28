@@ -41,7 +41,7 @@ public class OtherAssetModuleFactory implements ModuleFactory {
     }
 
     @Override
-    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+    public IModules copyModule(AssetModulesDto assetModulesDto, Integer idAsset) {
         OtherAssetModule otherAssetModuleRoot = (OtherAssetModule) assetModulesDto.getDataDetails();
         OtherAssetModule otherAssetModule = new OtherAssetModule();
         otherAssetModule.setIdAsset(idAsset);
