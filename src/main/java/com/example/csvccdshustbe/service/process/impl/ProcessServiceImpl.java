@@ -626,28 +626,31 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public Process updateProcessByIdProcessAndStatus(Integer idProcess, Integer status) {
-        Optional<Process> process =  processRepository.findProcessByIdProcess(idProcess);
-        if (process.isEmpty()){
-            throw new NotFoundException("Don't exits process by id process!");
-        }
-        process.get().setStatus(status);
-        processRepository.save(process.get());
-        TypeProcess typeProcess = typeProcessService.findTypeProcessByIdTypeProcess(process.get().getIdTypeProcess());
-        if (status.equals(Constants.STATUS_SUCCESS_PROCESS)){
-            if ((typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_INCREASE) ||
-                    typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_DECREASE))) {
-                assetService.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.get().getIdProcess(),
-                        status, typeProcess.getCode());
-            }
-            else if (typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_CHANGE) ||
-                     typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_REVALUATION)) {
-                assetService.updateInformationAssetByProcess(process.get());
+    public Process updateProcessByIdProcessAndStatus(Integer idProcess, Integer status) throws ValidateFiledException,
+            JsonProcessingException, IllegalAccessException {
+        Process process =  findProcessByIdProcess(idProcess);
+        process.setStatus(status);
+        processRepository.save(process);
+        handleAssetByTypeProcess(process, status, typeProcessService.findTypeProcessByIdTypeProcess(process.getIdTypeProcess()));
+        return process;
+    }
+
+    void handleAssetByTypeProcess(Process process, Integer status, TypeProcess typeProcess)
+            throws ValidateFiledException, JsonProcessingException, IllegalAccessException {
+        if (status.equals(Constants.STATUS_SUCCESS_PROCESS)) {
+            switch (typeProcess.getCode()) {
+                case Constants.CODE_TYPE_PROCESS_INCREASE, Constants.CODE_TYPE_PROCESS_DECREASE ->
+                        assetService.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.getIdProcess(),
+                                status, typeProcess.getCode());
+                case Constants.CODE_TYPE_PROCESS_CHANGE, Constants.CODE_TYPE_PROCESS_REVALUATION ->
+                        assetService.updateInformationAssetByProcess(process, status);
+                default -> {
+                    return;
+                }
             }
         } else {
-            assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.get().getIdProcess(), status);
+            assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
         }
-        return process.get();
     }
 
     @Override

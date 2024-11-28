@@ -3,12 +3,14 @@ package com.example.csvccdshustbe.service.request.impl;
 import com.example.csvccdshustbe.dto.request.RequestDetailsDto;
 import com.example.csvccdshustbe.entity.Request;
 import com.example.csvccdshustbe.entity.RequestStakeHolder;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.request.RequestRepository;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.example.csvccdshustbe.service.request.RequestService;
 import com.example.csvccdshustbe.service.requestStakeHolder.RequestStakeHolderService;
 import com.example.csvccdshustbe.service.state.StateService;
 import com.example.csvccdshustbe.utility.Constants;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -37,7 +39,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void updateStatusRequestByIdRequest(Integer idRequest) {
+    public void updateStatusRequestByIdRequest(Integer idRequest) throws ValidateFiledException, JsonProcessingException, IllegalAccessException {
         Optional<Request> request = requestRepository.findRequestByIdRequest(idRequest);
         if (request.isEmpty()){
             throw new NotFoundException("Don't exist request by id request!");
@@ -58,7 +60,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
 
-    private void updateStatusRequest(Request request, List<RequestStakeHolder> requestStakeHolderList) {
+    private void updateStatusRequest(Request request, List<RequestStakeHolder> requestStakeHolderList)
+            throws ValidateFiledException, JsonProcessingException, IllegalAccessException {
         for (RequestStakeHolder stakeHolder: requestStakeHolderList){
             if (stakeHolder.getStatus().equals(Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING)) {
                 return;

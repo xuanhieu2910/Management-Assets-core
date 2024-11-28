@@ -191,6 +191,7 @@ public class Constants {
      * Constant Asset LOT LIST ASSET CHILDREN
      * */
     public static final String KEY_OLD_INFORMATION = "old_information";
+    public static final String KEY_NEW_INFORMATION = "new_information";
     /*----------------------------------------------------*/
     /**
      * Constant Original
@@ -264,12 +265,12 @@ public class Constants {
     /**
      * Constant Type Process
      * */
-    public static String CODE_TYPE_PROCESS_INCREASE = "increase";
-    public static String CODE_TYPE_PROCESS_DECREASE = "decrease";
-    public static String CODE_TYPE_PROCESS_CHANGE = "change";
-    public static String CODE_TYPE_PROCESS_REMOVE = "remove";
-    public static String CODE_TYPE_PROCESS_REVALUATION = "revaluation";
-    public static String CODE_TYPE_PROCESS_INVENTORY = "inventory";
+    public static final String CODE_TYPE_PROCESS_INCREASE = "increase";
+    public static final String CODE_TYPE_PROCESS_DECREASE = "decrease";
+    public static final String CODE_TYPE_PROCESS_CHANGE = "change";
+    public static final String CODE_TYPE_PROCESS_REMOVE = "remove";
+    public static final String CODE_TYPE_PROCESS_REVALUATION = "revaluation";
+    public static final String CODE_TYPE_PROCESS_INVENTORY = "inventory";
     /*----------------------------------------------------*/
     /**
      * Constant PREFIX_DOCUMENT
