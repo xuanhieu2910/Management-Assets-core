@@ -65,6 +65,7 @@ import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import jakarta.transaction.Transactional;
@@ -1493,8 +1494,6 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
         asset.setIsIncrease(Constants.IS_NOT_INCREASED);
         asset.setIsDecrease(Constants.IS_NOT_DECREASED);
-        asset.setStatus(Constants.STATUS_ASSET_ACTIVE);
-        asset.setIdAssetRoot(null);
         return asset;
     }
 
@@ -1660,7 +1659,8 @@ public class AssetServiceImpl implements AssetService {
         if (asset.isEmpty()) {
             return prefix + String.format("%0" + minLength +"d", codeValueCurrent) + "-";
         }
-        codeValueCurrent = Integer.parseInt(asset.get().getCodeAsset().replace(prefix,"").split("-")[0]);
+        String codeDocument = asset.get().getCodeAsset().split("-")[0];
+        codeValueCurrent = Integer.parseInt(codeDocument.replaceAll(ValueUtil.PATTERN_NON_NUMBER, ""));
         if (String.valueOf(codeValueCurrent).length() > minLength) {
             minLength = minLength + 2;
         }
@@ -1754,34 +1754,56 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public void duplicationAssetBySaltAsset(String salt)
+    public Asset duplicationAssetBySaltAsset(String saltAssetRoot)
             throws ValidateFiledException, IllegalAccessException {
-        FindDetailsAssetResponse assetRoot = findDetailsAssetBySaltAsset(salt);
+        FindDetailsAssetResponse assetRoot = findDetailsAssetBySaltAsset(saltAssetRoot);
         if (assetRoot.getCommon().getQuantity() > Constants.QUANTITY_DEFAULT){
-            duplicationAssetLot(assetRoot);
+            return duplicationAssetLot(assetRoot);
         } else {
-            duplicationAsset(assetRoot);
+           return duplicationAsset(assetRoot);
         }
     }
 
-    private void duplicationAssetLot(FindDetailsAssetResponse assetRoot) {
+    @Override
+    public void updateInformationAssetByProcess(Process process) {
+
     }
 
-    private void duplicationAsset(FindDetailsAssetResponse assetRoot) throws ValidateFiledException {
+
+//    private HashMap<String, Object> transformValueRevaluationToHashMap(String value) throws JsonProcessingException {
+//        HashMap<String, Object> dataUpdateAsset =  ((HashMap<String, Object>)
+//                (new ObjectMapper()).readValue(value, new TypeReference<>() {})).get(Constants.KEY_CHILDREN_DISTRIBUTION);
+//        return dataUpdateAsset;
+//    }
+
+    private Asset duplicationAssetLot(FindDetailsAssetResponse assetRoot) {
+        return null;
+    }
+
+    private Asset duplicationAsset(FindDetailsAssetResponse assetRoot) throws ValidateFiledException {
         Asset assetDup = storeDuplicationCommonAsset(assetRoot.getCommon());
         storeDuplicationDepreciationAsset(assetDup.getIdAsset(), assetRoot.getAssetDepreciationDto());
         storeDuplicationModulesAsset(assetDup.getIdAsset(), assetRoot.getModules());
         storeDuplicationOriginalAsset(assetDup.getIdAsset(), assetRoot.getOriginal());
         storeDuplicationDeclareAsset(assetDup.getIdAsset(), assetRoot.getDeclare());
+        return assetDup;
     }
 
-    private void storeDuplicationDeclareAsset(Integer idAsset, AssetDeclareDto declare) {
+    private void storeDuplicationDeclareAsset(Integer idAsset, AssetDeclareDto declare) throws ValidateFiledException {
+        DeclareFactory declareFactory = (DeclareFactory) ProxyInitDataAssetUtil.
+                proxyInitDeclareDataAsset(declare.getBluePrintDeclare().getTypeDeclare());
+        IDeclare iDeclare = declareFactory.copyDeclare(declare, idAsset);
+        declareServiceFactory.save(iDeclare,idAsset,declare);
     }
 
     private void storeDuplicationOriginalAsset(Integer idAsset, AssetOriginalDto original) throws ValidateFiledException {
         OriginalFactory originalFactory = (OriginalFactory) ProxyInitDataAssetUtil.
                 proxyInitOriginalDataAsset(ValueUtil.getStringByObject(original.getBluePrintAssetOriginalDto().getTypeOriginal()));
-//        IOriginal iOriginal = originalFactory.createOriginal(originalDataAsset);
+        IOriginal iOriginal = originalFactory.copyOriginal(original, idAsset);
+        originalServiceFactory.save(iOriginal,
+                original.getBluePrintAssetOriginalDto().getIdOriginal(),
+                idAsset,
+                original.getBluePrintAssetOriginalDto().getTypeOriginal());
     }
 
     private Asset storeDuplicationCommonAsset(CommonAssetDto commonAsset) {
@@ -1838,7 +1860,7 @@ public class AssetServiceImpl implements AssetService {
         for (AssetModulesDto module: modules){
             ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
                     proxyInitModuleDataAsset(ValueUtil.getStringByObject(module.getBluePrintAssetModules().getTypeModules()));
-            IModules iModules = moduleFactory.createModule(module, idAsset);
+            IModules iModules = moduleFactory.copyModule(module, idAsset);
             modulesServiceFactory.duplication(iModules, module.getBluePrintAssetModules().getTypeModules(),
                     module.getBluePrintAssetModules().getIdModules(), idAsset );
         }
@@ -1877,8 +1899,6 @@ public class AssetServiceImpl implements AssetService {
         assetDup.setIdTypeProcessCurrent(assetRoot.getIdTypeProcessCurrent());
         assetDup.setIsIncrease(assetRoot.getIsIncrease());
         assetDup.setIsDecrease(assetRoot.getIsDecrease());
-        assetDup.setStatus(Constants.STATUS_ASSET_IN_ACTIVE);
-        assetDup.setIdAssetRoot(assetRoot.getIdAssetRoot());
         return assetDup;
     }
 

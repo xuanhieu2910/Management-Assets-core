@@ -188,6 +188,11 @@ public class Constants {
     public static final String KEY_CHILDREN_DISTRIBUTION = "distribution";
     /*----------------------------------------------------*/
     /**
+     * Constant Asset LOT LIST ASSET CHILDREN
+     * */
+    public static final String KEY_OLD_INFORMATION = "old_information";
+    /*----------------------------------------------------*/
+    /**
      * Constant Original
      * */
     public static final Integer ORIGINAL_VISIBLE = 1;
@@ -497,10 +502,5 @@ public class Constants {
     public static Integer IS_ERROR_INSTANCE = 1;
     public static Integer IS_NOT_ERROR_INSTANCE = -1;
     /*-----------------------------------------------------*/
-    /**
-     * Constants ASSET
-     * */
-    public static Integer STATUS_ASSET_IN_ACTIVE = -1;
-    public static Integer STATUS_ASSET_ACTIVE = 1;
-    /*-----------------------------------------------------*/
+
 }

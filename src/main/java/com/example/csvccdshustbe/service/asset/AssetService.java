@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.asset;
 
+import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.FileExcelException;
 import com.example.csvccdshustbe.exception.FileException;
@@ -45,5 +46,6 @@ public interface AssetService {
     Page<FindAllAssetResponseToChange> findAllAssetToChange(FindAllAssetToChangeRequest changeRequest);
     Page<FindAllAssetResponseToRevaluation> findAllAssetToRevaluation(FindAllAssetToRevaluationRequest changeRequest);
     Page<FindAllAssetResponseToDecrease> findAllAssetToDecrease(FindAllAssetToDecreaseRequest decreaseRequest);
-    void duplicationAssetBySaltAsset(String saltAsset) throws ValidateFiledException, IllegalAccessException;
+    Asset duplicationAssetBySaltAsset(String saltAssetRoot) throws ValidateFiledException, IllegalAccessException;
+    void updateInformationAssetByProcess(Process process);
 }

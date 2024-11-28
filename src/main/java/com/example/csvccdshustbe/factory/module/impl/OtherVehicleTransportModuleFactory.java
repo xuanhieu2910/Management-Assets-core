@@ -69,7 +69,7 @@ public class OtherVehicleTransportModuleFactory implements ModuleFactory {
     }
 
     @Override
-    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+    public IModules copyModule(AssetModulesDto assetModulesDto, Integer idAsset) {
         OtherVehicleTransportModule otherVehicleTransportModuleRoot = (OtherVehicleTransportModule) assetModulesDto.getDataDetails();
         OtherVehicleTransportModule  module = new OtherVehicleTransportModule();
         module.setIdAsset(idAsset);

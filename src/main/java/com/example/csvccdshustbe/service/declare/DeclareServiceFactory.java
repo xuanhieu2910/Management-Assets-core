@@ -1,6 +1,8 @@
 package com.example.csvccdshustbe.service.declare;
 
 
+import com.example.csvccdshustbe.dto.assetCurrentUsage.AssetCurrentUsageDetailsDto;
+import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
 import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
 import com.example.csvccdshustbe.dto.declare.CommonDeclareDetailsDto;
 import com.example.csvccdshustbe.entity.*;
@@ -59,6 +61,28 @@ public class DeclareServiceFactory {
         assetDeclareService.save(createAssetDeclare(declareDataAsset, idInstance));
     }
 
+    public void save(IDeclare ideclare, Integer idAsset, AssetDeclareDto declare) throws ValidateFiledException {
+        EnumDeclareFactory enumDeclareFactory = Enum.valueOf(EnumDeclareFactory.class,
+                declare.getBluePrintDeclare().getTypeDeclare());
+        Integer idInstance;
+        switch (enumDeclareFactory){
+            case HouseDeclare -> {
+                idInstance = houseDeclareService.save((HouseDeclare) ideclare).getIdHouseDeclare();
+            }
+            case GroundDeclare -> {
+                idInstance = groundDeclareService.save((GroundDeclare) ideclare).getIdGroundDeclare();
+            }
+            case CommonDeclare -> {
+                idInstance = commonDeclareService.save((CommonDeclare) ideclare).getIdOtherDeclare();
+                copyCurrentUsage(declare, idAsset);
+            }
+            default -> {
+                throw new ValidateFiledException("Don't exits type declare!");
+            }
+        }
+        assetDeclareService.save(copyAssetDeclare(declare, idInstance, idAsset));
+    }
+
     private void saveCurrentUsage(Map<String, Object> declareDataAsset) {
         Integer idAsset = ValueUtil.getIntegerByObject(declareDataAsset.get("idAsset"));
         List<HashMap<String,Object>> idsCurrentUsage = (List<HashMap<String,Object>>) declareDataAsset.get("currentUsage");
@@ -76,10 +100,37 @@ public class DeclareServiceFactory {
         }
     }
 
+    private void copyCurrentUsage(AssetDeclareDto declare, Integer idAsset) {
+        CommonDeclareDetailsDto detailsDto = (CommonDeclareDetailsDto) declare.getDataDetail();
+        if (!CollectionUtils.isEmpty(detailsDto.getAssetCurrentUsageDetailsDto())) {
+            List<AssetCurrentUsage> assetCurrentUsageList  = new ArrayList<>();
+            String timeCurrent = String.valueOf(new Date().getTime());
+            for (AssetCurrentUsageDetailsDto currentUsageDetailsDtoRoot : detailsDto.getAssetCurrentUsageDetailsDto()) {
+                AssetCurrentUsage assetCurrentUsage = new AssetCurrentUsage();
+                assetCurrentUsage.setIdAsset(idAsset);
+                assetCurrentUsage.setIdCurrentUsage(currentUsageDetailsDtoRoot.getIdCurrentUsage());
+                assetCurrentUsage.setTimeCreated(timeCurrent);
+                assetCurrentUsageList.add(assetCurrentUsage);
+            }
+            assetCurrentUsageService.saveAll(assetCurrentUsageList);
+        }
+    }
+
     private AssetDeclare createAssetDeclare(Map<String, Object> declareDataAsset, Integer idInstance) {
         AssetDeclare declare = new AssetDeclare();
         declare.setIdAsset(ValueUtil.getIntegerByObject(ValueUtil.getIntegerByObject(declareDataAsset.get("idAsset"))));
         declare.setIdDeclare(ValueUtil.getIntegerByObject(ValueUtil.getIntegerByObject(declareDataAsset.get("idDeclare"))));
+        declare.setIdInstance(idInstance);
+        String timeCurrent = String.valueOf(new Date().getTime());
+        declare.setTimeCreated(timeCurrent);
+        declare.setTimeModified(timeCurrent);
+        return assetDeclareService.save(declare);
+    }
+
+    private AssetDeclare copyAssetDeclare(AssetDeclareDto declareDto, Integer idInstance, Integer idAsset) {
+        AssetDeclare declare = new AssetDeclare();
+        declare.setIdAsset(idAsset);
+        declare.setIdDeclare(declareDto.getBluePrintDeclare().getIdDeclare());
         declare.setIdInstance(idInstance);
         String timeCurrent = String.valueOf(new Date().getTime());
         declare.setTimeCreated(timeCurrent);

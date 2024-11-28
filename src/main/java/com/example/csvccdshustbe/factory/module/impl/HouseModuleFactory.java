@@ -47,7 +47,7 @@ public class HouseModuleFactory implements ModuleFactory {
     }
 
     @Override
-    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+    public IModules copyModule(AssetModulesDto assetModulesDto, Integer idAsset) {
         HouseModule houseModuleRoot = (HouseModule) assetModulesDto.getDataDetails();
         HouseModule houseModule = new HouseModule();
         houseModule.setIdAsset(idAsset);

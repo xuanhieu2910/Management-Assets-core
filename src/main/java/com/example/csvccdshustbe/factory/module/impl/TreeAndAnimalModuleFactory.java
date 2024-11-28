@@ -32,7 +32,7 @@ public class TreeAndAnimalModuleFactory implements ModuleFactory {
     }
 
     @Override
-    public IModules createModule(AssetModulesDto assetModulesDto, Integer idAsset) {
+    public IModules copyModule(AssetModulesDto assetModulesDto, Integer idAsset) {
         AnimalTreeModule animalTreeModuleRoot = (AnimalTreeModule) assetModulesDto.getDataDetails();
         AnimalTreeModule animalTreeModule = new AnimalTreeModule();
         animalTreeModule.setIdAsset(idAsset);

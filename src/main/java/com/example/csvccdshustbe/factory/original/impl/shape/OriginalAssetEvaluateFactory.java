@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.original.impl.shape;
 
+import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.Original;
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetEvaluate;
@@ -17,6 +18,20 @@ public class OriginalAssetEvaluateFactory implements OriginalFactory {
         assetEvaluate.setValueBuy(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueBuy")));
         assetEvaluate.setValueTax(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueTax")));
         assetEvaluate.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        assetEvaluate.setTimeCreated(timeCurrent);
+        assetEvaluate.setTimeModified(timeCurrent);
+        return assetEvaluate;
+    }
+
+    @Override
+    public IOriginal copyOriginal(AssetOriginalDto assetOriginalDto, Integer idAsset) {
+        ShapeOriginalAssetEvaluate assetEvaluateRoot = (ShapeOriginalAssetEvaluate) assetOriginalDto.getDataDetails();
+        ShapeOriginalAssetEvaluate assetEvaluate = new ShapeOriginalAssetEvaluate();
+        assetEvaluate.setIdAsset(idAsset);
+        assetEvaluate.setValueBuy(assetEvaluateRoot.getValueBuy());
+        assetEvaluate.setValueTax(assetEvaluateRoot.getValueTax());
+        assetEvaluate.setValueOther(assetEvaluateRoot.getValueOther());
         String timeCurrent = String.valueOf(new Date().getTime());
         assetEvaluate.setTimeCreated(timeCurrent);
         assetEvaluate.setTimeModified(timeCurrent);

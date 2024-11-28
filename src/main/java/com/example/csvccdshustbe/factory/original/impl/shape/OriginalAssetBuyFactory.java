@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.factory.original.impl.shape;
 
+import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.entity.IOriginal;
 import com.example.csvccdshustbe.entity.Original;
 import com.example.csvccdshustbe.entity.ShapeOriginalAssetBuy;
@@ -22,6 +23,25 @@ public class OriginalAssetBuyFactory implements OriginalFactory {
         shapeOriginalAssetBuy.setValueOther(ValueUtil.getDoubleByObject(mapOriginalCreate.get("valueOther")));
         shapeOriginalAssetBuy.setIdMethodBuyAsset(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idMethodBuyAsset")));
         shapeOriginalAssetBuy.setIdTypeBuyAsset(ValueUtil.getIntegerByObject(mapOriginalCreate.get("idTypeBuyAsset")));
+        String timeCurrent = String.valueOf(new Date().getTime());
+        shapeOriginalAssetBuy.setTimeCreated(timeCurrent);
+        shapeOriginalAssetBuy.setTimeModified(timeCurrent);
+        return shapeOriginalAssetBuy;
+    }
+
+    @Override
+    public IOriginal copyOriginal(AssetOriginalDto assetOriginalDto, Integer idAsset) {
+        ShapeOriginalAssetBuy shapeOriginalAssetBuyRoot = (ShapeOriginalAssetBuy) assetOriginalDto.getDataDetails();
+        ShapeOriginalAssetBuy shapeOriginalAssetBuy = new ShapeOriginalAssetBuy();
+        shapeOriginalAssetBuy.setIdAsset(idAsset);
+        shapeOriginalAssetBuy.setValueBuy(shapeOriginalAssetBuyRoot.getValueBuy());
+        shapeOriginalAssetBuy.setValueDiscount(shapeOriginalAssetBuyRoot.getValueDiscount());
+        shapeOriginalAssetBuy.setValueWork(shapeOriginalAssetBuyRoot.getValueWork());
+        shapeOriginalAssetBuy.setValueRecallWork(shapeOriginalAssetBuyRoot.getValueRecallWork());
+        shapeOriginalAssetBuy.setValueTax(shapeOriginalAssetBuyRoot.getValueTax());
+        shapeOriginalAssetBuy.setValueOther(shapeOriginalAssetBuyRoot.getValueOther());
+        shapeOriginalAssetBuy.setIdMethodBuyAsset(shapeOriginalAssetBuyRoot.getIdMethodBuyAsset());
+        shapeOriginalAssetBuy.setIdTypeBuyAsset(shapeOriginalAssetBuyRoot.getIdTypeBuyAsset());
         String timeCurrent = String.valueOf(new Date().getTime());
         shapeOriginalAssetBuy.setTimeCreated(timeCurrent);
         shapeOriginalAssetBuy.setTimeModified(timeCurrent);
