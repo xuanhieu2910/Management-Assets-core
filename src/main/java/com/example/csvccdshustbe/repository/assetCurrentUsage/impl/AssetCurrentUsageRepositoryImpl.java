@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageRepositoryCustom {
 
@@ -84,7 +85,7 @@ public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageReposit
     }
 
     @Override
-    public CurrentUsageReport08aDto findAllCurrentUsageAssetGroundInReport(List<Integer> idsDepartment) {
+    public Optional<CurrentUsageReport08aDto> findAllCurrentUsageAssetGroundInReport(List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT " +
                 "    COUNT(gd.id_ground_declare) AS total_ground_declare, " +
@@ -102,10 +103,9 @@ public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageReposit
                 "where asset.quantity = 1 and asset.id_department_origin in (:idsDepartmentOriginal) ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsDepartmentOriginal", idsDepartment);
-        Object[] obj = (Object[]) query.getSingleResult();
-        if (obj == null) {
-            return null;
-        }
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
 
         CurrentUsageReport08aDto res = new CurrentUsageReport08aDto();
         res.setCountAsset(ValueUtil.getIntegerByObject(obj[0]));
@@ -116,11 +116,14 @@ public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageReposit
         res.setTotalBonds(ValueUtil.getStringByObject(obj[5]));
         res.setTotalSynthetic(ValueUtil.getStringByObject(obj[6]));
         res.setTotalOther(ValueUtil.getStringByObject(obj[7]));
-        return res;
+        return Optional.of(res);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
-    public CurrentUsageReport08aDto findAllCurrentUsageAssetHouseInReport(List<Integer> idsDepartment) {
+    public Optional<CurrentUsageReport08aDto> findAllCurrentUsageAssetHouseInReport(List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT  " +
                 "    COUNT(hd.id_house_declare) AS total_ground_declare,  " +
@@ -138,10 +141,9 @@ public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageReposit
                 "where asset.quantity = 1 and asset.id_department_origin in (:idsDepartmentOriginal) ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsDepartmentOriginal", idsDepartment);
-        Object[] obj = (Object[]) query.getSingleResult();
-        if (obj == null) {
-            return null;
-        }
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
 
         CurrentUsageReport08aDto res = new CurrentUsageReport08aDto();
         res.setCountAsset(ValueUtil.getIntegerByObject(obj[0]));
@@ -152,12 +154,15 @@ public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageReposit
         res.setTotalBonds(ValueUtil.getStringByObject(obj[5]));
         res.setTotalSynthetic(ValueUtil.getStringByObject(obj[6]));
         res.setTotalOther(ValueUtil.getStringByObject(obj[7]));
-        return res;
+                return Optional.of(res);
+            }
+        }
+        return Optional.empty();
 
     }
 
     @Override
-    public CurrentUsageReport08aDto findAllCurrentUsageAssetCarInReport(List<Integer> idsDepartment) {
+    public Optional<CurrentUsageReport08aDto> findAllCurrentUsageAssetCarInReport(List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT  " +
                 "    COUNT( distinct asset.id_asset) AS total_asset,  " +
@@ -207,10 +212,9 @@ public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageReposit
         query.setParameter("idsDepartmentOriginal", idsDepartment);
         query.setParameter("codeName", Constants.CODE_NAME_CAR);
         query.setParameter("visible", Constants.IS_VISIBLE);
-        Object[] obj = (Object[]) query.getSingleResult();
-        if (obj == null) {
-            return null;
-        }
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
 
         CurrentUsageReport08aDto res = new CurrentUsageReport08aDto();
         res.setCountAsset(ValueUtil.getIntegerByObject(obj[0]));
@@ -220,12 +224,15 @@ public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageReposit
         res.setTotalRent(ValueUtil.getStringByObject(obj[4]));
         res.setTotalBonds(ValueUtil.getStringByObject(obj[5]));
         res.setTotalOther(ValueUtil.getStringByObject(obj[6]));
-        return res;
+                return Optional.of(res);
+            }
+        }
+        return Optional.empty();
 
     }
 
     @Override
-    public CurrentUsageReport08aDto findAllCurrentUsageAssetOtherInReport(List<Integer> idsDepartment) {
+    public Optional<CurrentUsageReport08aDto> findAllCurrentUsageAssetOtherInReport(List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT  " +
                 "    COUNT( distinct asset.id_asset) AS total_asset,  " +
@@ -276,10 +283,9 @@ public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageReposit
         query.setParameter("codeNameCar", Constants.CODE_NAME_CAR);
         query.setParameter("codeNameNoShape", Constants.CODE_NAME_NO_SHAPE);
         query.setParameter("visible", Constants.IS_VISIBLE);
-        Object[] obj = (Object[]) query.getSingleResult();
-        if (obj == null) {
-            return null;
-        }
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
 
         CurrentUsageReport08aDto res = new CurrentUsageReport08aDto();
         res.setCountAsset(ValueUtil.getIntegerByObject(obj[0]));
@@ -289,7 +295,10 @@ public class AssetCurrentUsageRepositoryImpl implements AssetCurrentUsageReposit
         res.setTotalRent(ValueUtil.getStringByObject(obj[4]));
         res.setTotalBonds(ValueUtil.getStringByObject(obj[5]));
         res.setTotalOther(ValueUtil.getStringByObject(obj[6]));
-        return res;
+        return Optional.of(res);
+    }
+}
+        return Optional.empty();
 
     }
 }

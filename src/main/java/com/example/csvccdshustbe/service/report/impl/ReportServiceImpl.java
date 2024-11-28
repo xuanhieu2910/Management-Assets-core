@@ -112,56 +112,53 @@ public class ReportServiceImpl implements ReportService {
         Map<Integer, Object[]> data = new HashMap<>();
         Sheet sheet = workbook.getSheetAt(0);
         int rowNum = sheet.getLastRowNum() + 1;
-        CurrentUsageReport08aDto recordsGroundToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetGroundInReport(csvcUser.getIdsDepartmentCurrent());
+        Optional<CurrentUsageReport08aDto> recordsGroundToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetGroundInReport(csvcUser.getIdsDepartmentCurrent());
             data.put(rowNum, new Object[]{
-                    recordsGroundToWrite.getCountAsset(),
-                    recordsGroundToWrite.getAcreage(),
-                    recordsGroundToWrite.getTotalStateManagement(),
-                    recordsGroundToWrite.getTotalNoBusiness(),
-                    recordsGroundToWrite.getTotalBusiness(),
-                    recordsGroundToWrite.getTotalRent(),
-                    recordsGroundToWrite.getTotalBonds(),
-                    recordsGroundToWrite.getTotalSynthetic(),
-                    recordsGroundToWrite.getTotalOther(),
+                    recordsGroundToWrite.get().getCountAsset(),
+                    recordsGroundToWrite.get().getAcreage(),
+                    recordsGroundToWrite.get().getTotalStateManagement(),
+                    recordsGroundToWrite.get().getTotalNoBusiness(),
+                    recordsGroundToWrite.get().getTotalBusiness(),
+                    recordsGroundToWrite.get().getTotalRent(),
+                    recordsGroundToWrite.get().getTotalBonds(),
+                    recordsGroundToWrite.get().getTotalSynthetic(),
+                    recordsGroundToWrite.get().getTotalOther(),
             });
-        rowNum++;
-        CurrentUsageReport08aDto recordsHouseToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetHouseInReport(csvcUser.getIdsDepartmentCurrent());
+        Optional<CurrentUsageReport08aDto> recordsHouseToWrite= assetCurrentUsageRepository.findAllCurrentUsageAssetHouseInReport(csvcUser.getIdsDepartmentCurrent());
         data.put(rowNum, new Object[]{
-                recordsHouseToWrite.getCountAsset(),
-                recordsHouseToWrite.getAcreage(),
-                recordsHouseToWrite.getTotalStateManagement(),
-                recordsHouseToWrite.getTotalNoBusiness(),
-                recordsHouseToWrite.getTotalBusiness(),
-                recordsHouseToWrite.getTotalRent(),
-                recordsHouseToWrite.getTotalBonds(),
-                recordsHouseToWrite.getTotalSynthetic(),
-                recordsHouseToWrite.getTotalOther(),
+                recordsHouseToWrite.get().getCountAsset(),
+                recordsHouseToWrite.get().getAcreage(),
+                recordsHouseToWrite.get().getTotalStateManagement(),
+                recordsHouseToWrite.get().getTotalNoBusiness(),
+                recordsHouseToWrite.get().getTotalBusiness(),
+                recordsHouseToWrite.get().getTotalRent(),
+                recordsHouseToWrite.get().getTotalBonds(),
+                recordsHouseToWrite.get().getTotalSynthetic(),
+                recordsHouseToWrite.get().getTotalOther(),
         });
-        rowNum++;
-        CurrentUsageReport08aDto recordsCarToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetCarInReport(csvcUser.getIdsDepartmentCurrent());
+        Optional<CurrentUsageReport08aDto> recordsCarToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetCarInReport(csvcUser.getIdsDepartmentCurrent());
         data.put(rowNum, new Object[]{
-                recordsCarToWrite.getCountAsset(),
-                recordsCarToWrite.getAcreage(),
-                recordsCarToWrite.getTotalStateManagement(),
-                recordsCarToWrite.getTotalNoBusiness(),
-                recordsCarToWrite.getTotalBusiness(),
-                recordsCarToWrite.getTotalRent(),
-                recordsCarToWrite.getTotalBonds(),
-                recordsCarToWrite.getTotalSynthetic(),
-                recordsCarToWrite.getTotalOther(),
+                recordsCarToWrite.get().getCountAsset(),
+                recordsCarToWrite.get().getAcreage(),
+                recordsCarToWrite.get().getTotalStateManagement(),
+                recordsCarToWrite.get().getTotalNoBusiness(),
+                recordsCarToWrite.get().getTotalBusiness(),
+                recordsCarToWrite.get().getTotalRent(),
+                recordsCarToWrite.get().getTotalBonds(),
+                recordsCarToWrite.get().getTotalSynthetic(),
+                recordsCarToWrite.get().getTotalOther(),
         });
-        rowNum++;
-        CurrentUsageReport08aDto recordsOtherToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetOtherInReport(csvcUser.getIdsDepartmentCurrent());
+        Optional<CurrentUsageReport08aDto> recordsOtherToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetOtherInReport(csvcUser.getIdsDepartmentCurrent());
         data.put(rowNum, new Object[]{
-                recordsOtherToWrite.getCountAsset(),
-                recordsOtherToWrite.getAcreage(),
-                recordsOtherToWrite.getTotalStateManagement(),
-                recordsOtherToWrite.getTotalNoBusiness(),
-                recordsOtherToWrite.getTotalBusiness(),
-                recordsOtherToWrite.getTotalRent(),
-                recordsOtherToWrite.getTotalBonds(),
-                recordsOtherToWrite.getTotalSynthetic(),
-                recordsOtherToWrite.getTotalOther(),
+                recordsOtherToWrite.get().getCountAsset(),
+                recordsOtherToWrite.get().getAcreage(),
+                recordsOtherToWrite.get().getTotalStateManagement(),
+                recordsOtherToWrite.get().getTotalNoBusiness(),
+                recordsOtherToWrite.get().getTotalBusiness(),
+                recordsOtherToWrite.get().getTotalRent(),
+                recordsOtherToWrite.get().getTotalBonds(),
+                recordsOtherToWrite.get().getTotalSynthetic(),
+                recordsOtherToWrite.get().getTotalOther(),
         });
 
         Set<Integer> keySet = data.keySet();
