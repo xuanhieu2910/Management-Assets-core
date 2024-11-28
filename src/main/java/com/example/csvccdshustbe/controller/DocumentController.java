@@ -203,8 +203,10 @@ public class DocumentController {
             processService.createRevaluationAsset(request);
             return ApiResponseDto.createdWithMessage("Create revaluation asset success!", HttpStatus.OK);
         } catch (ValidateFiledException | JsonProcessingException e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

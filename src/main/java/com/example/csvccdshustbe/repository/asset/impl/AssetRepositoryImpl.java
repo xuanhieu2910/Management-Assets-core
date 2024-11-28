@@ -201,8 +201,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         assetCategory.value_wear_tear, assetCategory.year_used_wear_tear, assetCategory.minimum_time_depreciation,      " +
                 "         assetCategory.maximum_time_depreciation, asset.parent, asset.salt, asset.quantity, " +
                 "         asset.id_department_origin, asset.id_process_current, asset.status_process_current, " +
-                "         asset.id_type_process_current, asset.is_increase, asset.is_decrease, asset.status, " +
-                "         asset.id_asset_root, asset.id_user_created, asset.id_user_modified " +
+                "         asset.id_type_process_current, asset.is_increase, asset.is_decrease, " +
+                "         asset.id_user_created, asset.id_user_modified " +
                 " from asset asset       " +
                 "      left join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category      " +
                 "      left join department de on asset.id_department = de.id_department      " +
@@ -275,7 +275,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.id_level_type_asset, asset.id_user_created,  " +
                 "        asset.id_user_modified, asset.quantity, asset.id_instance,  " +
                 "        asset.id_department_origin, asset.parent, asset.salt,  " +
-                "        asset.id_process_current, asset.id_type_process_current,  " +
+                "        asset.id_process_current,asset.status_process_current, asset.id_type_process_current,  " +
                 "        asset.is_increase, asset.is_decrease  " +
                 "from asset       " +
                 "where asset.salt = :salt ");
@@ -1522,10 +1522,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         dto.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[65]));
         dto.setIsIncrease(ValueUtil.getIntegerByObject(obj[66]));
         dto.setIsDecrease(ValueUtil.getIntegerByObject(obj[67]));
-        dto.setStatus(ValueUtil.getIntegerByObject(obj[68]));
-        dto.setIdAssetRoot(ValueUtil.getIntegerByObject(obj[69]));
-        dto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[70]));
-        dto.setIdUserModified(ValueUtil.getIntegerByObject(obj[71]));
+        dto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[68]));
+        dto.setIdUserModified(ValueUtil.getIntegerByObject(obj[69]));
     }
 
     private void setBluePrintDepartmentLevelTypeAsset(AssetBluePrintDto dto, Object[] obj) {
