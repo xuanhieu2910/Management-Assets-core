@@ -10,16 +10,19 @@ import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
+import org.apache.poi.sl.draw.geom.GuideIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AssetProcessServiceImpl implements AssetProcessService {
@@ -40,6 +43,15 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         Page<FindAllAssetDto> findAllAssetDtos = assetProcessRepository.findAllAssetProcess(request, pageable);
         return new PageImpl<>(convertToFindAllAssetProcess(findAllAssetDtos.getContent()),
                 pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public AssetProcess findAssetProcessByIdProcess(Integer idProcess) {
+        Optional<AssetProcess> assetProcess = assetProcessRepository.findAssetProcessByIdProcess(idProcess);
+        if (assetProcess.isEmpty()){
+            throw new NotFoundException("Don't exits asset process!");
+        }
+        return assetProcess.get();
     }
 
     private List<FindAllAssetProcessResponse> convertToFindAllAssetProcess(List<FindAllAssetDto> content) {

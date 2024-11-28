@@ -51,6 +51,7 @@ import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.assetDepreciation.AssetDepreciationService;
 import com.example.csvccdshustbe.service.assetOriginalOfFormation.AssetOriginalOfFormationService;
+import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import com.example.csvccdshustbe.service.declare.DeclareServiceFactory;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
@@ -183,6 +184,8 @@ public class AssetServiceImpl implements AssetService {
     CsvcUserRepository csvcUserRepository;
     @Autowired
     AssetInstanceRepository assetInstanceRepository;
+    @Autowired
+    AssetProcessService assetProcessService;
     @Transactional
     @Override
     public void createAsset(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException {
@@ -841,6 +844,9 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(commonDataAsset.get("idLevelTypeAsset")));
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         asset.setIdUserModified(csvcUser.getIdUser());
+        if (commonDataAsset.get("statusProcessCurrent") != null){
+            asset.setStatusProcessCurrent(ValueUtil.getIntegerByObject(commonDataAsset.get("statusProcessCurrent")));
+        }
         assetRepository.save(asset);
     }
 
@@ -1765,16 +1771,21 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public void updateInformationAssetByProcess(Process process) {
-
+    public void updateInformationAssetByProcess(Process process, Integer status) throws JsonProcessingException,
+            ValidateFiledException,
+            IllegalAccessException {
+        AssetProcess assetProcess = assetProcessService.findAssetProcessByIdProcess(process.getIdProcess());
+        HashMap<String, Object> value = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
+        HashMap<String, Object> dataUpdateAsset = transformValueRevaluationToHashMap(String.valueOf(value.get(Constants.KEY_NEW_INFORMATION)));
+        dataUpdateAsset.put("statusProcessCurrent", status);
+        updateAsset(dataUpdateAsset);
     }
 
 
-//    private HashMap<String, Object> transformValueRevaluationToHashMap(String value) throws JsonProcessingException {
-//        HashMap<String, Object> dataUpdateAsset =  ((HashMap<String, Object>)
-//                (new ObjectMapper()).readValue(value, new TypeReference<>() {})).get(Constants.KEY_CHILDREN_DISTRIBUTION);
-//        return dataUpdateAsset;
-//    }
+    private HashMap<String, Object> transformValueRevaluationToHashMap(String value) throws JsonProcessingException {
+        HashMap<String, Object> dataUpdateAsset = (new ObjectMapper()).readValue(value, new TypeReference<>() {});
+        return dataUpdateAsset;
+    }
 
     private Asset duplicationAssetLot(FindDetailsAssetResponse assetRoot) {
         return null;

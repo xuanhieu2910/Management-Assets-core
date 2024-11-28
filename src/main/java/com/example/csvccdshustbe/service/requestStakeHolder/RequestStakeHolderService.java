@@ -4,13 +4,14 @@ import com.example.csvccdshustbe.dto.requestStakeHolder.RequestStakeHolderDetail
 import com.example.csvccdshustbe.entity.RequestStakeHolder;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.requestStakeHolder.ApprovedRequestStakeHolderRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
 
 public interface RequestStakeHolderService {
 
     List<RequestStakeHolder> createNewRequestStakeHolder(List<RequestStakeHolder> stakeHolder);
-    void approvedRequestStakeHolder(ApprovedRequestStakeHolderRequest request) throws ValidateFiledException;
+    void approvedRequestStakeHolder(ApprovedRequestStakeHolderRequest request) throws ValidateFiledException, JsonProcessingException, IllegalAccessException;
     RequestStakeHolder findRequestStakeHolderByIdRequestStakeHolder(Integer idRequestStakeHolder);
     List<RequestStakeHolder> findRequestStakeHolderByIdRequest(Integer idRequest);
     List<RequestStakeHolderDetails> findRequestStakeHolderDetailsByIdRequest(Integer idRequest);
