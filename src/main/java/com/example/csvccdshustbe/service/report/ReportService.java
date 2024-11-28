@@ -7,6 +7,8 @@ import com.example.csvccdshustbe.response.report.FindAllReportResponse;
 import com.example.csvccdshustbe.response.report.FindAllReportVisibleResponse;
 import org.springframework.data.domain.Page;
 
+import java.io.IOException;
+
 public interface ReportService {
 
     Page<FindAllReportVisibleResponse> findAllReportVisible(FindAllReportVisibleRequest request);
@@ -14,4 +16,7 @@ public interface ReportService {
 
     String exportToPathFileReportByCodeReport(String codeReport);
     Report findReportByCode(String codeReport);
+
+    String ReportUsingAsset08a() throws IOException;
+
 }

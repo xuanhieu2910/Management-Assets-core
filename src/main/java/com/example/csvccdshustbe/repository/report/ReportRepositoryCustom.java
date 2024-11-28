@@ -15,4 +15,5 @@ public interface ReportRepositoryCustom {
     Page<FindAllReportDto> findAllReportDto(FindAllReportRequest request, Pageable pageable);
     Optional<Report> findReportByCodeAndStatus(String codeReport, Integer status);
 
+
 }

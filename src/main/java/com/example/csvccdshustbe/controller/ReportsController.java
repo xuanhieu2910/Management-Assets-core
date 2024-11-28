@@ -11,10 +11,7 @@ import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -86,5 +83,16 @@ public class ReportsController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @GetMapping("/download-report-current-usage")
+    public ResponseEntity<?> downloadReportSuccess(){
+        try {
+            return ApiResponseDto.createdWithState(reportService.ReportUsingAsset08a(),
+                    "Download report success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 }
