@@ -502,5 +502,18 @@ public class Constants {
     public static Integer IS_ERROR_INSTANCE = 1;
     public static Integer IS_NOT_ERROR_INSTANCE = -1;
     /*-----------------------------------------------------*/
+    /**
+     * Constants ASSET
+     * */
+    public static Integer STATUS_ASSET_IN_ACTIVE = -1;
+    public static Integer STATUS_ASSET_ACTIVE = 1;
+    /*-----------------------------------------------------*/
+    /**
+     * Constants Code Name Category
+     * */
 
+    public static String CODE_NAME_CAR = "car";
+
+    public static String CODE_NAME_NO_SHAPE = "TSCDVH";
+    /*-----------------------------------------------------*/
 }
