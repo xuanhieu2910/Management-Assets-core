@@ -94,5 +94,14 @@ public class ReportsController {
         }
     }
 
+    @GetMapping("/download-report-inventory")
+    public ResponseEntity<?> downloadReportInventory(@RequestParam("status") Integer status, @RequestParam("idAssetProcess") Integer idAssetProcess){
+        try {
+            return ApiResponseDto.createdWithState(reportService.downloadFileInventoryReport(status, idAssetProcess),
+                    "Download inventory report success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

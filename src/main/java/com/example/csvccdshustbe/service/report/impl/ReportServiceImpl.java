@@ -11,6 +11,7 @@ import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
 import com.example.csvccdshustbe.response.report.FindAllReportResponse;
 import com.example.csvccdshustbe.response.report.FindAllReportVisibleResponse;
 import com.example.csvccdshustbe.service.report.ReportService;
+import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -40,6 +41,9 @@ public class ReportServiceImpl implements ReportService {
     ReportRepository reportRepository;
     @Autowired
     AssetCurrentUsageRepository assetCurrentUsageRepository;
+    @Autowired
+    FilesStorageService filesStorageService;
+
     @Override
     public Page<FindAllReportVisibleResponse> findAllReportVisible(FindAllReportVisibleRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
@@ -185,4 +189,8 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
+    @Override
+    public String downloadFileInventoryReport(Integer status, Integer idAssetProcess) throws IOException {
+        return filesStorageService.downLoadInventoryReport(status, idAssetProcess);
+    }
 }

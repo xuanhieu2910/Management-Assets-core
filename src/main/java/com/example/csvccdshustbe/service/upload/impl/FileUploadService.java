@@ -22,6 +22,7 @@ import com.example.csvccdshustbe.entity.CountryProducer;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
+import com.example.csvccdshustbe.repository.report.ReportRepository;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.countryProducer.CountryProducerService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
@@ -58,10 +59,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Log4j2
 @Service
@@ -146,6 +145,8 @@ public class FileUploadService implements FilesStorageService {
     GoalsUseGroundService goalsUseGroundService;
     @Autowired
     OriginalOfFormationService originalOfFormationService;
+    @Autowired
+    ReportRepository reportRepository;
 
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
@@ -354,6 +355,137 @@ public class FileUploadService implements FilesStorageService {
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String downLoadInventoryReport(Integer status, Integer idAssetProcess) throws IOException {
+        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static.reports") + SEPARATOR
+                + "37_C53 - HD_Bien ban kiem ke TSCD.xlsx";
+        //String fileExcel = "E:\csvc\src\main\resources\static\reports\37_C53 - HD_Bien ban kiem ke TSCD.xlsx";
+
+        Optional<List<Object[]>> assetReport = reportRepository.findInfoAssetForInventoryReport(idAssetProcess, status);
+        Optional<List<Object[]>> stakeHoder = reportRepository.findInfoStakeHolderForInventoryReport(idAssetProcess, status);
+
+        FileInputStream file = new FileInputStream(new File(fileExcel));
+        Workbook workbook = new XSSFWorkbook(file);
+
+        Sheet sheet = workbook.getSheetAt(0);
+
+        if (assetReport.isPresent()) {
+            List<Object[]> resultList = assetReport.get();
+
+            if (!resultList.isEmpty()) {
+                Object[] firstRow = resultList.get(0);  // Lấy dòng đầu tiên
+                String numberreport = "Số " + (Integer) firstRow[0];  // Kết hợp "Số " với giá trị trả về
+
+                Long timestamp = (Long) firstRow[1];
+                Date date = new Date(timestamp);
+                SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
+                SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
+                SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+                SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+                SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+                String minute = minuteFormat.format(date);
+                String hour = hourFormat.format(date);
+                String day = dayFormat.format(date);
+                String month = monthFormat.format(date);
+                String year = yearFormat.format(date);
+                String formattedDate = "Thời điểm kiểm kê: " + hour +" giờ " + minute + " ngày " + day + " tháng " + month + " năm " + year;
+
+                String name = (String) firstRow[2];
+                String assetCode = (String) firstRow[3];  // Mã tài sản
+                String departmentName = (String) firstRow[4];  // Nơi sử dụng (phòng ban)
+                Integer quantity = (Integer) firstRow[5];  // Số lượng
+                String originalValueStr = (String) firstRow[6];  // Nguyên giá dưới dạng String
+                String restValueStr = (String) firstRow[7];  // Giá trị còn lại dưới dạng String
+                Double originalValue = parseToDouble(originalValueStr);
+                Double restValue = parseToDouble(restValueStr);
+                String assetProcessValue = (String ) firstRow[8];  // Số lượng, nguyên giá, giá trị còn lại của kiểm kê
+                String quantityInventory = assetProcessValue.replaceAll(".*\"quantity\":([0-9]+).*", "$1").trim();
+                String originalValueInventory = assetProcessValue.replaceAll(".*\"originalValue\":\"([^\"]+)\".*", "$1").trim();
+                String restValueInventory = assetProcessValue.replaceAll(".*\"restValue\":\"([^\"]+)\".*", "$1").trim();
+                Integer quantityInv = Integer.parseInt(quantityInventory);  // Convert string to Integer
+                Double originalValueInv = Double.parseDouble(originalValueInventory);  // Convert string to Double
+                Double restValueInv = Double.parseDouble(restValueInventory);  // Convert string to Double
+
+                Integer quantityDiff = (quantity != null ? quantity : 0) - quantityInv;
+                Double originalValueDiff = (originalValue != null ? originalValue : 0) - originalValueInv;
+                Double restValueDiff = (restValue != null ? restValue : 0) - restValueInv;
+                String notes = (String) firstRow[9];  // Ghi chú của tài sản
+
+                updateCell(sheet, 6, 13, numberreport);
+                updateCell(sheet, 7, 1, formattedDate);
+                updateCell(sheet, 16, 1, "1");
+                updateCell(sheet, 16,2, name);
+                updateCell(sheet, 16, 3, assetCode);  // Mã tài sản vào A8
+                updateCell(sheet, 16, 4, departmentName);  // Nơi sử dụng vào A9
+                updateCell(sheet, 16, 5, quantity != null ? quantity.toString() : "0");  // Số lượng vào A10
+                updateCell(sheet, 16, 6, originalValue != null ? originalValue.toString() : "0");  // Nguyên giá vào A11
+                updateCell(sheet, 16, 7, restValue != null ? restValue.toString() : "0");  // Giá trị còn lại vào A12
+                updateCell(sheet, 16, 8, quantityInventory);  // Số lượng vào H16
+                updateCell(sheet, 16, 9, originalValueInventory);  // Nguyên giá vào I16
+                updateCell(sheet, 16, 10, restValueInventory);  // Giá trị còn lại vào J16
+                updateCell(sheet, 16, 11, quantityDiff.toString());  // Số lượng chênh lệch vào K16
+                updateCell(sheet, 16, 12, originalValueDiff.toString());  // Nguyên giá chênh lệch vào L16
+                updateCell(sheet, 16, 13, restValueDiff.toString());  // Giá trị còn lại chênh lệch vào M16
+                updateCell(sheet, 16, 14, notes != null ? notes : "");  // Ghi chú vào A14
+            }
+
+        }
+
+        if (stakeHoder.isPresent()) {
+            List<Object[]> resultListStakeHoder = stakeHoder.get();
+
+            if (!resultListStakeHoder.isEmpty()) {
+                for (int i = 0; i < resultListStakeHoder.size(); i++) {
+                    Object[] row = resultListStakeHoder.get(i);
+                    String title = (i == 0) ? "Trưởng ban" : "Ủy viên";
+                    String user = "- Ông /Bà " + (String) row[0] + " chức vụ " + (String) row[1] + " đại diện "
+                            + (String) row[2] + title;
+                    updateCell(sheet, 9 + i, 1, user);
+                }
+            }
+        }
+
+
+        // Lưu file Excel sau khi đã điền dữ liệu
+        String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
+        String folder = root + SEPARATOR + "Reports" + SEPARATOR + FileUtil.getFolderInfo();
+        FileUtil.createFolder(folder);
+        String fileFinal = folder + SEPARATOR + "Inventory_Report_" + new Date().getTime() + ".xlsx";
+        log.info("File final: " + fileFinal);
+
+        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
+        String fileReturn = fileFinal.replace(root, PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
+        log.info("File return: " + fileReturn);
+
+        try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
+            workbook.write(fileOut);
+            workbook.close();
+            return fileReturn;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void updateCell(Sheet sheet, int rowIndex, int colIndex, String content) {
+        rowIndex--;
+        colIndex--;
+        Row row = sheet.getRow(rowIndex);
+        if (row == null) {
+            row = sheet.createRow(rowIndex);
+        }
+        Cell cell = row.getCell(colIndex, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        cell.setCellValue(content);
+    }
+
+    public Double parseToDouble(String value) {
+        try {
+            return value != null && !value.isEmpty() ? Double.parseDouble(value) : 0.0;
+        } catch (NumberFormatException e) {
+            return 0.0;
         }
     }
 

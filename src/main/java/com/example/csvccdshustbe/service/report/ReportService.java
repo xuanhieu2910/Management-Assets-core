@@ -19,4 +19,6 @@ public interface ReportService {
 
     String ReportUsingAsset08a() throws IOException;
 
+    String downloadFileInventoryReport(Integer status, Integer idAssetProcess) throws IOException;
+
 }
