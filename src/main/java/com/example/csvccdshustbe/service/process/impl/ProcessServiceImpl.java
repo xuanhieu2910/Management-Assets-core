@@ -122,6 +122,7 @@ public class ProcessServiceImpl implements ProcessService {
     private List<AssetProcess> contructionAssetProcessIncrease(List<AssetDetailIncreaseRequest> assetProcessValue, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String currentTime = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         for (AssetDetailIncreaseRequest assetProcessRequest: assetProcessValue){
             AssetProcess assetProcess = new AssetProcess();
             assetProcess.setIdAsset(assetProcessRequest.getIdAsset());
@@ -131,6 +132,8 @@ public class ProcessServiceImpl implements ProcessService {
             assetProcess.setValue(assetProcessRequest.getValue());
             assetProcess.setTimeCreated(currentTime);
             assetProcess.setTimeModified(currentTime);
+            assetProcess.setIdUserCreated(csvcUser.getIdUser());
+            assetProcess.setIdUserModified(csvcUser.getIdUser());
             assetProcessList.add(assetProcess);
         }
         return assetProcessList;
@@ -377,6 +380,7 @@ public class ProcessServiceImpl implements ProcessService {
     private List<AssetProcess> constructionAssetProcessDocumentInventory(CreateInventoryAssetRequest request, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         for (AssetDetailInventoryRequest inventoryRequest : request.getAssetDetail()){
             AssetProcess assetProcess = new AssetProcess();
             assetProcess.setIdAsset(inventoryRequest.getIdAsset());
@@ -386,6 +390,8 @@ public class ProcessServiceImpl implements ProcessService {
             assetProcess.setValue(inventoryRequest.getValue());
             assetProcess.setTimeCreated(timeCurrent);
             assetProcess.setTimeModified(timeCurrent);
+            assetProcess.setIdUserCreated(csvcUser.getIdUser());
+            assetProcess.setIdUserModified(csvcUser.getIdUser());
             assetProcessList.add(assetProcess);
         }
         return assetProcessList;
@@ -394,6 +400,7 @@ public class ProcessServiceImpl implements ProcessService {
     private List<AssetProcess> constructionAssetProcessUpdateInventory(List<AssetProcessDto> assetProcessDtos, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         for (AssetProcessDto assetProcessDto : assetProcessDtos){
             AssetProcess assetProcess = new AssetProcess();
             assetProcess.setIdAsset(assetProcessDto.getIdAsset());
@@ -403,6 +410,8 @@ public class ProcessServiceImpl implements ProcessService {
             assetProcess.setValue(assetProcessDto.getValue());
             assetProcess.setTimeCreated(timeCurrent);
             assetProcess.setTimeModified(timeCurrent);
+            assetProcess.setIdUserCreated(csvcUser.getIdUser());
+            assetProcess.setIdUserModified(csvcUser.getIdUser());
             assetProcessList.add(assetProcess);
         }
         return assetProcessList;
@@ -429,6 +438,7 @@ public class ProcessServiceImpl implements ProcessService {
     private List<AssetProcess> contructionAssetProcessDecrease(CreateDecreaseAssetRequest request, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         for (AssetDetailDecreaseRequest inventoryRequest : request.getAssetDetail()){
             AssetProcess assetProcess = new AssetProcess();
             assetProcess.setIdAsset(inventoryRequest.getIdAsset());
@@ -438,6 +448,8 @@ public class ProcessServiceImpl implements ProcessService {
             assetProcess.setValue(inventoryRequest.getValue());
             assetProcess.setTimeCreated(timeCurrent);
             assetProcess.setTimeModified(timeCurrent);
+            assetProcess.setIdUserCreated(csvcUser.getIdUser());
+            assetProcess.setIdUserModified(csvcUser.getIdUser());
             assetProcessList.add(assetProcess);
         }
         return assetProcessList;
@@ -446,6 +458,7 @@ public class ProcessServiceImpl implements ProcessService {
     private List<AssetProcess> contructionAssetProcessChange(CreateChangeAssetRequest request, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AssetProcess assetProcess = new AssetProcess();
         assetProcess.setIdAsset(request.getAssetDetail().getIdAsset());
         assetProcess.setIdProcess(process.getIdProcess());
@@ -454,12 +467,15 @@ public class ProcessServiceImpl implements ProcessService {
         assetProcess.setValue(request.getAssetDetail().getValue());
         assetProcess.setTimeCreated(timeCurrent);
         assetProcess.setTimeModified(timeCurrent);
+        assetProcess.setIdUserCreated(csvcUser.getIdUser());
+        assetProcess.setIdUserModified(csvcUser.getIdUser());
         assetProcessList.add(assetProcess);
         return assetProcessList;
     }
 
     private List<AssetProcess> contructionAssetProcessRevaluation(CreateRevaluationAssetRequest request, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String timeCurrent = String.valueOf(new Date().getTime());
         AssetProcess assetProcess = new AssetProcess();
         assetProcess.setIdAsset(request.getAssetDetail().getIdAsset());
@@ -469,6 +485,8 @@ public class ProcessServiceImpl implements ProcessService {
         assetProcess.setValue(request.getAssetDetail().getValue());
         assetProcess.setTimeCreated(timeCurrent);
         assetProcess.setTimeModified(timeCurrent);
+        assetProcess.setIdUserCreated(csvcUser.getIdUser());
+        assetProcess.setIdUserModified(csvcUser.getIdUser());
         assetProcessList.add(assetProcess);
         return assetProcessList;
     }

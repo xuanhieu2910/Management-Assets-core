@@ -80,10 +80,11 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
     public Optional<AssetProcess> findAssetProcessByIdProcess(Integer idProcess) {
         StringBuilder sb = new StringBuilder();
         sb.append("select ap.id_asset_process, ap.id_asset, ap.id_process,  " +
-                "       ap.id_type_process, ap.status, value, ap.time_created, ap.time_modified " +
-                "from asset_process ap " +
-                "    inner join asset at on ap.id_asset = at.id_asset " +
-                "where ap.id_process = :idProcess ");
+                "         ap.id_type_process, ap.status, value, ap.time_created,  " +
+                "         ap.time_modified, ap.id_user_created, ap.id_user_modified  " +
+                "  from asset_process ap  " +
+                "      inner join asset at on ap.id_asset = at.id_asset  " +
+                "  where ap.id_process = :idProcess  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
         List<Object[]> result = query.getResultList();

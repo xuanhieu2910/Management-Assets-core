@@ -31,4 +31,8 @@ public class AssetProcess {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+    @Column(name = "id_user_created")
+    private Integer idUserCreated;
+    @Column(name = "id_user_modified")
+    private Integer idUserModified;
 }
