@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.report;
 
 import com.example.csvccdshustbe.entity.Report;
+import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
 import com.example.csvccdshustbe.response.report.FindAllReportResponse;
@@ -18,5 +19,7 @@ public interface ReportService {
     Report findReportByCode(String codeReport);
 
     String ReportUsingAsset08a() throws IOException;
+
+    String ReportIncreaseDecreaseAsset08b(CreateReportInCreaseAndDecreaseAllRequest request) throws IOException;
 
 }

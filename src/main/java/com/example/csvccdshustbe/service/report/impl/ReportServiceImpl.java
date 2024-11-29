@@ -2,10 +2,11 @@ package com.example.csvccdshustbe.service.report.impl;
 
 import com.example.csvccdshustbe.dto.report.CurrentUsageReport08aDto;
 import com.example.csvccdshustbe.dto.report.FindAllReportDto;
+import com.example.csvccdshustbe.dto.report.IncreaseDecreaseReport08bDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Report;
-import com.example.csvccdshustbe.repository.assetCurrentUsage.AssetCurrentUsageRepository;
 import com.example.csvccdshustbe.repository.report.ReportRepository;
+import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
 import com.example.csvccdshustbe.response.report.FindAllReportResponse;
@@ -38,8 +39,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     ReportRepository reportRepository;
-    @Autowired
-    AssetCurrentUsageRepository assetCurrentUsageRepository;
+
     @Override
     public Page<FindAllReportVisibleResponse> findAllReportVisible(FindAllReportVisibleRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
@@ -112,10 +112,10 @@ public class ReportServiceImpl implements ReportService {
         Map<Integer, Object[]> data = new HashMap<>();
         Sheet sheet = workbook.getSheetAt(0);
         int rowNum = sheet.getLastRowNum() + 1;
-        writeDataToMapReport08a(data, rowNum++, assetCurrentUsageRepository.findAllCurrentUsageAssetGroundInReport(csvcUser.getIdsDepartmentCurrent()));
-        writeDataToMapReport08a(data, rowNum++, assetCurrentUsageRepository.findAllCurrentUsageAssetHouseInReport(csvcUser.getIdsDepartmentCurrent()));
-        writeDataToMapReport08a(data, rowNum++, assetCurrentUsageRepository.findAllCurrentUsageAssetCarInReport(csvcUser.getIdsDepartmentCurrent()));
-        writeDataToMapReport08a(data, rowNum++, assetCurrentUsageRepository.findAllCurrentUsageAssetOtherInReport(csvcUser.getIdsDepartmentCurrent()));
+        writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetGroundInReport(csvcUser.getIdsDepartmentCurrent()));
+        writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetHouseInReport(csvcUser.getIdsDepartmentCurrent()));
+        writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetCarInReport(csvcUser.getIdsDepartmentCurrent()));
+        writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetOtherInReport(csvcUser.getIdsDepartmentCurrent()));
 
         Set<Integer> keySet = data.keySet();
         for (Integer key : keySet){
@@ -157,6 +157,74 @@ public class ReportServiceImpl implements ReportService {
                     record.getTotalBonds(),
                     record.getTotalSynthetic(),
                     record.getTotalOther(),
+            });
+        }
+    }
+
+
+    public String ReportIncreaseDecreaseAsset08b(CreateReportInCreaseAndDecreaseAllRequest request) throws IOException{
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String fileExcel = "D:\\CompanyBk\\CSVC\\Sample_Increase_Decrease_Report.xlsx";
+
+        FileInputStream file = new FileInputStream(new File(fileExcel));
+        XSSFWorkbook workbook = new XSSFWorkbook(file);
+        Map<Integer, Object[]> data = new HashMap<>();
+        Sheet sheet = workbook.getSheetAt(0);
+        int rowNum = sheet.getLastRowNum() + 1;
+        setIdsDepartmentOriginal(request);
+        writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseGroundInReport(request));
+        writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseHouseInReport(request));
+        writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseCarInReport(request));
+        writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseOtherAssetInReport(request));
+        Set<Integer> keySet = data.keySet();
+        for (Integer key : keySet){
+            Row row = sheet.createRow(rowNum++);
+            Object[] objArr = data.get(key);
+            int cellNum = 0;
+            for (Object obj : objArr) {
+                Cell cell = row.createCell(cellNum++);
+                if (obj instanceof String)
+                    cell.setCellValue((String) obj);
+                else if (obj instanceof Integer)
+                    cell.setCellValue((Integer) obj);
+            }
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(fileExcel);
+            workbook.write(out);
+            out.close();
+            return fileExcel;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void setIdsDepartmentOriginal(CreateReportInCreaseAndDecreaseAllRequest request) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+    }
+
+
+    private void writeDataToMapReport08b(
+            Map<Integer, Object[]> data,
+            int rowNum,
+            Optional<IncreaseDecreaseReport08bDto> recordOptional) {
+        if (recordOptional.isPresent()) {
+            IncreaseDecreaseReport08bDto record = recordOptional.get();
+            data.put(rowNum, new Object[]{
+                    record.getCountAssetStart(),
+                    record.getAcreageStart(),
+                    record.getTotalOriginalStart(),
+                    record.getCountAssetIncrease(),
+                    record.getAcreageIncrease(),
+                    record.getTotalOriginalIncrease(),
+                    record.getCountDecrease(),
+                    record.getAcreageDecrease(),
+                    record.getTotalOriginalDecrease(),
+                    record.getCountAssetEnd(),
+                    record.getAcreageEnd(),
+                    record.getTotalOriginalEnd(),
             });
         }
     }

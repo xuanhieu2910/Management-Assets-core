@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
+import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
 import com.example.csvccdshustbe.service.report.ReportService;
@@ -85,7 +86,7 @@ public class ReportsController {
     }
 
     @GetMapping("/download-report-current-usage")
-    public ResponseEntity<?> downloadReportSuccess(){
+    public ResponseEntity<?> downloadReportCurrentUsageSuccess(){
         try {
             return ApiResponseDto.createdWithState(reportService.ReportUsingAsset08a(),
                     "Download report success!", HttpStatus.OK);
@@ -94,5 +95,15 @@ public class ReportsController {
         }
     }
 
+
+    @GetMapping("/download-report-increase-decrease-all-asset")
+    public ResponseEntity<?> downloadReportIncreaseDecreaseSuccess(CreateReportInCreaseAndDecreaseAllRequest request){
+        try {
+            return ApiResponseDto.createdWithState(reportService.ReportIncreaseDecreaseAsset08b(request),
+                    "Download report success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
