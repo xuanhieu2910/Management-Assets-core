@@ -16,11 +16,12 @@ public interface ProcessService {
     void createChangeAsset(CreateChangeAssetRequest request) throws ValidateFiledException, JsonProcessingException, IllegalAccessException;
     void createRevaluationAsset(CreateRevaluationAssetRequest request) throws ValidateFiledException, JsonProcessingException, IllegalAccessException;
     Process findProcessByIdProcess(Integer idProcess);
-    Process updateProcessByIdProcessAndStatus(Integer idProcess, Integer status);
+    Process updateProcessByIdProcessAndStatus(Integer idProcess, Integer status) throws ValidateFiledException, JsonProcessingException, IllegalAccessException;
     Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedResponse(FindAllProcessBeAssignedRequest request);
     ProcessStatisticsIncreaseResponse getStatisticIncrease();
     ProcessStatisticsInventoryResponse getStatisticInventory();
     ProcessStatisticsDecreaseResponse getStatisticDecrease();
     ProcessStatisticsChangeResponse getStatisticChange();
     ProcessStatisticsRevaluationResponse getStatisticRevaluation();
+
 }

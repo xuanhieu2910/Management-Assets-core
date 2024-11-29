@@ -10,6 +10,7 @@ import com.example.csvccdshustbe.service.reason.ReasonService;
 import com.example.csvccdshustbe.service.request.RequestService;
 import com.example.csvccdshustbe.service.requestStakeHolder.RequestStakeHolderService;
 import com.example.csvccdshustbe.utility.Constants;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,8 @@ public class RequestStakeHolderServiceImpl implements RequestStakeHolderService 
 
     @Transactional
     @Override
-    public void approvedRequestStakeHolder(ApprovedRequestStakeHolderRequest request) throws ValidateFiledException {
+    public void approvedRequestStakeHolder(ApprovedRequestStakeHolderRequest request) throws ValidateFiledException,
+            JsonProcessingException, IllegalAccessException {
         validateDataApprovedRequestStakeHolder(request);
         RequestStakeHolder stakeHolder = findRequestStakeHolderByIdRequestStakeHolder(request.getIdRequestStakeHolder());
         if (request.getStatus().equals(Constants.STATUS_REQUEST_STAKE_HOLDER_FALSE)){

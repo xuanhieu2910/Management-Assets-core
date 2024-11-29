@@ -275,7 +275,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.id_level_type_asset, asset.id_user_created,  " +
                 "        asset.id_user_modified, asset.quantity, asset.id_instance,  " +
                 "        asset.id_department_origin, asset.parent, asset.salt,  " +
-                "        asset.id_process_current, asset.id_type_process_current,  " +
+                "        asset.id_process_current,asset.status_process_current, asset.id_type_process_current,  " +
                 "        asset.is_increase, asset.is_decrease  " +
                 "from asset       " +
                 "where asset.salt = :salt ");

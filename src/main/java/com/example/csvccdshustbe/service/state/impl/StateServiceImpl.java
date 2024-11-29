@@ -9,6 +9,7 @@ import com.example.csvccdshustbe.dto.userRole.UserRoleDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.enums.RolePattern;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.state.StateRepository;
 import com.example.csvccdshustbe.response.request.RequestDetailsResponse;
 import com.example.csvccdshustbe.response.requestData.RequestDataDetailsResponse;
@@ -24,6 +25,7 @@ import com.example.csvccdshustbe.service.transition.TransitionService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -62,7 +64,8 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public void updateStatusStateByIdState(Integer idState) {
+    public void updateStatusStateByIdState(Integer idState) throws ValidateFiledException,
+            JsonProcessingException, IllegalAccessException {
         List<Request> requests = requestService.findAllRequestByIdState(idState);
         Optional<State> state = stateRepository.findStateByIdState(idState);
         if (state.isEmpty()){
@@ -152,7 +155,7 @@ public class StateServiceImpl implements StateService {
         return response;
     }
 
-    private void handleStateNext(State stateCurrent) {
+    private void handleStateNext(State stateCurrent) throws ValidateFiledException, JsonProcessingException, IllegalAccessException {
         Transition transition = transitionService.findTransitionByIdProcess(stateCurrent.getIdProcess());
         Optional<StateLinkListDto> stateNext = stateRepository.findStateByIdProcessAndStep(stateCurrent.getIdProcess(),
                 stateCurrent.getStep());
@@ -167,7 +170,8 @@ public class StateServiceImpl implements StateService {
         }
     }
 
-    private void handleTransition(Optional<StateLinkListDto> stateNext, Transition transition) {
+    private void handleTransition(Optional<StateLinkListDto> stateNext, Transition transition)
+            throws ValidateFiledException, JsonProcessingException, IllegalAccessException {
         if(stateNext.isPresent() && stateNext.get().getStateNext() != null) {
             transition.setIdStateCurrent(transition.getIdStateNext());
             transition.setIdStateNext(stateNext.get().getStateNext().getIdState());
@@ -230,7 +234,7 @@ public class StateServiceImpl implements StateService {
     }
 
 
-    private void updateStatusStateCurrent(State state, List<Request> requests) {
+    private void updateStatusStateCurrent(State state, List<Request> requests) throws ValidateFiledException, JsonProcessingException, IllegalAccessException {
         for (Request request: requests){
             if (request.getStatus().equals(Constants.STATUS_REQUEST_PENDING)) {
                 return;
