@@ -112,54 +112,10 @@ public class ReportServiceImpl implements ReportService {
         Map<Integer, Object[]> data = new HashMap<>();
         Sheet sheet = workbook.getSheetAt(0);
         int rowNum = sheet.getLastRowNum() + 1;
-        Optional<CurrentUsageReport08aDto> recordsGroundToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetGroundInReport(csvcUser.getIdsDepartmentCurrent());
-            data.put(rowNum, new Object[]{
-                    recordsGroundToWrite.get().getCountAsset(),
-                    recordsGroundToWrite.get().getAcreage(),
-                    recordsGroundToWrite.get().getTotalStateManagement(),
-                    recordsGroundToWrite.get().getTotalNoBusiness(),
-                    recordsGroundToWrite.get().getTotalBusiness(),
-                    recordsGroundToWrite.get().getTotalRent(),
-                    recordsGroundToWrite.get().getTotalBonds(),
-                    recordsGroundToWrite.get().getTotalSynthetic(),
-                    recordsGroundToWrite.get().getTotalOther(),
-            });
-        Optional<CurrentUsageReport08aDto> recordsHouseToWrite= assetCurrentUsageRepository.findAllCurrentUsageAssetHouseInReport(csvcUser.getIdsDepartmentCurrent());
-        data.put(rowNum, new Object[]{
-                recordsHouseToWrite.get().getCountAsset(),
-                recordsHouseToWrite.get().getAcreage(),
-                recordsHouseToWrite.get().getTotalStateManagement(),
-                recordsHouseToWrite.get().getTotalNoBusiness(),
-                recordsHouseToWrite.get().getTotalBusiness(),
-                recordsHouseToWrite.get().getTotalRent(),
-                recordsHouseToWrite.get().getTotalBonds(),
-                recordsHouseToWrite.get().getTotalSynthetic(),
-                recordsHouseToWrite.get().getTotalOther(),
-        });
-        Optional<CurrentUsageReport08aDto> recordsCarToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetCarInReport(csvcUser.getIdsDepartmentCurrent());
-        data.put(rowNum, new Object[]{
-                recordsCarToWrite.get().getCountAsset(),
-                recordsCarToWrite.get().getAcreage(),
-                recordsCarToWrite.get().getTotalStateManagement(),
-                recordsCarToWrite.get().getTotalNoBusiness(),
-                recordsCarToWrite.get().getTotalBusiness(),
-                recordsCarToWrite.get().getTotalRent(),
-                recordsCarToWrite.get().getTotalBonds(),
-                recordsCarToWrite.get().getTotalSynthetic(),
-                recordsCarToWrite.get().getTotalOther(),
-        });
-        Optional<CurrentUsageReport08aDto> recordsOtherToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetOtherInReport(csvcUser.getIdsDepartmentCurrent());
-        data.put(rowNum, new Object[]{
-                recordsOtherToWrite.get().getCountAsset(),
-                recordsOtherToWrite.get().getAcreage(),
-                recordsOtherToWrite.get().getTotalStateManagement(),
-                recordsOtherToWrite.get().getTotalNoBusiness(),
-                recordsOtherToWrite.get().getTotalBusiness(),
-                recordsOtherToWrite.get().getTotalRent(),
-                recordsOtherToWrite.get().getTotalBonds(),
-                recordsOtherToWrite.get().getTotalSynthetic(),
-                recordsOtherToWrite.get().getTotalOther(),
-        });
+        writeDataToMapReport08a(data, rowNum++, assetCurrentUsageRepository.findAllCurrentUsageAssetGroundInReport(csvcUser.getIdsDepartmentCurrent()));
+        writeDataToMapReport08a(data, rowNum++, assetCurrentUsageRepository.findAllCurrentUsageAssetHouseInReport(csvcUser.getIdsDepartmentCurrent()));
+        writeDataToMapReport08a(data, rowNum++, assetCurrentUsageRepository.findAllCurrentUsageAssetCarInReport(csvcUser.getIdsDepartmentCurrent()));
+        writeDataToMapReport08a(data, rowNum++, assetCurrentUsageRepository.findAllCurrentUsageAssetOtherInReport(csvcUser.getIdsDepartmentCurrent()));
 
         Set<Integer> keySet = data.keySet();
         for (Integer key : keySet){
@@ -185,4 +141,23 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
+        private void writeDataToMapReport08a(
+            Map<Integer, Object[]> data,
+            int rowNum,
+            Optional<CurrentUsageReport08aDto> recordOptional) {
+        if (recordOptional.isPresent()) {
+            CurrentUsageReport08aDto record = recordOptional.get();
+            data.put(rowNum, new Object[]{
+                    record.getCountAsset(),
+                    record.getAcreage(),
+                    record.getTotalStateManagement(),
+                    record.getTotalNoBusiness(),
+                    record.getTotalBusiness(),
+                    record.getTotalRent(),
+                    record.getTotalBonds(),
+                    record.getTotalSynthetic(),
+                    record.getTotalOther(),
+            });
+        }
+    }
 }

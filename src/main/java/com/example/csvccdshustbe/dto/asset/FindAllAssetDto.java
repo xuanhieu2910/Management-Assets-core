@@ -25,7 +25,11 @@ public class FindAllAssetDto {
     private Integer quantity;
     private Integer parent;
     private String salt;
+    private Integer isIncrease;
+    private Integer isDecrease;
     private String originalOfFormation;
     private String restValue;
     private String cumulative;
+    private String timeIncrease;
+
 }

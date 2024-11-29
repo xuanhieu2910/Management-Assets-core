@@ -11,8 +11,8 @@ import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
 import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
 import com.example.csvccdshustbe.dto.originalOfFormation.AssetOriginalOfFormDto;
-import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.entity.Process;
+import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.exception.FileExcelException;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -44,9 +44,7 @@ import com.example.csvccdshustbe.repository.units.UnitsRepository;
 import com.example.csvccdshustbe.repository.user.CsvcUserRepository;
 import com.example.csvccdshustbe.repository.wards.WardsRepository;
 import com.example.csvccdshustbe.request.asset.*;
-import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.response.asset.*;
-import com.example.csvccdshustbe.response.assetProcess.FindAllAssetProcessResponse;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.assetDepreciation.AssetDepreciationService;
@@ -72,7 +70,6 @@ import com.nimbusds.jose.util.JSONObjectUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -989,6 +986,18 @@ public class AssetServiceImpl implements AssetService {
             response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
             response.setSalt(dto.getSalt());
             response.setQuantity(dto.getQuantity());
+            response.setIsIncrease(dto.getIsIncrease());
+            response.setIsDecrease(dto.getIsDecrease());
+            response.setTotalOriginalOfFormationOriginal(String.valueOf(
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum())
+                            .orElse(0L)
+            ));
+            response.setCumulative(dto.getCumulative());
+            response.setRestValue(dto.getRestValue());
+            response.setTimeIncrease(dto.getTimeIncrease());
             responses.add(response);
         }
         return responses;
@@ -1593,9 +1602,11 @@ public class AssetServiceImpl implements AssetService {
             inventory.setQuantityOriginal(dto.getQuantity());
             inventory.setRestValueOriginal(dto.getRestValue());
             inventory.setTotalOriginalOfFormationOriginal(String.valueOf(
-                    Arrays.stream(dto.getOriginalOfFormation().split("-"))
-                            .mapToLong(Long::parseLong)
-                            .sum()
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum())
+                            .orElse(0L)
             ));
             inventory.setQuantityInventory(dto.getQuantity());
             inventory.setTotalOriginalOfFormationInventory(inventory.getTotalOriginalOfFormationOriginal());

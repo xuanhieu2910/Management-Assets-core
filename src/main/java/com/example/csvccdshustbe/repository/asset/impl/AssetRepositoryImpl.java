@@ -50,19 +50,30 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Page<FindAllAssetDto> findAllAssetDtoByIdsDepartment(FindAllAssetRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,     " +
-                "         asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,     " +
-                "         assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,     " +
-                "         de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,     " +
-                "         lo.id_location idLocation, lo.name nameLocation,     " +
-                "         asset.time_created, asset.time_modified,  " +
-                "         asset.parent, asset.salt, asset.quantity  " +
-                "  from asset asset     " +
-                "      left join asset_categories assetCategories     " +
-                "              on asset.id_asset_category = assetCategories.id_asset_category     " +
-                "      left join department de on asset.id_department = de.id_department     " +
-                "      left join location lo on asset.id_location = lo.id_location     " +
-                "  where 1 = 1 and asset.parent is null  and asset.id_department_origin in (:idsDepartmentOriginal)  ");
+        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,            " +
+                "  asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,            " +
+                "  assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,            " +
+                "  de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,            " +
+                "  lo.id_location idLocation, lo.name nameLocation,            " +
+                "  asset.time_created, asset.time_modified,         " +
+                "  asset.parent, asset.salt, asset.quantity ,      " +
+                "  asset.is_increase,asset.is_decrease,      " +
+                "  group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue," +
+                "  assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase" +
+                "  from asset asset      " +
+                "  left join asset_categories assetCategories      " +
+                "  on asset.id_asset_category = assetCategories.id_asset_category            " +
+                "  left join department de on asset.id_department = de.id_department            " +
+                "  left join location lo on asset.id_location = lo.id_location  " +
+                "  left join asset_original_of_formation assetOriginalOfFormation " +
+                "  on asset.id_asset = assetOriginalOfFormation.id_asset " +
+                "  left join asset_depreciation assetDepreciation " +
+                "  on asset.id_asset = assetDepreciation.id_asset " +
+                "  left join asset_process on asset.id_asset = asset_process.id_asset " +
+                "  left join type_process on asset_process.id_type_process = type_process.id_type_process " +
+                "  left join document on asset_process.id_process = document.id_process " +
+                "  where 1 = 1 and asset.parent is null and (type_process.code = :typeProcess OR type_process.code IS NULL) " +
+                "  and asset.id_department_origin in (:idsDepartmentOriginal) ");
         setConditionFindAllAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAsset(request, query);
@@ -88,6 +99,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
                 findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[15]));
+                findAllAssetDto.setIsIncrease(ValueUtil.getIntegerByObject(obj[16]));
+                findAllAssetDto.setIsDecrease(ValueUtil.getIntegerByObject(obj[17]));
+                findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[18]));
+                findAllAssetDto.setCumulative(ValueUtil.getStringByObject(obj[19]));
+                findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[20]));
+                findAllAssetDto.setTimeIncrease(ValueUtil.getStringByObject(obj[21]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -1586,13 +1603,31 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private long countFindAllAsset(FindAllAssetRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) " +
-                "from asset asset " +
-                "    left join asset_categories assetCategories " +
-                "            on asset.id_asset_category = assetCategories.id_asset_category " +
-                "    left join department de on asset.id_department = de.id_department " +
-                "    left join location lo on asset.id_location = lo.id_location " +
-                "where 1 = 1 and asset.parent is null and asset.id_department_origin in (:idsDepartmentOriginal) ");
-        setConditionFindAllAsset(request, sb);
+                "  from (select asset.id_asset idAsset, asset.code_asset codeAsset,   " +
+                "     asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,   " +
+                "     assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,   " +
+                "     de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,   " +
+                "     lo.id_location idLocation, lo.name nameLocation,   " +
+                "     asset.time_created, asset.time_modified,      " +
+                "     asset.parent, asset.salt, asset.quantity ,   " +
+                "     asset.is_increase,asset.is_decrease,   " +
+                "     group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
+                "     assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase " +
+                "     from asset asset   " +
+                "     left join asset_categories assetCategories   " +
+                "     on asset.id_asset_category = assetCategories.id_asset_category   " +
+                "     left join department de on asset.id_department = de.id_department   " +
+                "     left join location lo on asset.id_location = lo.id_location   " +
+                "     left join asset_original_of_formation assetOriginalOfFormation  " +
+                "     on asset.id_asset = assetOriginalOfFormation.id_asset  " +
+                "     left join asset_depreciation assetDepreciation  " +
+                "     on asset.id_asset = assetDepreciation.id_asset  " +
+                "     left join asset_process on asset.id_asset = asset_process.id_asset  " +
+                "     left join type_process on asset_process.id_type_process = type_process.id_type_process  " +
+                "     left join document on asset_process.id_process = document.id_process  " +
+                "     where 1 = 1 and asset.parent is null and (type_process.code = :typeProcess OR type_process.code IS NULL)  " +
+                "     and asset.id_department_origin in (:idsDepartmentOriginal) ");
+        setConditionCountFindAllAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAsset(request, query);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
@@ -1618,6 +1653,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAsset(FindAllAssetRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("typeProcess", Constants.CODE_TYPE_PROCESS_INCREASE);
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }
@@ -1630,6 +1666,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     private void setConditionFindAllAsset(FindAllAssetRequest request, StringBuilder sb) {
+        sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
+                "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
+                "         asset.time_created, asset.time_modified, " +
+                "         asset.salt, asset.quantity , " +
+                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,type_process.code ");
         if (StringUtils.isNotBlank(request.getNameAsset())){
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
         }
@@ -1650,6 +1691,35 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             sb.append(" ").append(request.getSortOrder());
         } else {
             sb.append(" ORDER BY asset.id_asset desc ");
+        }
+    }
+
+    private void setConditionCountFindAllAsset(FindAllAssetRequest request, StringBuilder sb) {
+        sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
+                "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
+                "         asset.time_created, asset.time_modified, " +
+                "         asset.salt, asset.quantity , " +
+                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,type_process.code ");
+        if (StringUtils.isNotBlank(request.getNameAsset())){
+            sb.append(" and (asset.name REGEXP :nameAsset ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+            sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (StringUtils.isNotBlank(request.getSortBy())){
+            sb.append("ORDER BY ");
+            if (request.getSortBy().equals("nameAsset")) {
+                sb.append(" asset.name ");
+            }
+            if (request.getSortBy().equals("nameDepartment")) {
+                sb.append(" de.name ");
+            }
+            sb.append(" ").append(request.getSortOrder());
+        } else {
+            sb.append(" ORDER BY asset.id_asset desc ) as result");
         }
     }
 }
