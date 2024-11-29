@@ -1783,7 +1783,8 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public void updateInformationAssetByProcess(Process process, Integer status) throws JsonProcessingException,
+    public void
+    updateInformationAssetByProcess(Process process, Integer status) throws JsonProcessingException,
             ValidateFiledException,
             IllegalAccessException {
         AssetProcess assetProcess = assetProcessService.findAssetProcessByIdProcess(process.getIdProcess());

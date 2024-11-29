@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class FindAllProcessAssetInventoryRequest  extends RequestPageBase {
+public class FindAllProcessAssetDocumentInventoryRequest extends RequestPageBase {
 
 
     private String codeDocument;

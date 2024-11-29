@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.controller;
 
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
+import com.example.csvccdshustbe.request.requestStakeHolder.ApprovedDocumentProcessInventoryRequest;
 import com.example.csvccdshustbe.request.requestStakeHolder.ApprovedRequestStakeHolderRequest;
 import com.example.csvccdshustbe.service.requestStakeHolder.RequestStakeHolderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,4 +36,16 @@ public class RequestStakeHolderController {
         }
     }
 
+
+//    @PostMapping("/approved-document-inventory")
+//    public  ResponseEntity<?> approvedDocumentInventory(@RequestBody ApprovedDocumentProcessInventoryRequest request){
+//        try {
+//            requestStakeHolderService.approvedInventory(request);
+//            return ApiResponseDto.createdWithMessage("Approved inventory success!", HttpStatus.OK);
+//        } catch (NotFoundException e) {
+//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+//        }
+//    }
 }

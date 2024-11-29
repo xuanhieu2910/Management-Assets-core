@@ -17,12 +17,12 @@ public interface DocumentService {
     String generateCodeDocument(String typeGenerate);
     Page<FindAllDocumentAssetResponse> findAllDocumentByAsset(FindAllDocumentAssetRequest request);
     FindDetailsDocumentResponse findDetailsDocumentByCodeDocument(String codeDocument);
-
     Page<FindAllProcessAssetIncreaseResponse> findAllDataProcessAssetIncrease(FindAllProcessAssetIncreaseRequest request);
-    Page<FindAllProcessAssetInventoryResponse> findAllDataProcessAssetInventory(FindAllProcessAssetInventoryRequest request);
+    Page<FindAllProcessAssetInventoryResponse> findAllDataProcessAssetDocumentInventory(FindAllProcessAssetDocumentInventoryRequest request);
 
     Page<FindAllProcessAssetDecreaseResponse> findAllDataProcessAssetDecrease(FindAllProcessAssetDecreaseRequest request);
 
     Page<FindAllProcessAssetChangeResponse> findAllDataProcessAssetChange(FindAllProcessAssetChangeRequest request);
     Page<FindAllProcessAssetRevaluationResponse> findAllDataProcessAssetRevaluation(FindAllProcessAssetRevaluationRequest request);
+    Document findDocumentByIdProcess(Integer idProcess);
 }

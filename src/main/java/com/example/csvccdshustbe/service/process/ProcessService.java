@@ -11,7 +11,7 @@ public interface ProcessService {
 
     Process saveProcess(Process process);
     void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException;
-    void createInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException;
+    void createDocumentInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException;
     void createDecreaseAsset(CreateDecreaseAssetRequest request) throws ValidateFiledException;
     void createChangeAsset(CreateChangeAssetRequest request) throws ValidateFiledException, JsonProcessingException, IllegalAccessException;
     void createRevaluationAsset(CreateRevaluationAssetRequest request) throws ValidateFiledException, JsonProcessingException, IllegalAccessException;

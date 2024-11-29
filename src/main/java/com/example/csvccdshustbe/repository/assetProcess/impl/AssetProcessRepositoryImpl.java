@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.assetProcess.impl;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.repository.assetProcess.AssetProcessRepositoryCustom;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
@@ -101,6 +102,36 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<AssetProcessDto> findAssetProcessDtoByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_asset_process, id_asset,  " +
+                "       id_process, id_type_process,  " +
+                "       status, value,  " +
+                "       time_created, time_modified " +
+                "from asset_process  " +
+                "where id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        List<AssetProcessDto> assetProcessDtos = new ArrayList<>();
+        if (CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                AssetProcessDto assetProcessDto = new AssetProcessDto();
+                assetProcessDto.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[0]));
+                assetProcessDto.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                assetProcessDto.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                assetProcessDto.setIdTypeProcess(ValueUtil.getIntegerByObject(obj[3]));
+                assetProcessDto.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                assetProcessDto.setValue(ValueUtil.getStringByObject(obj[5]));
+                assetProcessDto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                assetProcessDto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                assetProcessDtos.add(assetProcessDto);
+            }
+        }
+        return assetProcessDtos;
     }
 
     private long countFindAllAssetProcess(FindAllAssetProcessRequest request) {

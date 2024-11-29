@@ -1,10 +1,12 @@
 package com.example.csvccdshustbe.service.requestStakeHolder.impl;
 
 import com.example.csvccdshustbe.dto.requestStakeHolder.RequestStakeHolderDetails;
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Reason;
 import com.example.csvccdshustbe.entity.RequestStakeHolder;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.requestStakeHolder.RequestStakeHolderRepository;
+import com.example.csvccdshustbe.request.requestStakeHolder.ApprovedDocumentProcessInventoryRequest;
 import com.example.csvccdshustbe.request.requestStakeHolder.ApprovedRequestStakeHolderRequest;
 import com.example.csvccdshustbe.service.reason.ReasonService;
 import com.example.csvccdshustbe.service.request.RequestService;
@@ -15,8 +17,8 @@ import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
 
 import java.util.Date;
@@ -46,8 +48,11 @@ public class RequestStakeHolderServiceImpl implements RequestStakeHolderService 
             JsonProcessingException, IllegalAccessException {
         validateDataApprovedRequestStakeHolder(request);
         RequestStakeHolder stakeHolder = findRequestStakeHolderByIdRequestStakeHolder(request.getIdRequestStakeHolder());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (request.getStatus().equals(Constants.STATUS_REQUEST_STAKE_HOLDER_FALSE)){
             Reason reason = reasonService.findReasonByIdReason(request.getIdReason());
+            stakeHolder.setIdUser(csvcUser.getIdUser());
+            stakeHolder.setIdDepartment(csvcUser.getIdDepartmentCurrent());
             stakeHolder.setStatus(request.getStatus());
             stakeHolder.setIdReason(reason.getIdReason());
             stakeHolder.setDescription(request.getDescription());
@@ -55,10 +60,17 @@ public class RequestStakeHolderServiceImpl implements RequestStakeHolderService 
         } else {
             stakeHolder.setStatus(request.getStatus());
             stakeHolder.setTimeModified(String.valueOf(new Date().getTime()));
+            stakeHolder.setIdUser(csvcUser.getIdUser());
+            stakeHolder.setIdDepartment(csvcUser.getIdDepartmentCurrent());
         }
         requestStakeHolderRepository.save(stakeHolder);
         requestService.updateStatusRequestByIdRequest(stakeHolder.getIdRequest());
     }
+
+//    @Override
+//    public void approvedInventory(ApprovedDocumentProcessInventoryRequest request) {
+//
+//    }
 
     private void validateDataApprovedRequestStakeHolder(ApprovedRequestStakeHolderRequest request) throws ValidateFiledException {
         if (request.getStatus().equals(Constants.STATUS_REQUEST_STAKE_HOLDER_FALSE)){

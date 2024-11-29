@@ -312,7 +312,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
 
     @Override
     public Page<FindAllProcessAssetInventoryDto>
-    findAllProcessAssetInventoryDtoByIdsDepartment(FindAllProcessAssetInventoryRequest request, Pageable pageable) {
+    findAllProcessAssetDocumentInventoryDtoByIdsDepartment(FindAllProcessAssetDocumentInventoryRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT process.id_process idProcess, document.code codeDocument,  " +
                 "       user.id_user, user.code_user, user.full_name,  " +
@@ -355,7 +355,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         return new PageImpl<>(responses, pageable, countFindAllProcessAssetInventory(request));
     }
 
-    private long countFindAllProcessAssetInventory(FindAllProcessAssetInventoryRequest request) {
+    private long countFindAllProcessAssetInventory(FindAllProcessAssetDocumentInventoryRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT count(0)  " +
                 "FROM process  " +
@@ -400,9 +400,9 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         }
     }
 
-    private void setParameterFindAllProcessAssetInventory(FindAllProcessAssetInventoryRequest request, Query query) {
+    private void setParameterFindAllProcessAssetInventory(FindAllProcessAssetDocumentInventoryRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_INVENTORY);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY);
         if (StringUtils.isNotBlank(request.getCodeDocument())){
             query.setParameter("codeDocument", request.getCodeDocument());
         }
@@ -471,7 +471,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         }
     }
 
-    private void setConditionFindAllProcessAssetInventory(FindAllProcessAssetInventoryRequest request, StringBuilder sb) {
+    private void setConditionFindAllProcessAssetInventory(FindAllProcessAssetDocumentInventoryRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getNameUserCreate())){
             sb.append(" and (user.full_name REGEXP :nameUserCreate ) ");
         }
@@ -836,6 +836,39 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllProcessAssetRevaluation(request));
+    }
+
+    @Override
+    public Optional<Document> findDocumentByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select dc.id_document, dc.id_process, dc.code,  " +
+                "       dc.time_created, dc.time_modified,  " +
+                "       dc.time_increase, dc.time_document,  " +
+                "       dc.id_department_original,  " +
+                "       dc.id_department, dc.description  " +
+                "from document dc   " +
+                "    inner join process pr on dc.id_process = dc.id_process  " +
+                "where pr.id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Document document = new Document();
+                document.setIdDocument(ValueUtil.getIntegerByObject(obj[0]));
+                document.setIdProcess(ValueUtil.getIntegerByObject(obj[1]));
+                document.setCode(ValueUtil.getStringByObject(obj[2]));
+                document.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                document.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                document.setTimeIncrease(ValueUtil.getStringByObject(obj[5]));
+                document.setTimeDocument(ValueUtil.getStringByObject(obj[6]));
+                document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
+                document.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
+                document.setDescription(ValueUtil.getStringByObject(obj[9]));
+                return Optional.of(document);
+            }
+        }
+        return Optional.empty();
     }
 
     private void setConditionFindAllProcessAssetRevaluation(FindAllProcessAssetRevaluationRequest request, StringBuilder sb) {

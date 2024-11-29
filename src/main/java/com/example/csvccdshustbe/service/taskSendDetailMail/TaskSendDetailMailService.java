@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.request.taskSendDetailMail.FindAllTaskSendDetai
 import com.example.csvccdshustbe.request.taskSendDetailMail.ListTaskSendDetailMailRequest;
 import com.example.csvccdshustbe.request.taskSendDetailMail.UpdateTaskSendDetailMailRequest;
 import com.example.csvccdshustbe.response.taskSendDetailMail.FindAllTaskSendDetailMailResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface TaskSendDetailMailService {
 
     TaskSendDetailMail saveTaskSendDetailMail(TaskSendDetailMail sendDetailMail);
-    void updateTrackingTaskSendDetailMail(UpdateTaskSendDetailMailRequest updateTaskSendDetailMailRequest);
+    void updateTrackingTaskSendDetailMail(HttpServletRequest servletRequest);
     Page<FindAllTaskSendDetailMailResponse> findAllTaskSendDetail(FindAllTaskSendDetailMailRequest request);
     void deleteTaskSendDetailMailByIds(List<Integer> idsTaskSendMail);
     void reSendTaskSendDetailMail(String codeTaskSendMail);

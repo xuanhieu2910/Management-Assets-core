@@ -164,12 +164,13 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Page<FindAllProcessAssetInventoryResponse> findAllDataProcessAssetInventory(FindAllProcessAssetInventoryRequest request) {
+    public Page<FindAllProcessAssetInventoryResponse>
+    findAllDataProcessAssetDocumentInventory(FindAllProcessAssetDocumentInventoryRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
         Page<FindAllProcessAssetInventoryDto> findAllProcessAssetDtos =
-                documentRepository.findAllProcessAssetInventoryDtoByIdsDepartment(request, pageable);
+                documentRepository.findAllProcessAssetDocumentInventoryDtoByIdsDepartment(request, pageable);
         return new PageImpl<>(convertToFindAllProcessAssetInventoryResponse(findAllProcessAssetDtos.stream().toList()),
                 pageable, findAllProcessAssetDtos.getTotalElements());
     }
@@ -272,6 +273,15 @@ public class DocumentServiceImpl implements DocumentService {
                 documentRepository.findAllProcessAssetRevaluationDtoByIdsDepartment(request, pageable);
         return new PageImpl<>(convertToFindAllProcessAssetRevaluationResponse(findAllProcessAssetDtos.stream().toList()),
                 pageable, findAllProcessAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Document findDocumentByIdProcess(Integer idProcess) {
+        Optional<Document> document = documentRepository.findDocumentByIdProcess(idProcess);
+        if (document.isEmpty()){
+            throw new NotFoundException("Don't exits document by id process!");
+        }
+        return document.get();
     }
 
     private List<FindAllProcessAssetChangeResponse>

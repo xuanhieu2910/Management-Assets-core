@@ -87,15 +87,15 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/find-all-inventory")
+    @GetMapping("/find-all-document-inventory")
     public ResponseEntity<?> findAllProcessAssetInventory(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
-    }) FindAllProcessAssetInventoryRequest findAllProcessAssetRequest){
+    }) FindAllProcessAssetDocumentInventoryRequest findAllProcessAssetRequest){
         try {
-            return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetInventory(findAllProcessAssetRequest),
-                    "Find all document invetory by asset success!", HttpStatus.OK);
+            return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetDocumentInventory(findAllProcessAssetRequest),
+                    "Find all document inventory by asset success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -159,10 +159,10 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-    @PostMapping("/inventory")
-    public ResponseEntity<?> createInventory(@RequestBody CreateInventoryAssetRequest request){
+    @PostMapping("/document-inventory")
+    public ResponseEntity<?> createDocumentInventory(@RequestBody CreateInventoryAssetRequest request){
         try {
-            processService.createInventoryAsset(request);
+            processService.createDocumentInventoryAsset(request);
             return ApiResponseDto.createdWithMessage("Create inventory asset success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -170,6 +170,18 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+//    @PostMapping("/update-inventory")
+//    public ResponseEntity<?> updateInventory(@RequestBody CreateInventoryAssetRequest request){
+//        try{
+//            processService.createUpdateInventoryAsset(request);
+//            return ApiResponseDto.createdWithMessage("Create inventory asset success!", HttpStatus.OK);
+//        } catch (ValidateFiledException e){
+//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+//        }
+//    }
 
     @PostMapping("/decrease")
     public ResponseEntity<?> decreaseAsset(@RequestBody CreateDecreaseAssetRequest request){
