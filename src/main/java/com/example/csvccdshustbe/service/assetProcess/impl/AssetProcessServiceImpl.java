@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.assetProcess.impl;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.repository.assetProcess.AssetProcessRepository;
@@ -52,6 +53,11 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             throw new NotFoundException("Don't exits asset process!");
         }
         return assetProcess.get();
+    }
+
+    @Override
+    public List<AssetProcessDto> findAllAssetProcessByIdProcess(Integer idProcess) {
+        return assetProcessRepository.findAssetProcessDtoByIdProcess(idProcess);
     }
 
     private List<FindAllAssetProcessResponse> convertToFindAllAssetProcess(List<FindAllAssetDto> content) {

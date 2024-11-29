@@ -10,10 +10,10 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CreateInventoryAssetRequest {
+public class UpdateInventoryAssetRequest {
 
     private CreateDocumentInventoryAssetRequest document;
     private List<AssetDetailInventoryRequest> assetDetail;
     private String typeProcess;
-//    private List<CreateCouncilInventoryRequest> councilInventory;
+    private List<CreateCouncilInventoryRequest> councilInventory;
 }

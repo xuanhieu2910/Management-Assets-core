@@ -23,7 +23,7 @@ public interface DocumentRepositoryCustom {
     Page<FindAllProcessAssetIncreaseDto> findAllProcessAssetIncreaseDtoByIdsDepartment(FindAllProcessAssetIncreaseRequest request,
                                                                                        Pageable pageable);
 
-    Page<FindAllProcessAssetInventoryDto> findAllProcessAssetInventoryDtoByIdsDepartment(FindAllProcessAssetInventoryRequest request,
+    Page<FindAllProcessAssetInventoryDto> findAllProcessAssetDocumentInventoryDtoByIdsDepartment(FindAllProcessAssetDocumentInventoryRequest request,
                                                                                          Pageable pageable);
 
     Page<FindAllProcessAssetDecreaseDto> findAllProcessAssetDecreaseDtoByIdsDepartment(FindAllProcessAssetDecreaseRequest request,
@@ -34,4 +34,6 @@ public interface DocumentRepositoryCustom {
 
     Page<FindAllProcessAssetRevaluationDto> findAllProcessAssetRevaluationDtoByIdsDepartment(FindAllProcessAssetRevaluationRequest request,
                                                                                              Pageable pageable);
+
+    Optional<Document> findDocumentByIdProcess(Integer idProcess);
 }
