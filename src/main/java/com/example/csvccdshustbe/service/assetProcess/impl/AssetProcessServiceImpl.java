@@ -72,6 +72,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             response.setNameDepartment(dto.getNameDepartment());
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
             response.setTimeModified(DateUtil.formatToPattern( new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
+            response.setIdAsset(dto.getIdAsset());
             responses.add(response);
         }
         return responses;
