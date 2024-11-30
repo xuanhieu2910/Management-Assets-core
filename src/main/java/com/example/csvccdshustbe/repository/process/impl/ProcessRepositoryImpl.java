@@ -185,10 +185,8 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
         query.setParameter("statusReject", Constants.STATUS_FALSE_PROCESS);
-        query.setParameter("statusRequestPending", Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
         query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY);
         query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
-        query.setParameter("idUser", csvcUser.getIdUser());
         List<Object[]> result = query.getResultList();
         ProcessStatisticsDocumentInventoryResponse response = new ProcessStatisticsDocumentInventoryResponse();
         if (!CollectionUtils.isEmpty(result)){
