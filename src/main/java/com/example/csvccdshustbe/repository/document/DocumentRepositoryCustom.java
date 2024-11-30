@@ -20,20 +20,23 @@ public interface DocumentRepositoryCustom {
     Page<FindAllDocumentAssetDto> findAllDocumentAssetDtoByIdsDepartment(FindAllDocumentAssetRequest request, Pageable pageable);
     Optional<FindDetailsDocumentDto> findDetailDocumentByCodeDocument(String codeDocument, List<Integer> idsDepartment);
 
-    Page<FindAllProcessAssetIncreaseDto> findAllProcessAssetIncreaseDtoByIdsDepartment(FindAllProcessAssetIncreaseRequest request,
-                                                                                       Pageable pageable);
+    Page<FindAllProcessAssetIncreaseDto>
+    findAllProcessAssetIncreaseDtoByIdsDepartment(FindAllProcessAssetIncreaseRequest request, Pageable pageable);
 
-    Page<FindAllProcessAssetInventoryDto> findAllProcessAssetDocumentInventoryDtoByIdsDepartment(FindAllProcessAssetDocumentInventoryRequest request,
-                                                                                         Pageable pageable);
+    Page<FindAllProcessAssetInventoryDto>
+    findAllProcessAssetDocumentInventoryDtoByIdsDepartment(FindAllProcessAssetDocumentInventoryRequest request, Pageable pageable);
 
-    Page<FindAllProcessAssetDecreaseDto> findAllProcessAssetDecreaseDtoByIdsDepartment(FindAllProcessAssetDecreaseRequest request,
-                                                                                       Pageable pageable);
+    Page<FindAllProcessAssetDecreaseDto>
+    findAllProcessAssetDecreaseDtoByIdsDepartment(FindAllProcessAssetDecreaseRequest request, Pageable pageable);
 
-    Page<FindAllProcessAssetChangeDto> findAllProcessAssetChangeDtoByIdsDepartment(FindAllProcessAssetChangeRequest request,
-                                                                                   Pageable pageable);
+    Page<FindAllProcessAssetChangeDto>
+    findAllProcessAssetChangeDtoByIdsDepartment(FindAllProcessAssetChangeRequest request, Pageable pageable);
 
-    Page<FindAllProcessAssetRevaluationDto> findAllProcessAssetRevaluationDtoByIdsDepartment(FindAllProcessAssetRevaluationRequest request,
-                                                                                             Pageable pageable);
+    Page<FindAllProcessAssetRevaluationDto>
+    findAllProcessAssetRevaluationDtoByIdsDepartment(FindAllProcessAssetRevaluationRequest request, Pageable pageable);
+
+    Page<FindAllProcessAssetUpdateInventoryDto>
+    findAllProcessAssetUpdateInventoryDtoByIdsDepartment(FindAllProcessAssetUpdateInventoryRequest request, Pageable pageable);
 
     Optional<Document> findDocumentByIdProcess(Integer idProcess);
     Optional<Document> findDocumentByCodeDocumentAndStatus(String codeDocument, Integer status);

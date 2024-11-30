@@ -29,4 +29,6 @@ public interface DocumentService {
     Document findDocumentByCodeDocument(String codeDocument);
     void updateInventoryDraft(UpdateInventoryDraftRequest request);
     void updateInventoryFinish(UpdateInventoryDraftRequest request);
+    Page<FindAllProcessAssetUpdateInventoryResponse>
+    findAllDataProcessAssetUpdateInventory(FindAllProcessAssetUpdateInventoryRequest findAllProcessAssetRequest);
 }

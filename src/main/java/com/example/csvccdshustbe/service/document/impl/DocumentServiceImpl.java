@@ -320,6 +320,18 @@ public class DocumentServiceImpl implements DocumentService {
         assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess());
     }
 
+    @Override
+    public Page<FindAllProcessAssetUpdateInventoryResponse>
+    findAllDataProcessAssetUpdateInventory(FindAllProcessAssetUpdateInventoryRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllProcessAssetUpdateInventoryDto> findAllProcessAssetDtos =
+                documentRepository.findAllProcessAssetUpdateInventoryDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllProcessAssetUpdateInventoryResponse(findAllProcessAssetDtos.stream().toList()),
+                pageable, findAllProcessAssetDtos.getTotalElements());
+    }
+
     private List<FindAllProcessAssetChangeResponse>
     convertToFindAllProcessAssetChangeResponse(List<FindAllProcessAssetChangeDto> collect) {
         List<FindAllProcessAssetChangeResponse> responses = new ArrayList<>();
@@ -331,6 +343,28 @@ public class DocumentServiceImpl implements DocumentService {
             response.setNameUserCreate(dto.getNameUserCreate());
             response.setStatus(dto.getStatus());
             response.setTimeChange(dto.getTimeChange());
+
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setTimeDocument(dto.getTimeDocument());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    private List<FindAllProcessAssetUpdateInventoryResponse>
+    convertToFindAllProcessAssetUpdateInventoryResponse(List<FindAllProcessAssetUpdateInventoryDto> collect) {
+        List<FindAllProcessAssetUpdateInventoryResponse> responses = new ArrayList<>();
+        for (FindAllProcessAssetUpdateInventoryDto dto : collect) {
+            FindAllProcessAssetUpdateInventoryResponse response = new FindAllProcessAssetUpdateInventoryResponse();
+            response.setCodeDocument(dto.getCodeDocument());
+            response.setIdUserCreate(dto.getIdUserCreate());
+            response.setCodeUserCreate(dto.getCodeUserCreate());
+            response.setNameUserCreate(dto.getNameUserCreate());
+            response.setStatus(dto.getStatus());
+            response.setTimeInventory(dto.getTimeInventory());
 
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());

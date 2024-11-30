@@ -20,6 +20,7 @@ public interface ProcessService {
     Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedResponse(FindAllProcessBeAssignedRequest request);
     Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedDocumentInventoryResponse(FindAllProcessBeAssignedDocumentInventoryRequest request);
     ProcessStatisticsIncreaseResponse getStatisticIncrease();
+    ProcessStatisticsUpdateInventoryResponse getStatisticUpdateInventory();
     ProcessStatisticsDocumentInventoryResponse getStatisticDocumentInventory();
     ProcessStatisticsDocumentBeInventoryResponse getStatisticDocumentBeInventory();
     ProcessStatisticsDecreaseResponse getStatisticDecrease();

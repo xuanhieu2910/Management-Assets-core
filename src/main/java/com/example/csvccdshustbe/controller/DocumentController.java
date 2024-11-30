@@ -62,12 +62,10 @@ public class DocumentController {
     }) FindAllDocumentAssetRequest findAllDocumentAssetRequest){
         try {
             return ApiResponseDto.createdWithState(documentService.findAllDocumentByAsset(findAllDocumentAssetRequest),
-                    "Find all document by asset success!", HttpStatus.OK);
+                    "Find all document success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -80,7 +78,7 @@ public class DocumentController {
     }) FindAllProcessAssetIncreaseRequest findAllProcessAssetRequest){
         try {
             return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetIncrease(findAllProcessAssetRequest),
-                    "Find all document increase by asset success!", HttpStatus.OK);
+                    "Find all document increase success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -96,7 +94,24 @@ public class DocumentController {
     }) FindAllProcessAssetDocumentInventoryRequest findAllProcessAssetRequest){
         try {
             return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetDocumentInventory(findAllProcessAssetRequest),
-                    "Find all document inventory by asset success!", HttpStatus.OK);
+                    "Find all document inventory success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
+    @GetMapping("/find-all-update-inventory")
+    public ResponseEntity<?> findAllUpdateInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllProcessAssetUpdateInventoryRequest findAllProcessAssetRequest){
+        try {
+            return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetUpdateInventory(findAllProcessAssetRequest),
+                    "Find all update inventory success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -112,7 +127,7 @@ public class DocumentController {
     }) FindAllProcessAssetDecreaseRequest findAllProcessAssetRequest){
         try {
             return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetDecrease(findAllProcessAssetRequest),
-                    "Find all document decrease by asset success!", HttpStatus.OK);
+                    "Find all document decrease success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -127,7 +142,7 @@ public class DocumentController {
     }) FindAllProcessAssetChangeRequest findAllProcessAssetRequest){
         try {
             return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetChange(findAllProcessAssetRequest),
-                    "Find all document change by asset success!", HttpStatus.OK);
+                    "Find all document change success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -142,7 +157,7 @@ public class DocumentController {
     }) FindAllProcessAssetRevaluationRequest findAllProcessAssetRequest){
         try {
             return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetRevaluation(findAllProcessAssetRequest),
-                    "Find all document revaluation by asset success!", HttpStatus.OK);
+                    "Find all document revaluation success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -204,10 +219,8 @@ public class DocumentController {
             processService.createRevaluationAsset(request);
             return ApiResponseDto.createdWithMessage("Create revaluation asset success!", HttpStatus.OK);
         } catch (ValidateFiledException | JsonProcessingException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -246,6 +259,16 @@ public class DocumentController {
         try {
             return ApiResponseDto.createdWithState(processService.getStatisticIncrease(),
                     "Get statistic increase success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/statistic-update-inventory")
+    public ResponseEntity<?> getStatisticUpdateInventory(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticUpdateInventory(),
+                    "Get statistic update inventory success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }

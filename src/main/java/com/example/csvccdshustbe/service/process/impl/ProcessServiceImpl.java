@@ -802,6 +802,11 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    public ProcessStatisticsUpdateInventoryResponse getStatisticUpdateInventory() {
+        return processRepository.getStatisticsUpdateInventory();
+    }
+
+    @Override
     public ProcessStatisticsDocumentInventoryResponse getStatisticDocumentInventory() {
         return processRepository.getStatisticsDocumentInventory();
     }
