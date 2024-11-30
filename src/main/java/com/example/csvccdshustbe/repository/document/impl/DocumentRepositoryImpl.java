@@ -67,12 +67,13 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Optional<Document> findDocumentByIdDepartment(Integer idDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select doc.id_document, doc.code, doc.time_created,  " +
-                "         doc.time_modified, doc.time_increase, doc.time_document,  " +
-                "         doc.id_department, doc.id_department_original,  " +
-                "         doc.status, doc.id_user_created, doc.id_user_modified  " +
-                "  from document doc  " +
-                "  where doc.id_department_original = :idDepartment ORDER BY doc.code DESC   ");
+        sb.append(" select doc.id_document, doc.code, doc.time_created, " +
+                "         doc.time_modified, doc.time_increase, doc.time_document, " +
+                "         doc.id_department, doc.id_department_original, " +
+                "         doc.status, doc.id_user_created, doc.id_user_modified, " +
+                "         doc.id_process, doc.description " +
+                "from document doc " +
+                " where doc.id_department_original = :idDepartment ORDER BY doc.id_document DESC ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idDepartment", idDepartment);
         List<Object[]> result = query.getResultList();
@@ -90,6 +91,8 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 document.setStatus(ValueUtil.getIntegerByObject(obj[8]));
                 document.setIdUserCreated(ValueUtil.getIntegerByObject(obj[9]));
                 document.setIdUserModified(ValueUtil.getIntegerByObject(obj[10]));
+                document.setIdProcess(ValueUtil.getIntegerByObject(obj[11]));
+                document.setDescription(ValueUtil.getStringByObject(obj[12]));
                 return Optional.of(document);
             }
         }
@@ -895,14 +898,16 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Optional<Document> findDocumentByIdProcess(Integer idProcess) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select dc.id_document, dc.id_process, dc.code,  " +
-                "       dc.time_created, dc.time_modified,  " +
-                "       dc.time_increase, dc.time_document,  " +
-                "       dc.id_department_original,  " +
-                "       dc.id_department, dc.description  " +
-                "from document dc   " +
-                "    inner join process pr on dc.id_process = dc.id_process  " +
-                "where pr.id_process = :idProcess ");
+        sb.append("select dc.id_document, dc.id_process, dc.code,  " +
+                "         dc.time_created, dc.time_modified,  " +
+                "         dc.time_increase, dc.time_document,  " +
+                "         dc.id_department_original,  " +
+                "         dc.id_department, dc.description,  " +
+                "         dc.status, dc.id_user_created,  " +
+                "         dc.id_user_modified  " +
+                "  from document dc       " +
+                "  inner join process pr on dc.id_process = dc.id_process  " +
+                "  where pr.id_process = :idProcess ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
         List<Object[]> result = query.getResultList();
@@ -919,6 +924,9 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
                 document.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
                 document.setDescription(ValueUtil.getStringByObject(obj[9]));
+                document.setStatus(ValueUtil.getIntegerByObject(obj[10]));
+                document.setIdUserCreated(ValueUtil.getIntegerByObject(obj[11]));
+                document.setIdUserModified(ValueUtil.getIntegerByObject(obj[12]));
                 return Optional.of(document);
             }
         }
