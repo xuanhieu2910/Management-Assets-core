@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.repository.process;
 
 
 import com.example.csvccdshustbe.entity.Process;
+import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedDocumentInventoryRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
 import com.example.csvccdshustbe.response.process.*;
 import org.springframework.data.domain.Page;
@@ -13,8 +14,11 @@ public interface ProcessRepositoryCustom {
     Optional<Process> findProcessByIdProcess(Integer idProcess);
     Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssigned(FindAllProcessBeAssignedRequest request, Pageable pageable);
     ProcessStatisticsIncreaseResponse getStatisticsIncrease();
-    ProcessStatisticsInventoryResponse getStatisticsInventory();
+    ProcessStatisticsDocumentInventoryResponse getStatisticsDocumentInventory();
     ProcessStatisticsDecreaseResponse getStatisticsDecrease();
     ProcessStatisticsChangeResponse getStatisticsChange();
     ProcessStatisticsRevaluationResponse getStatisticsRevaluation();
+    ProcessStatisticsDocumentBeInventoryResponse getStatisticsDocumentByInventory();
+    Page<FindAllProcessBeAssignedResponse>
+    findAllProcessBeAssignedDocumentInventory(FindAllProcessBeAssignedDocumentInventoryRequest request, Pageable pageable);
 }

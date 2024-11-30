@@ -788,13 +788,27 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    public Page<FindAllProcessBeAssignedResponse>
+    findAllProcessBeAssignedDocumentInventoryResponse(FindAllProcessBeAssignedDocumentInventoryRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartment(csvcUser.getIdsDepartmentCurrent());
+        return processRepository.findAllProcessBeAssignedDocumentInventory(request, pageable);
+    }
+
+    @Override
     public ProcessStatisticsIncreaseResponse getStatisticIncrease() {
         return processRepository.getStatisticsIncrease();
     }
 
     @Override
-    public ProcessStatisticsInventoryResponse getStatisticInventory() {
-        return processRepository.getStatisticsInventory();
+    public ProcessStatisticsDocumentInventoryResponse getStatisticDocumentInventory() {
+        return processRepository.getStatisticsDocumentInventory();
+    }
+
+    @Override
+    public ProcessStatisticsDocumentBeInventoryResponse getStatisticDocumentBeInventory() {
+        return processRepository.getStatisticsDocumentByInventory();
     }
 
     @Override

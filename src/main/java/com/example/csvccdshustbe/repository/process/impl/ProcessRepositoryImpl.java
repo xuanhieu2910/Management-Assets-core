@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.repository.process.impl;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.repository.process.ProcessRepositoryCustom;
+import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedDocumentInventoryRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
 import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.utility.Constants;
@@ -19,10 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
@@ -108,7 +106,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 responses.add(response);
             }
         }
-        return new PageImpl<>(responses, pageable, countFinaAllProcessBeAssigned(request));
+        return new PageImpl<>(responses, pageable, countFindAllProcessBeAssigned(request));
     }
 
     @Override
@@ -164,37 +162,25 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     @Override
-    public ProcessStatisticsInventoryResponse getStatisticsInventory() {
+    public ProcessStatisticsDocumentInventoryResponse getStatisticsDocumentInventory() {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select sum(totalStatistic.countTotalPending) as countTotalPending,  " +
-                "       sum(totalStatistic.countTotalBeApproved) as countTotalReject, " +
-                "       sum(totalStatistic.countTotalReject) as countTotalBeApproved " +
-                "from (select count(0) countTotalPending, 0 countTotalReject, 0 countTotalBeApproved " +
-                "from process pr " +
-                "     inner join department de on pr.id_department = de.id_department " +
-                "     inner join type_process tp on pr.id_type_process = tp.id_type_process " +
-                "where pr.status = :statusPending " +
-                "and tp.code = :codeTypeProcess " +
-                "and de.id_department in (:idsDepartmentOriginal) " +
-                "union all " +
-                "select 0 countTotalPending,count(0) countTotalReject, 0 countTotalBeApproved " +
-                "from process pr " +
-                "      inner join department de on pr.id_department = de.id_department " +
-                "      inner join type_process tp on pr.id_type_process = tp.id_type_process " +
-                "where pr.status = :statusReject " +
-                "  and tp.code = :codeTypeProcess " +
-                "  and de.id_department in (:idsDepartmentOriginal) " +
-                "union all " +
-                "select 0 countTotalPending, 0 countTotalReject, count(0) countTotalBeApproved " +
-                "from request_stake_holder rsh " +
-                "      inner join request rq on rsh.id_request = rq.id_request " +
-                "      inner join state st on rq.id_state = st.id_state " +
-                "      inner join process pr on st.id_process = pr.id_process " +
-                "      inner join type_process tp on pr.id_type_process = tp.id_type_process " +
-                "      inner join csvc_user csvcUser on rsh.id_user = csvcUser.id_user " +
-                "where rsh.status = :statusRequestPending " +
-                "  and tp.code = :codeTypeProcess " +
-                "  and csvcUser.id_user = :idUser) totalStatistic ");
+        sb.append("select sum(totalStatistic.countTotalPending) as countTotalPending,  " +
+                "       sum(totalStatistic.countTotalReject)  as countTotalReject  " +
+                "from (select count(0) countTotalPending, 0 countTotalReject  " +
+                "      from process pr  " +
+                "               inner join department de on pr.id_department = de.id_department  " +
+                "               inner join type_process tp on pr.id_type_process = tp.id_type_process  " +
+                "      where pr.status = :statusPending  " +
+                "        and tp.code = :codeTypeProcess  " +
+                "        and de.id_department in (:idsDepartmentOriginal)  " +
+                "      union all  " +
+                "      select 0 countTotalPending, count(0) countTotalReject  " +
+                "      from process pr  " +
+                "               inner join department de on pr.id_department = de.id_department  " +
+                "               inner join type_process tp on pr.id_type_process = tp.id_type_process  " +
+                "      where pr.status = :statusReject  " +
+                "        and tp.code = :codeTypeProcess  " +
+                "        and de.id_department in (:idsDepartmentOriginal)) totalStatistic ");
         CsvcUser csvcUser = (CsvcUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
@@ -204,12 +190,11 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
         query.setParameter("idUser", csvcUser.getIdUser());
         List<Object[]> result = query.getResultList();
-        ProcessStatisticsInventoryResponse response = new ProcessStatisticsInventoryResponse();
+        ProcessStatisticsDocumentInventoryResponse response = new ProcessStatisticsDocumentInventoryResponse();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
                 response.setTotalInventoryPendingApproved(ValueUtil.getIntegerByObject(obj[0]));
-                response.setTotalInventoryPendingBeApproved(ValueUtil.getIntegerByObject(obj[1]));
-                response.setTotalInventoryRejected(ValueUtil.getIntegerByObject(obj[2]));
+                response.setTotalInventoryRejected(ValueUtil.getIntegerByObject(obj[1]));
             }
         }
         return response;
@@ -371,7 +356,113 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         return response;
     }
 
-    private long countFinaAllProcessBeAssigned(FindAllProcessBeAssignedRequest request) {
+    @Override
+    public ProcessStatisticsDocumentBeInventoryResponse getStatisticsDocumentByInventory() {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) countTotalBeApproved  " +
+                "from process pr  " +
+                "         inner join department de on pr.id_department = de.id_department  " +
+                "         inner join type_process tp on pr.id_type_process = tp.id_type_process  " +
+                "where pr.status = :statusPending  " +
+                "  and tp.code = :codeTypeProcess  " +
+                "  and de.id_department in (:idsDepartmentOriginal) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY);
+        query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
+        List<Object[]> result = query.getResultList();
+        ProcessStatisticsDocumentBeInventoryResponse response = new ProcessStatisticsDocumentBeInventoryResponse();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                response.setTotalInventoryBeApproved(ValueUtil.getIntegerByObject(obj[0]));
+            }
+        }
+        return response;
+    }
+
+    @Override
+    public Page<FindAllProcessBeAssignedResponse>
+    findAllProcessBeAssignedDocumentInventory(FindAllProcessBeAssignedDocumentInventoryRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select pr.id_process, dc.id_document, dc.code codeDocument,  " +
+                "         tp.name typeProcess, dc.description, pr.time_created,      " +
+                "         pr.time_modified, csvcUserCreate.user_name, csvcUserCreate.full_name,      " +
+                "         dc.time_created, dc.time_modified, dc.time_increase, dc.time_document  " +
+                "from process pr  " +
+                "         inner join department de on pr.id_department = de.id_department  " +
+                "         inner join type_process tp on pr.id_type_process = tp.id_type_process  " +
+                "         inner join document dc on pr.id_process = dc.id_process  " +
+                "         inner join csvc_user csvcUserCreate on pr.id_user_created = csvcUserCreate.id_user  " +
+                "where pr.status = :statusPending  " +
+                "  and tp.code = :codeTypeProcess  " +
+                "  and de.id_department in (:idsDepartmentOriginal) ");
+        setConditionFindAllProcessBeAssignedDocumentInventory(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindallProcessBeAssignedDocumentInventory(query, request);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllProcessBeAssignedResponse> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FindAllProcessBeAssignedResponse response = new FindAllProcessBeAssignedResponse();
+                response.setIdProcess(ValueUtil.getIntegerByObject(obj[0]));
+                response.setIdDocument(ValueUtil.getIntegerByObject(obj[1]));
+                response.setCodeDocument(ValueUtil.getStringByObject(obj[2]));
+                response.setTypeProcess(ValueUtil.getStringByObject(obj[3]));
+                response.setDescription(ValueUtil.getStringByObject(obj[4]));
+                response.setTimeCreatedProcess(ValueUtil.getStringByObject(obj[5]));
+                response.setTimeModifiedProcess(ValueUtil.getStringByObject(obj[6]));
+                response.setUserNameCreated(ValueUtil.getStringByObject(obj[7]));
+                response.setFullNameCreated(ValueUtil.getStringByObject(obj[8]));
+                response.setTimeCreatedDocument(ValueUtil.getStringByObject(obj[9]));
+                response.setTimeModifiedDocument(ValueUtil.getStringByObject(obj[10]));
+                response.setTimeIncrease(ValueUtil.getStringByObject(obj[11]));
+                response.setTimeDocument(ValueUtil.getStringByObject(obj[12]));
+                responses.add(response);
+            }
+        }
+        return new PageImpl<>(responses, pageable, countFinaAllProcessBeAssignedDocumentInventory(request));
+    }
+
+    private long countFinaAllProcessBeAssignedDocumentInventory(FindAllProcessBeAssignedDocumentInventoryRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) count  " +
+                "from process pr  " +
+                "         inner join department de on pr.id_department = de.id_department  " +
+                "         inner join type_process tp on pr.id_type_process = tp.id_type_process  " +
+                "         inner join document dc on pr.id_process = dc.id_process  " +
+                "         inner join csvc_user csvcUserCreate on pr.id_user_created = csvcUserCreate.id_user  " +
+                "where pr.status = :statusPending  " +
+                "  and tp.code = :codeTypeProcess  " +
+                "  and de.id_department in (:idsDepartmentOriginal) ");
+        setConditionFindAllProcessBeAssignedDocumentInventory(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindallProcessBeAssignedDocumentInventory(query, request);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindallProcessBeAssignedDocumentInventory(Query query,
+                                                                       FindAllProcessBeAssignedDocumentInventoryRequest
+                                                                               request) {
+        query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY);
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartment());
+        if (Objects.nonNull(request.getIdDepartment())) {
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+    }
+
+    private void setConditionFindAllProcessBeAssignedDocumentInventory(StringBuilder sb,
+                                                                       FindAllProcessBeAssignedDocumentInventoryRequest
+                                                                               request) {
+        if (Objects.nonNull(request.getIdDepartment())) {
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        sb.append("   ORDER BY pr.id_process DESC  ");
+    }
+
+    private long countFindAllProcessBeAssigned(FindAllProcessBeAssignedRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) count  " +
                 "from request_stake_holder rsh  " +

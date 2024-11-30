@@ -18,8 +18,10 @@ public interface ProcessService {
     Process findProcessByIdProcess(Integer idProcess);
     Process updateProcessByIdProcessAndStatus(Integer idProcess, Integer status) throws ValidateFiledException, JsonProcessingException, IllegalAccessException;
     Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedResponse(FindAllProcessBeAssignedRequest request);
+    Page<FindAllProcessBeAssignedResponse> findAllProcessBeAssignedDocumentInventoryResponse(FindAllProcessBeAssignedDocumentInventoryRequest request);
     ProcessStatisticsIncreaseResponse getStatisticIncrease();
-    ProcessStatisticsInventoryResponse getStatisticInventory();
+    ProcessStatisticsDocumentInventoryResponse getStatisticDocumentInventory();
+    ProcessStatisticsDocumentBeInventoryResponse getStatisticDocumentBeInventory();
     ProcessStatisticsDecreaseResponse getStatisticDecrease();
     ProcessStatisticsChangeResponse getStatisticChange();
     ProcessStatisticsRevaluationResponse getStatisticRevaluation();

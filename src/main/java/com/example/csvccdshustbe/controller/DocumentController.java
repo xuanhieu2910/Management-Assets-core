@@ -227,6 +227,20 @@ public class DocumentController {
         }
     }
 
+    @GetMapping("/be-assigned-document-inventory")
+    public ResponseEntity<?> findAllProcessBeAssignedInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllProcessBeAssignedDocumentInventoryRequest request){
+        try {
+            return ApiResponseDto.createdWithState(processService.findAllProcessBeAssignedDocumentInventoryResponse(request),
+                    "Find all process be assigned document inventory success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
     @GetMapping("/statistic-increase")
     public ResponseEntity<?> getStatisticIncrease(){
         try {
@@ -237,13 +251,23 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/statistic-inventory")
-    public ResponseEntity<?> getStatisticInventory(){
+    @GetMapping("/statistic-document-inventory")
+    public ResponseEntity<?> getStatisticDocumentInventory(){
         try {
-            return ApiResponseDto.createdWithState(processService.getStatisticInventory(),
+            return ApiResponseDto.createdWithState(processService.getStatisticDocumentInventory(),
                     "Get statistic inventory success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/statistic-document-be-inventory")
+    public ResponseEntity<?> getStatisticDocumentBeInventory(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticDocumentBeInventory(),
+                    "Get statistic be inventory success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
