@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.service.document;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
+import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
@@ -25,4 +26,7 @@ public interface DocumentService {
     Page<FindAllProcessAssetChangeResponse> findAllDataProcessAssetChange(FindAllProcessAssetChangeRequest request);
     Page<FindAllProcessAssetRevaluationResponse> findAllDataProcessAssetRevaluation(FindAllProcessAssetRevaluationRequest request);
     Document findDocumentByIdProcess(Integer idProcess);
+    Document findDocumentByCodeDocument(String codeDocument);
+    void updateInventoryDraft(UpdateInventoryDraftRequest request);
+    void updateInventoryFinish(UpdateInventoryDraftRequest request);
 }

@@ -9,11 +9,13 @@ import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.repository.document.DocumentRepository;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
+import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
 import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
+import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.utility.Constants;
@@ -42,6 +44,8 @@ public class DocumentServiceImpl implements DocumentService {
     DocumentRepository documentRepository;
     @Autowired
     DepartmentService departmentService;
+    @Autowired
+    AssetProcessService assetProcessService;
 
     @Override
     public Document findDocumentByCodeAndIdDepartment(String code, Integer idDepartment) {
@@ -282,6 +286,38 @@ public class DocumentServiceImpl implements DocumentService {
             throw new NotFoundException("Don't exits document by id process!");
         }
         return document.get();
+    }
+
+    @Override
+    public Document findDocumentByCodeDocument(String codeDocument) {
+        Optional<Document> document =
+                documentRepository.findDocumentByCodeDocumentAndStatus(codeDocument,
+                        Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        if (document.isEmpty()) {
+            throw new NotFoundException("Don't exits document!");
+        }
+        return document.get();
+    }
+
+    @Override
+    public void updateInventoryDraft(UpdateInventoryDraftRequest request) {
+        Document document = findDocumentByCodeDocument(request.getCodeDocument());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        document.setTimeModified(String.valueOf(new Date().getTime()));
+        document.setIdUserModified(csvcUser.getIdUser());
+        documentRepository.save(document);
+        assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess());
+    }
+
+    @Override
+    public void updateInventoryFinish(UpdateInventoryDraftRequest request) {
+        Document document = findDocumentByCodeDocument(request.getCodeDocument());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        document.setTimeModified(String.valueOf(new Date().getTime()));
+        document.setIdUserModified(csvcUser.getIdUser());
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE);
+        documentRepository.save(document);
+        assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess());
     }
 
     private List<FindAllProcessAssetChangeResponse>

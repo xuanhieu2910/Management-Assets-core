@@ -33,12 +33,13 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Optional<Document>   findDocumentByCodeAndIdDepartment(String code, Integer idDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select doc.id_document, doc.code, doc.time_created,    " +
-                "        doc.time_modified, doc.time_increase, doc.time_document,  " +
-                "        doc.id_department, doc.id_department_original    " +
-                " from document doc     " +
-                " where doc.code = :code    " +
-                " and doc.id_department_original = :idDepartment   ");
+        sb.append("select doc.id_document, doc.code, doc.time_created,  " +
+                "         doc.time_modified, doc.time_increase, doc.time_document,  " +
+                "         doc.id_department, doc.id_department_original,  " +
+                "         doc.status, doc.id_user_created, doc.id_user_modified  " +
+                "from document doc  " +
+                "where doc.code = :code  " +
+                "and doc.id_department_original = :idDepartment ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("code", code);
         query.setParameter("idDepartment", idDepartment);
@@ -54,6 +55,9 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 document.setTimeDocument(ValueUtil.getStringByObject(obj[5]));
                 document.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
                 document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
+                document.setStatus(ValueUtil.getIntegerByObject(obj[8]));
+                document.setIdUserCreated(ValueUtil.getIntegerByObject(obj[9]));
+                document.setIdUserModified(ValueUtil.getIntegerByObject(obj[10]));
                 return Optional.of(document);
             }
         }
@@ -63,11 +67,12 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Optional<Document> findDocumentByIdDepartment(Integer idDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select doc.id_document, doc.code, doc.time_created,      " +
-                "        doc.time_modified, doc.time_increase, doc.time_document,    " +
-                "        doc.id_department, doc.id_department_original " +
-                " from document doc       " +
-                " where doc.id_department_original = :idDepartment ORDER BY doc.code DESC  ");
+        sb.append("select doc.id_document, doc.code, doc.time_created,  " +
+                "         doc.time_modified, doc.time_increase, doc.time_document,  " +
+                "         doc.id_department, doc.id_department_original,  " +
+                "         doc.status, doc.id_user_created, doc.id_user_modified  " +
+                "  from document doc  " +
+                "  where doc.id_department_original = :idDepartment ORDER BY doc.code DESC   ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idDepartment", idDepartment);
         List<Object[]> result = query.getResultList();
@@ -82,6 +87,9 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 document.setTimeDocument(ValueUtil.getStringByObject(obj[5]));
                 document.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
                 document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
+                document.setStatus(ValueUtil.getIntegerByObject(obj[8]));
+                document.setIdUserCreated(ValueUtil.getIntegerByObject(obj[9]));
+                document.setIdUserModified(ValueUtil.getIntegerByObject(obj[10]));
                 return Optional.of(document);
             }
         }
@@ -91,16 +99,17 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Page<FindAllDocumentAssetDto> findAllDocumentAssetDtoByIdsDepartment(FindAllDocumentAssetRequest request, Pageable pageable){
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT document.code,type_process.code,type_process.name,user.full_name,process.status,  " +
-                "                  document.description,document.time_created, de.code codeDepartment, de.name nameDepartment" +
-                "                  FROM document   " +
-                "                  INNER JOIN process ON document.id_process = process.id_process" +
-                "                  INNER JOIN type_process ON process.id_type_process = type_process.id_type_process" +
-                "                  LEFT JOIN csvc_user user ON process.id_user_created = user.id_user      " +
-                "                  LEFT JOIN department de ON process.id_department = de.id_department" +
-                "                  LEFT join asset_process on process.id_process = asset_process.id_process" +
-                "                  INNER JOIN asset ON asset_process.id_asset = asset.id_asset  " +
-                "                  WHERE process.id_department IN (:idsDepartmentOriginal)  " );
+        sb.append("SELECT document.code,type_process.code,type_process.name,user.full_name,process.status,      " +
+                "         document.description,document.time_created, de.code codeDepartment, de.name nameDepartment,  " +
+                "         document.status " +
+                "FROM document       " +
+                "    INNER JOIN process ON document.id_process = process.id_process    " +
+                "    INNER JOIN type_process ON process.id_type_process = type_process.id_type_process    " +
+                "    LEFT JOIN csvc_user user ON process.id_user_created = user.id_user          " +
+                "    LEFT JOIN department de ON process.id_department = de.id_department    " +
+                "    LEFT join asset_process on process.id_process = asset_process.id_process    " +
+                "    INNER JOIN asset ON asset_process.id_asset = asset.id_asset      " +
+                "WHERE process.id_department IN (:idsDepartmentOriginal)  " );
         setConditionFindAllDocumentAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDocumentAsset(request, query);
@@ -119,8 +128,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 findAllDocumentAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[6]));
                 findAllDocumentAssetDto.setCodeDepartment(ValueUtil.getStringByObject(obj[7]));
                 findAllDocumentAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
-
-
+                findAllDocumentAssetDto.setStatusDocument(ValueUtil.getIntegerByObject(obj[9]));
                 responses.add(findAllDocumentAssetDto);
             }
         }
@@ -865,6 +873,43 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
                 document.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
                 document.setDescription(ValueUtil.getStringByObject(obj[9]));
+                return Optional.of(document);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Document> findDocumentByCodeDocumentAndStatus(String codeDocument, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select id_document, id_process, code,  " +
+                "         time_created, time_modified, time_increase,  " +
+                "         time_document, id_department_original,  " +
+                "         id_department, description, status,  " +
+                "         id_user_created, id_user_modified  " +
+                "from document  " +
+                "  where code = :codeDocument  " +
+                "  and status = :statusDocument  ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeDocument", codeDocument);
+        query.setParameter("statusDocument", status);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Document document = new Document();
+                document.setIdDocument(ValueUtil.getIntegerByObject(obj[0]));
+                document.setIdProcess(ValueUtil.getIntegerByObject(obj[1]));
+                document.setCode(ValueUtil.getStringByObject(obj[2]));
+                document.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                document.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                document.setTimeIncrease(ValueUtil.getStringByObject(obj[5]));
+                document.setTimeDocument(ValueUtil.getStringByObject(obj[6]));
+                document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
+                document.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
+                document.setDescription(ValueUtil.getStringByObject(obj[9]));
+                document.setStatus(ValueUtil.getIntegerByObject(obj[10]));
+                document.setIdUserCreated(ValueUtil.getIntegerByObject(obj[11]));
+                document.setIdUserModified(ValueUtil.getIntegerByObject(obj[12]));
                 return Optional.of(document);
             }
         }

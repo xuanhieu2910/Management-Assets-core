@@ -14,4 +14,5 @@ public interface AssetProcessRepositoryCustom {
     Page<FindAllAssetDto> findAllAssetProcess(FindAllAssetProcessRequest request, Pageable pageable);
     Optional<AssetProcess> findAssetProcessByIdProcess(Integer idProcess);
     List<AssetProcessDto> findAssetProcessDtoByIdProcess(Integer idProcess);
+    List<AssetProcess> findAssetProcessListByIdsAssetAndIdProcess(List<Integer> idsAsset, Integer idProcess);
 }

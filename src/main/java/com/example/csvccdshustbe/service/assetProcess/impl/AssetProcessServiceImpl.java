@@ -5,7 +5,9 @@ import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.repository.assetProcess.AssetProcessRepository;
+import com.example.csvccdshustbe.request.assetProcess.AssetProcessRequest;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
+import com.example.csvccdshustbe.request.assetProcess.UpdateAllAssetProcessRequest;
 import com.example.csvccdshustbe.response.assetProcess.FindAllAssetProcessResponse;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import com.example.csvccdshustbe.utility.Constants;
@@ -58,6 +60,39 @@ public class AssetProcessServiceImpl implements AssetProcessService {
     @Override
     public List<AssetProcessDto> findAllAssetProcessByIdProcess(Integer idProcess) {
         return assetProcessRepository.findAssetProcessDtoByIdProcess(idProcess);
+    }
+
+    @Override
+    public void updateListAssetProcessByIdProcess(UpdateAllAssetProcessRequest request) {
+        List<Integer> idsAsset = getIdsAssetFromUpdateAllAssetProcessRequest(request);
+        List<AssetProcess> assetProcessList =
+                assetProcessRepository.findAssetProcessListByIdsAssetAndIdProcess(idsAsset, request.getIdProcess());
+        if (assetProcessList.size() != idsAsset.size()){
+            throw new NotFoundException("Don't exist asset in process!");
+        }
+        updateChangeAssetProcess(assetProcessList, request);
+    }
+
+    private void updateChangeAssetProcess(List<AssetProcess> assetProcessList, UpdateAllAssetProcessRequest request) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        for (AssetProcessRequest assetProcessRequest : request.getAssets()){
+            assetProcessList.stream().
+                    filter(x->x.getIdAsset().equals(assetProcessRequest.getIdAsset()))
+                    .findFirst()
+                    .ifPresent(x->{
+                        x.setValue(assetProcessRequest.getValue());
+                        x.setIdUserModified(csvcUser.getIdUser());
+                        x.setTimeModified(timeCurrent);
+                    });
+        }
+        assetProcessRepository.saveAll(assetProcessList);
+    }
+
+    private List<Integer> getIdsAssetFromUpdateAllAssetProcessRequest(UpdateAllAssetProcessRequest request) {
+        List<Integer> idsAsset = new ArrayList<>();
+        request.getAssets().forEach(x->idsAsset.add(x.getIdAsset()));
+        return idsAsset;
     }
 
     private List<FindAllAssetProcessResponse> convertToFindAllAssetProcess(List<FindAllAssetDto> content) {

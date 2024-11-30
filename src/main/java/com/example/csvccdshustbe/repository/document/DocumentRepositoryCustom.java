@@ -36,4 +36,5 @@ public interface DocumentRepositoryCustom {
                                                                                              Pageable pageable);
 
     Optional<Document> findDocumentByIdProcess(Integer idProcess);
+    Optional<Document> findDocumentByCodeDocumentAndStatus(String codeDocument, Integer status);
 }

@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
+import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
@@ -171,18 +172,6 @@ public class DocumentController {
         }
     }
 
-//    @PostMapping("/update-inventory")
-//    public ResponseEntity<?> updateInventory(@RequestBody CreateInventoryAssetRequest request){
-//        try{
-//            processService.createUpdateInventoryAsset(request);
-//            return ApiResponseDto.createdWithMessage("Create inventory asset success!", HttpStatus.OK);
-//        } catch (ValidateFiledException e){
-//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
-//        } catch (Exception e){
-//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
-//        }
-//    }
-
     @PostMapping("/decrease")
     public ResponseEntity<?> decreaseAsset(@RequestBody CreateDecreaseAssetRequest request){
         try {
@@ -287,4 +276,29 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @PostMapping("/update-inventory-draft")
+    public ResponseEntity<?> updateInventoryDraft(@RequestBody UpdateInventoryDraftRequest request){
+        try {
+            documentService.updateInventoryDraft(request);
+            return ApiResponseDto.createdWithMessage("Update inventory draft success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+          return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/update-inventory-finish")
+    public ResponseEntity<?> finishInventoryDraft(@RequestBody UpdateInventoryDraftRequest request){
+        try {
+            documentService.updateInventoryFinish(request);
+            return ApiResponseDto.createdWithMessage("Update inventory finish success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 }

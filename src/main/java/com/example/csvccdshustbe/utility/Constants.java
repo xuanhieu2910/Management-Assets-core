@@ -514,9 +514,16 @@ public class Constants {
     /**
      * Constants Code Name Category
      * */
-
     public static String CODE_NAME_CAR = "car";
 
     public static String CODE_NAME_NO_SHAPE = "TSCDVH";
     /*-----------------------------------------------------*/
+    /**
+     * Constants Code Name Category
+     * */
+    public static Integer STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE = -1;
+
+    public static Integer STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE = 1;
+    /*-----------------------------------------------------*/
+
 }

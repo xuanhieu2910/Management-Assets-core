@@ -631,6 +631,9 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(request.getTimeDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(null);
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
         return document;
     }
 
@@ -647,6 +650,9 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(request.getTimeCreatedDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(request.getIdDepartment());
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
         return document;
     }
 
@@ -663,6 +669,9 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(document.getTimeDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(documentOriginal.getIdDepartment());
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
         return document;
     }
 
@@ -679,6 +688,9 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(request.getTimeDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(null);
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
         return document;
     }
 
@@ -695,6 +707,9 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(request.getTimeDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(null);
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
         return document;
     }
 
@@ -712,6 +727,9 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(request.getTimeDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(null);
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
         return document;
     }
 

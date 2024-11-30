@@ -39,15 +39,4 @@ public class AssetProcessController {
         }
     }
 
-
-    @PostMapping("/update")
-    public ResponseEntity<?> updateListAssetProcess(@RequestBody UpdateAllAssetProcessRequest request) {
-        try {
-            return null;
-        } catch (NotFoundException e) {
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
-        }
-    }
 }
