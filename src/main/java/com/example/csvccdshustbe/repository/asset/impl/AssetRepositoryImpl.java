@@ -863,8 +863,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "     on asset.id_asset_category = assetCategories.id_asset_category     " +
                 "          inner join department de on asset.id_department = de.id_department     " +
                 "          left join location lo on asset.id_location = lo.id_location     " +
-                "          inner join asset_original_of_formation assetOriginalOfFormation     " +
-                "     on asset.id_asset = assetOriginalOfFormation.id_asset     " +
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
@@ -919,8 +917,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "     on asset.id_asset_category = assetCategories.id_asset_category     " +
                 "          inner join department de on asset.id_department = de.id_department     " +
                 "          left join location lo on asset.id_location = lo.id_location     " +
-                "          inner join asset_original_of_formation assetOriginalOfFormation     " +
-                "     on asset.id_asset = assetOriginalOfFormation.id_asset     " +
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
@@ -1157,8 +1153,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "     on asset.id_asset_category = assetCategories.id_asset_category     " +
                 "          inner join department de on asset.id_department = de.id_department     " +
                 "          left join location lo on asset.id_location = lo.id_location     " +
-                "          inner join asset_original_of_formation assetOriginalOfFormation     " +
-                "     on asset.id_asset = assetOriginalOfFormation.id_asset     " +
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
@@ -1181,8 +1175,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "     on asset.id_asset_category = assetCategories.id_asset_category     " +
                 "          inner join department de on asset.id_department = de.id_department     " +
                 "          left join location lo on asset.id_location = lo.id_location     " +
-                "          inner join asset_original_of_formation assetOriginalOfFormation     " +
-                "     on asset.id_asset = assetOriginalOfFormation.id_asset     " +
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
