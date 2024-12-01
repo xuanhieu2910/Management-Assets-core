@@ -992,11 +992,22 @@ public class AssetServiceImpl implements AssetService {
                     Optional.ofNullable(dto.getOriginalOfFormation())
                             .map(original -> Arrays.stream(original.split("-"))
                                     .mapToLong(Long::parseLong)
-                                    .sum())
+                                    .sum()* dto.getQuantity())
                             .orElse(0L)
             ));
-            response.setCumulative(dto.getCumulative());
-            response.setRestValue(dto.getRestValue());
+            response.setCumulative(String.valueOf(
+                    Optional.ofNullable(dto.getCumulative())
+                            .map(Double::parseDouble)
+                            .map(cumulative -> cumulative * Optional.ofNullable(dto.getQuantity()).orElse(1)) // Nhân với quantity
+                            .orElse(0.0)
+            ));
+
+            response.setRestValue(String.valueOf(
+                    Optional.ofNullable(dto.getRestValue())
+                            .map(Double::parseDouble)
+                            .map(restValue -> restValue * Optional.ofNullable(dto.getQuantity()).orElse(1)) // Nhân với quantity
+                            .orElse(0.0)
+            ));
             response.setTimeIncrease(dto.getTimeIncrease());
             responses.add(response);
         }

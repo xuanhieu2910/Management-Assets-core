@@ -1658,11 +1658,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     private void setConditionFindAllAsset(FindAllAssetRequest request, StringBuilder sb) {
-        sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
-                "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
-                "         asset.time_created, asset.time_modified, " +
-                "         asset.salt, asset.quantity , " +
-                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,type_process.code ");
+
         if (StringUtils.isNotBlank(request.getNameAsset())){
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
         }
@@ -1672,6 +1668,13 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             sb.append(" and de.id_department = :idDepartment ");
         }
+
+        sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
+                "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
+                "         asset.time_created, asset.time_modified, " +
+                "         asset.salt, asset.quantity , " +
+                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,type_process.code ");
+
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -1687,11 +1690,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     private void setConditionCountFindAllAsset(FindAllAssetRequest request, StringBuilder sb) {
-        sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
-                "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
-                "         asset.time_created, asset.time_modified, " +
-                "         asset.salt, asset.quantity , " +
-                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,type_process.code ");
+
         if (StringUtils.isNotBlank(request.getNameAsset())){
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
         }
@@ -1701,6 +1700,13 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             sb.append(" and de.id_department = :idDepartment ");
         }
+
+        sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
+                "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
+                "         asset.time_created, asset.time_modified, " +
+                "         asset.salt, asset.quantity , " +
+                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,type_process.code ");
+
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
