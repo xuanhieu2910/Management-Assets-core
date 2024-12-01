@@ -430,18 +430,21 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     public Page<FindAllProcessBeAssignedResponse>
     findAllProcessBeAssignedDocumentInventory(FindAllProcessBeAssignedDocumentInventoryRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select pr.id_process, dc.id_document, dc.code codeDocument,  " +
-                "         tp.name typeProcess, dc.description, pr.time_created,      " +
-                "         pr.time_modified, csvcUserCreate.user_name, csvcUserCreate.full_name,      " +
-                "         dc.time_created, dc.time_modified, dc.time_increase, dc.time_document  " +
-                "from process pr  " +
-                "         inner join department de on pr.id_department = de.id_department  " +
-                "         inner join type_process tp on pr.id_type_process = tp.id_type_process  " +
-                "         inner join document dc on pr.id_process = dc.id_process  " +
-                "         inner join csvc_user csvcUserCreate on pr.id_user_created = csvcUserCreate.id_user  " +
-                "where pr.status = :statusPending  " +
-                "  and tp.code = :codeTypeProcess  " +
-                "  and de.id_department in (:idsDepartmentOriginal) ");
+        sb.append("select pr.id_process, dc.id_document, dc.code codeDocument,     " +
+                "        tp.name typeProcess, dc.description, pr.time_created,         " +
+                "        pr.time_modified, csvcUserCreate.user_name, csvcUserCreate.full_name,         " +
+                "        dc.time_created, dc.time_modified, dc.time_increase, dc.time_document,  " +
+                "        rsh.id_request_stake_holder  " +
+                " from process pr  " +
+                "        inner join department de on pr.id_department = de.id_department     " +
+                "        inner join type_process tp on pr.id_type_process = tp.id_type_process     " +
+                "        inner join document dc on pr.id_process = dc.id_process     " +
+                "        inner join csvc_user csvcUserCreate on pr.id_user_created = csvcUserCreate.id_user  " +
+                "        inner join request re on pr.id_process = re.id_process  " +
+                "        inner join request_stake_holder rsh on re.id_request = rsh.id_request  " +
+                " where pr.status = :statusPending  " +
+                " and tp.code = :codeTypeProcess  " +
+                " and de.id_department in (:idsDepartmentOriginal) ");
         setConditionFindAllProcessBeAssignedDocumentInventory(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindallProcessBeAssignedDocumentInventory(query, request);
@@ -464,6 +467,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 response.setTimeModifiedDocument(ValueUtil.getStringByObject(obj[10]));
                 response.setTimeIncrease(ValueUtil.getStringByObject(obj[11]));
                 response.setTimeDocument(ValueUtil.getStringByObject(obj[12]));
+                response.setIdRequestStakeHolder(ValueUtil.getIntegerByObject(obj[13]));
                 responses.add(response);
             }
         }
