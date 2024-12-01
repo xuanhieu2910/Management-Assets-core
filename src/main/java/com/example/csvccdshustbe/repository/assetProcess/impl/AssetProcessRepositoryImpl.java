@@ -169,6 +169,39 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
         return assetProcessList;
     }
 
+    @Override
+    public List<AssetProcess> findAllAssetProcessListByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select ap.id_asset_process, ap.id_asset, ap.id_process, " +
+                "       ap.id_type_process, ap.status, ap.value, " +
+                "       ap.time_created, ap.time_modified, ap.id_user_created, " +
+                "       ap.id_user_modified " +
+                "from asset_process ap  " +
+                "where 1 = 1 " +
+                "and ap.id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        List<AssetProcess> assetProcessList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                AssetProcess assetProcess = new AssetProcess();
+                assetProcess.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[0]));
+                assetProcess.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                assetProcess.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                assetProcess.setIdTypeProcess(ValueUtil.getIntegerByObject(obj[3]));
+                assetProcess.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                assetProcess.setValue(ValueUtil.getStringByObject(obj[5]));
+                assetProcess.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                assetProcess.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                assetProcess.setIdUserCreated(ValueUtil.getIntegerByObject(obj[8]));
+                assetProcess.setIdUserModified(ValueUtil.getIntegerByObject(obj[9]));
+                assetProcessList.add(assetProcess);
+            }
+        }
+        return assetProcessList;
+    }
+
     private long countFindAllAssetProcess(FindAllAssetProcessRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) " +

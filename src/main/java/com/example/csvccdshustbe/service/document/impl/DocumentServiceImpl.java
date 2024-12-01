@@ -22,6 +22,7 @@ import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -299,6 +300,7 @@ public class DocumentServiceImpl implements DocumentService {
         return document.get();
     }
 
+    @Transactional
     @Override
     public void updateInventoryDraft(UpdateInventoryDraftRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
@@ -317,7 +319,7 @@ public class DocumentServiceImpl implements DocumentService {
         document.setIdUserModified(csvcUser.getIdUser());
         document.setStatus(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE);
         documentRepository.save(document);
-        assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess());
+        assetProcessService.updateFinishListAssetProcessByIdProcess(request.getAssetProcess());
     }
 
     @Override

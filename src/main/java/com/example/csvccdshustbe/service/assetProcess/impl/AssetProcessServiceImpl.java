@@ -73,6 +73,16 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         updateChangeAssetProcess(assetProcessList, request);
     }
 
+    @Override
+    public void updateFinishListAssetProcessByIdProcess(UpdateAllAssetProcessRequest request) {
+        List<AssetProcess> assetProcessList =
+                assetProcessRepository.findAllAssetProcessListByIdProcess(request.getIdProcess());
+        if (assetProcessList.size() != request.getAssets().size()){
+            throw new NotFoundException("Don't exist asset in process!");
+        }
+        updateChangeAssetProcess(assetProcessList, request);
+    }
+
     private void updateChangeAssetProcess(List<AssetProcess> assetProcessList, UpdateAllAssetProcessRequest request) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String timeCurrent = String.valueOf(new Date().getTime());

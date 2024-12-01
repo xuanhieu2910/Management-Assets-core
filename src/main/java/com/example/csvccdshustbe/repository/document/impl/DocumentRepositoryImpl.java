@@ -906,7 +906,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 "         dc.status, dc.id_user_created,  " +
                 "         dc.id_user_modified  " +
                 "  from document dc       " +
-                "  inner join process pr on dc.id_process = dc.id_process  " +
+                "  inner join process pr on dc.id_process = pr.id_process  " +
                 "  where pr.id_process = :idProcess ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);

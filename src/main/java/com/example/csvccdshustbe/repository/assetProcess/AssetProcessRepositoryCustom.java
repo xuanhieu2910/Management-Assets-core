@@ -15,4 +15,5 @@ public interface AssetProcessRepositoryCustom {
     Optional<AssetProcess> findAssetProcessByIdProcess(Integer idProcess);
     List<AssetProcessDto> findAssetProcessDtoByIdProcess(Integer idProcess);
     List<AssetProcess> findAssetProcessListByIdsAssetAndIdProcess(List<Integer> idsAsset, Integer idProcess);
+    List<AssetProcess> findAllAssetProcessListByIdProcess(Integer idProcess);
 }

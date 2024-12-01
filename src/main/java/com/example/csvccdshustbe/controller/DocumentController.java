@@ -9,6 +9,7 @@ import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.log4j.Log4j2;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -18,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
 
+
+@Log4j2
 @Tag(name = "Document Controller", description = "The Document APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/document")
@@ -181,10 +184,10 @@ public class DocumentController {
             processService.createDocumentInventoryAsset(request);
             return ApiResponseDto.createdWithMessage("Create inventory asset success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
-            e.printStackTrace();
+            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
