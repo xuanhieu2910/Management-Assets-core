@@ -265,7 +265,7 @@ public class ProcessServiceImpl implements ProcessService {
         councilInventory.forEach(x->usersName.add(x.getUserName()));
         List<FindAllUserDto> usersDto = csvcUserService.findIdsUserByUsersName(usersName);
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
-        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderDocumentInventory(processRequest));
+        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderUpdateInventory(processRequest, councilInventory, usersDto));
         createTaskSendMailInventory(usersDto, document, process);
     }
 
@@ -548,6 +548,27 @@ public class ProcessServiceImpl implements ProcessService {
             taskSendMail.setTimeModified(timeCurrent);
             taskSendMailService.saveTaskSendMail(taskSendMail);
         }
+    }
+
+    private List<RequestStakeHolder> constructionRequestStakeHolderUpdateInventory(Request processRequest,
+                                                                                   List<CreateCouncilInventoryRequest> councilInventory,
+                                                                                   List<FindAllUserDto> usersDto) {
+        List<RequestStakeHolder> stakeHolders = new ArrayList<>();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        for (CreateCouncilInventoryRequest council : councilInventory){
+            RequestStakeHolder stakeHolder = new RequestStakeHolder();
+            stakeHolder.setIdRequest(processRequest.getIdRequest());
+            stakeHolder.setIdUser(usersDto.stream().filter(x->x.getUserName().equals(council.getUserName())).findFirst().get().getIdUser());
+            stakeHolder.setStatus(Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
+            stakeHolder.setTimeCreated(timeCurrent);
+            stakeHolder.setTimeModified(timeCurrent);
+            stakeHolder.setIdDepartment(council.getIdDepartment());
+            stakeHolder.setPosition(council.getPosition());
+            stakeHolder.setPositionInstance(council.getPositionInstance());
+            stakeHolder.setLevel(council.getLevel());
+            stakeHolders.add(stakeHolder);
+        }
+        return stakeHolders;
     }
 
 
