@@ -381,6 +381,7 @@ public class FileUploadService implements FilesStorageService {
         String reportTime = "Thời điểm kiểm kê " + formattedDate;
         updateCell(sheet, 7, 1, reportTime);
 
+
         if (stakeHoder.isPresent()) {
             List<Object[]> resultListStakeHoder = stakeHoder.get();
             int startingRow = 9;
