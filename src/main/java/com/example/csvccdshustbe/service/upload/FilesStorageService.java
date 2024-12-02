@@ -17,6 +17,7 @@ public interface FilesStorageService { ;
              throws ValidateFiledException, IOException, InterruptedException;
      String downLoadFileImportAsset() throws IOException;
      String downLoadReportByPathFile(String pathFile) throws IOException;
-     String downLoadInventoryReport(Integer status, Integer idAssetProcess) throws IOException;
+     String downLoadInventoryReport(String code) throws IOException;
+     String downLoadRevaluationReport(Integer idAssetProcess, Integer status) throws IOException;
 
 }

@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.dto.report.FindAllReportDto;
 import com.example.csvccdshustbe.dto.report.IncreaseDecreaseReport08bDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Report;
+import com.example.csvccdshustbe.repository.assetCurrentUsage.AssetCurrentUsageRepository;
 import com.example.csvccdshustbe.repository.report.ReportRepository;
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
@@ -207,8 +208,13 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public String downloadFileInventoryReport(Integer status, Integer idAssetProcess) throws IOException {
-        return filesStorageService.downLoadInventoryReport(status, idAssetProcess);
+    public String downloadFileInventoryReport(String code) throws IOException {
+        return filesStorageService.downLoadInventoryReport(code.trim());
+    }
+
+    @Override
+    public String downloadFileRevaluationReport(Integer idAssetProcess) throws IOException {
+        return filesStorageService.downLoadRevaluationReport(idAssetProcess, Constants.STATUS_ASSET_PROCESS_ACTIVE);
     }
     private void setIdsDepartmentOriginal(CreateReportInCreaseAndDecreaseAllRequest request) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

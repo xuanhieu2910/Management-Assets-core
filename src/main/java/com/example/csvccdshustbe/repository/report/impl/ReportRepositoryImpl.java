@@ -141,33 +141,77 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
         return Optional.empty();
     }
 
-    public Optional<List<Object[]>> findInfoAssetForInventoryReport(Integer idAssetProcess, Integer status){
+//    public Optional<List<Object[]>> findInfoAssetForInventoryReport(String code){
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(" SELECT" +
+//                "    a.name AS asset_name,                       -- 1.Tên tài sản" +
+//                "    a.code_asset AS asset_code,                 -- 2.Mã tài sản" +
+//                "    d.name AS department_name,                  -- 3.Nơi sử dụng (phòng ban)" +
+//                "    a.quantity AS quantity,                     -- 4.Số lượng" +
+//                "    ao.value AS original_value,                 -- 5.Nguyên giá" +
+//                "    ad.rest_value AS rest_value,                -- 6.Giá trị còn lại" +
+//                "    a.notes AS notes                            -- 7.Ghi chú của tài sản" +
+//                "FROM" +
+//                "    asset AS a" +
+//                "        LEFT JOIN asset_original_of_formation AS ao ON a.id_asset = ao.id_asset" +
+//                "        LEFT JOIN asset_depreciation AS ad ON a.id_asset = ad.id_asset" +
+//                "        LEFT JOIN department AS d ON a.id_department = d.id_department" +
+//                "        LEFT JOIN document AS doc ON doc.id_department=d.id_department" +
+//                "WHERE" +
+//                "        doc.code = :code"
+//        );
+//
+//        Query query = entityManager.createNativeQuery(sb.toString());
+//        query.setParameter("code", code);
+//
+//        List<Object[]> result = query.getResultList();
+//
+//        if (!CollectionUtils.isEmpty(result)) {
+//            return Optional.of(result);
+//        }
+//
+//        return Optional.empty();
+//    }
+public Optional<List<Object[]>> findInfoAssetForInventoryReport(String code) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("SELECT ")
+            .append("    a.name AS asset_name,                   ")
+            .append("    a.code_asset AS asset_code,                ")
+            .append("    d.name AS department_name,             ")
+            .append("    a.quantity AS quantity,                  ")
+            .append("    ao.value AS original_value,             ")
+            .append("    ad.rest_value AS rest_value,             ")
+            .append("    a.notes AS notes                          ")
+            .append("FROM ")
+            .append("    asset AS a ")
+            .append("        LEFT JOIN asset_original_of_formation AS ao ON a.id_asset = ao.id_asset ")
+            .append("        LEFT JOIN asset_depreciation AS ad ON a.id_asset = ad.id_asset ")
+            .append("        LEFT JOIN department AS d ON a.id_department = d.id_department ")
+            .append("        LEFT JOIN document AS doc ON doc.id_department = d.id_department ")
+            .append("WHERE ")
+            .append("    doc.code = '").append(code).append("'");
+
+    Query query = entityManager.createNativeQuery(sb.toString());
+    List<Object[]> result = query.getResultList();
+
+    return result.isEmpty() ? Optional.empty() : Optional.of(result);
+
+}
+
+
+    public Optional<List<Object[]>> findInfoAssetForRevaluationReport(Integer idAssetProcess, Integer status){
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT" +
-                "    ap.id_asset_process AS id_asset_process,   -- 1.Số của report" +
-                "    ap.time_modified AS time_modified,          -- 2.Thời gian kiểm kê" +
-                "    a.name AS asset_name,                       -- 3.Tên tài sản" +
-                "    a.code_asset AS asset_code,                 -- 4.Mã tài sản" +
-                "    d.name AS department_name,                  -- 5.Nơi sử dụng (phòng ban)" +
-                "    a.quantity AS quantity,                     -- 6.Số lượng" +
-                "    ao.value AS original_value,                 -- 7.Nguyên giá" +
-                "    ad.rest_value AS rest_value,                -- 8.Giá trị còn lại" +
-                "    ap.value AS asset_process_value,            -- 9.Số lượng, nguyên giá, giá trị còn lại của kiểm kê" +
-                "    a.notes AS notes                            -- 10.Ghi chú của tài sản" +
+        sb.append("SELECT" +
+                "    ap.value AS value" +
                 "FROM" +
-                "    asset AS a" +
-                "        LEFT JOIN asset_original_of_formation AS ao ON a.id_asset = ao.id_asset" +
-                "        LEFT JOIN asset_depreciation AS ad ON a.id_asset = ad.id_asset" +
-                "        LEFT JOIN asset_process AS ap ON a.id_asset = ap.id_asset" +
-                "        LEFT JOIN department AS d ON a.id_department = d.id_department" +
+                "    asset_process ap" +
                 "WHERE" +
-                "        ap.status = :status AND ap.id_asset_process = :idAssetProcess"
+                "        ap.id_asset_process = :idAssetProcess AND ap.status = :status"
         );
 
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAssetProcess", idAssetProcess);
         query.setParameter("status", status);
-
         List<Object[]> result = query.getResultList();
 
         if (!CollectionUtils.isEmpty(result)) {
@@ -177,34 +221,55 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
         return Optional.empty();
     }
 
-    public Optional<List<Object[]>> findInfoStakeHolderForInventoryReport(Integer idAssetProcess, Integer status){
+
+    public Optional<List<Object[]>> findInfoStakeHolderForInventoryReport(String code){
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT" +
-                "    u.full_name AS user_name,  -- Tên người dùng" +
-                "    rsh.position AS position,  -- Chức vụ của stakeholder" +
-                "    d.name AS name_department    -- đại diện" +
+        sb.append("SELECT\n" +
+                "    u.full_name AS user_name,            -- Tên người dùng\n" +
+                "    rsh.position AS position,            -- Chức vụ của stakeholder\n" +
+                "    rsh.position_instance AS position_instance           -- Đại diện\n" +
+                "FROM\n" +
+                "    asset a\n" +
+                "        JOIN asset_process ap ON a.id_asset = ap.id_asset\n" +
+                "        JOIN request r ON r.id_process = ap.id_process\n" +
+                "        JOIN request_stake_holder rsh ON r.id_request = rsh.id_request\n" +
+                "        JOIN csvc_user u ON rsh.id_user = u.id_user\n" +
+                "        JOIN document d ON d.id_process = r.id_request\n" +
+                "WHERE\n" +
+                "        d.code = :code"
+        );
+
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("code", code);
+
+        List<Object[]> result = query.getResultList();
+
+        if (!CollectionUtils.isEmpty(result)) {
+            return Optional.of(result);
+        }
+
+        return Optional.empty();
+    }
+    public Optional<List<Object[]>> findInfoStakeHolderForRevaluationReport(Integer idAssetProcess){
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT" +
+                "    u.full_name AS user_name,            -- Tên người dùng" +
+                "    rsh.position AS position,            -- Chức vụ của stakeholder" +
+                "    rsh.position_instance AS position_instance -- Đại diện" +
                 "FROM" +
                 "    asset_process ap" +
                 "        JOIN" +
-                "    process p ON ap.id_process = p.id_process" +
-                "        JOIN" +
-                "    request r ON r.id_process = p.id_process" +
+                "    request r ON r.id_process = ap.id_process" +
                 "        JOIN" +
                 "    request_stake_holder rsh ON r.id_request = rsh.id_request" +
                 "        JOIN" +
                 "    csvc_user u ON rsh.id_user = u.id_user" +
-                "        JOIN" +
-                "    user_role ur ON u.id_user = ur.id_user" +
-                "        JOIN" +
-                "    department d ON ur.id_department = d.id_department" +
                 "WHERE" +
-                "        ap.id_asset_process = :idAssetProcess" +
-                "  AND ap.status = :status"
+                "        ap.id_asset_process = :idAssetProcess"
         );
 
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAssetProcess", idAssetProcess);
-        query.setParameter("status", status);
 
         List<Object[]> result = query.getResultList();
 

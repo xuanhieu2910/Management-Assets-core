@@ -510,12 +510,7 @@ public class Constants {
      * */
     public static Integer STATUS_ASSET_IN_ACTIVE = -1;
     public static Integer STATUS_ASSET_ACTIVE = 1;
-    /*-----------------------------------------------------*/
-    /**
-     * Constants ASSET
-     * */
-    public static Integer STATUS_ASSET_IN_ACTIVE = -1;
-    public static Integer STATUS_ASSET_ACTIVE = 1;
+
     /*-----------------------------------------------------*/
     /**
      * Constants Code Name Category

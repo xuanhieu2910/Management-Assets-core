@@ -19,8 +19,10 @@ public interface ReportRepositoryCustom {
     Page<FindAllReportDto> findAllReportDtoVisible(FindAllReportVisibleRequest request, Pageable pageable);
     Page<FindAllReportDto> findAllReportDto(FindAllReportRequest request, Pageable pageable);
     Optional<Report> findReportByCodeAndStatus(String codeReport, Integer status);
-    Optional<List<Object[]>> findInfoAssetForInventoryReport(Integer idAssetProcess, Integer status);
-    Optional<List<Object[]>> findInfoStakeHolderForInventoryReport(Integer idAssetProcess, Integer status);
+    Optional<List<Object[]>> findInfoAssetForRevaluationReport(Integer idAssetProcess, Integer status);
+    Optional<List<Object[]>> findInfoStakeHolderForRevaluationReport(Integer idAssetProcess);
+    Optional<List<Object[]>> findInfoAssetForInventoryReport(String code);
+    Optional<List<Object[]>> findInfoStakeHolderForInventoryReport(String code);
 
     Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetGroundInReport(List<Integer> idsDepartment);
 

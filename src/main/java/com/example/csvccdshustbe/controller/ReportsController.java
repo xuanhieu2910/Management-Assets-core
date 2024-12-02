@@ -96,9 +96,19 @@ public class ReportsController {
     }
 
     @GetMapping("/download-report-inventory")
-    public ResponseEntity<?> downloadReportInventory(@RequestParam("status") Integer status, @RequestParam("idAssetProcess") Integer idAssetProcess){
+    public ResponseEntity<?> downloadReportInventory(@RequestParam("code") String code){
         try {
-            return ApiResponseDto.createdWithState(reportService.downloadFileInventoryReport(status, idAssetProcess),
+            return ApiResponseDto.createdWithState(reportService.downloadFileInventoryReport(code),
+                    "Download inventory report success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/download-report-revaluation")
+    public ResponseEntity<?> downloadReportRevaluation(@RequestParam("idAssetProcess") Integer idAssetProcess){
+        try {
+            return ApiResponseDto.createdWithState(reportService.downloadFileRevaluationReport(idAssetProcess),
                     "Download inventory report success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
