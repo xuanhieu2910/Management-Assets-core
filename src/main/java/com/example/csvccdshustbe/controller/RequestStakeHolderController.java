@@ -30,6 +30,7 @@ public class RequestStakeHolderController {
     @PostMapping("/approved")
     public ResponseEntity<?> approvedRequestStakeHolder(@RequestBody ApprovedRequestStakeHolderRequest request){
         try {
+
             requestStakeHolderService.approvedRequestStakeHolder(request);
             return ApiResponseDto.createdWithMessage("Approved request stake holder success!", HttpStatus.OK);
         } catch (NotFoundException e){
