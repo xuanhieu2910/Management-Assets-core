@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.service.document;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
+import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
@@ -17,12 +18,17 @@ public interface DocumentService {
     String generateCodeDocument(String typeGenerate);
     Page<FindAllDocumentAssetResponse> findAllDocumentByAsset(FindAllDocumentAssetRequest request);
     FindDetailsDocumentResponse findDetailsDocumentByCodeDocument(String codeDocument);
-
     Page<FindAllProcessAssetIncreaseResponse> findAllDataProcessAssetIncrease(FindAllProcessAssetIncreaseRequest request);
-    Page<FindAllProcessAssetInventoryResponse> findAllDataProcessAssetInventory(FindAllProcessAssetInventoryRequest request);
+    Page<FindAllProcessAssetInventoryResponse> findAllDataProcessAssetDocumentInventory(FindAllProcessAssetDocumentInventoryRequest request);
 
     Page<FindAllProcessAssetDecreaseResponse> findAllDataProcessAssetDecrease(FindAllProcessAssetDecreaseRequest request);
 
     Page<FindAllProcessAssetChangeResponse> findAllDataProcessAssetChange(FindAllProcessAssetChangeRequest request);
     Page<FindAllProcessAssetRevaluationResponse> findAllDataProcessAssetRevaluation(FindAllProcessAssetRevaluationRequest request);
+    Document findDocumentByIdProcess(Integer idProcess);
+    Document findDocumentByCodeDocument(String codeDocument);
+    void updateInventoryDraft(UpdateInventoryDraftRequest request);
+    void updateInventoryFinish(UpdateInventoryDraftRequest request);
+    Page<FindAllProcessAssetUpdateInventoryResponse>
+    findAllDataProcessAssetUpdateInventory(FindAllProcessAssetUpdateInventoryRequest findAllProcessAssetRequest);
 }

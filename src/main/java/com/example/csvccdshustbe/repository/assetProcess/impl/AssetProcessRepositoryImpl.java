@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.assetProcess.impl;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.repository.assetProcess.AssetProcessRepositoryCustom;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
@@ -79,10 +80,11 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
     public Optional<AssetProcess> findAssetProcessByIdProcess(Integer idProcess) {
         StringBuilder sb = new StringBuilder();
         sb.append("select ap.id_asset_process, ap.id_asset, ap.id_process,  " +
-                "       ap.id_type_process, ap.status, value, ap.time_created, ap.time_modified " +
-                "from asset_process ap " +
-                "    inner join asset at on ap.id_asset = at.id_asset " +
-                "where ap.id_process = :idProcess ");
+                "         ap.id_type_process, ap.status, value, ap.time_created,  " +
+                "         ap.time_modified, ap.id_user_created, ap.id_user_modified  " +
+                "  from asset_process ap  " +
+                "      inner join asset at on ap.id_asset = at.id_asset  " +
+                "  where ap.id_process = :idProcess  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
         List<Object[]> result = query.getResultList();
@@ -101,6 +103,103 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<AssetProcessDto> findAssetProcessDtoByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_asset_process, id_asset,  " +
+                "       id_process, id_type_process,  " +
+                "       status, value,  " +
+                "       time_created, time_modified " +
+                "from asset_process  " +
+                "where id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        List<AssetProcessDto> assetProcessDtos = new ArrayList<>();
+        if (CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                AssetProcessDto assetProcessDto = new AssetProcessDto();
+                assetProcessDto.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[0]));
+                assetProcessDto.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                assetProcessDto.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                assetProcessDto.setIdTypeProcess(ValueUtil.getIntegerByObject(obj[3]));
+                assetProcessDto.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                assetProcessDto.setValue(ValueUtil.getStringByObject(obj[5]));
+                assetProcessDto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                assetProcessDto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                assetProcessDtos.add(assetProcessDto);
+            }
+        }
+        return assetProcessDtos;
+    }
+
+    @Override
+    public List<AssetProcess> findAssetProcessListByIdsAssetAndIdProcess(List<Integer> idsAsset, Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select ap.id_asset_process, ap.id_asset, ap.id_process, " +
+                "       ap.id_type_process, ap.status, ap.value, " +
+                "       ap.time_created, ap.time_modified, ap.id_user_created, " +
+                "       ap.id_user_modified " +
+                "from asset_process ap  " +
+                "where ap.id_asset in (:idsAsset) " +
+                "and ap.id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsAsset", idsAsset);
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        List<AssetProcess> assetProcessList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                AssetProcess assetProcess = new AssetProcess();
+                assetProcess.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[0]));
+                assetProcess.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                assetProcess.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                assetProcess.setIdTypeProcess(ValueUtil.getIntegerByObject(obj[3]));
+                assetProcess.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                assetProcess.setValue(ValueUtil.getStringByObject(obj[5]));
+                assetProcess.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                assetProcess.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                assetProcess.setIdUserCreated(ValueUtil.getIntegerByObject(obj[8]));
+                assetProcess.setIdUserModified(ValueUtil.getIntegerByObject(obj[9]));
+                assetProcessList.add(assetProcess);
+            }
+        }
+        return assetProcessList;
+    }
+
+    @Override
+    public List<AssetProcess> findAllAssetProcessListByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select ap.id_asset_process, ap.id_asset, ap.id_process, " +
+                "       ap.id_type_process, ap.status, ap.value, " +
+                "       ap.time_created, ap.time_modified, ap.id_user_created, " +
+                "       ap.id_user_modified " +
+                "from asset_process ap  " +
+                "where 1 = 1 " +
+                "and ap.id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        List<AssetProcess> assetProcessList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                AssetProcess assetProcess = new AssetProcess();
+                assetProcess.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[0]));
+                assetProcess.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                assetProcess.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                assetProcess.setIdTypeProcess(ValueUtil.getIntegerByObject(obj[3]));
+                assetProcess.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                assetProcess.setValue(ValueUtil.getStringByObject(obj[5]));
+                assetProcess.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                assetProcess.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                assetProcess.setIdUserCreated(ValueUtil.getIntegerByObject(obj[8]));
+                assetProcess.setIdUserModified(ValueUtil.getIntegerByObject(obj[9]));
+                assetProcessList.add(assetProcess);
+            }
+        }
+        return assetProcessList;
     }
 
     private long countFindAllAssetProcess(FindAllAssetProcessRequest request) {

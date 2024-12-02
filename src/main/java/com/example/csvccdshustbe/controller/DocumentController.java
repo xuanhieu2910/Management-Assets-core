@@ -3,11 +3,13 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
+import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.log4j.Log4j2;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -17,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
 
+
+@Log4j2
 @Tag(name = "Document Controller", description = "The Document APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/document")
@@ -61,12 +65,10 @@ public class DocumentController {
     }) FindAllDocumentAssetRequest findAllDocumentAssetRequest){
         try {
             return ApiResponseDto.createdWithState(documentService.findAllDocumentByAsset(findAllDocumentAssetRequest),
-                    "Find all document by asset success!", HttpStatus.OK);
+                    "Find all document success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -79,7 +81,7 @@ public class DocumentController {
     }) FindAllProcessAssetIncreaseRequest findAllProcessAssetRequest){
         try {
             return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetIncrease(findAllProcessAssetRequest),
-                    "Find all document increase by asset success!", HttpStatus.OK);
+                    "Find all document increase success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -87,15 +89,32 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/find-all-inventory")
+    @GetMapping("/find-all-document-inventory")
     public ResponseEntity<?> findAllProcessAssetInventory(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
-    }) FindAllProcessAssetInventoryRequest findAllProcessAssetRequest){
+    }) FindAllProcessAssetDocumentInventoryRequest findAllProcessAssetRequest){
         try {
-            return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetInventory(findAllProcessAssetRequest),
-                    "Find all document invetory by asset success!", HttpStatus.OK);
+            return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetDocumentInventory(findAllProcessAssetRequest),
+                    "Find all document inventory success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
+    @GetMapping("/find-all-update-inventory")
+    public ResponseEntity<?> findAllUpdateInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllProcessAssetUpdateInventoryRequest findAllProcessAssetRequest){
+        try {
+            return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetUpdateInventory(findAllProcessAssetRequest),
+                    "Find all update inventory success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -111,7 +130,7 @@ public class DocumentController {
     }) FindAllProcessAssetDecreaseRequest findAllProcessAssetRequest){
         try {
             return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetDecrease(findAllProcessAssetRequest),
-                    "Find all document decrease by asset success!", HttpStatus.OK);
+                    "Find all document decrease success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -126,7 +145,7 @@ public class DocumentController {
     }) FindAllProcessAssetChangeRequest findAllProcessAssetRequest){
         try {
             return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetChange(findAllProcessAssetRequest),
-                    "Find all document change by asset success!", HttpStatus.OK);
+                    "Find all document change success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -141,7 +160,7 @@ public class DocumentController {
     }) FindAllProcessAssetRevaluationRequest findAllProcessAssetRequest){
         try {
             return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetRevaluation(findAllProcessAssetRequest),
-                    "Find all document revaluation by asset success!", HttpStatus.OK);
+                    "Find all document revaluation success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -159,14 +178,16 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-    @PostMapping("/inventory")
-    public ResponseEntity<?> createInventory(@RequestBody CreateInventoryAssetRequest request){
+    @PostMapping("/document-inventory")
+    public ResponseEntity<?> createDocumentInventory(@RequestBody CreateInventoryAssetRequest request){
         try {
-            processService.createInventoryAsset(request);
+            processService.createDocumentInventoryAsset(request);
             return ApiResponseDto.createdWithMessage("Create inventory asset success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
+            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -203,10 +224,8 @@ public class DocumentController {
             processService.createRevaluationAsset(request);
             return ApiResponseDto.createdWithMessage("Create revaluation asset success!", HttpStatus.OK);
         } catch (ValidateFiledException | JsonProcessingException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -226,6 +245,20 @@ public class DocumentController {
         }
     }
 
+    @GetMapping("/be-assigned-document-inventory")
+    public ResponseEntity<?> findAllProcessBeAssignedInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllProcessBeAssignedDocumentInventoryRequest request){
+        try {
+            return ApiResponseDto.createdWithState(processService.findAllProcessBeAssignedDocumentInventoryResponse(request),
+                    "Find all process be assigned document inventory success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
     @GetMapping("/statistic-increase")
     public ResponseEntity<?> getStatisticIncrease(){
         try {
@@ -236,13 +269,33 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/statistic-inventory")
-    public ResponseEntity<?> getStatisticInventory(){
+    @GetMapping("/statistic-update-inventory")
+    public ResponseEntity<?> getStatisticUpdateInventory(){
         try {
-            return ApiResponseDto.createdWithState(processService.getStatisticInventory(),
+            return ApiResponseDto.createdWithState(processService.getStatisticUpdateInventory(),
+                    "Get statistic update inventory success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/statistic-document-inventory")
+    public ResponseEntity<?> getStatisticDocumentInventory(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticDocumentInventory(),
                     "Get statistic inventory success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/statistic-document-be-inventory")
+    public ResponseEntity<?> getStatisticDocumentBeInventory(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticDocumentBeInventory(),
+                    "Get statistic be inventory success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -275,4 +328,29 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @PostMapping("/update-inventory-draft")
+    public ResponseEntity<?> updateInventoryDraft(@RequestBody UpdateInventoryDraftRequest request){
+        try {
+            documentService.updateInventoryDraft(request);
+            return ApiResponseDto.createdWithMessage("Update inventory draft success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+          return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/update-inventory-finish")
+    public ResponseEntity<?> finishInventoryDraft(@RequestBody UpdateInventoryDraftRequest request){
+        try {
+            documentService.updateInventoryFinish(request);
+            return ApiResponseDto.createdWithMessage("Update inventory finish success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 }

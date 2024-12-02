@@ -28,4 +28,6 @@ public class FindAllAssetProcessResponse {
     private Integer parent;
     @JsonProperty("salt")
     private String salt;
+    @JsonProperty("id_asset")
+    private Integer idAsset;
 }

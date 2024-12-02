@@ -3,7 +3,6 @@ package com.example.csvccdshustbe.request.process;
 import com.example.csvccdshustbe.request.process.asset.AssetDetailInventoryRequest;
 import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilInventoryRequest;
 import com.example.csvccdshustbe.request.process.document.CreateDocumentInventoryAssetRequest;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,11 +10,10 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-public class CreateInventoryAssetRequest {
+public class UpdateInventoryAssetRequest {
 
     private CreateDocumentInventoryAssetRequest document;
     private List<AssetDetailInventoryRequest> assetDetail;
     private String typeProcess;
-//    private List<CreateCouncilInventoryRequest> councilInventory;
+    private List<CreateCouncilInventoryRequest> councilInventory;
 }

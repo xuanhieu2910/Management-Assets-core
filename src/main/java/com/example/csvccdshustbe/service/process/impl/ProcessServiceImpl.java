@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.process.impl;
 
+import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.dto.user.FindAllUserDto;
 import com.example.csvccdshustbe.dto.userRole.UserRoleDto;
 import com.example.csvccdshustbe.entity.Process;
@@ -29,13 +30,12 @@ import com.example.csvccdshustbe.service.typeProcessService.TypeProcessService;
 import com.example.csvccdshustbe.service.typeState.TypeStateService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
-import com.example.csvccdshustbe.utility.Constants;
-import com.example.csvccdshustbe.utility.EmailUtil;
-import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.PropertiesUtil;
+import com.example.csvccdshustbe.utility.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.reflect.TypeToken;
+import com.nimbusds.jose.shaded.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -124,6 +124,7 @@ public class ProcessServiceImpl implements ProcessService {
     private List<AssetProcess> contructionAssetProcessIncrease(List<AssetDetailIncreaseRequest> assetProcessValue, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String currentTime = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         for (AssetDetailIncreaseRequest assetProcessRequest: assetProcessValue){
             AssetProcess assetProcess = new AssetProcess();
             assetProcess.setIdAsset(assetProcessRequest.getIdAsset());
@@ -133,6 +134,8 @@ public class ProcessServiceImpl implements ProcessService {
             assetProcess.setValue(assetProcessRequest.getValue());
             assetProcess.setTimeCreated(currentTime);
             assetProcess.setTimeModified(currentTime);
+            assetProcess.setIdUserCreated(csvcUser.getIdUser());
+            assetProcess.setIdUserModified(csvcUser.getIdUser());
             assetProcessList.add(assetProcess);
         }
         return assetProcessList;
@@ -214,14 +217,14 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public void createInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException {
+    public void createDocumentInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException {
         List<Integer> idsAsset = new ArrayList<>();
         request.getAssetDetail().forEach(x->idsAsset.add(x.getIdAsset()));
         validateAssetProcessInventory(idsAsset);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
-        Document document = documentService.saveDocument(contructionDocumentInventory(request.getDocument(), process));
-        assetProcessService.saveListAssetProcess(contructionAssetProcessInventory(request, process));
+        documentService.saveDocument(constructionDocumentInventory(request.getDocument(), process));
+        assetProcessService.saveListAssetProcess(constructionAssetProcessDocumentInventory(request, process));
         updateInformationProcessCurrentAsset(idsAsset, process);
         List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
                 Arrays.asList(
@@ -233,12 +236,54 @@ public class ProcessServiceImpl implements ProcessService {
         transitionService.saveTransition(constructionTransition(process, states));
         Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
                 states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
+        requestDataService.createNewRequestData(constructionRequestData(processRequest));
+        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderDocumentInventory(processRequest));
+    }
+
+    private void createUpdateInventoryAsset(Process processOriginal) throws ValidateFiledException, JsonProcessingException {
+        List<AssetProcessDto> assetProcessDtos = assetProcessService.findAllAssetProcessByIdProcess(processOriginal.getIdProcess());
+        Document documentOriginal = documentService.findDocumentByIdProcess(processOriginal.getIdProcess());
+        List<Integer> idsAsset = new ArrayList<>();
+        assetProcessDtos.forEach(x->idsAsset.add(x.getIdAsset()));
+        TypeProcess typeProcess = typeProcessService.findTypeProcessByIdTypeProcess(processOriginal.getIdTypeProcess());
+        Process process = processRepository.save(constructionProcess(typeProcess));
+        Document document = documentService.saveDocument(constructionUpdateInventory(documentOriginal, process));
+        assetProcessService.saveListAssetProcess(constructionAssetProcessUpdateInventory(assetProcessDtos, process));
+        updateInformationProcessCurrentAsset(idsAsset, process);
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
+                Arrays.asList(
+                        Constants.CODE_TYPE_STATE_INIT,
+                        Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                        Constants.CODE_TYPE_STATE_COMPLETED)
+        );
+        List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
+        transitionService.saveTransition(constructionTransition(process, states));
+        Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
+                states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
         List<String> usersName = new ArrayList<>();
-        request.getCouncilInventory().forEach(x->usersName.add(x.getUserName()));
+        List<CreateCouncilInventoryRequest> councilInventory = transferToCouncilInventory(documentOriginal.getDescription());
+        councilInventory.forEach(x->usersName.add(x.getUserName()));
         List<FindAllUserDto> usersDto = csvcUserService.findIdsUserByUsersName(usersName);
         requestDataService.createNewRequestData(constructionRequestData(processRequest));
-        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderInventory(processRequest, request.getCouncilInventory(),usersDto));
+        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderDocumentInventory(processRequest));
         createTaskSendMailInventory(usersDto, document, process);
+    }
+
+    private List<CreateCouncilInventoryRequest> transferToCouncilInventory(String descriptionOriginal) throws JsonProcessingException {
+        HashMap<String, Object> content = (new ObjectMapper()).readValue(descriptionOriginal, new TypeReference<>() {});
+        List<HashMap<String, Object>> councilContent = (List<HashMap<String, Object>>) content.get("councilInventory");
+        List<CreateCouncilInventoryRequest> councilInventoryRequestList = new ArrayList<>();
+        for (HashMap<String, Object> council : councilContent){
+            CreateCouncilInventoryRequest councilInventoryRequest = new CreateCouncilInventoryRequest();
+            councilInventoryRequest.setUserName(ValueUtil.getStringByObject(council.get("userName")));
+            councilInventoryRequest.setCodeUser(ValueUtil.getStringByObject(council.get("codeUser")));
+            councilInventoryRequest.setPosition(ValueUtil.getStringByObject(council.get("position")));
+            councilInventoryRequest.setPositionInstance(ValueUtil.getStringByObject(council.get("positionInstance")));
+            councilInventoryRequest.setLevel(ValueUtil.getIntegerByObject(council.get("level")));
+            councilInventoryRequest.setIdDepartment(ValueUtil.getIntegerByObject(council.get("idDepartment")));
+            councilInventoryRequestList.add(councilInventoryRequest);
+        }
+        return councilInventoryRequestList;
     }
 
     @Override
@@ -334,9 +379,10 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
 
-    private List<AssetProcess> contructionAssetProcessInventory(CreateInventoryAssetRequest request, Process process) {
+    private List<AssetProcess> constructionAssetProcessDocumentInventory(CreateInventoryAssetRequest request, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         for (AssetDetailInventoryRequest inventoryRequest : request.getAssetDetail()){
             AssetProcess assetProcess = new AssetProcess();
             assetProcess.setIdAsset(inventoryRequest.getIdAsset());
@@ -346,14 +392,55 @@ public class ProcessServiceImpl implements ProcessService {
             assetProcess.setValue(inventoryRequest.getValue());
             assetProcess.setTimeCreated(timeCurrent);
             assetProcess.setTimeModified(timeCurrent);
+            assetProcess.setIdUserCreated(csvcUser.getIdUser());
+            assetProcess.setIdUserModified(csvcUser.getIdUser());
             assetProcessList.add(assetProcess);
         }
         return assetProcessList;
     }
 
+    private List<AssetProcess> constructionAssetProcessUpdateInventory(List<AssetProcessDto> assetProcessDtos, Process process) {
+        List<AssetProcess> assetProcessList = new ArrayList<>();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        for (AssetProcessDto assetProcessDto : assetProcessDtos){
+            AssetProcess assetProcess = new AssetProcess();
+            assetProcess.setIdAsset(assetProcessDto.getIdAsset());
+            assetProcess.setIdProcess(process.getIdProcess());
+            assetProcess.setIdTypeProcess(process.getIdTypeProcess());
+            assetProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+            assetProcess.setValue(assetProcessDto.getValue());
+            assetProcess.setTimeCreated(timeCurrent);
+            assetProcess.setTimeModified(timeCurrent);
+            assetProcess.setIdUserCreated(csvcUser.getIdUser());
+            assetProcess.setIdUserModified(csvcUser.getIdUser());
+            assetProcessList.add(assetProcess);
+        }
+        return assetProcessList;
+    }
+
+
+//    private List<AssetProcess> contructionAssetProcessInventory(CreateInventoryAssetRequest request, Process process) {
+//        List<AssetProcess> assetProcessList = new ArrayList<>();
+//        String timeCurrent = String.valueOf(new Date().getTime());
+//        for (AssetDetailInventoryRequest inventoryRequest : request.getAssetDetail()){
+//            AssetProcess assetProcess = new AssetProcess();
+//            assetProcess.setIdAsset(inventoryRequest.getIdAsset());
+//            assetProcess.setIdProcess(process.getIdProcess());
+//            assetProcess.setIdTypeProcess(process.getIdTypeProcess());
+//            assetProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+//            assetProcess.setValue(inventoryRequest.getValue());
+//            assetProcess.setTimeCreated(timeCurrent);
+//            assetProcess.setTimeModified(timeCurrent);
+//            assetProcessList.add(assetProcess);
+//        }
+//        return assetProcessList;
+//    }
+
     private List<AssetProcess> contructionAssetProcessDecrease(CreateDecreaseAssetRequest request, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         for (AssetDetailDecreaseRequest inventoryRequest : request.getAssetDetail()){
             AssetProcess assetProcess = new AssetProcess();
             assetProcess.setIdAsset(inventoryRequest.getIdAsset());
@@ -363,6 +450,8 @@ public class ProcessServiceImpl implements ProcessService {
             assetProcess.setValue(inventoryRequest.getValue());
             assetProcess.setTimeCreated(timeCurrent);
             assetProcess.setTimeModified(timeCurrent);
+            assetProcess.setIdUserCreated(csvcUser.getIdUser());
+            assetProcess.setIdUserModified(csvcUser.getIdUser());
             assetProcessList.add(assetProcess);
         }
         return assetProcessList;
@@ -371,6 +460,7 @@ public class ProcessServiceImpl implements ProcessService {
     private List<AssetProcess> contructionAssetProcessChange(CreateChangeAssetRequest request, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AssetProcess assetProcess = new AssetProcess();
         assetProcess.setIdAsset(request.getAssetDetail().getIdAsset());
         assetProcess.setIdProcess(process.getIdProcess());
@@ -379,12 +469,15 @@ public class ProcessServiceImpl implements ProcessService {
         assetProcess.setValue(request.getAssetDetail().getValue());
         assetProcess.setTimeCreated(timeCurrent);
         assetProcess.setTimeModified(timeCurrent);
+        assetProcess.setIdUserCreated(csvcUser.getIdUser());
+        assetProcess.setIdUserModified(csvcUser.getIdUser());
         assetProcessList.add(assetProcess);
         return assetProcessList;
     }
 
     private List<AssetProcess> contructionAssetProcessRevaluation(CreateRevaluationAssetRequest request, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String timeCurrent = String.valueOf(new Date().getTime());
         AssetProcess assetProcess = new AssetProcess();
         assetProcess.setIdAsset(request.getAssetDetail().getIdAsset());
@@ -394,6 +487,8 @@ public class ProcessServiceImpl implements ProcessService {
         assetProcess.setValue(request.getAssetDetail().getValue());
         assetProcess.setTimeCreated(timeCurrent);
         assetProcess.setTimeModified(timeCurrent);
+        assetProcess.setIdUserCreated(csvcUser.getIdUser());
+        assetProcess.setIdUserModified(csvcUser.getIdUser());
         assetProcessList.add(assetProcess);
         return assetProcessList;
     }
@@ -456,24 +551,15 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
 
-    private List<RequestStakeHolder> constructionRequestStakeHolderInventory(Request processRequest,
-                                                                             List<CreateCouncilInventoryRequest> councilInventories,
-                                                                             List<FindAllUserDto> usersDto) {
+    private List<RequestStakeHolder> constructionRequestStakeHolderDocumentInventory(Request processRequest) {
         List<RequestStakeHolder> stakeHolders = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
-        for (CreateCouncilInventoryRequest council : councilInventories){
-            RequestStakeHolder stakeHolder = new RequestStakeHolder();
-            stakeHolder.setIdRequest(processRequest.getIdRequest());
-            stakeHolder.setIdUser(usersDto.stream().filter(x->x.getUserName().equals(council.getUserName())).findFirst().get().getIdUser());
-            stakeHolder.setStatus(Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
-            stakeHolder.setTimeCreated(timeCurrent);
-            stakeHolder.setTimeModified(timeCurrent);
-            stakeHolder.setIdDepartment(council.getIdDepartment());
-            stakeHolder.setPosition(council.getPosition());
-            stakeHolder.setPositionInstance(council.getPositionInstance());
-            stakeHolder.setLevel(council.getLevel());
-            stakeHolders.add(stakeHolder);
-        }
+        RequestStakeHolder stakeHolder = new RequestStakeHolder();
+        stakeHolder.setIdRequest(processRequest.getIdRequest());
+        stakeHolder.setStatus(Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
+        stakeHolder.setTimeCreated(timeCurrent);
+        stakeHolder.setTimeModified(timeCurrent);
+        stakeHolders.add(stakeHolder);
         return stakeHolders;
     }
 
@@ -547,10 +633,13 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(request.getTimeDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(null);
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
         return document;
     }
 
-    private Document contructionDocumentInventory(CreateDocumentInventoryAssetRequest request, Process process) throws ValidateFiledException {
+    private Document constructionDocumentInventory(CreateDocumentInventoryAssetRequest request, Process process) throws ValidateFiledException {
         validateCreateNewDocumentInventory(request);
         Document document = new Document();
         String dateNow = String.valueOf(new Date().getTime());
@@ -563,6 +652,28 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(request.getTimeCreatedDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(request.getIdDepartment());
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
+        return document;
+    }
+
+    private Document constructionUpdateInventory(Document documentOriginal, Process process){
+        Document document = new Document();
+        String dateNow = String.valueOf(new Date().getTime());
+        document.setCode(ValueUtil.replaceGenerateCode(documentOriginal.getCode(),
+                Constants.TYPE_GENERATE_DOCUMENT_INVENTORY, Constants.TYPE_GENERATE_UPDATE_INVENTORY));
+        document.setIdProcess(process.getIdProcess());
+        document.setDescription(documentOriginal.getDescription());
+        document.setTimeCreated(dateNow);
+        document.setTimeModified(dateNow);
+        document.setTimeIncrease(documentOriginal.getTimeIncrease());
+        document.setTimeDocument(document.getTimeDocument());
+        document.setIdDepartmentOriginal(process.getIdDepartment());
+        document.setIdDepartment(documentOriginal.getIdDepartment());
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
         return document;
     }
 
@@ -579,6 +690,9 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(request.getTimeDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(null);
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
         return document;
     }
 
@@ -595,6 +709,9 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(request.getTimeDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(null);
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
         return document;
     }
 
@@ -612,6 +729,9 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeDocument(request.getTimeDocument());
         document.setIdDepartmentOriginal(process.getIdDepartment());
         document.setIdDepartment(null);
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
         return document;
     }
 
@@ -639,11 +759,21 @@ public class ProcessServiceImpl implements ProcessService {
             throws ValidateFiledException, JsonProcessingException, IllegalAccessException {
         if (status.equals(Constants.STATUS_SUCCESS_PROCESS)) {
             switch (typeProcess.getCode()) {
-                case Constants.CODE_TYPE_PROCESS_INCREASE, Constants.CODE_TYPE_PROCESS_DECREASE ->
+                case Constants.CODE_TYPE_PROCESS_INCREASE,
+                        Constants.CODE_TYPE_PROCESS_DECREASE -> {
                         assetService.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.getIdProcess(),
-                                status, typeProcess.getCode());
-                case Constants.CODE_TYPE_PROCESS_CHANGE, Constants.CODE_TYPE_PROCESS_REVALUATION ->
+                                    status, typeProcess.getCode());
+                        }
+                case Constants.CODE_TYPE_PROCESS_CHANGE,
+                        Constants.CODE_TYPE_PROCESS_REVALUATION ->
                         assetService.updateInformationAssetByProcess(process, status);
+                case Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY -> {
+                        assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+                        createUpdateInventoryAsset(process);
+                        }
+                case Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY-> {
+                        assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+                        }
                 default -> {
                     return;
                 }
@@ -660,13 +790,32 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    public Page<FindAllProcessBeAssignedResponse>
+    findAllProcessBeAssignedDocumentInventoryResponse(FindAllProcessBeAssignedDocumentInventoryRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartment(csvcUser.getIdsDepartmentCurrent());
+        return processRepository.findAllProcessBeAssignedDocumentInventory(request, pageable);
+    }
+
+    @Override
     public ProcessStatisticsIncreaseResponse getStatisticIncrease() {
         return processRepository.getStatisticsIncrease();
     }
 
     @Override
-    public ProcessStatisticsInventoryResponse getStatisticInventory() {
-        return processRepository.getStatisticsInventory();
+    public ProcessStatisticsUpdateInventoryResponse getStatisticUpdateInventory() {
+        return processRepository.getStatisticsUpdateInventory();
+    }
+
+    @Override
+    public ProcessStatisticsDocumentInventoryResponse getStatisticDocumentInventory() {
+        return processRepository.getStatisticsDocumentInventory();
+    }
+
+    @Override
+    public ProcessStatisticsDocumentBeInventoryResponse getStatisticDocumentBeInventory() {
+        return processRepository.getStatisticsDocumentByInventory();
     }
 
     @Override

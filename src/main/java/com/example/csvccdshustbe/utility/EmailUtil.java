@@ -27,7 +27,7 @@ public class EmailUtil implements Runnable {
     public final static String KEY_FULL_NAME = ":FULL_NAME";
     public final static String KEY_DESCRIPTION = ":DESCRIPTION";
     public final static String CONTENT_DOMAIN = WebSecurityConfig.DOMAIN_BE +
-            "/api/v1/process/image.png?utm_source=email&utm_medium=newsletter&utm_content=:CODE_TASK_SEND_MAIL ";
+            "/api/v1/email/image.png?utm_source=email&utm_medium=newsletter&utm_content=:CODE_TASK_SEND_MAIL ";
 
     private static EmailUtil INSTANCE = null;
 
@@ -35,7 +35,7 @@ public class EmailUtil implements Runnable {
     private Queue<MailDto> mailDtoQueue;
 
     public final static String[] SUBJECTS_PROCESS = {"Ghi tăng tài sản", "Giảm tài sản",
-            "Điều chuyển tài sản", "Đánh giá lại tài sản", "Thay đổi thông tin tài sản", "Kiểm kê tài sản"};
+            "Điều chuyển tài sản", "Đánh giá lại tài sản", "Thay đổi thông tin tài sản", "Hoàn thành đánh giá biên bản kiểm kê tài sản"};
 
 
 

@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
+import com.example.csvccdshustbe.request.assetProcess.UpdateAllAssetProcessRequest;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -11,9 +12,8 @@ import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 
 @Tag(name = "Asset Process Controller", description = "The Asset Process APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController

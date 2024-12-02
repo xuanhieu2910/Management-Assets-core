@@ -2,10 +2,11 @@ package com.example.csvccdshustbe.service.report.impl;
 
 import com.example.csvccdshustbe.dto.report.CurrentUsageReport08aDto;
 import com.example.csvccdshustbe.dto.report.FindAllReportDto;
+import com.example.csvccdshustbe.dto.report.IncreaseDecreaseReport08bDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Report;
-import com.example.csvccdshustbe.repository.assetCurrentUsage.AssetCurrentUsageRepository;
 import com.example.csvccdshustbe.repository.report.ReportRepository;
+import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
 import com.example.csvccdshustbe.response.report.FindAllReportResponse;
@@ -39,6 +40,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     ReportRepository reportRepository;
+
     @Autowired
     AssetCurrentUsageRepository assetCurrentUsageRepository;
     @Autowired
@@ -116,55 +118,70 @@ public class ReportServiceImpl implements ReportService {
         Map<Integer, Object[]> data = new HashMap<>();
         Sheet sheet = workbook.getSheetAt(0);
         int rowNum = sheet.getLastRowNum() + 1;
-        Optional<CurrentUsageReport08aDto> recordsGroundToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetGroundInReport(csvcUser.getIdsDepartmentCurrent());
-            data.put(rowNum, new Object[]{
-                    recordsGroundToWrite.get().getCountAsset(),
-                    recordsGroundToWrite.get().getAcreage(),
-                    recordsGroundToWrite.get().getTotalStateManagement(),
-                    recordsGroundToWrite.get().getTotalNoBusiness(),
-                    recordsGroundToWrite.get().getTotalBusiness(),
-                    recordsGroundToWrite.get().getTotalRent(),
-                    recordsGroundToWrite.get().getTotalBonds(),
-                    recordsGroundToWrite.get().getTotalSynthetic(),
-                    recordsGroundToWrite.get().getTotalOther(),
-            });
-        Optional<CurrentUsageReport08aDto> recordsHouseToWrite= assetCurrentUsageRepository.findAllCurrentUsageAssetHouseInReport(csvcUser.getIdsDepartmentCurrent());
-        data.put(rowNum, new Object[]{
-                recordsHouseToWrite.get().getCountAsset(),
-                recordsHouseToWrite.get().getAcreage(),
-                recordsHouseToWrite.get().getTotalStateManagement(),
-                recordsHouseToWrite.get().getTotalNoBusiness(),
-                recordsHouseToWrite.get().getTotalBusiness(),
-                recordsHouseToWrite.get().getTotalRent(),
-                recordsHouseToWrite.get().getTotalBonds(),
-                recordsHouseToWrite.get().getTotalSynthetic(),
-                recordsHouseToWrite.get().getTotalOther(),
-        });
-        Optional<CurrentUsageReport08aDto> recordsCarToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetCarInReport(csvcUser.getIdsDepartmentCurrent());
-        data.put(rowNum, new Object[]{
-                recordsCarToWrite.get().getCountAsset(),
-                recordsCarToWrite.get().getAcreage(),
-                recordsCarToWrite.get().getTotalStateManagement(),
-                recordsCarToWrite.get().getTotalNoBusiness(),
-                recordsCarToWrite.get().getTotalBusiness(),
-                recordsCarToWrite.get().getTotalRent(),
-                recordsCarToWrite.get().getTotalBonds(),
-                recordsCarToWrite.get().getTotalSynthetic(),
-                recordsCarToWrite.get().getTotalOther(),
-        });
-        Optional<CurrentUsageReport08aDto> recordsOtherToWrite = assetCurrentUsageRepository.findAllCurrentUsageAssetOtherInReport(csvcUser.getIdsDepartmentCurrent());
-        data.put(rowNum, new Object[]{
-                recordsOtherToWrite.get().getCountAsset(),
-                recordsOtherToWrite.get().getAcreage(),
-                recordsOtherToWrite.get().getTotalStateManagement(),
-                recordsOtherToWrite.get().getTotalNoBusiness(),
-                recordsOtherToWrite.get().getTotalBusiness(),
-                recordsOtherToWrite.get().getTotalRent(),
-                recordsOtherToWrite.get().getTotalBonds(),
-                recordsOtherToWrite.get().getTotalSynthetic(),
-                recordsOtherToWrite.get().getTotalOther(),
-        });
+        writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetGroundInReport(csvcUser.getIdsDepartmentCurrent()));
+        writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetHouseInReport(csvcUser.getIdsDepartmentCurrent()));
+        writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetCarInReport(csvcUser.getIdsDepartmentCurrent()));
+        writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetOtherInReport(csvcUser.getIdsDepartmentCurrent()));
 
+        Set<Integer> keySet = data.keySet();
+        for (Integer key : keySet){
+            Row row = sheet.createRow(rowNum++);
+            Object[] objArr = data.get(key);
+            int cellNum = 0;
+            for (Object obj : objArr) {
+                Cell cell = row.createCell(cellNum++);
+                if (obj instanceof String)
+                    cell.setCellValue((String) obj);
+                else if (obj instanceof Integer)
+                    cell.setCellValue((Integer) obj);
+            }
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(fileExcel);
+            workbook.write(out);
+            out.close();
+            return fileExcel;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+        private void writeDataToMapReport08a(
+            Map<Integer, Object[]> data,
+            int rowNum,
+            Optional<CurrentUsageReport08aDto> recordOptional) {
+        if (recordOptional.isPresent()) {
+            CurrentUsageReport08aDto record = recordOptional.get();
+            data.put(rowNum, new Object[]{
+                    record.getCountAsset(),
+                    record.getAcreage(),
+                    record.getTotalStateManagement(),
+                    record.getTotalNoBusiness(),
+                    record.getTotalBusiness(),
+                    record.getTotalRent(),
+                    record.getTotalBonds(),
+                    record.getTotalSynthetic(),
+                    record.getTotalOther(),
+            });
+        }
+    }
+
+
+    public String ReportIncreaseDecreaseAsset08b(CreateReportInCreaseAndDecreaseAllRequest request) throws IOException{
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String fileExcel = "D:\\CompanyBk\\CSVC\\Sample_Increase_Decrease_Report.xlsx";
+
+        FileInputStream file = new FileInputStream(new File(fileExcel));
+        XSSFWorkbook workbook = new XSSFWorkbook(file);
+        Map<Integer, Object[]> data = new HashMap<>();
+        Sheet sheet = workbook.getSheetAt(0);
+        int rowNum = sheet.getLastRowNum() + 1;
+        setIdsDepartmentOriginal(request);
+        writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseGroundInReport(request));
+        writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseHouseInReport(request));
+        writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseCarInReport(request));
+        writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseOtherAssetInReport(request));
         Set<Integer> keySet = data.keySet();
         for (Integer key : keySet){
             Row row = sheet.createRow(rowNum++);
@@ -192,5 +209,33 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public String downloadFileInventoryReport(Integer status, Integer idAssetProcess) throws IOException {
         return filesStorageService.downLoadInventoryReport(status, idAssetProcess);
+    }
+    private void setIdsDepartmentOriginal(CreateReportInCreaseAndDecreaseAllRequest request) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+    }
+
+
+    private void writeDataToMapReport08b(
+            Map<Integer, Object[]> data,
+            int rowNum,
+            Optional<IncreaseDecreaseReport08bDto> recordOptional) {
+        if (recordOptional.isPresent()) {
+            IncreaseDecreaseReport08bDto record = recordOptional.get();
+            data.put(rowNum, new Object[]{
+                    record.getCountAssetStart(),
+                    record.getAcreageStart(),
+                    record.getTotalOriginalStart(),
+                    record.getCountAssetIncrease(),
+                    record.getAcreageIncrease(),
+                    record.getTotalOriginalIncrease(),
+                    record.getCountDecrease(),
+                    record.getAcreageDecrease(),
+                    record.getTotalOriginalDecrease(),
+                    record.getCountAssetEnd(),
+                    record.getAcreageEnd(),
+                    record.getTotalOriginalEnd(),
+            });
+        }
     }
 }

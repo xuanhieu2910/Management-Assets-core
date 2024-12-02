@@ -14,6 +14,7 @@ import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.EmailUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.PropertiesUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -43,7 +44,8 @@ public class TaskSendDetailMailServiceImpl implements TaskSendDetailMailService 
     }
 
     @Override
-    public void updateTrackingTaskSendDetailMail(UpdateTaskSendDetailMailRequest taskSendDetailMailRequest) {
+    public void updateTrackingTaskSendDetailMail(HttpServletRequest servletRequest) {
+        UpdateTaskSendDetailMailRequest taskSendDetailMailRequest = contructionTaskSendMail(servletRequest);
         Optional<TaskSendDetailMail> taskSendDetailMail =
                 taskSendDetailMailRepository.findByCodeTaskSendMail(taskSendDetailMailRequest.getCodeTaskSendMail());
         String currentTime = String.valueOf(new Date().getTime());
@@ -65,6 +67,62 @@ public class TaskSendDetailMailServiceImpl implements TaskSendDetailMailService 
             taskSendDetailMailRepository.save(taskSendDetailMail.get());
         }
     }
+
+    private UpdateTaskSendDetailMailRequest contructionTaskSendMail(HttpServletRequest request) {
+        UpdateTaskSendDetailMailRequest taskSendDetailMailRequest = new UpdateTaskSendDetailMailRequest();
+        taskSendDetailMailRequest.setCodeTaskSendMail( request.getParameter("utm_content"));
+        String ipAddress = request.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null || ipAddress.isEmpty()) {
+            ipAddress = request.getRemoteAddr();
+        }
+        taskSendDetailMailRequest.setIpAddressRemote(ipAddress);
+        taskSendDetailMailRequest.setDevice(getBrowserInfo(request.getHeader("User-Agent")));
+        return taskSendDetailMailRequest;
+    }
+
+    public String  getBrowserInfo( String Information )
+    {
+        String browsername = "";
+        String browserversion = "";
+        String browser = Information;
+        if (browser.contains("MSIE"))
+        {
+            String subsString = browser.substring(browser.indexOf("MSIE"));
+            String info[] = (subsString.split(";")[0]).split(" ");
+            browsername = info[0];
+            browserversion = info[1];
+        } else if (browser.contains("Firefox"))
+        {
+
+            String subsString = browser.substring(browser.indexOf("Firefox"));
+            String info[] = (subsString.split(" ")[0]).split("/");
+            browsername = info[0];
+            browserversion = info[1];
+        } else if (browser.contains("Chrome"))
+        {
+
+            String subsString = browser.substring(browser.indexOf("Chrome"));
+            String info[] = (subsString.split(" ")[0]).split("/");
+            browsername = info[0];
+            browserversion = info[1];
+        } else if (browser.contains("Opera"))
+        {
+
+            String subsString = browser.substring(browser.indexOf("Opera"));
+            String info[] = (subsString.split(" ")[0]).split("/");
+            browsername = info[0];
+            browserversion = info[1];
+        } else if (browser.contains("Safari"))
+        {
+
+            String subsString = browser.substring(browser.indexOf("Safari"));
+            String info[] = (subsString.split(" ")[0]).split("/");
+            browsername = info[0];
+            browserversion = info[1];
+        }
+        return browsername + "-" + browserversion;
+    }
+
 
     @Override
     public Page<FindAllTaskSendDetailMailResponse> findAllTaskSendDetail(FindAllTaskSendDetailMailRequest request) {

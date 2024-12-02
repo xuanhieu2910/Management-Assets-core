@@ -9,17 +9,20 @@ import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.repository.document.DocumentRepository;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
+import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
 import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
+import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,6 +45,8 @@ public class DocumentServiceImpl implements DocumentService {
     DocumentRepository documentRepository;
     @Autowired
     DepartmentService departmentService;
+    @Autowired
+    AssetProcessService assetProcessService;
 
     @Override
     public Document findDocumentByCodeAndIdDepartment(String code, Integer idDepartment) {
@@ -164,12 +169,13 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Page<FindAllProcessAssetInventoryResponse> findAllDataProcessAssetInventory(FindAllProcessAssetInventoryRequest request) {
+    public Page<FindAllProcessAssetInventoryResponse>
+    findAllDataProcessAssetDocumentInventory(FindAllProcessAssetDocumentInventoryRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
         Page<FindAllProcessAssetInventoryDto> findAllProcessAssetDtos =
-                documentRepository.findAllProcessAssetInventoryDtoByIdsDepartment(request, pageable);
+                documentRepository.findAllProcessAssetDocumentInventoryDtoByIdsDepartment(request, pageable);
         return new PageImpl<>(convertToFindAllProcessAssetInventoryResponse(findAllProcessAssetDtos.stream().toList()),
                 pageable, findAllProcessAssetDtos.getTotalElements());
     }
@@ -274,6 +280,60 @@ public class DocumentServiceImpl implements DocumentService {
                 pageable, findAllProcessAssetDtos.getTotalElements());
     }
 
+    @Override
+    public Document findDocumentByIdProcess(Integer idProcess) {
+        Optional<Document> document = documentRepository.findDocumentByIdProcess(idProcess);
+        if (document.isEmpty()){
+            throw new NotFoundException("Don't exits document by id process!");
+        }
+        return document.get();
+    }
+
+    @Override
+    public Document findDocumentByCodeDocument(String codeDocument) {
+        Optional<Document> document =
+                documentRepository.findDocumentByCodeDocumentAndStatus(codeDocument,
+                        Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        if (document.isEmpty()) {
+            throw new NotFoundException("Don't exits document!");
+        }
+        return document.get();
+    }
+
+    @Transactional
+    @Override
+    public void updateInventoryDraft(UpdateInventoryDraftRequest request) {
+        Document document = findDocumentByCodeDocument(request.getCodeDocument());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        document.setTimeModified(String.valueOf(new Date().getTime()));
+        document.setIdUserModified(csvcUser.getIdUser());
+        documentRepository.save(document);
+        assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess());
+    }
+
+    @Override
+    public void updateInventoryFinish(UpdateInventoryDraftRequest request) {
+        Document document = findDocumentByCodeDocument(request.getCodeDocument());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        document.setTimeModified(String.valueOf(new Date().getTime()));
+        document.setIdUserModified(csvcUser.getIdUser());
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE);
+        documentRepository.save(document);
+        assetProcessService.updateFinishListAssetProcessByIdProcess(request.getAssetProcess());
+    }
+
+    @Override
+    public Page<FindAllProcessAssetUpdateInventoryResponse>
+    findAllDataProcessAssetUpdateInventory(FindAllProcessAssetUpdateInventoryRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllProcessAssetUpdateInventoryDto> findAllProcessAssetDtos =
+                documentRepository.findAllProcessAssetUpdateInventoryDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllProcessAssetUpdateInventoryResponse(findAllProcessAssetDtos.stream().toList()),
+                pageable, findAllProcessAssetDtos.getTotalElements());
+    }
+
     private List<FindAllProcessAssetChangeResponse>
     convertToFindAllProcessAssetChangeResponse(List<FindAllProcessAssetChangeDto> collect) {
         List<FindAllProcessAssetChangeResponse> responses = new ArrayList<>();
@@ -285,6 +345,28 @@ public class DocumentServiceImpl implements DocumentService {
             response.setNameUserCreate(dto.getNameUserCreate());
             response.setStatus(dto.getStatus());
             response.setTimeChange(dto.getTimeChange());
+
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setTimeDocument(dto.getTimeDocument());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    private List<FindAllProcessAssetUpdateInventoryResponse>
+    convertToFindAllProcessAssetUpdateInventoryResponse(List<FindAllProcessAssetUpdateInventoryDto> collect) {
+        List<FindAllProcessAssetUpdateInventoryResponse> responses = new ArrayList<>();
+        for (FindAllProcessAssetUpdateInventoryDto dto : collect) {
+            FindAllProcessAssetUpdateInventoryResponse response = new FindAllProcessAssetUpdateInventoryResponse();
+            response.setCodeDocument(dto.getCodeDocument());
+            response.setIdUserCreate(dto.getIdUserCreate());
+            response.setCodeUserCreate(dto.getCodeUserCreate());
+            response.setNameUserCreate(dto.getNameUserCreate());
+            response.setStatus(dto.getStatus());
+            response.setTimeInventory(dto.getTimeInventory());
 
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());

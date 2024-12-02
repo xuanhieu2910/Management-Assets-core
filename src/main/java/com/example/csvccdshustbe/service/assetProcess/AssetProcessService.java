@@ -1,7 +1,9 @@
 package com.example.csvccdshustbe.service.assetProcess;
 
+import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
+import com.example.csvccdshustbe.request.assetProcess.UpdateAllAssetProcessRequest;
 import com.example.csvccdshustbe.response.assetProcess.FindAllAssetProcessResponse;
 import org.springframework.data.domain.Page;
 
@@ -12,4 +14,7 @@ public interface AssetProcessService {
     List<AssetProcess> saveListAssetProcess(List<AssetProcess> assetProcessList);
     Page<FindAllAssetProcessResponse> findAllAssetProcess(FindAllAssetProcessRequest request);
     AssetProcess findAssetProcessByIdProcess(Integer idProcess);
+    List<AssetProcessDto> findAllAssetProcessByIdProcess(Integer idProcess);
+    void updateListAssetProcessByIdProcess(UpdateAllAssetProcessRequest request);
+    void updateFinishListAssetProcessByIdProcess(UpdateAllAssetProcessRequest request);
 }

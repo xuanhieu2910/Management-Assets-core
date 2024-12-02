@@ -270,7 +270,8 @@ public class Constants {
     public static final String CODE_TYPE_PROCESS_CHANGE = "change";
     public static final String CODE_TYPE_PROCESS_REMOVE = "remove";
     public static final String CODE_TYPE_PROCESS_REVALUATION = "revaluation";
-    public static final String CODE_TYPE_PROCESS_INVENTORY = "inventory";
+    public static final String CODE_TYPE_PROCESS_DOCUMENT_INVENTORY = "document_inventory";
+    public static final String CODE_TYPE_PROCESS_UPDATE_INVENTORY = "update_inventory";
     /*----------------------------------------------------*/
     /**
      * Constant PREFIX_DOCUMENT
@@ -369,7 +370,8 @@ public class Constants {
     public static String TYPE_GENERATE_DOCUMENT_CHANGE = "TDTT";
     public static String TYPE_GENERATE_DOCUMENT_REMOVE = "X";
     public static String TYPE_GENERATE_DOCUMENT_REVALUATION = "DGL";
-    public static String TYPE_GENERATE_DOCUMENT_INVENTORY = "KK";
+    public static String TYPE_GENERATE_DOCUMENT_INVENTORY = "BBKK";
+    public static String TYPE_GENERATE_UPDATE_INVENTORY = "KK";
 
 
     /*----------------------------------------------------*/
@@ -518,9 +520,16 @@ public class Constants {
     /**
      * Constants Code Name Category
      * */
-
     public static String CODE_NAME_CAR = "car";
 
     public static String CODE_NAME_NO_SHAPE = "TSCDVH";
     /*-----------------------------------------------------*/
+    /**
+     * Constants Code Name Category
+     * */
+    public static Integer STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE = -1;
+
+    public static Integer STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE = 1;
+    /*-----------------------------------------------------*/
+
 }

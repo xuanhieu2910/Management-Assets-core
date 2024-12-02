@@ -33,12 +33,13 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Optional<Document>   findDocumentByCodeAndIdDepartment(String code, Integer idDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select doc.id_document, doc.code, doc.time_created,    " +
-                "        doc.time_modified, doc.time_increase, doc.time_document,  " +
-                "        doc.id_department, doc.id_department_original    " +
-                " from document doc     " +
-                " where doc.code = :code    " +
-                " and doc.id_department_original = :idDepartment   ");
+        sb.append("select doc.id_document, doc.code, doc.time_created,  " +
+                "         doc.time_modified, doc.time_increase, doc.time_document,  " +
+                "         doc.id_department, doc.id_department_original,  " +
+                "         doc.status, doc.id_user_created, doc.id_user_modified  " +
+                "from document doc  " +
+                "where doc.code = :code  " +
+                "and doc.id_department_original = :idDepartment ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("code", code);
         query.setParameter("idDepartment", idDepartment);
@@ -54,6 +55,9 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 document.setTimeDocument(ValueUtil.getStringByObject(obj[5]));
                 document.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
                 document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
+                document.setStatus(ValueUtil.getIntegerByObject(obj[8]));
+                document.setIdUserCreated(ValueUtil.getIntegerByObject(obj[9]));
+                document.setIdUserModified(ValueUtil.getIntegerByObject(obj[10]));
                 return Optional.of(document);
             }
         }
@@ -63,11 +67,13 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Optional<Document> findDocumentByIdDepartment(Integer idDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select doc.id_document, doc.code, doc.time_created,      " +
-                "        doc.time_modified, doc.time_increase, doc.time_document,    " +
-                "        doc.id_department, doc.id_department_original " +
-                " from document doc       " +
-                " where doc.id_department_original = :idDepartment ORDER BY doc.code DESC  ");
+        sb.append(" select doc.id_document, doc.code, doc.time_created, " +
+                "         doc.time_modified, doc.time_increase, doc.time_document, " +
+                "         doc.id_department, doc.id_department_original, " +
+                "         doc.status, doc.id_user_created, doc.id_user_modified, " +
+                "         doc.id_process, doc.description " +
+                "from document doc " +
+                " where doc.id_department_original = :idDepartment ORDER BY doc.id_document DESC ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idDepartment", idDepartment);
         List<Object[]> result = query.getResultList();
@@ -82,6 +88,11 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 document.setTimeDocument(ValueUtil.getStringByObject(obj[5]));
                 document.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
                 document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
+                document.setStatus(ValueUtil.getIntegerByObject(obj[8]));
+                document.setIdUserCreated(ValueUtil.getIntegerByObject(obj[9]));
+                document.setIdUserModified(ValueUtil.getIntegerByObject(obj[10]));
+                document.setIdProcess(ValueUtil.getIntegerByObject(obj[11]));
+                document.setDescription(ValueUtil.getStringByObject(obj[12]));
                 return Optional.of(document);
             }
         }
@@ -91,16 +102,17 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Page<FindAllDocumentAssetDto> findAllDocumentAssetDtoByIdsDepartment(FindAllDocumentAssetRequest request, Pageable pageable){
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT document.code,type_process.code,type_process.name,user.full_name,process.status,  " +
-                "                  document.description,document.time_created, de.code codeDepartment, de.name nameDepartment" +
-                "                  FROM document   " +
-                "                  INNER JOIN process ON document.id_process = process.id_process" +
-                "                  INNER JOIN type_process ON process.id_type_process = type_process.id_type_process" +
-                "                  LEFT JOIN csvc_user user ON process.id_user_created = user.id_user      " +
-                "                  LEFT JOIN department de ON process.id_department = de.id_department" +
-                "                  LEFT join asset_process on process.id_process = asset_process.id_process" +
-                "                  INNER JOIN asset ON asset_process.id_asset = asset.id_asset  " +
-                "                  WHERE process.id_department IN (:idsDepartmentOriginal)  " );
+        sb.append("SELECT document.code,type_process.code,type_process.name,user.full_name,process.status,      " +
+                "         document.description,document.time_created, de.code codeDepartment, de.name nameDepartment,  " +
+                "         document.status " +
+                "FROM document       " +
+                "    INNER JOIN process ON document.id_process = process.id_process    " +
+                "    INNER JOIN type_process ON process.id_type_process = type_process.id_type_process    " +
+                "    LEFT JOIN csvc_user user ON process.id_user_created = user.id_user          " +
+                "    LEFT JOIN department de ON process.id_department = de.id_department    " +
+                "    LEFT join asset_process on process.id_process = asset_process.id_process    " +
+                "    INNER JOIN asset ON asset_process.id_asset = asset.id_asset      " +
+                "WHERE process.id_department IN (:idsDepartmentOriginal)  " );
         setConditionFindAllDocumentAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDocumentAsset(request, query);
@@ -119,8 +131,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 findAllDocumentAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[6]));
                 findAllDocumentAssetDto.setCodeDepartment(ValueUtil.getStringByObject(obj[7]));
                 findAllDocumentAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
-
-
+                findAllDocumentAssetDto.setStatusDocument(ValueUtil.getIntegerByObject(obj[9]));
                 responses.add(findAllDocumentAssetDto);
             }
         }
@@ -198,12 +209,12 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     private long countFindAllDocumentAsset(FindAllDocumentAssetRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) FROM document  " +
-                "                           LEFT JOIN data_document da ON document.id_document = da.id_document" +
-                "                           LEFT JOIN process ON document.id_process = process.id_process" +
-                "                           LEFT JOIN type_process ON process.id_type_process = type_process.id_type_process  " +
-                "                           LEFT JOIN csvc_user user ON process.id_user_created = user.id_user      " +
-                "                           LEFT JOIN department de ON process.id_department = de.id_department    " +
-                "                           LEFT JOIN asset ON da.id_asset = asset.id_asset    " +
+                        "                  INNER JOIN process ON document.id_process = process.id_process" +
+                        "                  INNER JOIN type_process ON process.id_type_process = type_process.id_type_process" +
+                        "                  LEFT JOIN csvc_user user ON process.id_user_created = user.id_user      " +
+                        "                  LEFT JOIN department de ON process.id_department = de.id_department" +
+                        "                  LEFT join asset_process on process.id_process = asset_process.id_process" +
+                        "                  INNER JOIN asset ON asset_process.id_asset = asset.id_asset  " +
                 " WHERE process.id_department IN (:idsDepartmentOriginal) ");
         setConditionFindAllDocumentAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -312,7 +323,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
 
     @Override
     public Page<FindAllProcessAssetInventoryDto>
-    findAllProcessAssetInventoryDtoByIdsDepartment(FindAllProcessAssetInventoryRequest request, Pageable pageable) {
+    findAllProcessAssetDocumentInventoryDtoByIdsDepartment(FindAllProcessAssetDocumentInventoryRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT process.id_process idProcess, document.code codeDocument,  " +
                 "       user.id_user, user.code_user, user.full_name,  " +
@@ -355,7 +366,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         return new PageImpl<>(responses, pageable, countFindAllProcessAssetInventory(request));
     }
 
-    private long countFindAllProcessAssetInventory(FindAllProcessAssetInventoryRequest request) {
+    private long countFindAllProcessAssetInventory(FindAllProcessAssetDocumentInventoryRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT count(0)  " +
                 "FROM process  " +
@@ -400,9 +411,9 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         }
     }
 
-    private void setParameterFindAllProcessAssetInventory(FindAllProcessAssetInventoryRequest request, Query query) {
+    private void setParameterFindAllProcessAssetInventory(FindAllProcessAssetDocumentInventoryRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_INVENTORY);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY);
         if (StringUtils.isNotBlank(request.getCodeDocument())){
             query.setParameter("codeDocument", request.getCodeDocument());
         }
@@ -471,7 +482,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         }
     }
 
-    private void setConditionFindAllProcessAssetInventory(FindAllProcessAssetInventoryRequest request, StringBuilder sb) {
+    private void setConditionFindAllProcessAssetInventory(FindAllProcessAssetDocumentInventoryRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getNameUserCreate())){
             sb.append(" and (user.full_name REGEXP :nameUserCreate ) ");
         }
@@ -838,6 +849,127 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         return new PageImpl<>(responses, pageable, countFindAllProcessAssetRevaluation(request));
     }
 
+    @Override
+    public Page<FindAllProcessAssetUpdateInventoryDto>
+    findAllProcessAssetUpdateInventoryDtoByIdsDepartment(FindAllProcessAssetUpdateInventoryRequest request,
+                                                         Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT process.id_process idProcess, document.code codeDocument,     " +
+                "        user.id_user, user.code_user, user.full_name,     " +
+                "         de.id_department idDepartment, de.code codeDepartment,     " +
+                "         de.name nameDepartment, document.time_created,     " +
+                "         document.time_modified,document.time_increase,     " +
+                "         document.time_document,process.status     " +
+                "  FROM process      " +
+                "           INNER JOIN document ON process.id_process = document.id_process     " +
+                "           INNER JOIN type_process ON process.id_type_process = type_process.id_type_process     " +
+                "           LEFT JOIN csvc_user user ON process.id_user_created = user.id_user      " +
+                "           LEFT JOIN department de ON process.id_department = de.id_department     " +
+                "  WHERE process.id_department IN (:idsDepartmentOriginal)     " +
+                "  AND type_process.code = :codeTypeProcess  ");
+        setConditionFindAllProcessUpdateInventory(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllProcessAssetUpdateInventory(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllProcessAssetUpdateInventoryDto> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                FindAllProcessAssetUpdateInventoryDto findAllProcessAssetRevaluationDto = new FindAllProcessAssetUpdateInventoryDto();
+                findAllProcessAssetRevaluationDto.setIdProcess(ValueUtil.getIntegerByObject(obj[0]));
+                findAllProcessAssetRevaluationDto.setCodeDocument(ValueUtil.getStringByObject(obj[1]));
+                findAllProcessAssetRevaluationDto.setIdUserCreate(ValueUtil.getIntegerByObject(obj[2]));
+                findAllProcessAssetRevaluationDto.setCodeUserCreate(ValueUtil.getStringByObject(obj[3]));
+                findAllProcessAssetRevaluationDto.setNameUserCreate(ValueUtil.getStringByObject(obj[4]));
+                findAllProcessAssetRevaluationDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[5]));
+                findAllProcessAssetRevaluationDto.setCodeDepartment(ValueUtil.getStringByObject(obj[6]));
+                findAllProcessAssetRevaluationDto.setNameDepartment(ValueUtil.getStringByObject(obj[7]));
+                findAllProcessAssetRevaluationDto.setTimeCreated(ValueUtil.getLongByObject(obj[8]));
+                findAllProcessAssetRevaluationDto.setTimeModified(ValueUtil.getLongByObject(obj[9]));
+                findAllProcessAssetRevaluationDto.setTimeInventory(ValueUtil.getStringByObject(obj[10]));
+                findAllProcessAssetRevaluationDto.setTimeDocument(ValueUtil.getStringByObject(obj[11]));
+                findAllProcessAssetRevaluationDto.setStatus(ValueUtil.getIntegerByObject(obj[12]));
+                responses.add(findAllProcessAssetRevaluationDto);
+            }
+        }
+        return new PageImpl<>(responses, pageable, countFindAllProcessAssetUpdateInventory(request));
+    }
+
+    @Override
+    public Optional<Document> findDocumentByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select dc.id_document, dc.id_process, dc.code,  " +
+                "         dc.time_created, dc.time_modified,  " +
+                "         dc.time_increase, dc.time_document,  " +
+                "         dc.id_department_original,  " +
+                "         dc.id_department, dc.description,  " +
+                "         dc.status, dc.id_user_created,  " +
+                "         dc.id_user_modified  " +
+                "  from document dc       " +
+                "  inner join process pr on dc.id_process = pr.id_process  " +
+                "  where pr.id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Document document = new Document();
+                document.setIdDocument(ValueUtil.getIntegerByObject(obj[0]));
+                document.setIdProcess(ValueUtil.getIntegerByObject(obj[1]));
+                document.setCode(ValueUtil.getStringByObject(obj[2]));
+                document.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                document.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                document.setTimeIncrease(ValueUtil.getStringByObject(obj[5]));
+                document.setTimeDocument(ValueUtil.getStringByObject(obj[6]));
+                document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
+                document.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
+                document.setDescription(ValueUtil.getStringByObject(obj[9]));
+                document.setStatus(ValueUtil.getIntegerByObject(obj[10]));
+                document.setIdUserCreated(ValueUtil.getIntegerByObject(obj[11]));
+                document.setIdUserModified(ValueUtil.getIntegerByObject(obj[12]));
+                return Optional.of(document);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Document> findDocumentByCodeDocumentAndStatus(String codeDocument, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select id_document, id_process, code,  " +
+                "         time_created, time_modified, time_increase,  " +
+                "         time_document, id_department_original,  " +
+                "         id_department, description, status,  " +
+                "         id_user_created, id_user_modified  " +
+                "from document  " +
+                "  where code = :codeDocument  " +
+                "  and status = :statusDocument  ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeDocument", codeDocument);
+        query.setParameter("statusDocument", status);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Document document = new Document();
+                document.setIdDocument(ValueUtil.getIntegerByObject(obj[0]));
+                document.setIdProcess(ValueUtil.getIntegerByObject(obj[1]));
+                document.setCode(ValueUtil.getStringByObject(obj[2]));
+                document.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                document.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                document.setTimeIncrease(ValueUtil.getStringByObject(obj[5]));
+                document.setTimeDocument(ValueUtil.getStringByObject(obj[6]));
+                document.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[7]));
+                document.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
+                document.setDescription(ValueUtil.getStringByObject(obj[9]));
+                document.setStatus(ValueUtil.getIntegerByObject(obj[10]));
+                document.setIdUserCreated(ValueUtil.getIntegerByObject(obj[11]));
+                document.setIdUserModified(ValueUtil.getIntegerByObject(obj[12]));
+                return Optional.of(document);
+            }
+        }
+        return Optional.empty();
+    }
+
     private void setConditionFindAllProcessAssetRevaluation(FindAllProcessAssetRevaluationRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getNameUserCreate())){
             sb.append(" and (user.full_name REGEXP :nameUserCreate ) ");
@@ -880,6 +1012,49 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         }
     }
 
+    private void setConditionFindAllProcessUpdateInventory(FindAllProcessAssetUpdateInventoryRequest request,
+                                                           StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getNameUserCreate())){
+            sb.append(" and (user.full_name REGEXP :nameUserCreate ) ");
+        }
+        if (StringUtils.isNotBlank(request.getCodeDocument())){
+            sb.append(" and document.code = :codeDocument ");
+        }
+        if (StringUtils.isNotBlank(request.getTimeCreated())){
+            sb.append(" and document.time_created = :timeCreate ");
+        }
+        if (StringUtils.isNotBlank(request.getNameDepartment())){
+            sb.append(" and de.name = :nameDepartment ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            sb.append(" and process.id_department = :idDepartment ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatus())){
+            sb.append(" and process.status = :status ");
+        }
+        if (StringUtils.isNotBlank(request.getTimeDocument())){
+            sb.append(" and document.time_document REGEXP :timeDocument ");
+        }
+        if (StringUtils.isNotBlank(request.getTimeInventory())){
+            sb.append(" and document.time_increase REGEXP :timeInventory ");
+        }
+        if (StringUtils.isNotBlank(request.getSortBy())){
+            sb.append("ORDER BY ");
+            if (request.getSortBy().equals("timeCreate")) {
+                sb.append(" document.time_created ");
+            }
+            if (request.getSortBy().equals("timeDocument")) {
+                sb.append(" document.time_document ");
+            }
+            if (request.getSortBy().equals("timeInventory")) {
+                sb.append(" document.time_increase ");
+            }
+            sb.append(" ").append(request.getSortOrder());
+        } else {
+            sb.append(" ORDER BY document.time_created desc ");
+        }
+    }
+
     private void setParameterFindAllProcessAssetRevaluation(FindAllProcessAssetRevaluationRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_REVALUATION);
@@ -908,6 +1083,37 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
             query.setParameter("timeRevaluation", request.getTimeRevaluation());
         }
     }
+
+    private void setParameterFindAllProcessAssetUpdateInventory(FindAllProcessAssetUpdateInventoryRequest request,
+                                                                Query query) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY);
+        if (StringUtils.isNotBlank(request.getCodeDocument())){
+            query.setParameter("codeDocument", request.getCodeDocument());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (StringUtils.isNotBlank(request.getTimeCreated())){
+            query.setParameter("timeCreate", request.getTimeCreated());
+        }
+        if (StringUtils.isNotBlank(request.getNameDepartment())) {
+            query.setParameter("nameDepartment", request.getNameDepartment());
+        }
+        if (StringUtils.isNotBlank(request.getNameUserCreate())){
+            query.setParameter("nameUserCreate", request.getNameUserCreate());
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatus())){
+            query.setParameter("status", request.getStatus());
+        }
+        if (StringUtils.isNotBlank(request.getTimeDocument())){
+            query.setParameter("timeDocument", request.getTimeDocument());
+        }
+        if (StringUtils.isNotBlank(request.getTimeInventory())){
+            query.setParameter("timeInventory", request.getTimeInventory());
+        }
+    }
+
     private long countFindAllProcessAssetRevaluation(FindAllProcessAssetRevaluationRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT count(0)  " +
@@ -921,6 +1127,22 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         setConditionFindAllProcessAssetRevaluation(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllProcessAssetRevaluation(request, query);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+    private long countFindAllProcessAssetUpdateInventory(FindAllProcessAssetUpdateInventoryRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT count(0)  " +
+                "FROM process  " +
+                "         INNER JOIN document ON process.id_process = document.id_process  " +
+                "         INNER JOIN type_process ON process.id_type_process = type_process.id_type_process  " +
+                "         LEFT JOIN csvc_user user ON process.id_user_created = user.id_user  " +
+                "         LEFT JOIN department de ON process.id_department = de.id_department  " +
+                "WHERE process.id_department IN (:idsDepartmentOriginal)  " +
+                "  AND type_process.code = :codeTypeProcess  ");
+        setConditionFindAllProcessUpdateInventory(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllProcessAssetUpdateInventory(request, query);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
     }
 

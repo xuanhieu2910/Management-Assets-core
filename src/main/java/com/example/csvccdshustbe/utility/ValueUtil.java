@@ -1,7 +1,12 @@
 package com.example.csvccdshustbe.utility;
 
+import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.entity.Department;
+import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.google.common.base.Joiner;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -152,6 +157,11 @@ public class ValueUtil {
         } else {
             throw new ValidateFiledException(MESSAGE_STRONG_PASSWORD);
         }
+    }
+
+    public static String replaceGenerateCode(String codeOriginal, String typeProcessOriginal, String typeProcessDestination){
+        String codeDocument = codeOriginal.substring(typeProcessOriginal.length());
+        return typeProcessDestination + codeDocument;
     }
 
 

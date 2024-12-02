@@ -14,12 +14,6 @@ public interface AssetCurrentUsageRepositoryCustom {
 
     List<AssetCurrentUsageDetailsDto> findAssetCurrentUsageDetailsDtoByIdAsset(Integer idAsset);
 
-    Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetGroundInReport(List<Integer> idsDepartment);
 
-    Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetHouseInReport(List<Integer> idsDepartment);
-
-    Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetCarInReport(List<Integer> idsDepartment);
-
-    Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetOtherInReport(List<Integer> idsDepartment);
 
 }

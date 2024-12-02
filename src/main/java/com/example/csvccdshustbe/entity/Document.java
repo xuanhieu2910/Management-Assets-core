@@ -34,4 +34,10 @@ public class Document {
     private Integer idProcess;
     @Column(name = "id_department")
     private Integer idDepartment;
+    @Column(name = "status")
+    private Integer status;
+    @Column(name = "id_user_created")
+    private Integer idUserCreated;
+    @Column(name = "id_user_modified")
+    private Integer idUserModified;
 }
