@@ -118,7 +118,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
         query.setParameter("idProcess", idProcess);
         List<Object[]> result = query.getResultList();
         List<AssetProcessDto> assetProcessDtos = new ArrayList<>();
-        if (CollectionUtils.isEmpty(result)){
+        if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
                 AssetProcessDto assetProcessDto = new AssetProcessDto();
                 assetProcessDto.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[0]));
