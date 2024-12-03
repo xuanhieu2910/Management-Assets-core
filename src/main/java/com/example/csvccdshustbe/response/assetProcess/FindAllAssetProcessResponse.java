@@ -36,4 +36,6 @@ public class FindAllAssetProcessResponse {
     private String restValue;
     @JsonProperty("quantity")
     private Integer quantity;
+    @JsonProperty("value")
+    private String value;
 }

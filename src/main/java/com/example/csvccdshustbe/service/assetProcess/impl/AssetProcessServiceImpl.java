@@ -41,12 +41,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
         request.setIdsDepartmentOriginal(idsDepartment);
-        Page<FindAllAssetDto> findAllAssetDtos = null;
-        try {
-            findAllAssetDtos = assetProcessRepository.findAllAssetProcess(request, pageable);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        Page<FindAllAssetDto> findAllAssetDtos  = assetProcessRepository.findAllAssetProcess(request, pageable);
         return new PageImpl<>(convertToFindAllAssetProcess(findAllAssetDtos.getContent()),
                 pageable, findAllAssetDtos.getTotalElements());
     }
@@ -121,13 +116,8 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
             response.setTimeModified(DateUtil.formatToPattern( new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
             response.setIdAsset(dto.getIdAsset());
-            if (StringUtils.isNotBlank(dto.getOriginalOfFormation())) {
-                response.setTotalOriginalOfFormation(String.valueOf(
-                        Arrays.stream(dto.getOriginalOfFormation().split("-"))
-                                .mapToLong(Long::parseLong)
-                                .sum()));
-            }
-            response.setRestValue(dto.getRestValue());
+            response.setSalt(dto.getSalt());
+            response.setValue(dto.getValue());
             response.setQuantity(dto.getQuantity());
             responses.add(response);
         }
