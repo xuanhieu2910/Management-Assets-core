@@ -186,7 +186,7 @@ public class AssetController {
         }
     }
 
-    @PostMapping(" /upload-file-import-asset")
+    @PostMapping("/upload-file-import-asset")
     public ResponseEntity<?> uploadFileAssetToSystem(@RequestParam("file")MultipartFile file){
         try {
             assetService.uploadFileImportAsset(file);

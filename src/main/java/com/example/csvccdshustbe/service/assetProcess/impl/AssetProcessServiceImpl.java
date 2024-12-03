@@ -13,6 +13,7 @@ import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.sl.draw.geom.GuideIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,10 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AssetProcessServiceImpl implements AssetProcessService {
@@ -43,7 +41,12 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
         request.setIdsDepartmentOriginal(idsDepartment);
-        Page<FindAllAssetDto> findAllAssetDtos = assetProcessRepository.findAllAssetProcess(request, pageable);
+        Page<FindAllAssetDto> findAllAssetDtos = null;
+        try {
+            findAllAssetDtos = assetProcessRepository.findAllAssetProcess(request, pageable);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return new PageImpl<>(convertToFindAllAssetProcess(findAllAssetDtos.getContent()),
                 pageable, findAllAssetDtos.getTotalElements());
     }
@@ -118,6 +121,14 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
             response.setTimeModified(DateUtil.formatToPattern( new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
             response.setIdAsset(dto.getIdAsset());
+            if (StringUtils.isNotBlank(dto.getOriginalOfFormation())) {
+                response.setTotalOriginalOfFormation(String.valueOf(
+                        Arrays.stream(dto.getOriginalOfFormation().split("-"))
+                                .mapToLong(Long::parseLong)
+                                .sum()));
+            }
+            response.setRestValue(dto.getRestValue());
+            response.setQuantity(dto.getQuantity());
             responses.add(response);
         }
         return responses;

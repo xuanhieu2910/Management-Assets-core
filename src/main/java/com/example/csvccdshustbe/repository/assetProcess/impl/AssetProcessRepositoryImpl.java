@@ -30,21 +30,26 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
     @Override
     public Page<FindAllAssetDto> findAllAssetProcess(FindAllAssetProcessRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset, " +
-                "        asset.name nameAsset, assetCategories.id_asset_category idAssetCategory, " +
-                "        assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory, " +
-                "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment, " +
-                "        lo.id_location idLocation, lo.name nameLocation, " +
-                "        asset.time_created, asset.time_modified, asset.parent, asset.salt " +
-                "from asset asset " +
-                "     left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset " +
-                "     left join process process on assetProcess.id_process = process.id_process " +
-                "     left join asset_categories assetCategories " +
-                "             on asset.id_asset_category = assetCategories.id_asset_category " +
-                "     left join department de on asset.id_department = de.id_department " +
-                "     left join location lo on asset.id_location = lo.id_location " +
-                "     left join document do on process.id_process = do.id_process " +
-                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal) " +
+        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,  " +
+                "        asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,  " +
+                "        assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,  " +
+                "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,  " +
+                "        lo.id_location idLocation, lo.name nameLocation,  " +
+                "        asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
+                "        group_concat(aoof.value SEPARATOR '-'), ad.rest_value,  " +
+                "        asset.quantity  " +
+                "from asset asset  " +
+                "     left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset    " +
+                "     left join process process on assetProcess.id_process = process.id_process    " +
+                "     left join asset_categories assetCategories    " +
+                "             on asset.id_asset_category = assetCategories.id_asset_category    " +
+                "     left join department de on asset.id_department = de.id_department    " +
+                "     left join location lo on asset.id_location = lo.id_location    " +
+                "     left join document do on process.id_process = do.id_process  " +
+                "     left join asset_original_of_formation aoof on asset.id_asset = aoof.id_asset  " +
+                "     left join asset_depreciation ad on asset.id_asset = ad.id_asset  " +
+                "where 1 = 1  " +
+                "  and asset.id_department_origin in (:idsDepartmentOriginal)  " +
                 "and do.code = :codeDocument ");
         setConditionFindAllAssetProcess(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -70,6 +75,9 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
                 findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
+                findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[15]));
+                findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[16]));
+                findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[17]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -204,16 +212,19 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
 
     private long countFindAllAssetProcess(FindAllAssetProcessRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select count(0) " +
-                "from asset asset " +
-                "     left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset " +
-                "     left join process process on assetProcess.id_process = process.id_process " +
-                "     left join asset_categories assetCategories " +
-                "             on asset.id_asset_category = assetCategories.id_asset_category " +
-                "     left join department de on asset.id_department = de.id_department " +
-                "     left join location lo on asset.id_location = lo.id_location " +
-                "     left join document do on process.id_process = do.id_process " +
-                "where 1 = 1 and asset.id_department_origin in (:idsDepartmentOriginal) " +
+        sb.append(" select count(0)  " +
+                "from asset asset  " +
+                "     left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset    " +
+                "     left join process process on assetProcess.id_process = process.id_process    " +
+                "     left join asset_categories assetCategories    " +
+                "             on asset.id_asset_category = assetCategories.id_asset_category    " +
+                "     left join department de on asset.id_department = de.id_department    " +
+                "     left join location lo on asset.id_location = lo.id_location    " +
+                "     left join document do on process.id_process = do.id_process  " +
+                "     left join asset_original_of_formation aoof on asset.id_asset = aoof.id_asset  " +
+                "     left join asset_depreciation ad on asset.id_asset = ad.id_asset  " +
+                "where 1 = 1  " +
+                "  and asset.id_department_origin in (:idsDepartmentOriginal)  " +
                 "and do.code = :codeDocument ");
         setConditionFindAllAssetProcess(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -241,7 +252,13 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
             }
             sb.append(" ").append(request.getSortOrder());
         } else {
-            sb.append(" ORDER BY asset.id_asset desc ");
+            sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
+                    "         assetCategories.id_asset_category,  " +
+                    "         assetCategories.name, assetCategories.code_name,  " +
+                    "        de.id_department, de.code, de.name,  " +
+                    "        lo.id_location, lo.name, asset.time_created,  " +
+                    "        asset.time_modified, asset.parent, asset.salt,ad.rest_value,  " +
+                    "         asset.quantity ORDER BY asset.id_asset desc ");
         }
     }
 
