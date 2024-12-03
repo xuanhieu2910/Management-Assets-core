@@ -141,28 +141,30 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
     @Override
     public Optional<FindDetailsDocumentDto> findDetailDocumentByCodeDocument(String codeDocument, List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select dc.id_document, dc.code,     " +
-                "        cu.user_name, cu.full_name,     " +
-                "       dc.time_created, dc.time_modified,     " +
-                "       dc.time_increase, dc.time_document,     " +
-                "       dc.id_department, dc.description,  " +
-                "       st.id_state, st.status statusState,  " +
-                "       ts.code codeTypeState, ts.id_type_state,  " +
-                "       ts.name nameTypeState,  " +
-                "       pr.id_process,pr.status  " +
-                "from document dc  " +
-                "    inner join department de on dc.id_department_original = de.id_department     " +
-                "    inner join process pr on dc.id_process = pr.id_process     " +
-                "    inner join csvc_user cu on pr.id_user_created = cu.id_user     " +
-                "    inner join state st on pr.id_process = st.id_process  " +
-                "    inner join type_state ts on st.id_type_state = ts.id_type_state  " +
-                "    inner join  request on pr.id_process=request.id_process  " +
-                "    where dc.code = :codeDocument     " +
-                "    and de.id_department in (:idsDepartment)  " +
-                "    and cu.is_actived = 1 ");
+        sb.append("select dc.id_document, dc.code,   " +
+                "          cu.user_name, cu.full_name,   " +
+                "         dc.time_created, dc.time_modified,   " +
+                "         dc.time_increase, dc.time_document,   " +
+                "         dc.id_department, dc.description,   " +
+                "         st.id_state, st.status statusState,   " +
+                "         ts.code codeTypeState, ts.id_type_state,   " +
+                "         ts.name nameTypeState,   " +
+                "         pr.id_process,pr.status, de.code codeDepartment,   " +
+                "         de.name   " +
+                "  from document dc       " +
+                "      inner join department de on dc.id_department_original = de.id_department   " +
+                "      inner join process pr on dc.id_process = pr.id_process   " +
+                "      inner join csvc_user cu on pr.id_user_created = cu.id_user   " +
+                "      inner join state st on pr.id_process = st.id_process   " +
+                "      inner join type_state ts on st.id_type_state = ts.id_type_state   " +
+                "      inner join  request on pr.id_process=request.id_process   " +
+                "where dc.code = :codeDocument   " +
+                "      and de.id_department in (:idsDepartment)   " +
+                "      and cu.is_actived = :isActived ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("codeDocument", codeDocument);
         query.setParameter("idsDepartment", idsDepartment);
+        query.setParameter("isActived", Constants.ACCOUNT_IS_UN_LOCK);
         List<Object[]> result = query.getResultList();
         List<BluePrintStateDto> dtosState = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
@@ -203,7 +205,8 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
         dto.setDescription(ValueUtil.getStringByObject(obj[9]));
         dto.setStatus(ValueUtil.getIntegerByObject(obj[16]));
-
+        dto.setCodeDocument(ValueUtil.getStringByObject(obj[17]));
+        dto.setNameDepartment(ValueUtil.getStringByObject(obj[18]));
     }
 
     private long countFindAllDocumentAsset(FindAllDocumentAssetRequest request) {
