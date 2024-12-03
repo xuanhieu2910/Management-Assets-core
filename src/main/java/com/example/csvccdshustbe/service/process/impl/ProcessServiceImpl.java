@@ -785,8 +785,10 @@ public class ProcessServiceImpl implements ProcessService {
                                     status, typeProcess.getCode());
                         }
                 case Constants.CODE_TYPE_PROCESS_CHANGE,
-                        Constants.CODE_TYPE_PROCESS_REVALUATION ->
+                        Constants.CODE_TYPE_PROCESS_REVALUATION ->{
                         assetService.updateInformationAssetByProcess(process, status);
+                        assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+                }
                 case Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY -> {
                         assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
                         createUpdateInventoryAsset(process);
