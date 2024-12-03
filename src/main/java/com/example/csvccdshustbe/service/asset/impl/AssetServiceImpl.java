@@ -322,8 +322,8 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException {
-        filesStorageService.deleteByPathFile(pathFile);
+    public void deleteFile(String pathFile, String originalFile, String destinationFile) throws ValidateFiledException, IOException, InterruptedException {
+        filesStorageService.deleteByPathFile(pathFile,originalFile, destinationFile);
     }
 
     private void deleteDeclareAsset(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException {

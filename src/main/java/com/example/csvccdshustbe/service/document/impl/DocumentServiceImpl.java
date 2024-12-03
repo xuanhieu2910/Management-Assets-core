@@ -308,7 +308,7 @@ public class DocumentServiceImpl implements DocumentService {
         document.setTimeModified(String.valueOf(new Date().getTime()));
         document.setIdUserModified(csvcUser.getIdUser());
         documentRepository.save(document);
-        assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess());
+        assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
     }
 
     @Override

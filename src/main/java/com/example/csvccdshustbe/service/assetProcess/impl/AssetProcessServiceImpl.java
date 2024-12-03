@@ -63,10 +63,10 @@ public class AssetProcessServiceImpl implements AssetProcessService {
     }
 
     @Override
-    public void updateListAssetProcessByIdProcess(UpdateAllAssetProcessRequest request) {
+    public void updateListAssetProcessByIdProcess(UpdateAllAssetProcessRequest request, Integer idProcess) {
         List<Integer> idsAsset = getIdsAssetFromUpdateAllAssetProcessRequest(request);
         List<AssetProcess> assetProcessList =
-                assetProcessRepository.findAssetProcessListByIdsAssetAndIdProcess(idsAsset, request.getIdProcess());
+                assetProcessRepository.findAssetProcessListByIdsAssetAndIdProcess(idsAsset, idProcess);
         if (assetProcessList.size() != idsAsset.size()){
             throw new NotFoundException("Don't exist asset in process!");
         }

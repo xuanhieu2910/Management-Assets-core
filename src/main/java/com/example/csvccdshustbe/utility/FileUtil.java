@@ -267,16 +267,30 @@ public class FileUtil {
         return sizeFileMb <= Double.parseDouble(PropertiesUtil.getProperty("max-size-upload-image").substring(0, 2));
     }
 
-    public static void checkFileAsset(MultipartFile file) throws FileException {
-        if (file.isEmpty()){
-            throw new FileException("File is empty!");
+    public static void checkFileAsset(MultipartFile[] files) throws FileException {
+        if (files.length == 0){
+            throw new FileException("Files is empty!");
         }
-        if( Arrays.stream(FILE_ASSET).noneMatch(x->x.equals(FilenameUtils.getExtension(file.getOriginalFilename()).toLowerCase()))){
+        for (MultipartFile file : files) {
+            if (Arrays.stream(FILE_ASSET).noneMatch(x -> x.equals(FilenameUtils.getExtension(file.getOriginalFilename()).toLowerCase()))) {
+                throw new FileException("Validate extension file!");
+            }
+            if (!FileUtil.checkSizeFileImage(file)) {
+                throw new FileException("Validate size file!");
+            }
+        }
+    }
+
+    public static void checkFileAImportAsset(MultipartFile file) throws FileException {
+        if (file.isEmpty()){
+            throw new FileException("Files is empty!");
+        }
+        if (Arrays.stream(FILE_ASSET).noneMatch(x -> x.equals(FilenameUtils.getExtension(file.getOriginalFilename()).toLowerCase()))) {
             throw new FileException("Validate extension file!");
         }
-        if (!FileUtil.checkSizeFileImage(file)){
+        if (!FileUtil.checkSizeFileImage(file)) {
             throw new FileException("Validate size file!");
-        };
+        }
     }
 
 
