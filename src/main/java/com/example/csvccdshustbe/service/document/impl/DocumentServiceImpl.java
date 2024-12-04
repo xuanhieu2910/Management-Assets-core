@@ -314,6 +314,8 @@ public class DocumentServiceImpl implements DocumentService {
         assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
     }
 
+
+    @Transactional
     @Override
     public void updateInventoryFinish(UpdateInventoryDraftRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
