@@ -322,8 +322,8 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException {
-        filesStorageService.deleteByPathFile(pathFile);
+    public void deleteFile(String pathFile, String originalFile, String destinationFile) throws ValidateFiledException, IOException, InterruptedException {
+        filesStorageService.deleteByPathFile(pathFile,originalFile, destinationFile);
     }
 
     private void deleteDeclareAsset(AssetBluePrintDto assetBluePrintDto) throws ValidateFiledException {
@@ -1803,12 +1803,6 @@ public class AssetServiceImpl implements AssetService {
         HashMap<String, Object> dataUpdateAsset = (HashMap<String, Object>) value.get(Constants.KEY_NEW_INFORMATION);
         dataUpdateAsset.put("statusProcessCurrent", status);
         updateAsset(dataUpdateAsset);
-    }
-
-
-    private HashMap<String, Object> transformValueRevaluationToHashMap(String value) throws JsonProcessingException {
-        HashMap<String, Object> dataUpdateAsset = (new ObjectMapper()).readValue(value, new TypeReference<>() {});
-        return dataUpdateAsset;
     }
 
     private Asset duplicationAssetLot(FindDetailsAssetResponse assetRoot) {

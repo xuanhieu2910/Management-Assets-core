@@ -1,10 +1,14 @@
 package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
+import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.asset.*;
 import com.example.csvccdshustbe.service.asset.AssetService;
+import com.example.csvccdshustbe.service.upload.impl.FileUploadService;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.FileUtil;
+import com.example.csvccdshustbe.utility.PropertiesUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
@@ -28,6 +32,8 @@ public class AssetController {
 
     @Autowired
     AssetService assetService;
+    @Autowired
+    FileUploadService fileUploadService;
 
 
 
@@ -170,27 +176,6 @@ public class AssetController {
         }
     }
 
-
-//    @PostMapping("/upload-file")
-//    public ResponseEntity<?> uploadFiles(@RequestParam("file")MultipartFile multipartFile){
-//        try {
-//            return ApiResponseDto.createdWithState(assetService.uploadFile(multipartFile),
-//                    "Upload file success!", HttpStatus.OK);
-//        } catch (Exception e){
-//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
-//        }
-//    }
-
-    @PostMapping("/delete-file")
-    public ResponseEntity<?> deleteFiles(@RequestParam("path-file") String pathFile){
-        try {
-            assetService.deleteFile(pathFile);
-            return ApiResponseDto.createdWithMessage("Delete file success!", HttpStatus.OK);
-        } catch (Exception e){
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @GetMapping("/download-file-template-import-asset")
     public ResponseEntity<?> downloadFileTemplateImportAsset(){
         try {
@@ -201,7 +186,7 @@ public class AssetController {
         }
     }
 
-    @PostMapping("/upload-file")
+    @PostMapping("/upload-file-import-asset")
     public ResponseEntity<?> uploadFileAssetToSystem(@RequestParam("file")MultipartFile file){
         try {
             assetService.uploadFileImportAsset(file);
@@ -302,6 +287,30 @@ public class AssetController {
         } catch (NotFoundException e) {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
+    @PostMapping("/upload-files-attached")
+    public ResponseEntity<?> uploadFilesAttached(@RequestParam("files") MultipartFile[] files){
+        try {
+            String pathUploadFilesAttached = fileUploadService.updateFilesAttached(files, FileUtil.FOLDER_ASSET);
+            return ApiResponseDto.createdWithState(pathUploadFilesAttached, "Upload files attached success!",
+                    HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @DeleteMapping("/delete-file-attached")
+    public ResponseEntity<?>deleteFileAttached(@RequestParam("name") String pathFile){
+        try {
+            fileUploadService.deleteByPathFile(pathFile,
+                    PropertiesUtil.getProperty("hust.csvc.static.location.path.static.upload.data"),
+                    PropertiesUtil.getProperty("hust.csvc.static.location.upload.data"));
+            return ApiResponseDto.createdWithMessage("Delete path file success!", HttpStatus.OK);
+        } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

@@ -120,6 +120,9 @@ public class DocumentServiceImpl implements DocumentService {
         response.setTimeModified(DateUtil.formatToPattern(new Date(findDetailsDocumentDto.getTimeModified()), DateUtil.DATE_FORMAT));
         response.setTimeIncrease(findDetailsDocumentDto.getTimeIncrease());
         response.setTimeDocument(findDetailsDocumentDto.getTimeDocument());
+        response.setIdDepartment(findDetailsDocumentDto.getIdDepartment());
+        response.setCodeDepartment(findDetailsDocumentDto.getCodeDepartment());
+        response.setNameDepartment(findDetailsDocumentDto.getNameDepartment());
         List<BluePrintStateResponse> bluePrintStateResponses = new ArrayList<>();
         for (BluePrintStateDto printStateDto : findDetailsDocumentDto.getBluePrintStateDto()){
             BluePrintStateResponse printStateResponse = new BluePrintStateResponse();
@@ -308,7 +311,7 @@ public class DocumentServiceImpl implements DocumentService {
         document.setTimeModified(String.valueOf(new Date().getTime()));
         document.setIdUserModified(csvcUser.getIdUser());
         documentRepository.save(document);
-        assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess());
+        assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
     }
 
     @Override

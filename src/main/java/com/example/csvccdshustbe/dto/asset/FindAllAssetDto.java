@@ -31,5 +31,6 @@ public class FindAllAssetDto {
     private String restValue;
     private String cumulative;
     private String timeIncrease;
+    private String value;
 
 }

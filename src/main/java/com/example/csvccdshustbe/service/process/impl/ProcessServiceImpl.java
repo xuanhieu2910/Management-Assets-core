@@ -245,8 +245,8 @@ public class ProcessServiceImpl implements ProcessService {
         Document documentOriginal = documentService.findDocumentByIdProcess(processOriginal.getIdProcess());
         List<Integer> idsAsset = new ArrayList<>();
         assetProcessDtos.forEach(x->idsAsset.add(x.getIdAsset()));
-        TypeProcess typeProcess = typeProcessService.findTypeProcessByIdTypeProcess(processOriginal.getIdTypeProcess());
-        Process process = processRepository.save(constructionProcess(typeProcess));
+        TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY);
+        Process process = processRepository.save(constructionDuplicationProcess(typeProcess, processOriginal));
         Document document = documentService.saveDocument(constructionUpdateInventory(documentOriginal, process));
         assetProcessService.saveListAssetProcess(constructionAssetProcessUpdateInventory(assetProcessDtos, process));
         updateInformationProcessCurrentAsset(idsAsset, process);
@@ -402,7 +402,6 @@ public class ProcessServiceImpl implements ProcessService {
     private List<AssetProcess> constructionAssetProcessUpdateInventory(List<AssetProcessDto> assetProcessDtos, Process process) {
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
-        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         for (AssetProcessDto assetProcessDto : assetProcessDtos){
             AssetProcess assetProcess = new AssetProcess();
             assetProcess.setIdAsset(assetProcessDto.getIdAsset());
@@ -412,8 +411,8 @@ public class ProcessServiceImpl implements ProcessService {
             assetProcess.setValue(assetProcessDto.getValue());
             assetProcess.setTimeCreated(timeCurrent);
             assetProcess.setTimeModified(timeCurrent);
-            assetProcess.setIdUserCreated(csvcUser.getIdUser());
-            assetProcess.setIdUserModified(csvcUser.getIdUser());
+            assetProcess.setIdUserCreated(process.getIdUserCreated());
+            assetProcess.setIdUserModified(process.getIdUserModified());
             assetProcessList.add(assetProcess);
         }
         return assetProcessList;
@@ -786,8 +785,10 @@ public class ProcessServiceImpl implements ProcessService {
                                     status, typeProcess.getCode());
                         }
                 case Constants.CODE_TYPE_PROCESS_CHANGE,
-                        Constants.CODE_TYPE_PROCESS_REVALUATION ->
+                        Constants.CODE_TYPE_PROCESS_REVALUATION ->{
                         assetService.updateInformationAssetByProcess(process, status);
+                        assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+                }
                 case Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY -> {
                         assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
                         createUpdateInventoryAsset(process);
@@ -974,5 +975,19 @@ public class ProcessServiceImpl implements ProcessService {
         process.setIdDepartment(idDepartment);
         return process;
     }
+    private Process constructionDuplicationProcess(TypeProcess typeProcess, Process processOriginal) {
+        Process process = new Process();
+        process.setIdTypeProcess(typeProcess.getIdTypeProcess());
+        process.setName(typeProcess.getName());
+        process.setStatus(Constants.STATUS_PENDING_PROCESS);
+        String timeCurrent = String.valueOf(new Date().getTime());
+        process.setTimeCreated(timeCurrent);
+        process.setTimeModified(timeCurrent);
+        process.setIdUserCreated(processOriginal.getIdUserCreated());
+        process.setIdUserModified(process.getIdUserCreated());
+        process.setIdDepartment(processOriginal.getIdDepartment());
+        return process;
+    }
+
 
 }

@@ -526,4 +526,10 @@ public class Constants {
     public static Integer STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE = 1;
     /*-----------------------------------------------------*/
 
+    /**
+     * Constant status type process
+     * */
+    public static Integer STATUS_TYPE_PROCESS_ACTIVE = 1;
+    public static Integer STATUS_TYPE_PROCESS_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
 }
