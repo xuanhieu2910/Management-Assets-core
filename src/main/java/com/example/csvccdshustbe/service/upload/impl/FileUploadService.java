@@ -41,10 +41,8 @@ import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.wards.WardsService;
+import com.example.csvccdshustbe.utility.*;
 import com.example.csvccdshustbe.utility.DateUtil;
-import com.example.csvccdshustbe.utility.FileUtil;
-import com.example.csvccdshustbe.utility.PropertiesUtil;
-import com.example.csvccdshustbe.utility.ValueUtil;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -402,7 +400,7 @@ public class FileUploadService implements FilesStorageService {
     @Override
     public String downLoadInventoryReport(String code) throws IOException {
         String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static.reports") + SEPARATOR
-                + "37_C53 - HD_Bien ban kiem ke TSCD.xlsx";
+                + Constants.NAME_REPORTS[35];
         //String fileExcel = "E:\\csvc\\src\\main\\resources\\static\\reports\\37_C53 - HD_Bien ban kiem ke TSCD.xlsx";
 
         Optional<List<Object[]>> assetReport = reportRepository.findInfoAssetForInventoryReport(code);
@@ -478,21 +476,16 @@ public class FileUploadService implements FilesStorageService {
         String folder = root + SEPARATOR + "Reports" + SEPARATOR + FileUtil.getFolderInfo();
         FileUtil.createFolder(folder);
         String fileFinal = folder + SEPARATOR + "Inventory_Report_" + new Date().getTime() + ".xlsx";
-        log.info("File final: " + fileFinal);
-
         File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
         String fileReturn = fileFinal.replace(root, PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
-        log.info("File return: " + fileReturn);
-        //String filePathOutput = "C:\\Users\\ADMIN\\Downloads\\exportExcel\\modified_output4.xlsx"; // test
-
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
             workbook.close();
-            return fileReturn;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+        return fileReturn;
     }
     @Override
     public String downLoadRevaluationReport(Integer idAssetProcess, Integer status) throws IOException {
