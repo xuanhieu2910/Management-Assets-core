@@ -1809,10 +1809,10 @@ public class AssetServiceImpl implements AssetService {
         HashMap<String, Object> value = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
         HashMap<String, Object> dataUpdateAsset = (HashMap<String, Object>) value.get(Constants.KEY_NEW_INFORMATION);
         dataUpdateAsset.put("statusProcessCurrent", status);
-        HashMap<String, Object> dataCommonUpdateAsset = (HashMap<String, Object>) dataUpdateAsset.get(Constants.KEY_COMMON);
-        if (dataCommonUpdateAsset.get("distribution") != null){
-            updateAssetLot(dataUpdateAsset);
-        }
+//        HashMap<String, Object> dataCommonUpdateAsset = (HashMap<String, Object>) dataUpdateAsset.get(Constants.KEY_COMMON);
+//        if (dataCommonUpdateAsset.get("distribution") != null){
+//            updateAssetLot(dataUpdateAsset);
+//        }
         updateAsset(dataUpdateAsset);
     }
 
