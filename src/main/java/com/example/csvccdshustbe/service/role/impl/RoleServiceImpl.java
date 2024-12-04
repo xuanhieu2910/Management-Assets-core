@@ -186,7 +186,6 @@ public class RoleServiceImpl implements RoleService {
 
     private void createRoleAllowAssign(Role currentRole) {
         List<Role> restRole = roleRepository.findRestRoleWithoutCurrentRole(currentRole);
-        restRole.add(currentRole);
         createSourceAllowAssign(restRole, currentRole.getIdRole());
         createDestinationRoleAllowAssign(restRole, currentRole.getIdRole());
     }
@@ -212,7 +211,16 @@ public class RoleServiceImpl implements RoleService {
             allowAssign.setAllowAssign(idRole);
             sourceAllowAssign.add(allowAssign);
         }
+        sourceAllowAssign.add(addRoleCurrentByIdRole(idRole));
         roleAllowAssignService.saveAllRoleAllowAssign(sourceAllowAssign);
+    }
+
+    private RoleAllowAssign addRoleCurrentByIdRole(Integer idRole) {
+        RoleAllowAssign allowAssign = new RoleAllowAssign();
+        allowAssign.setIdRole(idRole);
+        allowAssign.setStatus(Constants.ROLE_ALLOW_ASSIGN_UN_STATUS);
+        allowAssign.setAllowAssign(idRole);
+        return allowAssign;
     }
 
     private Role constructionRole(CreateNewRoleRequest request) {

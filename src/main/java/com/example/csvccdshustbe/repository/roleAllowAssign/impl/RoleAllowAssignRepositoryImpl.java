@@ -101,32 +101,6 @@ public class RoleAllowAssignRepositoryImpl implements RoleAllowAssignRepositoryC
     }
 
     @Override
-    public List<FindAllRoleAllowResponse> findAllRoleAllowAssignByTitleRole(String titleRole) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(" select destinationRole.id_role    idDestinationRole, " +
-                "       destinationRole.short_name titleDestinationRole " +
-                "       from role role " +
-                "            inner join role_allow_assign roleAllowAssign on role.id_role = roleAllowAssign.id_role " +
-                "            inner join role destinationRole on roleAllowAssign.allow_assign = destinationRole.id_role " +
-                "where role.title = :title " +
-                "and roleAllowAssign.status = :status ");
-        Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("title", titleRole);
-        query.setParameter("status", Constants.ROLE_ALLOW_ASSIGN_STATUS);
-        List<Object[]> result = query.getResultList();
-        List<FindAllRoleAllowResponse> responses = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj : result){
-                FindAllRoleAllowResponse res = new FindAllRoleAllowResponse();
-                res.setIdRole(ValueUtil.getIntegerByObject(obj[0]));
-                res.setNameRole(ValueUtil.getStringByObject(obj[1]));
-                responses.add(res);
-            }
-        }
-        return responses;
-    }
-
-    @Override
     public Page<FindRestRoleResponse> findRestRoleAssignResponse(Pageable pageable,
                                                                  FindRestRoleRequest request,
                                                                  Integer idRoleCurrent) {

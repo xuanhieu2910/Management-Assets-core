@@ -50,16 +50,6 @@ public class RoleAllowAssignController {
     }
 
 
-    @GetMapping("/find-role-allow-assign")
-    public ResponseEntity<?> findRoleAllowAssignByCurrentRole(){
-        try {
-            return ApiResponseDto.createdWithState(roleAllowAssignService.findAllRoleAllowAssignByTitleRole(),
-                    "Find role allow assign success!", HttpStatus.OK);
-        } catch (Exception e){
-            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
-        }
-    }
-
     @GetMapping("/find-rest-role")
     public ResponseEntity<?> findRestRole(@And({
             @Spec(path = "page", params = "page", spec = Like.class),

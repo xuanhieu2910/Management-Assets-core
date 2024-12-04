@@ -64,12 +64,6 @@ public class RoleAllowAssignServiceImpl implements RoleAllowAssignService {
         roleAllowAssignRepository.saveAll(roleAllowAssigns);
     }
 
-    @Override
-    public List<FindAllRoleAllowResponse> findAllRoleAllowAssignByTitleRole() {
-        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Role> roles = new ArrayList<>(csvcUser.getRole());
-        return roleAllowAssignRepository.findAllRoleAllowAssignByTitleRole(roles.get(0).getTitle());
-    }
 
     @Override
     public Page<FindRestRoleResponse> findRestRoleResponseAssign(FindRestRoleRequest request) {

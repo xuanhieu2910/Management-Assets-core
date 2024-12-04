@@ -19,7 +19,6 @@ public interface RoleAllowAssignService {
 
     void saveAllRoleAllowAssign(List<RoleAllowAssign> roleAllowAssigns);
 
-    List<FindAllRoleAllowResponse> findAllRoleAllowAssignByTitleRole();
 
     Page<FindRestRoleResponse> findRestRoleResponseAssign(FindRestRoleRequest request);
 
