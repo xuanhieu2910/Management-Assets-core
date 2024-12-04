@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.reason.FindAllReasonsRequest;
+import com.example.csvccdshustbe.request.reason.FindAllTypeActionReasonsRequest;
 import com.example.csvccdshustbe.service.reason.ReasonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -48,6 +49,24 @@ public class ReasonController {
             e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/find-by-type-action")
+    public ResponseEntity<?> findReasonsByTypeAction(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllTypeActionReasonsRequest request) {
+        try {
+            return ApiResponseDto.createdWithState(reasonService.findReasonsByTypeAction(request),
+                    "Find all reasons by type action success!", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }

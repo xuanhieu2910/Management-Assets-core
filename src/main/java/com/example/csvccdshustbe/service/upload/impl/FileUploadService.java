@@ -22,6 +22,7 @@ import com.example.csvccdshustbe.entity.CountryProducer;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
+import com.example.csvccdshustbe.repository.report.ReportRepository;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.countryProducer.CountryProducerService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
@@ -50,6 +51,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -58,6 +60,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.*;
 
 @Log4j2
@@ -143,6 +149,8 @@ public class FileUploadService implements FilesStorageService {
     GoalsUseGroundService goalsUseGroundService;
     @Autowired
     OriginalOfFormationService originalOfFormationService;
+    @Autowired
+    ReportRepository reportRepository;
 
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
@@ -389,6 +397,231 @@ public class FileUploadService implements FilesStorageService {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String downLoadInventoryReport(String code) throws IOException {
+        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static.reports") + SEPARATOR
+                + "37_C53 - HD_Bien ban kiem ke TSCD.xlsx";
+        //String fileExcel = "E:\\csvc\\src\\main\\resources\\static\\reports\\37_C53 - HD_Bien ban kiem ke TSCD.xlsx";
+
+        Optional<List<Object[]>> assetReport = reportRepository.findInfoAssetForInventoryReport(code);
+        Optional<List<Object[]>> stakeHoder = reportRepository.findInfoStakeHolderForInventoryReport(code);
+
+        FileInputStream file = new FileInputStream(new File(fileExcel));
+        Workbook workbook = new XSSFWorkbook(file);
+
+        Sheet sheet = workbook.getSheetAt(0);
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(" H ' giờ ' m ' phút, ngày ' d ' tháng ' M ' năm ' yyyy");
+        String formattedDate = now.format(formatter);
+        String reportTime = "Thời điểm kiểm kê " + formattedDate;
+        updateCell(sheet, 7, 1, reportTime);
+
+        if (stakeHoder.isPresent()) {
+            List<Object[]> resultListStakeHoder = stakeHoder.get();
+            int startingRow = 9;
+            int rowsNeeded = resultListStakeHoder.size();
+
+            int totalRows = sheet.getPhysicalNumberOfRows() ;
+
+            if (totalRows >= startingRow && rowsNeeded > 3) {
+                sheet.shiftRows(startingRow, totalRows , rowsNeeded - 3,  true, true);
+            }
+
+            if (!resultListStakeHoder.isEmpty()) {
+                for (int i = 0; i < resultListStakeHoder.size(); i++) {
+                    Object[] row = resultListStakeHoder.get(i);
+                    String user = "- Ông/Bà " + (row[0] != null ? row[0] : "....................")
+                            + " chức vụ " + (row[1] != null ? row[1] : "....................")
+                            + " đại diện " + (row[2] != null ? row[2] : "...................");
+
+                    updateCell(sheet, startingRow + i, 1, user);
+                }
+            }
+        }
+
+        if (assetReport.isPresent()) {
+            List<Object[]> resultList = assetReport.get();
+
+            int startingRow = 16;
+            int rowsNeeded = resultList.size();
+
+            int totalRows = sheet.getPhysicalNumberOfRows() ;
+            if (totalRows >= startingRow && rowsNeeded > 5) {
+                sheet.shiftRows(startingRow, totalRows , rowsNeeded - 5,  true, true);
+            }
+
+            for (int i = 0; i < resultList.size(); i++) {
+                Object[] row = resultList.get(i);
+                Integer sheetRow = startingRow + i;
+
+                String assetCode = (String) row[1];
+                String departmentName = (String) row[2];
+                Integer quantity = (Integer) row[3];
+                Double originalValue = (Double) row[4];
+                Double restValue = (Double) row[5];
+                String notes = (String) row[6];
+
+                updateCell(sheet, sheetRow, 1, String.valueOf(i + 1));
+                updateCell(sheet, sheetRow, 2, assetCode);
+                updateCell(sheet, sheetRow, 3, departmentName);
+                updateCell(sheet, sheetRow, 4, quantity != null ? quantity.toString() : "");
+                updateCell(sheet, sheetRow, 5, originalValue != null ? originalValue.toString() : "");
+                updateCell(sheet, sheetRow, 6, restValue != null ? restValue.toString() : "");
+                updateCell(sheet, sheetRow, 7, notes != null ? notes : "");
+            }
+        }
+
+        String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
+        String folder = root + SEPARATOR + "Reports" + SEPARATOR + FileUtil.getFolderInfo();
+        FileUtil.createFolder(folder);
+        String fileFinal = folder + SEPARATOR + "Inventory_Report_" + new Date().getTime() + ".xlsx";
+        log.info("File final: " + fileFinal);
+
+        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
+        String fileReturn = fileFinal.replace(root, PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
+        log.info("File return: " + fileReturn);
+        //String filePathOutput = "C:\\Users\\ADMIN\\Downloads\\exportExcel\\modified_output4.xlsx"; // test
+
+        try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
+            workbook.write(fileOut);
+            workbook.close();
+            return fileReturn;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public String downLoadRevaluationReport(Integer idAssetProcess, Integer status) throws IOException {
+        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static.reports") + SEPARATOR
+                + "36_C52 -HD_Bien ban danh gia lai TSCD.xlsx";
+        //String fileExcel = "E:\csvc\src\main\resources\static\reports\36_C52 -HD_Bien ban danh gia lai TSCD.xlsx";
+
+        Optional<List<Object[]>> assetReport = reportRepository.findInfoAssetForRevaluationReport(idAssetProcess, status);
+        Optional<List<Object[]>> stakeHoder = reportRepository.findInfoStakeHolderForRevaluationReport(idAssetProcess);
+
+        FileInputStream file = new FileInputStream(new File(fileExcel));
+        Workbook workbook = new XSSFWorkbook(file);
+
+        Sheet sheet = workbook.getSheetAt(0);
+
+        if (stakeHoder.isPresent()) {
+            List<Object[]> resultListStakeHoder = stakeHoder.get();
+            int startingRow = 11;
+            int rowsNeeded = resultListStakeHoder.size();
+
+            int totalRows = sheet.getPhysicalNumberOfRows() ;
+
+            if (totalRows >= startingRow && rowsNeeded > 3) {
+                sheet.shiftRows(startingRow, totalRows , rowsNeeded - 3,  true, true);
+            }
+
+            if (!resultListStakeHoder.isEmpty()) {
+                for (int i = 0; i < resultListStakeHoder.size(); i++) {
+                    Object[] row = resultListStakeHoder.get(i);
+                    String user = "- Ông/Bà " + (row[0] != null ? row[0] : "....................")
+                            + " chức vụ " + (row[1] != null ? row[1] : "....................")
+                            + " đại diện " + (row[2] != null ? row[2] : "...................");
+
+                    updateCell(sheet, startingRow + i, 2, user);
+                }
+            }
+        }
+
+        if (assetReport.isPresent()) {
+            List<Object[]> resultList = assetReport.get();
+
+            int startingRow = 20;
+            int rowsNeeded = resultList.size();
+
+            int totalRows = sheet.getPhysicalNumberOfRows() ;
+            if (totalRows >= startingRow && rowsNeeded > 5) {
+                sheet.shiftRows(startingRow, totalRows , rowsNeeded - 5,  true, true);
+            }
+
+            if (!resultList.isEmpty()) {
+                Object[] firstRow = resultList.get(0);
+
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("'Ngày' d 'tháng' M 'năm' yyyy");
+                DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("'ngày' d 'tháng' M 'năm' yyyy");
+                String formattedDate1 = now.format(formatter1);
+                String formattedDate2 = now.format(formatter2);
+                String reportTime2 = "Căn cứ quyết định số:.......... " + formattedDate2 + " của ..........................." +
+                        "về việc đánh giá lại TSCĐ" ;
+                String value = (String) firstRow[1];
+
+                String oldDepreciationValue = extractValue(value, "\"old_information\": \\{.*?\"depreciation\": \\{.*?\"valueDepreciation\": \"(\\d+)\"");
+                String oldRestValue = extractValue(value, "\"old_information\": \\{.*?\"depreciation\": \\{.*?\"restValue\": \"(\\d+)\"");
+                String oldCumulativeValue = extractValue(value, "\"old_information\": \\{.*?\"depreciation\": \\{.*?\"cumulative\": \"(\\d+)\"");
+                String oldName = extractValue(value, "\"old_information\": \\{.*?\"common\": \\{.*?\"name\": \"([^\"]+)\"");
+                String oldCodeAsset = extractValue(value, "\"old_information\": \\{.*?\"common\": \\{.*?\"codeAsset\": \"([^\"]+)\"");
+
+                // Lấy thông tin về "new_information"
+                String newDepreciationValue = extractValue(value, "\"new_information\": \\{.*?\"depreciation\": \\{.*?\"valueDepreciation\": \"(\\d+)\"");
+                String newRestValue = extractValue(value, "\"new_information\": \\{.*?\"depreciation\": \\{.*?\"restValue\": \"(\\d+)\"");
+                String newCumulativeValue = extractValue(value, "\"new_information\": \\{.*?\"depreciation\": \\{.*?\"cumulative\": \"(\\d+)\"");
+
+                sheet.shiftColumns(7, sheet.getRow(19).getLastCellNum() - 1, 2);
+
+                updateCell(sheet, 6, 1, formattedDate1);
+                updateCell(sheet, 10, 2, reportTime2);
+                updateCell(sheet, 16, 1, "1");
+                updateCell(sheet, 20, 2, oldName + "-" + oldCodeAsset);
+                updateCell(sheet, 20, 5, oldDepreciationValue);
+                updateCell(sheet, 20, 6, oldRestValue);
+                updateCell(sheet, 20, 7, oldCumulativeValue);
+                updateCell(sheet, 20, 8, newDepreciationValue);
+                updateCell(sheet, 20, 9, newRestValue);
+                updateCell(sheet, 20, 10, newCumulativeValue);
+
+            }
+
+        }
+
+
+
+        String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
+        String folder = root + SEPARATOR + "Reports" + SEPARATOR + FileUtil.getFolderInfo();
+        FileUtil.createFolder(folder);
+        String fileFinal = folder + SEPARATOR + "Revaluation_Report_" + new Date().getTime() + ".xlsx";
+        log.info("File final: " + fileFinal);
+
+        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
+        String fileReturn = fileFinal.replace(root, PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
+        log.info("File return: " + fileReturn);
+
+        try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
+            workbook.write(fileOut);
+            workbook.close();
+            return fileReturn;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void updateCell(Sheet sheet, int rowIndex, int colIndex, String content) {
+        rowIndex--;
+        colIndex--;
+        Row row = sheet.getRow(rowIndex);
+        if (row == null) {
+            row = sheet.createRow(rowIndex);
+        }
+        Cell cell = row.getCell(colIndex, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        cell.setCellValue(content);
+    }
+
+    public static String extractValue(String jsonString, String regex) {
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+        java.util.regex.Matcher matcher = pattern.matcher(jsonString);
+        if (matcher.find()) {
+            return matcher.group(1); // Trả về nhóm đầu tiên, giá trị cần tách
+        }
+        return null;
     }
 
     @Override
