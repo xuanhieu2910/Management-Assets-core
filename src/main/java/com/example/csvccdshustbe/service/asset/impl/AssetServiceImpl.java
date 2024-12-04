@@ -1800,7 +1800,7 @@ public class AssetServiceImpl implements AssetService {
             IllegalAccessException {
         AssetProcess assetProcess = assetProcessService.findAssetProcessByIdProcess(process.getIdProcess());
         HashMap<String, Object> value = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
-        HashMap<String, Object> dataUpdateAsset = transformValueRevaluationToHashMap(String.valueOf(value.get(Constants.KEY_NEW_INFORMATION)));
+        HashMap<String, Object> dataUpdateAsset = (HashMap<String, Object>) value.get(Constants.KEY_NEW_INFORMATION);
         dataUpdateAsset.put("statusProcessCurrent", status);
         updateAsset(dataUpdateAsset);
     }
