@@ -1025,6 +1025,7 @@ public class AssetServiceImpl implements AssetService {
             response.setCodeAssetCategory(dto.getCodeAssetCategory());
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
+            response.setQuantity(dto.getQuantity());
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
             response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
             responses.add(response);
@@ -1042,6 +1043,7 @@ public class AssetServiceImpl implements AssetService {
             response.setNameAssetCategory(dto.getNameAssetCategory());
             response.setCodeAssetCategory(dto.getCodeAssetCategory());
             response.setSalt(dto.getSalt());
+            response.setQuantity(dto.getQuantity());
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
@@ -1062,6 +1064,7 @@ public class AssetServiceImpl implements AssetService {
             response.setCodeAssetCategory(dto.getCodeAssetCategory());
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
+            response.setQuantity(dto.getQuantity());
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
             response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
             response.setSalt(dto.getSalt());
@@ -1439,8 +1442,6 @@ public class AssetServiceImpl implements AssetService {
         childAsset.setIdUserModified(csvcUser.getIdUser());
         childAsset.setIdDepartmentOrigin(parentAsset.getIdDepartmentOrigin());
         childAsset.setParent(parentAsset.getIdAsset());
-        childAsset.setIsIncrease(Constants.IS_NOT_INCREASED);
-        childAsset.setIsDecrease(Constants.IS_NOT_DECREASED);
         assetRepository.save(childAsset);
 
         return childAsset;
