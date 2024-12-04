@@ -15,6 +15,6 @@ public interface AssetProcessService {
     Page<FindAllAssetProcessResponse> findAllAssetProcess(FindAllAssetProcessRequest request);
     AssetProcess findAssetProcessByIdProcess(Integer idProcess);
     List<AssetProcessDto> findAllAssetProcessByIdProcess(Integer idProcess);
-    void updateListAssetProcessByIdProcess(UpdateAllAssetProcessRequest request);
+    void updateListAssetProcessByIdProcess(UpdateAllAssetProcessRequest request, Integer idProcess);
     void updateFinishListAssetProcessByIdProcess(UpdateAllAssetProcessRequest request);
 }

@@ -30,7 +30,7 @@ public interface AssetService {
     void deleteAssetBySaltAssetLot(String saltAsset) throws ValidateFiledException;
     Page<FindAllGroundAssetResponse> findAllGroundAsset(FindAllGroundAssetRequest request);
     String uploadFile(MultipartFile multipartFile) throws FileException, IOException, FileExcelException;
-    void deleteFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException;
+    void deleteFile(String pathFile, String originalFile, String destinationFile) throws ValidateFiledException, IOException, InterruptedException;
     String downloadFileTemplateImportAsset() throws IOException;
     String exportFileReportByPath(String pathFile) throws IOException;
     void uploadFileImportAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException;

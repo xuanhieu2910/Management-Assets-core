@@ -30,4 +30,12 @@ public class FindAllAssetProcessResponse {
     private String salt;
     @JsonProperty("id_asset")
     private Integer idAsset;
+    @JsonProperty("total_original_of_formation")
+    private String totalOriginalOfFormation;
+    @JsonProperty("rest_value")
+    private String restValue;
+    @JsonProperty("quantity")
+    private Integer quantity;
+    @JsonProperty("value")
+    private String value;
 }

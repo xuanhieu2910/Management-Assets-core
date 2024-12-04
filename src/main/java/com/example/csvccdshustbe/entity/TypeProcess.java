@@ -25,4 +25,6 @@ public class TypeProcess {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+    @Column(name = "status")
+    private Integer status;
 }

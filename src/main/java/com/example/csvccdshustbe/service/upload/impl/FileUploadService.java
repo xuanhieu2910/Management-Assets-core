@@ -64,6 +64,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.*;
 
 @Log4j2
 @Service
@@ -153,19 +154,17 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
-        FileUtil.checkFileAsset(uploadedFile);
+        FileUtil.checkFileAImportAsset(uploadedFile);
         return saveFile(uploadedFile, folderName);
     }
 
     @Override
-    public void deleteByPathFile(String pathFile) throws ValidateFiledException, IOException, InterruptedException {
+    public void deleteByPathFile(String pathFile, String originalFile, String destinationFile) throws ValidateFiledException, IOException, InterruptedException {
         if (StringUtils.isBlank(pathFile)){
             throw new ValidateFiledException("validate data request");
         }
-        pathFile = pathFile.replace(PropertiesUtil.getProperty("hust.csvc.static.location.static.files"),
-                PropertiesUtil.getProperty("hust.csvc.static.location.upload"));
+        pathFile = pathFile.replace(originalFile,destinationFile);
         executeDeleteCommand(pathFile);
-
     }
 
     public static void executeDeleteCommand(String command) throws InterruptedException, IOException {
@@ -282,6 +281,45 @@ public class FileUploadService implements FilesStorageService {
         }
         return namePathFileResponse;
     }
+
+    private String saveFilesAsset(MultipartFile[] multipartFiles,  String folderName) throws IOException {
+        String folderSave = PropertiesUtil.getProperty("hust.csvc.static.location.upload.data");
+        List<String> pathFilesResponses = new ArrayList<>();
+        String fileId;
+        String folder;
+        String fileReturn;
+        for (MultipartFile multipartFile : multipartFiles) {
+            fileId = generateFileId();
+            folder = buildFolderUpload(folderName);
+            File inFiles = new File(folder);
+            if (!inFiles.exists() && !inFiles.mkdirs()) {
+                log.error("Can't create folder");
+            }
+            String namePathFileResponse = folderSave
+                    + folder
+                    + SEPARATOR
+                    + fileId
+                    + "_"
+                    + multipartFile.getName()
+                    + "."
+                    + FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+            File file = new File(folderSave + namePathFileResponse);
+            try {
+                if (file.exists()) {
+                    file.delete();
+                }
+                FileUtils.touch(file);
+                multipartFile.transferTo(file);
+                fileReturn = namePathFileResponse.replace(folderSave, PropertiesUtil.getProperty("hust.csvc.static.location.path.static.upload.data"));
+            } catch (IOException e) {
+                log.error("Can't not save file, file error!", e);
+                throw new IOException("Can't not save file, file error!");
+            }
+            pathFilesResponses.add(fileReturn);
+        }
+        return String.join(";",pathFilesResponses);
+    }
+
 
     private static String generateFileId() {
         return DateUtil.getCurrentDateStr() + RandomStringUtils.randomAlphanumeric(16);
@@ -590,6 +628,21 @@ public class FileUploadService implements FilesStorageService {
     public String downLoadReportByPathFile(String pathFileReport) throws IOException {
         String file = PropertiesUtil.getProperty("hust.csvc.static.location.static.files") + pathFileReport;
         return file;
+    }
+
+    @Override
+    public String updateFilesAttached(MultipartFile[] files, String folderName) throws FileException, IOException {
+        switch (folderName){
+            case FileUtil.FOLDER_ASSET -> {
+                return updateFilesAttachedAsset(files,folderName);
+            }
+        }
+        return null;
+    }
+
+    private String updateFilesAttachedAsset(MultipartFile[] files, String folderName) throws FileException, IOException {
+        FileUtil.checkFileAsset(files);
+        return saveFilesAsset(files, folderName);
     }
 
     private void createDataOriginalOfFormation(Workbook workbook, List<FindAllOriginalOfFormationDto> dataOriginalOfFormation) {

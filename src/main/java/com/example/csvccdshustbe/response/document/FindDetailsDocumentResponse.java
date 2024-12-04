@@ -36,6 +36,12 @@ public class FindDetailsDocumentResponse {
     private String descriptionRefuse;
     @JsonProperty("name_reason")
     private String nameReason;
+    @JsonProperty("id_department")
+    private Integer idDepartment;
+    @JsonProperty("code_department")
+    private String codeDepartment;
+    @JsonProperty("name_department")
+    private String nameDepartment;
     @JsonProperty("states")
     private List<BluePrintStateResponse> states;
 

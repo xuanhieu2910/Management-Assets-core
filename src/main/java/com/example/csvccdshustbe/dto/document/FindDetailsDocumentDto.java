@@ -21,6 +21,8 @@ public class FindDetailsDocumentDto {
     private String timeIncrease;
     private String timeDocument;
     private Integer idDepartment;
+    private String codeDepartment;
+    private String nameDepartment;
     private List<BluePrintStateDto> bluePrintStateDto;
 
 }

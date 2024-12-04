@@ -13,11 +13,12 @@ public interface FilesStorageService { ;
 
      String saveAndReturnPathAsset(MultipartFile file, String folderName) throws IOException, FileException;
 
-     void deleteByPathFile(String pathFile)
+     void deleteByPathFile(String pathFile, String originalFile, String destinationFile)
              throws ValidateFiledException, IOException, InterruptedException;
      String downLoadFileImportAsset() throws IOException;
      String downLoadReportByPathFile(String pathFile) throws IOException;
      String downLoadInventoryReport(String code) throws IOException;
      String downLoadRevaluationReport(Integer idAssetProcess, Integer status) throws IOException;
 
+    String updateFilesAttached(MultipartFile[] files, String folderName) throws FileException, IOException;
 }
