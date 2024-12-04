@@ -186,6 +186,7 @@ public class RoleServiceImpl implements RoleService {
 
     private void createRoleAllowAssign(Role currentRole) {
         List<Role> restRole = roleRepository.findRestRoleWithoutCurrentRole(currentRole);
+        restRole.add(currentRole);
         createSourceAllowAssign(restRole, currentRole.getIdRole());
         createDestinationRoleAllowAssign(restRole, currentRole.getIdRole());
     }

@@ -243,7 +243,7 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
         query.setParameter("idRole", currentRole.getIdRole());
         List<Object[]> result = query.getResultList();
         List<Role> roles = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(roles)){
+        if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj: result){
                 Role role = new Role();
                 role.setIdRole(ValueUtil.getIntegerByObject(obj[0]));
