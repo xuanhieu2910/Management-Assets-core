@@ -321,6 +321,7 @@ public class DocumentServiceImpl implements DocumentService {
         document.setTimeModified(String.valueOf(new Date().getTime()));
         document.setIdUserModified(csvcUser.getIdUser());
         document.setStatus(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE);
+        request.getAssetProcess().setIdProcess(document.getIdProcess());
         documentRepository.save(document);
         assetProcessService.updateFinishListAssetProcessByIdProcess(request.getAssetProcess());
     }
