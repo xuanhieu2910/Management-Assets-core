@@ -21,6 +21,8 @@ public class FindAllAssetCategoriesVisibleResponse {
     private Integer depth;
     @JsonProperty("path")
     private String path;
+    @JsonProperty("visible")
+    private Integer visible;
     @JsonProperty("parent")
     private Integer parent;
     @JsonProperty("value_wear_tear")
