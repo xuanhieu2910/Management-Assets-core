@@ -401,8 +401,6 @@ public class FileUploadService implements FilesStorageService {
     public String downLoadInventoryReport(String code) throws IOException {
         String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static.reports") + SEPARATOR
                 + Constants.NAME_REPORTS[35];
-        //String fileExcel = "E:\\csvc\\src\\main\\resources\\static\\reports\\37_C53 - HD_Bien ban kiem ke TSCD.xlsx";
-
         Optional<List<Object[]>> assetReport = reportRepository.findInfoAssetForInventoryReport(code);
         Optional<List<Object[]>> stakeHoder = reportRepository.findInfoStakeHolderForInventoryReport(code);
 
