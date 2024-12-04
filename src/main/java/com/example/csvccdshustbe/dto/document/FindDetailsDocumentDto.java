@@ -24,5 +24,6 @@ public class FindDetailsDocumentDto {
     private String codeDepartment;
     private String nameDepartment;
     private List<BluePrintStateDto> bluePrintStateDto;
+    private Integer statusDocument;
 
 }

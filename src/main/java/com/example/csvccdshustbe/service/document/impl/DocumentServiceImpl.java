@@ -123,6 +123,7 @@ public class DocumentServiceImpl implements DocumentService {
         response.setIdDepartment(findDetailsDocumentDto.getIdDepartment());
         response.setCodeDepartment(findDetailsDocumentDto.getCodeDepartment());
         response.setNameDepartment(findDetailsDocumentDto.getNameDepartment());
+        response.setStatusDocument(findDetailsDocumentDto.getStatusDocument());
         List<BluePrintStateResponse> bluePrintStateResponses = new ArrayList<>();
         for (BluePrintStateDto printStateDto : findDetailsDocumentDto.getBluePrintStateDto()){
             BluePrintStateResponse printStateResponse = new BluePrintStateResponse();

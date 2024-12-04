@@ -44,5 +44,7 @@ public class FindDetailsDocumentResponse {
     private String nameDepartment;
     @JsonProperty("states")
     private List<BluePrintStateResponse> states;
+    @JsonProperty("status_document")
+    private Integer statusDocument;
 
 }
