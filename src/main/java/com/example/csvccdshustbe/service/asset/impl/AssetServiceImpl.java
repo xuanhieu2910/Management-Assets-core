@@ -1442,6 +1442,8 @@ public class AssetServiceImpl implements AssetService {
         childAsset.setIdUserModified(csvcUser.getIdUser());
         childAsset.setIdDepartmentOrigin(parentAsset.getIdDepartmentOrigin());
         childAsset.setParent(parentAsset.getIdAsset());
+        childAsset.setIsIncrease(Constants.IS_NOT_INCREASED);
+        childAsset.setIsDecrease(Constants.IS_NOT_DECREASED);
         assetRepository.save(childAsset);
 
         return childAsset;
