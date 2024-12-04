@@ -923,7 +923,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
-                "   and and asset.quantity = 1    " +
+                "   and asset.quantity = 1    " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
@@ -1160,7 +1160,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
-                "   and and asset.quantity = 1   " +
+                "   and asset.quantity = 1   " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
@@ -1312,7 +1312,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "           on asset.id_asset = assetOriginalOfFormation.id_asset        " +
                 "       left join asset_depreciation assetDepreciation     " +
                 "          on asset.id_asset = assetDepreciation.id_asset        " +
-                "   where 1 = 1 asset.quantity = 1     " +
+                "   where 1 = 1 and asset.quantity = 1     " +
                 "         and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "  and  asset.is_increase = :isIncrease " +
                 "  and asset.is_decrease != :isDecrease " +
