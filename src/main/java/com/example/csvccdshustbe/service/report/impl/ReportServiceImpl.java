@@ -14,10 +14,7 @@ import com.example.csvccdshustbe.response.report.FindAllReportResponse;
 import com.example.csvccdshustbe.response.report.FindAllReportVisibleResponse;
 import com.example.csvccdshustbe.service.report.ReportService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
-import com.example.csvccdshustbe.utility.Constants;
-import com.example.csvccdshustbe.utility.DateUtil;
-import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.PropertiesUtil;
+import com.example.csvccdshustbe.utility.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -56,6 +53,7 @@ public class ReportServiceImpl implements ReportService {
 
     private List<FindAllReportVisibleResponse> convertToFindAllReportVisible(List<FindAllReportDto> findAllDtos) {
         List<FindAllReportVisibleResponse> responses = new ArrayList<>();
+        String pathRoot = PropertiesUtil.getProperty("hust.csvc.static.location.static.files");
         for (FindAllReportDto dto: findAllDtos){
             FindAllReportVisibleResponse response = new FindAllReportVisibleResponse();
             response.setIdReport(dto.getIdReport());
@@ -63,7 +61,12 @@ public class ReportServiceImpl implements ReportService {
             response.setTitleReport(dto.getTitleReport());
             response.setIdGovernmentCircular(dto.getIdGovernmentCircular());
             response.setTitleGovernmentCircular(dto.getTitleGovernmentCircular());
-            response.setPathImage(dto.getPathImage());
+            response.setPathImage( pathRoot
+                    + FileUtil.SEPARATOR
+                    + FileUtil.FOLDER_NAME_REPORT
+                    + FileUtil.SEPARATOR
+                    + FileUtil.FOLDER_NAME_REPORT_IMAGE
+                    + dto.getPathImage());
             responses.add(response);
         }
         return responses;
