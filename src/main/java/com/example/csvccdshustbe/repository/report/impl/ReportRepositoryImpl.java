@@ -1,9 +1,11 @@
 package com.example.csvccdshustbe.repository.report.impl;
 
 import com.example.csvccdshustbe.dto.report.CurrentUsageReport08aDto;
+import com.example.csvccdshustbe.dto.report.inventory.BlueprintInventoryReportDto;
+import com.example.csvccdshustbe.dto.report.inventory.CouncilInventoryReportDto;
+import com.example.csvccdshustbe.dto.report.inventory.FindAllAssetForInventoryReportDto;
 import com.example.csvccdshustbe.dto.report.FindAllReportDto;
 import com.example.csvccdshustbe.dto.report.IncreaseDecreaseReport08bDto;
-import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.entity.Report;
 import com.example.csvccdshustbe.repository.report.ReportRepositoryCustom;
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
@@ -141,62 +143,31 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
         return Optional.empty();
     }
 
-//    public Optional<List<Object[]>> findInfoAssetForInventoryReport(String code){
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(" SELECT" +
-//                "    a.name AS asset_name,                       -- 1.Tên tài sản" +
-//                "    a.code_asset AS asset_code,                 -- 2.Mã tài sản" +
-//                "    d.name AS department_name,                  -- 3.Nơi sử dụng (phòng ban)" +
-//                "    a.quantity AS quantity,                     -- 4.Số lượng" +
-//                "    ao.value AS original_value,                 -- 5.Nguyên giá" +
-//                "    ad.rest_value AS rest_value,                -- 6.Giá trị còn lại" +
-//                "    a.notes AS notes                            -- 7.Ghi chú của tài sản" +
-//                "FROM" +
-//                "    asset AS a" +
-//                "        LEFT JOIN asset_original_of_formation AS ao ON a.id_asset = ao.id_asset" +
-//                "        LEFT JOIN asset_depreciation AS ad ON a.id_asset = ad.id_asset" +
-//                "        LEFT JOIN department AS d ON a.id_department = d.id_department" +
-//                "        LEFT JOIN document AS doc ON doc.id_department=d.id_department" +
-//                "WHERE" +
-//                "        doc.code = :code"
-//        );
-//
-//        Query query = entityManager.createNativeQuery(sb.toString());
-//        query.setParameter("code", code);
-//
-//        List<Object[]> result = query.getResultList();
-//
-//        if (!CollectionUtils.isEmpty(result)) {
-//            return Optional.of(result);
-//        }
-//
-//        return Optional.empty();
-//    }
-public Optional<List<Object[]>> findInfoAssetForInventoryReport(String code) {
-    StringBuilder sb = new StringBuilder();
-    sb.append("SELECT ")
-            .append("    a.name AS asset_name,                   ")
-            .append("    a.code_asset AS asset_code,                ")
-            .append("    d.name AS department_name,             ")
-            .append("    a.quantity AS quantity,                  ")
-            .append("    ao.value AS original_value,             ")
-            .append("    ad.rest_value AS rest_value,             ")
-            .append("    a.notes AS notes                          ")
-            .append("FROM ")
-            .append("    asset AS a ")
-            .append("        LEFT JOIN asset_original_of_formation AS ao ON a.id_asset = ao.id_asset ")
-            .append("        LEFT JOIN asset_depreciation AS ad ON a.id_asset = ad.id_asset ")
-            .append("        LEFT JOIN department AS d ON a.id_department = d.id_department ")
-            .append("        LEFT JOIN document AS doc ON doc.id_department = d.id_department ")
-            .append("WHERE ")
-            .append("    doc.code = '").append(code).append("'");
-
-    Query query = entityManager.createNativeQuery(sb.toString());
-    List<Object[]> result = query.getResultList();
-
-    return result.isEmpty() ? Optional.empty() : Optional.of(result);
-
-}
+    public List<FindAllAssetForInventoryReportDto> findInfoAssetForInventoryReportByCodeDocument(String codeDocument) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select do.code, pr.id_process, ap.id_asset, " +
+                "       ap.value, ap.id_asset_process " +
+                "from document do " +
+                "    inner join process pr on do.id_process = pr.id_process " +
+                "    inner join asset_process ap on pr.id_process = ap.id_process " +
+                "where do.code = :codeDocument ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("codeDocument",codeDocument);
+        List<FindAllAssetForInventoryReportDto> responses = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FindAllAssetForInventoryReportDto response = new FindAllAssetForInventoryReportDto();
+                response.setCodeDocument(ValueUtil.getStringByObject(obj[0]));
+                response.setIdProcess(ValueUtil.getIntegerByObject(obj[1]));
+                response.setIdAsset(ValueUtil.getIntegerByObject(obj[2]));
+                response.setValue(ValueUtil.getStringByObject(obj[3]));
+                response.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[4]));
+                responses.add(response);
+            }
+        }
+        return responses;
+    }
 
 
     public Optional<List<Object[]>> findInfoAssetForRevaluationReport(Integer idAssetProcess, Integer status){
@@ -221,35 +192,55 @@ public Optional<List<Object[]>> findInfoAssetForInventoryReport(String code) {
         return Optional.empty();
     }
 
-
-    public Optional<List<Object[]>> findInfoStakeHolderForInventoryReport(String code){
+    @Override
+    public BlueprintInventoryReportDto findBlueprintInventoryReportDtoByCodeDocument(String codeDocument){
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT\n" +
-                "    u.full_name AS user_name,            -- Tên người dùng\n" +
-                "    rsh.position AS position,            -- Chức vụ của stakeholder\n" +
-                "    rsh.position_instance AS position_instance           -- Đại diện\n" +
-                "FROM\n" +
-                "    asset a\n" +
-                "        JOIN asset_process ap ON a.id_asset = ap.id_asset\n" +
-                "        JOIN request r ON r.id_process = ap.id_process\n" +
-                "        JOIN request_stake_holder rsh ON r.id_request = rsh.id_request\n" +
-                "        JOIN csvc_user u ON rsh.id_user = u.id_user\n" +
-                "        JOIN document d ON d.id_process = r.id_request\n" +
-                "WHERE\n" +
-                "        d.code = :code"
-        );
-
+        sb.append(" select do.code codeDocument, do.time_increase timeInventory, " +
+                "       do.time_document timeDocument, de.id_department, " +
+                "       de.code codeDepartment, de.name nameDepartment, " +
+                "       cu.user_name, cu.full_name, rsh.position,  " +
+                "       rsh.position_instance, rsh.level " +
+                "from document do " +
+                "    inner join department de on do.id_department = de.id_department " +
+                "    inner join process pr on do.id_process " +
+                "    inner join request re on pr.id_process = re.id_process " +
+                "    inner join request_stake_holder rsh on re.id_request = rsh.id_request " +
+                "    inner join csvc_user cu on rsh.id_user = cu.id_user " +
+                "where do.code = :codeDocument ORDER BY rsh.level ASC ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("code", code);
-
+        query.setParameter("codeDocument", codeDocument);
         List<Object[]> result = query.getResultList();
-
-        if (!CollectionUtils.isEmpty(result)) {
-            return Optional.of(result);
+        BlueprintInventoryReportDto reportDto = new BlueprintInventoryReportDto();
+        if (!CollectionUtils.isEmpty(result)){
+            setBlueprintInventoryReportDto(reportDto, result.get(0));
+            reportDto.setCouncilInventoryReportDtos(setCouncilInventoryReportDto(result));
         }
-
-        return Optional.empty();
+        return reportDto;
     }
+
+    private List<CouncilInventoryReportDto> setCouncilInventoryReportDto(List<Object[]> result) {
+        List<CouncilInventoryReportDto> reportDtos = new ArrayList<>();
+        for (Object[] obj : result){
+            CouncilInventoryReportDto reportDto = new CouncilInventoryReportDto();
+            reportDto.setUserName(ValueUtil.getStringByObject(obj[6]));
+            reportDto.setFullName(ValueUtil.getStringByObject(obj[7]));
+            reportDto.setPosition(ValueUtil.getStringByObject(obj[8]));
+            reportDto.setInstancePosition(ValueUtil.getStringByObject(obj[9]));
+            reportDto.setLevel(ValueUtil.getIntegerByObject(obj[10]));
+            reportDtos.add(reportDto);
+        }
+        return reportDtos;
+    }
+
+    private void setBlueprintInventoryReportDto(BlueprintInventoryReportDto reportDto, Object[] obj) {
+        reportDto.setCodeDocument(ValueUtil.getStringByObject(obj[0]));
+        reportDto.setTimeInventory(ValueUtil.getStringByObject(obj[1]));
+        reportDto.setTimeDocument(ValueUtil.getStringByObject(obj[2]));
+        reportDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[3]));
+        reportDto.setCodeDepartment(ValueUtil.getStringByObject(obj[4]));
+        reportDto.setNameDepartment(ValueUtil.getStringByObject(obj[5]));
+    }
+
     public Optional<List<Object[]>> findInfoStakeHolderForRevaluationReport(Integer idAssetProcess){
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT" +

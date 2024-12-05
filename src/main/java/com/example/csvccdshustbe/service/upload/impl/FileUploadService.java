@@ -14,6 +14,8 @@ import com.example.csvccdshustbe.dto.originalOfFormation.FindAllOriginalOfFormat
 import com.example.csvccdshustbe.dto.positionName.FindAllPositionNameDto;
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
 import com.example.csvccdshustbe.dto.provinces.ProvincesDto;
+import com.example.csvccdshustbe.dto.report.inventory.BlueprintInventoryReportDto;
+import com.example.csvccdshustbe.dto.report.inventory.FindAllAssetForInventoryReportDto;
 import com.example.csvccdshustbe.dto.typeUse.FindAllTypeUseDto;
 import com.example.csvccdshustbe.dto.unit.FindAllUnitsDto;
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
@@ -49,7 +51,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -58,10 +59,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 import java.util.*;
 
 @Log4j2
@@ -400,11 +399,12 @@ public class FileUploadService implements FilesStorageService {
     }
 
     @Override
-    public String downLoadInventoryReport(String code) throws IOException {
+    public String downloadInventoryReportByCodeDocument(String codeDocument) throws IOException {
         String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static.reports") + SEPARATOR
                 + Constants.NAME_REPORTS[35];
-        Optional<List<Object[]>> assetReport = reportRepository.findInfoAssetForInventoryReport(code);
-        Optional<List<Object[]>> stakeHoder = reportRepository.findInfoStakeHolderForInventoryReport(code);
+        List<FindAllAssetForInventoryReportDto> assetReport =
+                reportRepository.findInfoAssetForInventoryReportByCodeDocument(codeDocument);
+        BlueprintInventoryReportDto council = reportRepository.findBlueprintInventoryReportDtoByCodeDocument(codeDocument);
 
         FileInputStream file = new FileInputStream(new File(fileExcel));
         Workbook workbook = new XSSFWorkbook(file);
@@ -417,60 +417,60 @@ public class FileUploadService implements FilesStorageService {
         String reportTime = "Thời điểm kiểm kê " + formattedDate;
         updateCell(sheet, 7, 1, reportTime);
 
-        if (stakeHoder.isPresent()) {
-            List<Object[]> resultListStakeHoder = stakeHoder.get();
-            int startingRow = 9;
-            int rowsNeeded = resultListStakeHoder.size();
+//        if (stakeHoder.isPresent()) {
+//            List<Object[]> resultListStakeHoder = stakeHoder.get();
+//            int startingRow = 9;
+//            int rowsNeeded = resultListStakeHoder.size();
+//
+//            int totalRows = sheet.getPhysicalNumberOfRows() ;
+//
+//            if (totalRows >= startingRow && rowsNeeded > 3) {
+//                sheet.shiftRows(startingRow, totalRows , rowsNeeded - 3,  true, true);
+//            }
+//
+//            if (!resultListStakeHoder.isEmpty()) {
+//                for (int i = 0; i < resultListStakeHoder.size(); i++) {
+//                    Object[] row = resultListStakeHoder.get(i);
+//                    String user = "- Ông/Bà " + (row[0] != null ? row[0] : "....................")
+//                            + " chức vụ " + (row[1] != null ? row[1] : "....................")
+//                            + " đại diện " + (row[2] != null ? row[2] : "...................");
+//
+//                    updateCell(sheet, startingRow + i, 1, user);
+//                }
+//            }
+//        }
 
-            int totalRows = sheet.getPhysicalNumberOfRows() ;
-
-            if (totalRows >= startingRow && rowsNeeded > 3) {
-                sheet.shiftRows(startingRow, totalRows , rowsNeeded - 3,  true, true);
-            }
-
-            if (!resultListStakeHoder.isEmpty()) {
-                for (int i = 0; i < resultListStakeHoder.size(); i++) {
-                    Object[] row = resultListStakeHoder.get(i);
-                    String user = "- Ông/Bà " + (row[0] != null ? row[0] : "....................")
-                            + " chức vụ " + (row[1] != null ? row[1] : "....................")
-                            + " đại diện " + (row[2] != null ? row[2] : "...................");
-
-                    updateCell(sheet, startingRow + i, 1, user);
-                }
-            }
-        }
-
-        if (assetReport.isPresent()) {
-            List<Object[]> resultList = assetReport.get();
-
-            int startingRow = 16;
-            int rowsNeeded = resultList.size();
-
-            int totalRows = sheet.getPhysicalNumberOfRows() ;
-            if (totalRows >= startingRow && rowsNeeded > 5) {
-                sheet.shiftRows(startingRow, totalRows , rowsNeeded - 5,  true, true);
-            }
-
-            for (int i = 0; i < resultList.size(); i++) {
-                Object[] row = resultList.get(i);
-                Integer sheetRow = startingRow + i;
-
-                String assetCode = (String) row[1];
-                String departmentName = (String) row[2];
-                Integer quantity = (Integer) row[3];
-                Double originalValue = (Double) row[4];
-                Double restValue = (Double) row[5];
-                String notes = (String) row[6];
-
-                updateCell(sheet, sheetRow, 1, String.valueOf(i + 1));
-                updateCell(sheet, sheetRow, 2, assetCode);
-                updateCell(sheet, sheetRow, 3, departmentName);
-                updateCell(sheet, sheetRow, 4, quantity != null ? quantity.toString() : "");
-                updateCell(sheet, sheetRow, 5, originalValue != null ? originalValue.toString() : "");
-                updateCell(sheet, sheetRow, 6, restValue != null ? restValue.toString() : "");
-                updateCell(sheet, sheetRow, 7, notes != null ? notes : "");
-            }
-        }
+//        if (assetReport.isPresent()) {
+//            List<Object[]> resultList = assetReport.get();
+//
+//            int startingRow = 16;
+//            int rowsNeeded = resultList.size();
+//
+//            int totalRows = sheet.getPhysicalNumberOfRows() ;
+//            if (totalRows >= startingRow && rowsNeeded > 5) {
+//                sheet.shiftRows(startingRow, totalRows , rowsNeeded - 5,  true, true);
+//            }
+//
+//            for (int i = 0; i < resultList.size(); i++) {
+//                Object[] row = resultList.get(i);
+//                Integer sheetRow = startingRow + i;
+//
+//                String assetCode = (String) row[1];
+//                String departmentName = (String) row[2];
+//                Integer quantity = (Integer) row[3];
+//                Double originalValue = (Double) row[4];
+//                Double restValue = (Double) row[5];
+//                String notes = (String) row[6];
+//
+//                updateCell(sheet, sheetRow, 1, String.valueOf(i + 1));
+//                updateCell(sheet, sheetRow, 2, assetCode);
+//                updateCell(sheet, sheetRow, 3, departmentName);
+//                updateCell(sheet, sheetRow, 4, quantity != null ? quantity.toString() : "");
+//                updateCell(sheet, sheetRow, 5, originalValue != null ? originalValue.toString() : "");
+//                updateCell(sheet, sheetRow, 6, restValue != null ? restValue.toString() : "");
+//                updateCell(sheet, sheetRow, 7, notes != null ? notes : "");
+//            }
+//        }
 
         String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
         String folder = root + SEPARATOR + "Reports" + SEPARATOR + FileUtil.getFolderInfo();

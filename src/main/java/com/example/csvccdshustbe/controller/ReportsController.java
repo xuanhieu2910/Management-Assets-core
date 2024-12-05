@@ -96,9 +96,9 @@ public class ReportsController {
     }
 
     @GetMapping("/download-report-inventory")
-    public ResponseEntity<?> downloadReportInventory(@RequestParam("code") String code){
+    public ResponseEntity<?> downloadReportInventory(@RequestParam("code-document") String codeDocument){
         try {
-            return ApiResponseDto.createdWithState(reportService.downloadFileInventoryReport(code),
+            return ApiResponseDto.createdWithState(reportService.downloadFileInventoryReportByCodeDocument(codeDocument),
                     "Download inventory report success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);

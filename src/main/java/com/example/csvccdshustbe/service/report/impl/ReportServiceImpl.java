@@ -63,6 +63,7 @@ public class ReportServiceImpl implements ReportService {
             response.setTitleReport(dto.getTitleReport());
             response.setIdGovernmentCircular(dto.getIdGovernmentCircular());
             response.setTitleGovernmentCircular(dto.getTitleGovernmentCircular());
+            response.setPathImage(dto.getPathImage());
             responses.add(response);
         }
         return responses;
@@ -208,8 +209,8 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public String downloadFileInventoryReport(String code) throws IOException {
-        return filesStorageService.downLoadInventoryReport(code.trim());
+    public String downloadFileInventoryReportByCodeDocument(String codeDocument) throws IOException {
+        return filesStorageService.downloadInventoryReportByCodeDocument(codeDocument.trim());
     }
 
     @Override

@@ -1,9 +1,10 @@
 package com.example.csvccdshustbe.repository.report;
 
 import com.example.csvccdshustbe.dto.report.CurrentUsageReport08aDto;
+import com.example.csvccdshustbe.dto.report.inventory.BlueprintInventoryReportDto;
+import com.example.csvccdshustbe.dto.report.inventory.FindAllAssetForInventoryReportDto;
 import com.example.csvccdshustbe.dto.report.FindAllReportDto;
 import com.example.csvccdshustbe.dto.report.IncreaseDecreaseReport08bDto;
-import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.entity.Report;
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
@@ -21,8 +22,8 @@ public interface ReportRepositoryCustom {
     Optional<Report> findReportByCodeAndStatus(String codeReport, Integer status);
     Optional<List<Object[]>> findInfoAssetForRevaluationReport(Integer idAssetProcess, Integer status);
     Optional<List<Object[]>> findInfoStakeHolderForRevaluationReport(Integer idAssetProcess);
-    Optional<List<Object[]>> findInfoAssetForInventoryReport(String code);
-    Optional<List<Object[]>> findInfoStakeHolderForInventoryReport(String code);
+    List<FindAllAssetForInventoryReportDto> findInfoAssetForInventoryReportByCodeDocument(String codeDocument);
+    BlueprintInventoryReportDto findBlueprintInventoryReportDtoByCodeDocument(String code);
 
     Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetGroundInReport(List<Integer> idsDepartment);
 
