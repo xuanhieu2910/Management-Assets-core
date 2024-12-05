@@ -27,8 +27,7 @@ public class ReportsController {
 
     @Autowired
     ReportService reportService;
-    @Autowired
-    FilesStorageService filesStorageService;
+
 
 
     @GetMapping("/find-all-visible")

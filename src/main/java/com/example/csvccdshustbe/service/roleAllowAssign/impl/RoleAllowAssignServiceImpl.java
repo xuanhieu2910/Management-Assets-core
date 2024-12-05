@@ -71,7 +71,7 @@ public class RoleAllowAssignServiceImpl implements RoleAllowAssignService {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Role> roles = new ArrayList<>(csvcUser.getRole());
         Integer idRoleCurrent = roles.get(0).getIdRole();
-        return roleAllowAssignRepository.findRestRoleAssignResponse(pageable, request, idRoleCurrent);
+            return roleAllowAssignRepository.findRestRoleAssignResponse(pageable, request, idRoleCurrent);
     }
 
     @Override

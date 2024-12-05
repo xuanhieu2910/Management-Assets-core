@@ -18,4 +18,5 @@ public class IncreaseDecreaseReport08bDto {
     private Integer countAssetEnd;
     private String acreageEnd;
     private String totalOriginalEnd;
+    private String nameCategory;
 }

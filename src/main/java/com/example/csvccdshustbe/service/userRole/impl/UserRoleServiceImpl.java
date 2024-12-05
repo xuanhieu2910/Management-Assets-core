@@ -117,7 +117,13 @@ public class UserRoleServiceImpl implements UserRoleService {
         if (userRole.isEmpty()) {
             throw new NotFoundException("Don't exits user role!");
         }
+        Optional<UserRole> userRoleOther = userRoleRepository.findUserRoleByIdUserRoleAndIdUser(idUserRole,userRole.get().getIdUser());
+        userRoleOther.ifPresent(role -> {
+            role.setPicked(Constants.ROLE_USER_PICKED);
+            userRoleRepository.save(role);
+        });
         userRoleRepository.delete(userRole.get());
+
     }
 
     @Override

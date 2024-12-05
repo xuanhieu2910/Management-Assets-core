@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.report.impl;
 
+import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
 import com.example.csvccdshustbe.dto.report.CurrentUsageReport08aDto;
 import com.example.csvccdshustbe.dto.report.inventory.BlueprintInventoryReportDto;
 import com.example.csvccdshustbe.dto.report.inventory.CouncilInventoryReportDto;
@@ -362,20 +363,23 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
     @Override
     public Optional<CurrentUsageReport08aDto> findAllCurrentUsageAssetGroundInReport(List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT " +
-                "    COUNT(gd.id_ground_declare) AS total_ground_declare, " +
-                "    SUM(gd.acreage) as total_acreage, " +
-                "    SUM(gd.hdsn_no_bussiness) AS total_no_business, " +
-                "    SUM(gd.hdsn_bussiness) AS total_business, " +
-                "    SUM(gd.hdsn_rent) AS total_rent, " +
-                "    SUM(gd.hdsn_bonds) AS total_bonds, " +
-                "    SUM(gd.synthetic_use) AS total_synthetic, " +
-                "    SUM(gd.other_use) AS total_other " +
-                "FROM " +
-                "    ground_declare gd " +
-                "        INNER JOIN " +
-                "    asset ON gd.id_asset = asset.id_asset " +
-                "where asset.quantity = 1 and asset.id_department_origin in (:idsDepartmentOriginal) ");
+        sb.append(" SELECT    " +
+                "    COUNT(gd.id_ground_declare) AS total_ground_declare,    " +
+                "    SUM(gd.acreage) AS total_acreage,    " +
+                "    SUM(gd.hdsn_no_bussiness) AS total_no_business,    " +
+                "    SUM(gd.hdsn_bussiness) AS total_business,    " +
+                "    SUM(gd.hdsn_rent) AS total_rent,    " +
+                "    SUM(gd.hdsn_bonds) AS total_bonds,    " +
+                "    SUM(gd.synthetic_use) AS total_synthetic,    " +
+                "    SUM(gd.other_use) AS total_other,    " +
+                "    asset_categories.name AS category_name    " +
+                "FROM ground_declare gd    " +
+                "    INNER JOIN asset ON gd.id_asset = asset.id_asset    " +
+                "    INNER JOIN asset_declare on asset.id_asset = asset_declare.id_asset    " +
+                "    INNER JOIN `declare` on asset_declare.id_declare = `declare`.id_declare    " +
+                "    INNER JOIN asset_categories ON declare.id_category = asset_categories.id_asset_category    " +
+                "WHERE asset.quantity = 1 AND asset.id_department_origin IN (:idsDepartmentOriginal)    " +
+                "GROUP BY asset_declare.id_declare ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsDepartmentOriginal", idsDepartment);
         List<Object[]> result = query.getResultList();
@@ -391,6 +395,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 res.setTotalBonds(ValueUtil.getStringByObject(obj[5]));
                 res.setTotalSynthetic(ValueUtil.getStringByObject(obj[6]));
                 res.setTotalOther(ValueUtil.getStringByObject(obj[7]));
+                res.setNameCategory(ValueUtil.getStringByObject(obj[8]));
                 return Optional.of(res);
             }
         }
@@ -400,20 +405,24 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
     @Override
     public Optional<CurrentUsageReport08aDto> findAllCurrentUsageAssetHouseInReport(List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT  " +
-                "    COUNT(hd.id_house_declare) AS total_ground_declare,  " +
-                "    SUM(hd.acreage) as total_acreage,  " +
-                "    SUM(hd.hdsn_no_bussiness) AS total_no_business,  " +
-                "    SUM(hd.hdsn_bussiness) AS total_business,  " +
-                "    SUM(hd.hdsn_rent) AS total_rent,  " +
-                "    SUM(hd.hdsn_bonds) AS total_bond,  " +
-                "    SUM(hd.synthetic_use) AS total_synthetic,  " +
-                "    SUM(hd.other_use) AS total_other  " +
-                "FROM  " +
-                "    house_declare hd  " +
-                "        INNER JOIN  " +
-                "    asset ON hd.id_asset = asset.id_asset  " +
-                "where asset.quantity = 1 and asset.id_department_origin in (:idsDepartmentOriginal) ");
+        sb.append(" SELECT      " +
+                "      COUNT(hd.id_house_declare) AS total_ground_declare,      " +
+                "      SUM(hd.acreage) as total_acreage,      " +
+                "      SUM(hd.hdsn_no_bussiness) AS total_no_business,      " +
+                "      SUM(hd.hdsn_bussiness) AS total_business,      " +
+                "      SUM(hd.hdsn_rent) AS total_rent,      " +
+                "      SUM(hd.hdsn_bonds) AS total_bond,      " +
+                "      SUM(hd.synthetic_use) AS total_synthetic,      " +
+                "      SUM(hd.other_use) AS total_other,  " +
+                "      asset_categories.name AS category_name  " +
+                "  FROM      " +
+                "      house_declare hd      " +
+                "          INNER JOIN asset ON hd.id_asset = asset.id_asset  " +
+                "          INNER JOIN asset_declare on asset.id_asset = asset_declare.id_asset  " +
+                "          INNER JOIN `declare` on asset_declare.id_declare = `declare`.id_declare  " +
+                "          INNER JOIN asset_categories ON declare.id_category = asset_categories.id_asset_category  " +
+                "  where asset.quantity = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "    GROUP BY asset_declare.id_declare ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsDepartmentOriginal", idsDepartment);
         List<Object[]> result = query.getResultList();
@@ -429,6 +438,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 res.setTotalBonds(ValueUtil.getStringByObject(obj[5]));
                 res.setTotalSynthetic(ValueUtil.getStringByObject(obj[6]));
                 res.setTotalOther(ValueUtil.getStringByObject(obj[7]));
+                res.setNameCategory(ValueUtil.getStringByObject(obj[8]));
                 return Optional.of(res);
             }
         }
@@ -437,57 +447,60 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
     }
 
     @Override
-    public Optional<CurrentUsageReport08aDto> findAllCurrentUsageAssetCarInReport(List<Integer> idsDepartment) {
+    public List<CurrentUsageReport08aDto> findAllCurrentUsageAssetShapeInReport(List<Integer> idsDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT  " +
-                "    COUNT( distinct asset.id_asset) AS total_asset,  " +
-                "    SUM(CASE WHEN code = 'QLNN' THEN 1 ELSE 0 END) AS QLNN,  " +
-                "    SUM(CASE WHEN code = 'HĐSN-KHD' THEN 1 ELSE 0 END) AS HĐSNKHD,  " +
-                "    SUM(CASE WHEN code = 'HĐSN-KD' THEN 1 ELSE 0 END) AS HĐSNKD,  " +
-                "    SUM(CASE WHEN code = 'HĐSN-CT' THEN 1 ELSE 0 END) AS HĐSNCT,  " +
-                "    SUM(CASE WHEN code = 'HĐSN-LDLK' THEN 1 ELSE 0 END) AS HĐSNLDLK,  " +
-                "    SUM(CASE WHEN code = 'SDK' THEN 1 ELSE 0 END) AS SDK  " +
-                "    from asset  left join asset_current_usage on asset.id_asset = asset_current_usage.id_asset  " +
-                "                left join current_usage on asset_current_usage.id_current_usage = current_usage.id_current_usage  " +
-                "  " +
-                "where asset.quantity = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "  and asset.id_asset_category in (WITH RECURSIVE cte_asset_categories as (  " +
-                "    select assetCategires.id_asset_category,assetCategires.name,  " +
-                "           assetCategires.code_name, assetCategires.short_name,  " +
-                "           assetCategires.description, assetCategires.parent,  " +
-                "           assetCategires.sort_order, assetCategires.asset_count,  " +
-                "           assetCategires.visible, assetCategires.time_created,  " +
-                "           assetCategires.time_modified, assetCategires.is_pick,  " +
-                "           1 as depth,  " +
-                "           CAST(assetCategires.id_asset_category as NCHAR ) as path,  " +
-                "           assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,  " +
-                "           assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
-                "           assetCategires.id_department_original  " +
-                "    from asset_categories assetCategires  " +
-                "    where assetCategires.code_name = :codeName  " +
-                "      and assetCategires.visible = :visible  " +
-                "    union all  " +
-                "    select assetCategires.id_asset_category,assetCategires.name,  " +
-                "           assetCategires.code_name, assetCategires.short_name,  " +
-                "           assetCategires.description, assetCategires.parent,  " +
-                "           assetCategires.sort_order, assetCategires.asset_count,  " +
-                "           assetCategires.visible, assetCategires.time_created,  " +
-                "           assetCategires.time_modified, assetCategires.is_pick,  " +
-                "           cte.depth + 1 as depth,  " +
-                "           concat_ws('/',cte.path,CAST(assetCategires.id_asset_category as NCHAR)) as path,  " +
-                "           assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,  " +
-                "           assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
-                "           assetCategires.id_department_original  " +
-                "    from asset_categories assetCategires  " +
-                "             INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category  " +
-                ")  " +
-                "                                                         select cte_asset_categories.id_asset_category  " +
-                "                                                         from cte_asset_categories )  ");
+        sb.append(" WITH RECURSIVE cte_asset_categories AS (     " +
+                "    SELECT     " +
+                "        id_asset_category,     " +
+                "        parent,     " +
+                "        code_name,     " +
+                "        name AS category_name,     " +
+                "        id_asset_category AS root_id    " +
+                "    FROM asset_categories     " +
+                "    WHERE visible = :visible    " +
+                "      AND asset_categories.is_pick = :isPick     " +
+                "      AND asset_categories.code_name != :codeNameNoshape     " +
+                "      AND asset_categories.code_name != :codeNameGround     " +
+                "      AND asset_categories.code_name != :codeNameHouse     " +
+                "    UNION ALL     " +
+                "    SELECT     " +
+                "        ac.id_asset_category,     " +
+                "        ac.parent,     " +
+                "        ac.code_name,     " +
+                "        ac.name,     " +
+                "        cte.root_id    " +
+                "    FROM asset_categories ac     " +
+                "    INNER JOIN cte_asset_categories cte ON ac.parent = cte.id_asset_category     " +
+                ")     " +
+                "SELECT     " +
+                "    COUNT(DISTINCT asset.id_asset) AS total_asset,     " +
+                "    SUM(CASE WHEN current_usage.code = 'QLNN' THEN 1 ELSE 0 END) AS QLNN,    " +
+                "    SUM(CASE WHEN current_usage.code = 'HĐSN-KHD' THEN 1 ELSE 0 END) AS HĐSNKHD,    " +
+                "    SUM(CASE WHEN current_usage.code = 'HĐSN-KD' THEN 1 ELSE 0 END) AS HĐSNKD,      " +
+                "    SUM(CASE WHEN current_usage.code = 'HĐSN-CT' THEN 1 ELSE 0 END) AS HĐSNCT,      " +
+                "    SUM(CASE WHEN current_usage.code = 'HĐSN-LDLK' THEN 1 ELSE 0 END) AS HĐSNLDLK,     " +
+                "    SUM(CASE WHEN current_usage.code = 'SDK' THEN 1 ELSE 0 END) AS SDK,   " +
+                "    MAX(root_categories.name) AS root_category_name     " +
+                "FROM asset     " +
+                "         LEFT JOIN asset_current_usage ON asset.id_asset = asset_current_usage.id_asset     " +
+                "         LEFT JOIN current_usage ON asset_current_usage.id_current_usage = current_usage.id_current_usage     " +
+                "         LEFT JOIN cte_asset_categories cte ON asset.id_asset_category = cte.id_asset_category     " +
+                "         LEFT JOIN asset_categories root_categories ON cte.root_id = root_categories.id_asset_category      " +
+                "WHERE     " +
+                "  asset.quantity = 1     " +
+                "  AND asset.id_department_origin IN (:idsDepartmentOriginal)   " +
+                "  AND root_categories.name IS NOT NULL  " +
+                "GROUP BY cte.root_id     " +
+                "ORDER BY root_category_name  ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("idsDepartmentOriginal", idsDepartment);
-        query.setParameter("codeName", Constants.CODE_NAME_CAR);
         query.setParameter("visible", Constants.IS_VISIBLE);
+        query.setParameter("isPick", Constants.IS_PICKED);
+        query.setParameter("codeNameNoshape", Constants.CODE_NAME_NO_SHAPE);
+        query.setParameter("codeNameHouse", Constants.CODE_NAME_HOUSE);
+        query.setParameter("codeNameGround", Constants.CODE_NAME_GROUND);
+        query.setParameter("idsDepartmentOriginal", idsDepartment);
         List<Object[]> result = query.getResultList();
+        List<CurrentUsageReport08aDto> currentUsageReport08aDtos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
 
@@ -499,10 +512,11 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 res.setTotalRent(ValueUtil.getStringByObject(obj[4]));
                 res.setTotalBonds(ValueUtil.getStringByObject(obj[5]));
                 res.setTotalOther(ValueUtil.getStringByObject(obj[6]));
-                return Optional.of(res);
+                res.setNameCategory(ValueUtil.getStringByObject(obj[7]));
+                currentUsageReport08aDtos.add(res);
             }
         }
-        return Optional.empty();
+        return currentUsageReport08aDtos;
 
     }
 
@@ -581,24 +595,28 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
     @Override
     public Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseGroundInReport(CreateReportInCreaseAndDecreaseAllRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT  " +
-                "    COUNT(CASE WHEN asset.time_created <'1731492718697' THEN gd.id_ground_declare END) AS total_ground_declare_time_start,  " +
-                "    SUM(CASE WHEN asset.time_created <'1731492718697' THEN gd.acreage ELSE 0 END) AS total_acreage_time_start,  " +
-                "    SUM(CASE WHEN asset.time_created <'1731492718697' THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_start,  " +
-                "    COUNT(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_increase = :isIncrease THEN gd.id_ground_declare END) AS total_ground_declare_time_increase,  " +
-                "    SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_increase = :isIncrease  THEN gd.acreage ELSE 0 END) AS total_acreage_time_increase,  " +
-                "    SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_increase = :isIncrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_increase,  " +
-                "    COUNT(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_decrease = :isDecrease THEN gd.id_ground_declare END) AS total_ground_declare_time_decrease,  " +
-                "    SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_decrease = :isDecrease  THEN gd.acreage ELSE 0 END) AS total_acreage_time_decrease,  " +
-                "    SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_decrease = :isDecrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_decrease,  " +
-                "    COUNT(CASE WHEN asset.time_created <='1732616120087' THEN gd.id_ground_declare END) AS total_ground_declare_time_end,  " +
-                "    SUM(CASE WHEN asset.time_created <='1732616120087' THEN gd.acreage ELSE 0 END) AS total_acreage_time_end,  " +
-                "    SUM(CASE WHEN asset.time_created <='1732616120087' THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_end  " +
-                "    FROM ground_declare gd  INNER JOIN    " +
-                "    asset ON gd.id_asset = asset.id_asset  " +
-                "    left join asset_original_of_formation assetOriginalOfFormation  " +
-                "    on asset.id_asset = assetOriginalOfFormation.id_asset  " +
-                "    where asset.quantity = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  ");
+        sb.append(" SELECT            " +
+                "       COUNT(CASE WHEN asset.time_created <'1731492718697' THEN gd.id_ground_declare END) AS total_ground_declare_time_start,            " +
+                "       SUM(CASE WHEN asset.time_created <'1731492718697' THEN gd.acreage ELSE 0 END) AS total_acreage_time_start,            " +
+                "       SUM(CASE WHEN asset.time_created <'1731492718697' THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_start,            " +
+                "       COUNT(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1733281923625') and asset.is_increase = :isIncrease THEN gd.id_ground_declare END) AS total_ground_declare_time_increase,     " +
+                "       SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1733281923625') and asset.is_increase = :isIncrease  THEN gd.acreage ELSE 0 END) AS total_acreage_time_increase,     " +
+                "       SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1733281923625') and asset.is_increase = :isIncrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_increase,     " +
+                "       COUNT(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1733281923625') and asset.is_decrease = :isDecrease THEN gd.id_ground_declare END) AS total_ground_declare_time_decrease,     " +
+                "       SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1733281923625') and asset.is_decrease = :isDecrease  THEN gd.acreage ELSE 0 END) AS total_acreage_time_decrease,     " +
+                "       SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1733281923625') and asset.is_decrease = :isDecrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_decrease,     " +
+                "       COUNT(CASE WHEN asset.time_created <='1733364968278' THEN gd.id_ground_declare END) AS total_ground_declare_time_end,     " +
+                "       SUM(CASE WHEN asset.time_created <='1733364968278' THEN gd.acreage ELSE 0 END) AS total_acreage_time_end,     " +
+                "       SUM(CASE WHEN asset.time_created <='1733364968278' THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_end,     " +
+                "       asset_categories.name AS category_name     " +
+                "FROM ground_declare gd  INNER JOIN     " +
+                "       asset ON gd.id_asset = asset.id_asset            " +
+                "       left join asset_original_of_formation assetOriginalOfFormation            " +
+                "       on asset.id_asset = assetOriginalOfFormation.id_asset     " +
+                "             INNER JOIN asset_declare on asset.id_asset = asset_declare.id_asset     " +
+                "        INNER JOIN `declare` on asset_declare.id_declare = `declare`.id_declare     " +
+                "        INNER JOIN asset_categories ON declare.id_category = asset_categories.id_asset_category     " +
+                "       where asset.quantity = 1 and asset.id_department_origin in (:idsDepartmentOriginal)  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllIncreaseDecreaseAssetReport(request,query);
         List<Object[]> result = query.getResultList();
@@ -618,6 +636,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 res.setCountAssetEnd(ValueUtil.getIntegerByObject(obj[9]));
                 res.setAcreageEnd(ValueUtil.getStringByObject(obj[10]));
                 res.setTotalOriginalEnd(ValueUtil.getStringByObject(obj[11]));
+                res.setNameCategory(ValueUtil.getStringByObject(obj[12]));
                 return Optional.of(res);
             }
         }
@@ -628,24 +647,28 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
     @Override
     public Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseHouseInReport(CreateReportInCreaseAndDecreaseAllRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT    " +
-                "    COUNT(CASE WHEN asset.time_created <'1731492718697' THEN hd.id_house_declare END) AS total_ground_declare_time_start,    " +
-                "    SUM(CASE WHEN asset.time_created <'1731492718697' THEN hd.acreage ELSE 0 END) AS total_acreage_time_start,    " +
-                "    SUM(CASE WHEN asset.time_created <'1731492718697' THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_start,    " +
-                "    COUNT(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_increase = :isIncrease THEN hd.id_house_declare END) AS total_ground_declare_time_increase,    " +
-                "    SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_increase = :isIncrease  THEN hd.acreage ELSE 0 END) AS total_acreage_time_increase,    " +
-                "    SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_increase = :isIncrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_increase,    " +
-                "    COUNT(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_decrease = :isDecrease THEN hd.id_house_declare END) AS total_ground_declare_time_decrease,    " +
-                "    SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_decrease = :isDecrease  THEN hd.acreage ELSE 0 END) AS total_acreage_time_decrease,    " +
-                "    SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_decrease = :isDecrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_decrease,    " +
-                "    COUNT(CASE WHEN asset.time_created <='1732616120087' THEN hd.id_house_declare END) AS total_ground_declare_time_end,    " +
-                "    SUM(CASE WHEN asset.time_created <='1732616120087' THEN hd.acreage ELSE 0 END) AS total_acreage_time_end,    " +
-                "    SUM(CASE WHEN asset.time_created <='1732616120087' THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_end    " +
-                "    FROM house_declare hd INNER JOIN      " +
-                "    asset ON hd.id_asset = asset.id_asset    " +
-                "    left join asset_original_of_formation assetOriginalOfFormation    " +
-                "    on asset.id_asset = assetOriginalOfFormation.id_asset    " +
-                "where asset.quantity = 1 and asset.id_department_origin in (:idsDepartmentOriginal) ");
+        sb.append("SELECT              " +
+                "      COUNT(CASE WHEN asset.time_created <'1731492718697' THEN hd.id_house_declare END) AS total_ground_declare_time_start,              " +
+                "      SUM(CASE WHEN asset.time_created <'1731492718697' THEN hd.acreage ELSE 0 END) AS total_acreage_time_start,              " +
+                "      SUM(CASE WHEN asset.time_created <'1731492718697' THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_start,              " +
+                "      COUNT(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_increase = :isIncrease THEN hd.id_house_declare END) AS total_ground_declare_time_increase,              " +
+                "      SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_increase = :isIncrease  THEN hd.acreage ELSE 0 END) AS total_acreage_time_increase,              " +
+                "      SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_increase = :isIncrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_increase,              " +
+                "      COUNT(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_decrease = :isDecrease THEN hd.id_house_declare END) AS total_ground_declare_time_decrease,              " +
+                "      SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_decrease = :isDecrease  THEN hd.acreage ELSE 0 END) AS total_acreage_time_decrease,              " +
+                "      SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_decrease = :isDecrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_decrease,              " +
+                "      COUNT(CASE WHEN asset.time_created <='1733364968278' THEN hd.id_house_declare END) AS total_ground_declare_time_end,     " +
+                "      SUM(CASE WHEN asset.time_created <='1733364968278' THEN hd.acreage ELSE 0 END) AS total_acreage_time_end,     " +
+                "      SUM(CASE WHEN asset.time_created <='1733364968278' THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_end,     " +
+                "      asset_categories.name AS category_name     " +
+                "      FROM house_declare hd INNER JOIN                " +
+                "      asset ON hd.id_asset = asset.id_asset              " +
+                "      left join asset_original_of_formation assetOriginalOfFormation              " +
+                "      on asset.id_asset = assetOriginalOfFormation.id_asset     " +
+                "      INNER JOIN asset_declare on asset.id_asset = asset_declare.id_asset     " +
+                "      INNER JOIN `declare` on asset_declare.id_declare = `declare`.id_declare     " +
+                "      INNER JOIN asset_categories ON declare.id_category = asset_categories.id_asset_category     " +
+                "                     where asset.quantity = 1 and asset.id_department_origin in (:idsDepartmentOriginal)");
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllIncreaseDecreaseAssetReport(request,query);
         List<Object[]> result = query.getResultList();
@@ -665,6 +688,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 res.setCountAssetEnd(ValueUtil.getIntegerByObject(obj[9]));
                 res.setAcreageEnd(ValueUtil.getStringByObject(obj[10]));
                 res.setTotalOriginalEnd(ValueUtil.getStringByObject(obj[11]));
+                res.setNameCategory(ValueUtil.getStringByObject(obj[12]));
                 return Optional.of(res);
             }
         }
@@ -672,56 +696,60 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
     }
 
     @Override
-    public Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseCarInReport(CreateReportInCreaseAndDecreaseAllRequest request) {
+    public List<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseAssetShapeInReport(CreateReportInCreaseAndDecreaseAllRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT    " +
-                "      COUNT(distinct( CASE WHEN asset.time_created <'1731492718697' THEN  asset.id_asset END) ) AS count_asset_start,    " +
-                "      SUM(CASE WHEN asset.time_created <'1731492718697' THEN assetOriginalOfFormation.value ELSE 0 END) as total_Original_time_start,    " +
-                "      COUNT(distinct (CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_increase = :isIncrease THEN asset.id_asset END)) AS total_ground_declare_time_increase,    " +
-                "     SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_increase = :isIncrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_increase,    " +
-                "      COUNT(distinct (CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_decrease = :isDecrease THEN asset.id_asset END)) AS total_ground_declare_time_decrease,    " +
-                "      SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1732616120087') and asset.is_decrease = :isDecrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_decrease,    " +
-                "      COUNT(distinct( CASE WHEN asset.time_created <'1732616120087' THEN  asset.id_asset END) ) AS count_asset_end,    " +
-                "      SUM(CASE WHEN asset.time_created <'1732616120087' THEN assetOriginalOfFormation.value ELSE 0 END) as total_Original_time_end    " +
-                "from asset  left join asset_original_of_formation assetOriginalOfFormation    " +
-                "            on asset.id_asset = assetOriginalOfFormation.id_asset    " +
-                "                  where asset.quantity = 1   and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                "    and asset.id_asset_category in (WITH RECURSIVE cte_asset_categories as (        " +
-                "      select assetCategires.id_asset_category,assetCategires.name,        " +
-                "             assetCategires.code_name, assetCategires.short_name,        " +
-                "             assetCategires.description, assetCategires.parent,        " +
-                "             assetCategires.sort_order, assetCategires.asset_count,        " +
-                "             assetCategires.visible, assetCategires.time_created,        " +
-                "             assetCategires.time_modified, assetCategires.is_pick,        " +
-                "             1 as depth,        " +
-                "             CAST(assetCategires.id_asset_category as NCHAR ) as path,        " +
-                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,        " +
-                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,        " +
-                "             assetCategires.id_department_original        " +
-                "      from asset_categories assetCategires    " +
-                "      where assetCategires.code_name = :codeName    " +
-                "          and assetCategires.visible = :visible    " +
-                "      union all        " +
-                "      select assetCategires.id_asset_category,assetCategires.name,        " +
-                "             assetCategires.code_name, assetCategires.short_name,        " +
-                "             assetCategires.description, assetCategires.parent,        " +
-                "             assetCategires.sort_order, assetCategires.asset_count,        " +
-                "             assetCategires.visible, assetCategires.time_created,        " +
-                "             assetCategires.time_modified, assetCategires.is_pick,        " +
-                "             cte.depth + 1 as depth,        " +
-                "             concat_ws('/',cte.path,CAST(assetCategires.id_asset_category as NCHAR)) as path,        " +
-                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,        " +
-                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,        " +
-                "             assetCategires.id_department_original        " +
-                "      from asset_categories assetCategires        " +
-                "               INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category)        " +
-                "           select cte_asset_categories.id_asset_category        " +
-                "           from cte_asset_categories ) ");
+        sb.append(" WITH RECURSIVE cte_asset_categories AS (                " +
+                "        SELECT                " +
+                "            id_asset_category,                " +
+                "            parent,      " +
+                "            code_name,      " +
+                "            name AS category_name,                " +
+                "            id_asset_category AS root_id      " +
+                "        FROM asset_categories      " +
+                "        WHERE asset_categories.visible = :visible      " +
+                "          AND asset_categories.is_pick = :isPick      " +
+                "          AND asset_categories.code_name != :codeNameNoshape      " +
+                "          AND asset_categories.code_name != :codeNameGround      " +
+                "          AND asset_categories.code_name != :codeNameHouse      " +
+                "        UNION ALL      " +
+                "        SELECT      " +
+                "            ac.id_asset_category,      " +
+                "            ac.parent,      " +
+                "            ac.code_name,      " +
+                "            ac.name,      " +
+                "            cte.root_id      " +
+                "        FROM asset_categories ac      " +
+                "        INNER JOIN cte_asset_categories cte ON ac.parent = cte.id_asset_category )      " +
+                "                     SELECT      " +
+                "        COUNT(distinct( CASE WHEN asset.time_created <'1731492718697' THEN  asset.id_asset END) ) AS count_asset_start,      " +
+                "        SUM(CASE WHEN asset.time_created <'1731492718697' THEN assetOriginalOfFormation.value ELSE 0 END) as total_Original_time_start,      " +
+                "        COUNT(distinct (CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1733364968278') and asset.is_increase = :isIncrease THEN asset.id_asset END)) AS total_ground_declare_time_increase,      " +
+                "        SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1733364968278') and asset.is_increase = :isIncrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_increase,      " +
+                "        COUNT(distinct (CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1733364968278') and asset.is_decrease = :isDecrease THEN asset.id_asset END)) AS total_ground_declare_time_decrease,      " +
+                "        SUM(CASE WHEN (asset.time_created BETWEEN '1731492718696' AND '1733364968278') and asset.is_decrease = :isDecrease  THEN assetOriginalOfFormation.value ELSE 0 END) AS total_Original_time_decrease,      " +
+                "        COUNT(distinct( CASE WHEN asset.time_created <'1733364968278' THEN  asset.id_asset END) ) AS count_asset_end,      " +
+                "        SUM(CASE WHEN asset.time_created <'1733364968278' THEN assetOriginalOfFormation.value ELSE 0 END) as total_Original_time_end,      " +
+                "        MAX(root_categories.name) AS root_category_name      " +
+                "         FROM asset      " +
+                "                  LEFT JOIN cte_asset_categories cte ON asset.id_asset_category = cte.id_asset_category      " +
+                "                  left join asset_original_of_formation assetOriginalOfFormation      " +
+                "                    on asset.id_asset = assetOriginalOfFormation.id_asset      " +
+                "    LEFT JOIN asset_categories root_categories ON cte.root_id = root_categories.id_asset_category      " +
+                "         WHERE      " +
+                "             asset.quantity = 1      " +
+                "           AND asset.id_department_origin IN (:idsDepartmentOriginal)      " +
+                "           AND root_categories.name IS NOT NULL      " +
+                "         GROUP BY cte.root_id      " +
+                "         ORDER BY root_category_name ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("codeName", Constants.CODE_NAME_CAR);
         query.setParameter("visible", Constants.IS_VISIBLE);
+        query.setParameter("isPick", Constants.IS_PICKED);
+        query.setParameter("codeNameNoshape", Constants.CODE_NAME_NO_SHAPE);
+        query.setParameter("codeNameHouse", Constants.CODE_NAME_HOUSE);
+        query.setParameter("codeNameGround", Constants.CODE_NAME_GROUND);
         setParameterFindAllIncreaseDecreaseAssetReport(request,query);
         List<Object[]> result = query.getResultList();
+        List<IncreaseDecreaseReport08bDto> increaseDecreaseReport08bDtos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
 
@@ -734,10 +762,11 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 res.setTotalOriginalDecrease(ValueUtil.getStringByObject(obj[5]));
                 res.setCountAssetEnd(ValueUtil.getIntegerByObject(obj[6]));
                 res.setTotalOriginalEnd(ValueUtil.getStringByObject(obj[7]));
-                return Optional.of(res);
+                res.setNameCategory(ValueUtil.getStringByObject(obj[8]));
+                increaseDecreaseReport08bDtos.add(res);
             }
         }
-        return Optional.empty();
+        return increaseDecreaseReport08bDtos;
     }
 
     @Override
