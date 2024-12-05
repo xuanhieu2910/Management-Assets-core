@@ -28,13 +28,13 @@ public interface ReportRepositoryCustom {
 
     Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetHouseInReport(List<Integer> idsDepartment);
 
-    Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetCarInReport(List<Integer> idsDepartment);
+    List<CurrentUsageReport08aDto>  findAllCurrentUsageAssetShapeInReport(List<Integer> idsDepartment);
 
     Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetOtherInReport(List<Integer> idsDepartment);
 
     Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseGroundInReport(CreateReportInCreaseAndDecreaseAllRequest request);
 
     Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseHouseInReport(CreateReportInCreaseAndDecreaseAllRequest request);
-    Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseCarInReport(CreateReportInCreaseAndDecreaseAllRequest request);
+    List<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseAssetShapeInReport(CreateReportInCreaseAndDecreaseAllRequest request);
     Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseOtherAssetInReport(CreateReportInCreaseAndDecreaseAllRequest request);
 }

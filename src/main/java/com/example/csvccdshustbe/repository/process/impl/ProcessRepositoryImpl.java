@@ -459,12 +459,12 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 response.setCodeDocument(ValueUtil.getStringByObject(obj[2]));
                 response.setTypeProcess(ValueUtil.getStringByObject(obj[3]));
                 response.setDescription(ValueUtil.getStringByObject(obj[4]));
-                response.setTimeCreatedProcess(ValueUtil.getStringByObject(obj[5]));
-                response.setTimeModifiedProcess(ValueUtil.getStringByObject(obj[6]));
+                response.setTimeCreatedProcess(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[5])), DateUtil.DATE_FORMAT));
+                response.setTimeModifiedProcess(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[6])), DateUtil.DATE_FORMAT));
                 response.setUserNameCreated(ValueUtil.getStringByObject(obj[7]));
                 response.setFullNameCreated(ValueUtil.getStringByObject(obj[8]));
-                response.setTimeCreatedDocument(ValueUtil.getStringByObject(obj[9]));
-                response.setTimeModifiedDocument(ValueUtil.getStringByObject(obj[10]));
+                response.setTimeCreatedDocument(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[9])), DateUtil.DATE_FORMAT));
+                response.setTimeModifiedDocument(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[10])), DateUtil.DATE_FORMAT));
                 response.setTimeIncrease(ValueUtil.getStringByObject(obj[11]));
                 response.setTimeDocument(ValueUtil.getStringByObject(obj[12]));
                 response.setIdRequestStakeHolder(ValueUtil.getIntegerByObject(obj[13]));

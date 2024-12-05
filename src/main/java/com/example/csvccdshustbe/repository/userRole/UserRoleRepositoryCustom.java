@@ -20,4 +20,6 @@ public interface UserRoleRepositoryCustom {
 
     List<UserRole> findUserRoleByIdRole(Integer idRole);
     List<UserRoleDto> findUserRoleByNameRoleAndIdDepartment(String nameRole, Integer department);
+
+    Optional<UserRole> findUserRoleByIdUserRoleAndIdUser(Integer idUserRole, Integer idUser);
 }

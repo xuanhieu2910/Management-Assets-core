@@ -121,9 +121,7 @@ public class ReportServiceImpl implements ReportService {
         int rowNum = sheet.getLastRowNum() + 1;
         writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetGroundInReport(csvcUser.getIdsDepartmentCurrent()));
         writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetHouseInReport(csvcUser.getIdsDepartmentCurrent()));
-        writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetCarInReport(csvcUser.getIdsDepartmentCurrent()));
-        writeDataToMapReport08a(data, rowNum++, reportRepository.findAllCurrentUsageAssetOtherInReport(csvcUser.getIdsDepartmentCurrent()));
-
+        writeListDataToMapReport08a(data,rowNum++,reportRepository.findAllCurrentUsageAssetShapeInReport(csvcUser.getIdsDepartmentCurrent()));
         Set<Integer> keySet = data.keySet();
         for (Integer key : keySet){
             Row row = sheet.createRow(rowNum++);
@@ -155,6 +153,7 @@ public class ReportServiceImpl implements ReportService {
         if (recordOptional.isPresent()) {
             CurrentUsageReport08aDto record = recordOptional.get();
             data.put(rowNum, new Object[]{
+                    record.getNameCategory(),
                     record.getCountAsset(),
                     record.getAcreage(),
                     record.getTotalStateManagement(),
@@ -166,6 +165,28 @@ public class ReportServiceImpl implements ReportService {
                     record.getTotalOther(),
             });
         }
+    }
+
+
+    private void writeListDataToMapReport08a(
+            Map<Integer, Object[]> data,
+            int rowNum,
+            List<CurrentUsageReport08aDto> recordOptional) {
+        for (CurrentUsageReport08aDto record : recordOptional) {
+                data.put(rowNum, new Object[]{
+                        record.getNameCategory(),
+                        record.getCountAsset(),
+                        record.getAcreage(),
+                        record.getTotalStateManagement(),
+                        record.getTotalNoBusiness(),
+                        record.getTotalBusiness(),
+                        record.getTotalRent(),
+                        record.getTotalBonds(),
+                        record.getTotalSynthetic(),
+                        record.getTotalOther(),
+                });
+            rowNum++;
+            }
     }
 
 
@@ -181,8 +202,7 @@ public class ReportServiceImpl implements ReportService {
         setIdsDepartmentOriginal(request);
         writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseGroundInReport(request));
         writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseHouseInReport(request));
-        writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseCarInReport(request));
-        writeDataToMapReport08b(data, rowNum++, reportRepository.findAllIncreaseDecreaseOtherAssetInReport(request));
+        writeListDataToMapReport08b(data,rowNum++, reportRepository.findAllIncreaseDecreaseAssetShapeInReport(request));
         Set<Integer> keySet = data.keySet();
         for (Integer key : keySet){
             Row row = sheet.createRow(rowNum++);
@@ -229,6 +249,7 @@ public class ReportServiceImpl implements ReportService {
         if (recordOptional.isPresent()) {
             IncreaseDecreaseReport08bDto record = recordOptional.get();
             data.put(rowNum, new Object[]{
+                    record.getNameCategory(),
                     record.getCountAssetStart(),
                     record.getAcreageStart(),
                     record.getTotalOriginalStart(),
@@ -242,6 +263,30 @@ public class ReportServiceImpl implements ReportService {
                     record.getAcreageEnd(),
                     record.getTotalOriginalEnd(),
             });
+        }
+    }
+
+    private void writeListDataToMapReport08b(
+            Map<Integer, Object[]> data,
+            int rowNum,
+            List<IncreaseDecreaseReport08bDto> recordOptional) {
+        for (IncreaseDecreaseReport08bDto record : recordOptional) {
+            data.put(rowNum, new Object[]{
+                    record.getNameCategory(),
+                    record.getCountAssetStart(),
+                    record.getAcreageStart(),
+                    record.getTotalOriginalStart(),
+                    record.getCountAssetIncrease(),
+                    record.getAcreageIncrease(),
+                    record.getTotalOriginalIncrease(),
+                    record.getCountDecrease(),
+                    record.getAcreageDecrease(),
+                    record.getTotalOriginalDecrease(),
+                    record.getCountAssetEnd(),
+                    record.getAcreageEnd(),
+                    record.getTotalOriginalEnd(),
+            });
+            rowNum++;
         }
     }
 }
