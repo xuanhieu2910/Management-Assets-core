@@ -24,7 +24,7 @@ public class FileUtil {
     public static final String FOLDER_NAME_IMAGE = "upload_image";
     public static final String FOLDER_NAME_FILE = "upload_file";
     public static final String FOLDER_ASSET = "asset";
-    public static final String FOLDER_NAME_REPORT ="report";
+    public static final String FOLDER_NAME_REPORT ="reports";
     public static final String FOLDER_NAME_SAMPLE_ASSET ="sample_asset";
     public static final String SEPARATOR = "/";
     public static String pathReturn = "";
