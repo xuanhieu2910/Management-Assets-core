@@ -37,4 +37,6 @@ public interface CsvcUserService extends UserDetailsService {
     Map<String, List<FindAllUserUsedDto>> findAllUserUsedToDownload();
 
     Page<FindAllUserResponse> findAllUserExistResponse(FindAllUserRequest request);
+    void setIdsDepartment(CsvcUser csvcUser);
+
 }

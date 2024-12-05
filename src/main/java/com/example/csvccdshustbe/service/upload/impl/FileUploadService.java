@@ -299,7 +299,7 @@ public class FileUploadService implements FilesStorageService {
                     + SEPARATOR
                     + fileId
                     + "_"
-                    + multipartFile.getOriginalFilename()
+                    + FilenameUtils.getBaseName(multipartFile.getOriginalFilename())
                     + "."
                     + FilenameUtils.getExtension(multipartFile.getOriginalFilename());
             File file = new File(namePathFileResponse);
