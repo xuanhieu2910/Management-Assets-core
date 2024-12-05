@@ -282,30 +282,32 @@ public class FileUploadService implements FilesStorageService {
 
     private String saveFilesAsset(MultipartFile[] multipartFiles,  String folderName) throws IOException {
         String folderSave = PropertiesUtil.getProperty("hust.csvc.static.location.upload.data");
+        log.info("Folder save: {}", folderSave);
         List<String> pathFilesResponses = new ArrayList<>();
         String fileId;
         String folder;
         String fileReturn;
         for (MultipartFile multipartFile : multipartFiles) {
             fileId = generateFileId();
-            folder = buildFolderUpload(folderName);
+            folder = folderSave + buildFolderUpload(folderName);
             File inFiles = new File(folder);
+            log.info("Folder: {}", folder);
             if (!inFiles.exists() && !inFiles.mkdirs()) {
                 log.error("Can't create folder");
             }
-            String namePathFileResponse = folderSave
-                    + folder
+            String namePathFileResponse = folder
                     + SEPARATOR
                     + fileId
                     + "_"
-                    + multipartFile.getName()
+                    + multipartFile.getOriginalFilename()
                     + "."
                     + FilenameUtils.getExtension(multipartFile.getOriginalFilename());
-            File file = new File(folderSave + namePathFileResponse);
+            File file = new File(namePathFileResponse);
             try {
                 if (file.exists()) {
                     file.delete();
                 }
+                log.info("File: {}", namePathFileResponse);
                 FileUtils.touch(file);
                 multipartFile.transferTo(file);
                 fileReturn = namePathFileResponse.replace(folderSave, PropertiesUtil.getProperty("hust.csvc.static.location.path.static.upload.data"));
