@@ -163,7 +163,7 @@ public class UserRoleRepositoryImpl implements UserRoleRepositoryCustom {
         sb.append(" select id_user_role, id_user, id_role,  " +
                 "       id_department, time_created, time_modified, picked " +
                 "from user_role userRole " +
-                "where userRole.id_user_role != :idUserRole" +
+                "where userRole.id_user_role != :idUserRole " +
                 "and userRole.id_user = :idUser LIMIT 1 ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idUserRole", idUserRole);
