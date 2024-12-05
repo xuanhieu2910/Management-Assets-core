@@ -65,7 +65,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 allReportDto.setStatus(ValueUtil.getIntegerByObject(obj[8]));
                 allReportDto.setTypeMime(ValueUtil.getStringByObject(obj[9]));
                 allReportDto.setIdGovernmentCircular(ValueUtil.getIntegerByObject(obj[10]));
-                allReportDto.setPathImage(ValueUtil.getStringByObject(obj[11]));
+                allReportDto.setPathImage(ValueUtil.getStringByObject(obj[12]));
                 findAllReportDtos.add(allReportDto);
             }
         }

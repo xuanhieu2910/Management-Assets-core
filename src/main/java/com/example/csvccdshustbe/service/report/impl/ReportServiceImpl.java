@@ -53,7 +53,7 @@ public class ReportServiceImpl implements ReportService {
 
     private List<FindAllReportVisibleResponse> convertToFindAllReportVisible(List<FindAllReportDto> findAllDtos) {
         List<FindAllReportVisibleResponse> responses = new ArrayList<>();
-        String pathRoot = PropertiesUtil.getProperty("hust.csvc.static.location.static.files");
+        String pathRoot = PropertiesUtil.getProperty("hust.csvc.static.location.path.static.upload.data");
         for (FindAllReportDto dto: findAllDtos){
             FindAllReportVisibleResponse response = new FindAllReportVisibleResponse();
             response.setIdReport(dto.getIdReport());
