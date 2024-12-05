@@ -61,12 +61,7 @@ public class ReportServiceImpl implements ReportService {
             response.setTitleReport(dto.getTitleReport());
             response.setIdGovernmentCircular(dto.getIdGovernmentCircular());
             response.setTitleGovernmentCircular(dto.getTitleGovernmentCircular());
-            response.setPathImage( pathRoot
-                    + FileUtil.SEPARATOR
-                    + FileUtil.FOLDER_NAME_REPORT
-                    + FileUtil.SEPARATOR
-                    + FileUtil.FOLDER_NAME_REPORT_IMAGE
-                    + dto.getPathImage());
+            response.setPathImage(pathRoot + dto.getPathImage());
             responses.add(response);
         }
         return responses;
