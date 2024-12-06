@@ -150,7 +150,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 "         ts.code codeTypeState, ts.id_type_state,   " +
                 "         ts.name nameTypeState,   " +
                 "         pr.id_process,pr.status, de.code codeDepartment,   " +
-                "         de.name   " +
+                "         de.name, dc.status documentStatus   " +
                 "  from document dc       " +
                 "      inner join department de on dc.id_department_original = de.id_department   " +
                 "      inner join process pr on dc.id_process = pr.id_process   " +
@@ -205,8 +205,9 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
         dto.setDescription(ValueUtil.getStringByObject(obj[9]));
         dto.setStatus(ValueUtil.getIntegerByObject(obj[16]));
-        dto.setCodeDocument(ValueUtil.getStringByObject(obj[17]));
+        dto.setCodeDepartment(ValueUtil.getStringByObject(obj[17]));
         dto.setNameDepartment(ValueUtil.getStringByObject(obj[18]));
+        dto.setStatusDocument(ValueUtil.getIntegerByObject(obj[19]));
     }
 
     private long countFindAllDocumentAsset(FindAllDocumentAssetRequest request) {

@@ -115,6 +115,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
             if (userDetails.isPresent() && !userDetails.get().isAccountNonLocked()) {
                 throw new UsernameNotFoundException("User is locked!");
             }
+            csvcUserService.setIdsDepartment(userDetails.get());
             log.info("Handling authorization ....................");
             Map<String, Object> claims = new HashMap<>();
             claims.put(Constants.CLAIMS_INFORMATION_USER,userDetails.get());

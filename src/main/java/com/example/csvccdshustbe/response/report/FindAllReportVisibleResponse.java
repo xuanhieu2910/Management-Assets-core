@@ -18,5 +18,6 @@ public class FindAllReportVisibleResponse {
     private Integer idGovernmentCircular;
     @JsonProperty("title_government_circular")
     private String titleGovernmentCircular;
-
+    @JsonProperty("path_image")
+    private String pathImage;
 }

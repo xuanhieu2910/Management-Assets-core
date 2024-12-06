@@ -211,8 +211,10 @@ public class DocumentController {
             processService.createChangeAsset(request);
             return ApiResponseDto.createdWithMessage("Create change asset success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

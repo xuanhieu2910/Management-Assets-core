@@ -284,6 +284,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             response.setCodeName(categorie.getCodeName());
             response.setDepth(categorie.getDepth());
             response.setPath(categorie.getPath());
+            response.setVisible(categorie.getVisible());
             response.setParent(categorie.getParent());
             response.setValueWearTear(categorie.getValueWearTear());
             response.setYearUsedWearTear(categorie.getYearUsedWearTear());

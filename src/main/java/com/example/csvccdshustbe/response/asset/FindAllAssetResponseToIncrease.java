@@ -29,4 +29,6 @@ public class FindAllAssetResponseToIncrease {
     private Integer idAsset;
     @JsonProperty("salt")
     private String salt;
+    @JsonProperty("quantity")
+    private Integer quantity;
 }

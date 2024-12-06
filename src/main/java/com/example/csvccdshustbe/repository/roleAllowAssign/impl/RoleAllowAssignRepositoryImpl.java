@@ -101,55 +101,29 @@ public class RoleAllowAssignRepositoryImpl implements RoleAllowAssignRepositoryC
     }
 
     @Override
-    public List<FindAllRoleAllowResponse> findAllRoleAllowAssignByTitleRole(String titleRole) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(" select destinationRole.id_role    idDestinationRole, " +
-                "       destinationRole.short_name titleDestinationRole " +
-                "       from role role " +
-                "            inner join role_allow_assign roleAllowAssign on role.id_role = roleAllowAssign.id_role " +
-                "            inner join role destinationRole on roleAllowAssign.allow_assign = destinationRole.id_role " +
-                "where role.title = :title " +
-                "and roleAllowAssign.status = :status ");
-        Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("title", titleRole);
-        query.setParameter("status", Constants.ROLE_ALLOW_ASSIGN_STATUS);
-        List<Object[]> result = query.getResultList();
-        List<FindAllRoleAllowResponse> responses = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj : result){
-                FindAllRoleAllowResponse res = new FindAllRoleAllowResponse();
-                res.setIdRole(ValueUtil.getIntegerByObject(obj[0]));
-                res.setNameRole(ValueUtil.getStringByObject(obj[1]));
-                responses.add(res);
-            }
-        }
-        return responses;
-    }
-
-    @Override
     public Page<FindRestRoleResponse> findRestRoleAssignResponse(Pageable pageable,
                                                                  FindRestRoleRequest request,
                                                                  Integer idRoleCurrent) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select result.idDestinationRole, result.titleDestinationRole " +
-                "from (select destinationRole.id_role    idDestinationRole, " +
-                "             destinationRole.short_name titleDestinationRole " +
-                "      from role role " +
-                "               inner join role_allow_assign roleAllowAssign " +
-                "                          on role.id_role = roleAllowAssign.id_role " +
-                "               inner join role destinationRole " +
-                "                          on roleAllowAssign.allow_assign = destinationRole.id_role " +
-                "      where role.id_role = :idRole " +
-                "        and roleAllowAssign.status = :status " +
-                "        and destinationRole.id_role not in (select role.id_role " +
-                "                                            from csvc_user csvcUser " +
-                "                                                     inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
-                "                                                     inner join role role on userRole.id_role = role.id_role " +
-                "                                                     inner join department department " +
-                "                                                                on userRole.id_department = department.id_department " +
-                "                                            where csvcUser.code_user = :codeUser " +
-                "                                              and department.id_department = :idDepartment)) as result " +
-                "where 1 = 1 ");
+                    sb.append("select result.idDestinationRole, result.titleDestinationRole " +
+                            "from (select destinationRole.id_role    idDestinationRole, " +
+                            "             destinationRole.short_name titleDestinationRole " +
+                            "      from role role " +
+                            "               inner join role_allow_assign roleAllowAssign " +
+                            "                          on role.id_role = roleAllowAssign.id_role " +
+                            "               inner join role destinationRole " +
+                            "                          on roleAllowAssign.allow_assign = destinationRole.id_role " +
+                            "      where role.id_role = :idRole " +
+                            "        and roleAllowAssign.status = :status " +
+                            "        and destinationRole.id_role not in (select role.id_role " +
+                            "                                            from csvc_user csvcUser " +
+                            "                                                     inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
+                            "                                                     inner join role role on userRole.id_role = role.id_role " +
+                            "                                                     inner join department department " +
+                            "                                                                on userRole.id_department = department.id_department " +
+                            "                                            where csvcUser.code_user = :codeUser " +
+                            "                                              and department.id_department = :idDepartment)) as result " +
+                            "where 1 = 1 ");
         setConditionFindRestRoleAssign(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindRestRoleAssign(request, query, idRoleCurrent);

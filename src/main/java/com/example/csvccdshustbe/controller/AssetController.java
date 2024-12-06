@@ -299,6 +299,7 @@ public class AssetController {
             return ApiResponseDto.createdWithState(pathUploadFilesAttached, "Upload files attached success!",
                     HttpStatus.OK);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

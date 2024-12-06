@@ -518,6 +518,9 @@ public class Constants {
     public static String CODE_NAME_CAR = "car";
 
     public static String CODE_NAME_NO_SHAPE = "TSCDVH";
+    public static String CODE_NAME_HOUSE= "house";
+
+    public static String CODE_NAME_GROUND= "ground";
     /*-----------------------------------------------------*/
     /**
      * Constants Code Name Category

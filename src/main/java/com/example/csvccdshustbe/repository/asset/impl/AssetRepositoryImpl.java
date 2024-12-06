@@ -409,7 +409,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 " assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory, " +
                 " de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment, " +
                 " lo.id_location idLocation, lo.name nameLocation, " +
-                " asset.time_created, asset.time_modified, asset.parent, asset.salt,asset.id_type_process_current,asset.status_process_current " +
+                " asset.time_created, asset.time_modified, asset.parent, asset.salt,asset.id_type_process_current, " +
+                " asset.status_process_current,asset.quantity " +
                 " from asset asset " +
                 " inner join asset_categories assetCategories " +
                 " on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -445,6 +446,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
                 findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
+                findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[17]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -857,7 +859,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,  " +
                 "       lo.id_location idLocation, lo.name nameLocation,  " +
                 "       asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
-                "       asset.id_type_process_current,asset.status_process_current   " +
+                "       asset.id_type_process_current,asset.status_process_current , asset.quantity  " +
                 " from asset asset     " +
                 "          inner join asset_categories assetCategories     " +
                 "     on asset.id_asset_category = assetCategories.id_asset_category     " +
@@ -866,7 +868,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
-                "   and asset.quantity = 1     " +
+                "   and asset.quantity = 1    " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
@@ -895,6 +897,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
                 findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
+                findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[17]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -911,7 +914,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,  " +
                 "       lo.id_location idLocation, lo.name nameLocation,  " +
                 "       asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
-                "       asset.id_type_process_current,asset.status_process_current   " +
+                "       asset.id_type_process_current,asset.status_process_current , asset.quantity " +
                 " from asset asset     " +
                 "          inner join asset_categories assetCategories     " +
                 "     on asset.id_asset_category = assetCategories.id_asset_category     " +
@@ -920,7 +923,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
-                "   and asset.quantity = 1     " +
+                "   and asset.quantity = 1    " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
@@ -949,6 +952,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
                 findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
+                findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[17]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -966,18 +970,18 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt,   " +
                 "          assetDepreciation.rest_value,asset.quantity,   " +
                 "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,   " +
-                "          assetDepreciation.cumulative   " +
+                "          assetDepreciation.cumulative " +
                 "from asset asset   " +
                 "           inner join asset_categories assetCategories   " +
                 "                      on asset.id_asset_category = assetCategories.id_asset_category   " +
                 "           inner join department de on asset.id_department = de.id_department   " +
                 "           left join location lo on asset.id_location = lo.id_location   " +
-                "           inner join asset_original_of_formation assetOriginalOfFormation   " +
+                "           left join asset_original_of_formation assetOriginalOfFormation   " +
                 "                      on asset.id_asset = assetOriginalOfFormation.id_asset   " +
                 "           left join asset_depreciation assetDepreciation   " +
                 "                      on asset.id_asset = assetDepreciation.id_asset   " +
                 "where 1 = 1   " +
-                "    and asset.quantity = 1        " +
+                "    and asset.quantity = 1      " +
                 "    and asset.id_department_origin in (:idsDepartmentOriginal)        " +
                 "    and asset.is_increase = :isIncrease        " +
                 "    and asset.is_decrease != :isDecrease        " +
@@ -1026,18 +1030,18 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt, " +
                 "          assetDepreciation.rest_value,asset.quantity, " +
                 "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "          assetDepreciation.cumulative " +
+                "          assetDepreciation.cumulative  " +
                 "from asset asset " +
                 "           inner join asset_categories assetCategories " +
                 "      on asset.id_asset_category = assetCategories.id_asset_category " +
                 "           inner join department de on asset.id_department = de.id_department " +
                 "           left join location lo on asset.id_location = lo.id_location " +
-                "           inner join asset_original_of_formation assetOriginalOfFormation " +
+                "           left join asset_original_of_formation assetOriginalOfFormation " +
                 "      on asset.id_asset = assetOriginalOfFormation.id_asset " +
                 "           left join asset_depreciation assetDepreciation " +
                 "      on asset.id_asset = assetDepreciation.id_asset " +
                 "where 1 = 1 " +
-                "    and asset.quantity = 1      " +
+                "    and asset.quantity = 1     " +
                 "    and asset.id_department_origin in (:idsDepartmentOriginal)      " +
                 "    and asset.is_increase = :isIncrease      " +
                 "    and asset.is_decrease != :isDecrease      " +
@@ -1156,7 +1160,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
-                "   and asset.quantity = 1     " +
+                "   and asset.quantity = 1   " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
@@ -1178,7 +1182,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
-                "   and asset.quantity = 1     " +
+                "   and asset.quantity = 1    " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
@@ -1298,7 +1302,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          lo.id_location idLocation, lo.name nameLocation,   " +
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt,        " +
                 "          assetDepreciation.rest_value,asset.quantity,        " +
-                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue        " +
+                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue     " +
                 "   from asset asset        " +
                 "       inner join asset_categories assetCategories   " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category   " +
@@ -1308,7 +1312,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "           on asset.id_asset = assetOriginalOfFormation.id_asset        " +
                 "       left join asset_depreciation assetDepreciation     " +
                 "          on asset.id_asset = assetDepreciation.id_asset        " +
-                "   where 1 = 1 and asset.quantity = 1        " +
+                "   where 1 = 1 and asset.quantity = 1     " +
                 "         and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "  and  asset.is_increase = :isIncrease " +
                 "  and asset.is_decrease != :isDecrease " +

@@ -123,6 +123,7 @@ public class DocumentServiceImpl implements DocumentService {
         response.setIdDepartment(findDetailsDocumentDto.getIdDepartment());
         response.setCodeDepartment(findDetailsDocumentDto.getCodeDepartment());
         response.setNameDepartment(findDetailsDocumentDto.getNameDepartment());
+        response.setStatusDocument(findDetailsDocumentDto.getStatusDocument());
         List<BluePrintStateResponse> bluePrintStateResponses = new ArrayList<>();
         for (BluePrintStateDto printStateDto : findDetailsDocumentDto.getBluePrintStateDto()){
             BluePrintStateResponse printStateResponse = new BluePrintStateResponse();
@@ -314,6 +315,8 @@ public class DocumentServiceImpl implements DocumentService {
         assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
     }
 
+
+    @Transactional
     @Override
     public void updateInventoryFinish(UpdateInventoryDraftRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
@@ -321,6 +324,7 @@ public class DocumentServiceImpl implements DocumentService {
         document.setTimeModified(String.valueOf(new Date().getTime()));
         document.setIdUserModified(csvcUser.getIdUser());
         document.setStatus(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE);
+        request.getAssetProcess().setIdProcess(document.getIdProcess());
         documentRepository.save(document);
         assetProcessService.updateFinishListAssetProcessByIdProcess(request.getAssetProcess());
     }
