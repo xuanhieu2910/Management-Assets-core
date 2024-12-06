@@ -405,22 +405,22 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     public Page<FindAllAssetDto> findAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset, " +
-                " asset.name nameAsset, assetCategories.id_asset_category idAssetCategory, " +
-                " assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory, " +
-                " de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment, " +
-                " lo.id_location idLocation, lo.name nameLocation, " +
-                " asset.time_created, asset.time_modified, asset.parent, asset.salt,asset.id_type_process_current, " +
-                " asset.status_process_current,asset.quantity " +
-                " from asset asset " +
-                " inner join asset_categories assetCategories " +
-                " on asset.id_asset_category = assetCategories.id_asset_category " +
-                " inner join department de on asset.id_department = de.id_department " +
-                " left join location lo on asset.id_location = lo.id_location " +
-                " where 1 = 1  and asset.quantity = 1 " +
-                " and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                " and (asset.id_process_current is null or asset.is_decrease =:isDecrease) " +
-                " and asset.is_increase != :isIncrease " +
-                " and (asset.status_process_current is null or asset.status_process_current != :statusProcess) ");
+                "                 asset.name nameAsset, assetCategories.id_asset_category idAssetCategory, " +
+                "                 assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory, " +
+                "                 de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment, " +
+                "                 lo.id_location idLocation, lo.name nameLocation, " +
+                "                 asset.time_created, asset.time_modified, asset.parent, asset.salt,asset.id_type_process_current, " +
+                "                 asset.status_process_current,asset.quantity " +
+                "                 from asset asset " +
+                "                 inner join asset_categories assetCategories " +
+                "                 on asset.id_asset_category = assetCategories.id_asset_category " +
+                "                 inner join department de on asset.id_department = de.id_department " +
+                "                 left join location lo on asset.id_location = lo.id_location " +
+                "                 where 1 = 1  and asset.quantity = 1 " +
+                "                 and asset.id_department_origin in (:idsDepartmentOriginal) " +
+                "                 and asset.id_asset not in " +
+                "                 (select asset.id_asset from asset where asset.is_increase = :isIncrease " +
+                "                 or asset.status_process_current= :statusProcess) ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToIncrease(request, query);
@@ -1277,16 +1277,16 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private long countFindAllAssetToIncrease(FinaAllAssetToIncreaseRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) count  " +
-                " from asset asset " +
-                " inner join asset_categories assetCategories " +
-                " on asset.id_asset_category = assetCategories.id_asset_category " +
-                " inner join department de on asset.id_department = de.id_department " +
-                " left join location lo on asset.id_location = lo.id_location " +
-                " where 1 = 1  and asset.quantity = 1 " +
-                " and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                " and (asset.id_process_current is null or asset.is_decrease =:isDecrease) " +
-                " and asset.is_increase != :isIncrease " +
-                " and (asset.status_process_current is null or asset.status_process_current != :statusProcess) ");
+                "                 from asset asset " +
+                "                 inner join asset_categories assetCategories " +
+                "                 on asset.id_asset_category = assetCategories.id_asset_category " +
+                "                 inner join department de on asset.id_department = de.id_department " +
+                "                 left join location lo on asset.id_location = lo.id_location " +
+                "                 where 1 = 1  and asset.quantity = 1 " +
+                "                 and asset.id_department_origin in (:idsDepartmentOriginal) " +
+                "                 and asset.id_asset not in " +
+                "                 (select asset.id_asset from asset where asset.is_increase = :isIncrease " +
+                "                 or asset.status_process_current= :statusProcess) ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToIncrease(request,query);
@@ -1326,7 +1326,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("isDecrease", Constants.IS_DECREASED);
         query.setParameter("isIncrease",Constants.IS_INCREASED);
         query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameAsset())){
