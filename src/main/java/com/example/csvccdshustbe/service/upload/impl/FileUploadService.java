@@ -411,7 +411,7 @@ public class FileUploadService implements FilesStorageService {
                 + SEPARATOR
                 + FileUtil.FOLDER_NAME_REPORT
                 + SEPARATOR
-                + Constants.NAME_REPORTS[35];
+                + Constants.NAME_REPORTS[36];
         List<FindAllAssetForInventoryReportDto> assetReport =
                 reportRepository.findInfoAssetForInventoryReportByCodeDocument(codeDocument);
         BlueprintInventoryReportDto council = reportRepository.findBlueprintInventoryReportDtoByCodeDocument(codeDocument);
@@ -438,7 +438,7 @@ public class FileUploadService implements FilesStorageService {
         String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
         String folder = root + SEPARATOR + FileUtil.FOLDER_NAME_REPORT + SEPARATOR + FileUtil.getFolderInfo();
         FileUtil.createFolder(folder);
-        return folder + SEPARATOR + "Inventory_Report_" + new Date().getTime() + ExcelUtil.FILE_EXCEL[1];
+        return folder + SEPARATOR + "Inventory_Report_" + new Date().getTime() + "." + ExcelUtil.FILE_EXCEL[1];
     }
 
     private void writeDataAssetInventoryReport(Sheet sheet,
@@ -518,6 +518,10 @@ public class FileUploadService implements FilesStorageService {
                     + "chức vụ....." + councilDto.getPosition() + "........."
                     + "đại diện....." + councilDto.getInstancePosition() + ".........", null);
             ++indexRowStart;
+        }
+        int totalRows = sheet.getPhysicalNumberOfRows();
+        if (councilDtos.size() > 3) {
+            sheet.shiftRows(indexRowStart, totalRows , totalRows + (indexRowStart - 3),  true, true);
         }
     }
 

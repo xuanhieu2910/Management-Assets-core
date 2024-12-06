@@ -203,7 +203,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 "       rsh.position_instance, rsh.level " +
                 "from document do " +
                 "    inner join department de on do.id_department = de.id_department " +
-                "    inner join process pr on do.id_process " +
+                "    inner join process pr on do.id_process = pr.id_process " +
                 "    inner join request re on pr.id_process = re.id_process " +
                 "    inner join request_stake_holder rsh on re.id_request = rsh.id_request " +
                 "    inner join csvc_user cu on rsh.id_user = cu.id_user " +
