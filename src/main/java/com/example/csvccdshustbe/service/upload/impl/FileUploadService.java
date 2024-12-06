@@ -444,36 +444,50 @@ public class FileUploadService implements FilesStorageService {
     private void writeDataAssetInventoryReport(Sheet sheet,
                                                List<FindAllAssetForInventoryReportDto> assetReport,
                                                int sizeIncrease) throws JsonProcessingException {
-        int rowStart = 8 + sizeIncrease + 2;
+
+        int rowStart = 17 + (sizeIncrease > 3 ? (sizeIncrease - 6) : 0);
         int stt = 1;
         ObjectMapper objectMapper = new ObjectMapper();
+        if (assetReport.size() > 6) {
+            sheet.shiftRows(rowStart + 6, rowStart + 6 , assetReport.size() - 6);
+        }
+        CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+        Font font = sheet.getWorkbook().createFont();
+        font.setFontName("Times New Roman");
+        cellStyle.setFont(font);
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setBorderTop(BorderStyle.THIN);
         for (FindAllAssetForInventoryReportDto asset : assetReport){
             HashMap<String, Object> dataAsset =  objectMapper.readValue(asset.getValue(), new TypeReference<>() {});
             writeValueCell(sheet, rowStart, 0, String.valueOf(stt), null);
-            writeValueCell(sheet, rowStart, 1,ValueUtil.getStringByObject(dataAsset.get("name_asset")), null);
-            writeValueCell(sheet, rowStart, 2,ValueUtil.getStringByObject(dataAsset.get("code_asset")), null);
-            writeValueCell(sheet, rowStart, 3,ValueUtil.getStringByObject(dataAsset.get("name_department")), null);
-            writeValueCell(sheet, rowStart, 4,ValueUtil.getStringByObject(dataAsset.get("quantity_original")), null);
-            writeValueCell(sheet, rowStart, 5,ValueUtil.getStringByObject(dataAsset.get("total_original_of_formation_original")), null);
-            writeValueCell(sheet, rowStart, 6,ValueUtil.getStringByObject(dataAsset.get("total_rest_value_original")), null);
-            writeValueCell(sheet, rowStart, 7,ValueUtil.getStringByObject(dataAsset.get("name_asset")), null);
-            writeValueCell(sheet, rowStart, 8,ValueUtil.getStringByObject(dataAsset.get("quantity_inventory")), null);
-            writeValueCell(sheet, rowStart, 9,ValueUtil.getStringByObject(dataAsset.get("total_original_of_formation_inventory")), null);
-            writeValueCell(sheet, rowStart, 10,ValueUtil.getStringByObject(dataAsset.get("rest_value_inventory")), null);
-            writeValueCell(sheet, rowStart, 11,ValueUtil.getStringByObject(dataAsset.get("quantity_difference")), null);
-            writeValueCell(sheet, rowStart, 12,ValueUtil.getStringByObject(dataAsset.get("origin_value_difference")), null);
-            writeValueCell(sheet, rowStart, 13,ValueUtil.getStringByObject(dataAsset.get("rest_value_difference")), null);
+            writeValueCell(sheet, rowStart, 1,ValueUtil.getStringByObject(dataAsset.get("name_asset")), cellStyle);
+            writeValueCell(sheet, rowStart, 2,ValueUtil.getStringByObject(dataAsset.get("code_asset")), cellStyle);
+            writeValueCell(sheet, rowStart, 3,ValueUtil.getStringByObject(dataAsset.get("name_department")), cellStyle);
+            writeValueCell(sheet, rowStart, 4,ValueUtil.getStringByObject(dataAsset.get("quantity_original")), cellStyle);
+            writeValueCell(sheet, rowStart, 5,ValueUtil.getStringByObject(dataAsset.get("total_original_of_formation_original")), cellStyle);
+            writeValueCell(sheet, rowStart, 6,ValueUtil.getStringByObject(dataAsset.get("total_rest_value_original")), cellStyle);
+            writeValueCell(sheet, rowStart, 7,ValueUtil.getStringByObject(dataAsset.get("name_asset")), cellStyle);
+            writeValueCell(sheet, rowStart, 8,ValueUtil.getStringByObject(dataAsset.get("quantity_inventory")), cellStyle);
+            writeValueCell(sheet, rowStart, 9,ValueUtil.getStringByObject(dataAsset.get("total_original_of_formation_inventory")), cellStyle);
+            writeValueCell(sheet, rowStart, 10,ValueUtil.getStringByObject(dataAsset.get("rest_value_inventory")), cellStyle);
+            writeValueCell(sheet, rowStart, 11,ValueUtil.getStringByObject(dataAsset.get("quantity_difference")), cellStyle);
+            writeValueCell(sheet, rowStart, 12,ValueUtil.getStringByObject(dataAsset.get("origin_value_difference")), cellStyle);
+            writeValueCell(sheet, rowStart, 13,ValueUtil.getStringByObject(dataAsset.get("rest_value_difference")), cellStyle);
             ++rowStart;
             ++stt;
         }
-        writeInformationSignInventoryReport(sheet, rowStart);
+        writeInformationSignInventoryReport(sheet, rowStart, sizeIncrease);
     }
 
-    private void writeInformationSignInventoryReport(Sheet sheet, int rowStart) {
-        rowStart += 2;
+    private void writeInformationSignInventoryReport(Sheet sheet, int rowStart, int sizeIncrease) {
+        rowStart = 24 + (rowStart > 24 ?  5 : 0);
+        rowStart += sizeIncrease > 3 ? sizeIncrease - 3 : 0;
         CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
         Font font = sheet.getWorkbook().createFont();
         font.setBold(true);
+        font.setFontName("Times New Roman");
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
         cellStyle.setFont(font);
         sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,1,3));
@@ -509,9 +523,13 @@ public class FileUploadService implements FilesStorageService {
         setInformationDetailsCouncilInventoryReport(sheet, council.getCouncilInventoryReportDtos());
     }
 
-    private void setInformationDetailsCouncilInventoryReport(Sheet sheet, List<CouncilInventoryReportDto> councilDtos) {
+    private void setInformationDetailsCouncilInventoryReport(Sheet sheet,
+                                                             List<CouncilInventoryReportDto> councilDtos) {
         int indexRowStart = 8;
         int indexColStart = 0;
+        if (councilDtos.size() > 3) {
+            sheet.shiftRows(11, 21 , councilDtos.size()- 3);
+        }
         for (CouncilInventoryReportDto councilDto: councilDtos) {
             writeValueCell(sheet, indexRowStart, indexColStart,
                     "- Ông /Bà....." + councilDto.getFullName() + "........."
@@ -519,17 +537,13 @@ public class FileUploadService implements FilesStorageService {
                     + "đại diện....." + councilDto.getInstancePosition() + ".........", null);
             ++indexRowStart;
         }
-        int totalRows = sheet.getPhysicalNumberOfRows();
-        if (councilDtos.size() > 3) {
-            sheet.shiftRows(indexRowStart, totalRows , totalRows + (indexRowStart - 3),  true, true);
-        }
     }
 
     private void setInformationDateInventoryReport(Sheet sheet, String timeInventory) {
         LocalDate localDate = LocalDate.parse(timeInventory, DateTimeFormatter.ofPattern(DateUtil.DDMMYYYY));
         writeValueCell(sheet, 6,0,"Thời điểm kiểm kê:.."
                 + "ngày.." + localDate.getDayOfMonth() + "....."
-                + "tháng.." + localDate.getMonth() + "....."
+                + "tháng.." + localDate.getMonthValue() + "....."
                 + "năm.." + localDate.getYear() + "....." , null);
     }
 
@@ -665,6 +679,9 @@ public class FileUploadService implements FilesStorageService {
         }
         Cell cell = row.getCell(colIndex, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
         cell.setCellValue(content);
+        if (cell.getCellType() != null){
+            cell.setCellStyle(null);
+        }
         if (style != null){
             cell.setCellStyle(style);
         }
