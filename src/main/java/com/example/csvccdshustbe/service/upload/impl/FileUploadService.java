@@ -407,12 +407,12 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public String downloadInventoryReportByCodeDocument(String codeDocument) throws IOException {
-//        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static")
-//                + SEPARATOR
-//                + FileUtil.FOLDER_NAME_REPORT
-//                + SEPARATOR
-//                + Constants.NAME_REPORTS[36];
-        String fileExcel = "E:\\csvc\\src\\main\\resources\\static\\reports\\37_C53 - HD_Bien ban kiem ke TSCD.xlsx";
+        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static")
+                + SEPARATOR
+                + FileUtil.FOLDER_NAME_REPORT
+                + SEPARATOR
+                + Constants.NAME_REPORTS[36];
+        //String fileExcel = "E:\\csvc\\src\\main\\resources\\static\\reports\\37_C53 - HD_Bien ban kiem ke TSCD.xlsx";
         List<FindAllAssetForInventoryReportDto> assetReport =
                 reportRepository.findInfoAssetForInventoryReportByCodeDocument(codeDocument);
         BlueprintInventoryReportDto council = reportRepository.findBlueprintInventoryReportDtoByCodeDocument(codeDocument);
@@ -422,10 +422,10 @@ public class FileUploadService implements FilesStorageService {
         writeDataBlueprintInventoryReport(sheet,council);
         writeDataAssetInventoryReport(sheet, assetReport, council.getCouncilInventoryReportDtos().size());
         String fileFinal = createFileExportInventoryReport();
-        //File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
+        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
         String fileReturn = fileFinal.replace(PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe")
                 , PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
-        String filePathOutput = "C:\\Users\\ADMIN\\Downloads\\exportExcel\\modified_output4.xlsx";
+        //String filePathOutput = "C:\\Users\\ADMIN\\Downloads\\exportExcel\\modified_output4.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
             workbook.close();
