@@ -407,11 +407,12 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public String downloadInventoryReportByCodeDocument(String codeDocument) throws IOException {
-        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static")
-                + SEPARATOR
-                + FileUtil.FOLDER_NAME_REPORT
-                + SEPARATOR
-                + Constants.NAME_REPORTS[35];
+//        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static")
+//                + SEPARATOR
+//                + FileUtil.FOLDER_NAME_REPORT
+//                + SEPARATOR
+//                + Constants.NAME_REPORTS[36];
+        String fileExcel = "E:\\csvc\\src\\main\\resources\\static\\reports\\37_C53 - HD_Bien ban kiem ke TSCD.xlsx";
         List<FindAllAssetForInventoryReportDto> assetReport =
                 reportRepository.findInfoAssetForInventoryReportByCodeDocument(codeDocument);
         BlueprintInventoryReportDto council = reportRepository.findBlueprintInventoryReportDtoByCodeDocument(codeDocument);
@@ -421,9 +422,10 @@ public class FileUploadService implements FilesStorageService {
         writeDataBlueprintInventoryReport(sheet,council);
         writeDataAssetInventoryReport(sheet, assetReport, council.getCouncilInventoryReportDtos().size());
         String fileFinal = createFileExportInventoryReport();
-        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
+        //File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
         String fileReturn = fileFinal.replace(PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe")
                 , PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
+        String filePathOutput = "C:\\Users\\ADMIN\\Downloads\\exportExcel\\modified_output4.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
             workbook.close();
@@ -444,7 +446,19 @@ public class FileUploadService implements FilesStorageService {
     private void writeDataAssetInventoryReport(Sheet sheet,
                                                List<FindAllAssetForInventoryReportDto> assetReport,
                                                int sizeIncrease) throws JsonProcessingException {
-        int rowStart = 8 + sizeIncrease + 2;
+        int rowStart = 15;
+        if (sizeIncrease > 3){
+            rowStart = 15 + sizeIncrease - 3;
+        }
+        int rowNeeded = assetReport.size();
+
+        int totalRows = sheet.getPhysicalNumberOfRows() ;
+        if (totalRows >= rowStart && rowNeeded > 5) {
+            sheet.shiftRows(rowStart , totalRows , rowNeeded - 5,  true, true);
+
+            addBoldBorderToRows(sheet, rowStart , rowNeeded - 5, 0 ,13);
+        }
+
         int stt = 1;
         ObjectMapper objectMapper = new ObjectMapper();
         for (FindAllAssetForInventoryReportDto asset : assetReport){
@@ -456,47 +470,43 @@ public class FileUploadService implements FilesStorageService {
             writeValueCell(sheet, rowStart, 4,ValueUtil.getStringByObject(dataAsset.get("quantity_original")), null);
             writeValueCell(sheet, rowStart, 5,ValueUtil.getStringByObject(dataAsset.get("total_original_of_formation_original")), null);
             writeValueCell(sheet, rowStart, 6,ValueUtil.getStringByObject(dataAsset.get("total_rest_value_original")), null);
-            writeValueCell(sheet, rowStart, 7,ValueUtil.getStringByObject(dataAsset.get("name_asset")), null);
-            writeValueCell(sheet, rowStart, 8,ValueUtil.getStringByObject(dataAsset.get("quantity_inventory")), null);
-            writeValueCell(sheet, rowStart, 9,ValueUtil.getStringByObject(dataAsset.get("total_original_of_formation_inventory")), null);
-            writeValueCell(sheet, rowStart, 10,ValueUtil.getStringByObject(dataAsset.get("rest_value_inventory")), null);
-            writeValueCell(sheet, rowStart, 11,ValueUtil.getStringByObject(dataAsset.get("quantity_difference")), null);
-            writeValueCell(sheet, rowStart, 12,ValueUtil.getStringByObject(dataAsset.get("origin_value_difference")), null);
-            writeValueCell(sheet, rowStart, 13,ValueUtil.getStringByObject(dataAsset.get("rest_value_difference")), null);
+            writeValueCell(sheet, rowStart, 7,ValueUtil.getStringByObject(dataAsset.get("quantity_inventory")), null);
+            writeValueCell(sheet, rowStart, 8,ValueUtil.getStringByObject(dataAsset.get("total_original_of_formation_inventory")), null);
+            writeValueCell(sheet, rowStart, 9,ValueUtil.getStringByObject(dataAsset.get("rest_value_inventory")), null);
+            writeValueCell(sheet, rowStart, 10,ValueUtil.getStringByObject(dataAsset.get("quantity_difference")), null);
+            writeValueCell(sheet, rowStart, 11,ValueUtil.getStringByObject(dataAsset.get("origin_value_difference")), null);
+            writeValueCell(sheet, rowStart, 12,ValueUtil.getStringByObject(dataAsset.get("rest_value_difference")), null);
             ++rowStart;
             ++stt;
         }
-        writeInformationSignInventoryReport(sheet, rowStart);
     }
 
-    private void writeInformationSignInventoryReport(Sheet sheet, int rowStart) {
-        rowStart += 2;
+    private void addBoldBorderToRows(Sheet sheet, int rowStart, int rowNeeded, int colStart, int colEnd) {
         CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+        cellStyle.setBorderLeft(BorderStyle.MEDIUM);
+        cellStyle.setBorderRight(BorderStyle.MEDIUM);
+
         Font font = sheet.getWorkbook().createFont();
-        font.setBold(true);
+        font.setFontName("Times New Roman");
+        font.setFontHeightInPoints((short) 12);
+        cellStyle.setFont(font);
+        cellStyle.setWrapText(true);
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
-        cellStyle.setFont(font);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,1,3));
-        writeValueCell(sheet, rowStart, 1, "Thủ trưởng đơn vị", cellStyle);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,6,8));
-        writeValueCell(sheet, rowStart, 6, "Kế toán trưởng", cellStyle);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,10,12));
-        writeValueCell(sheet, rowStart, 10, "Trưởng Ban kiểm kê", cellStyle);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
-        rowStart += 1;
-        font.setBold(false);
-        font.setItalic(true);
-        cellStyle.setFont(font);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,1,3));
-        writeValueCell(sheet, rowStart, 1, "(Ý kiến giải quyết số chênh lệch)", cellStyle);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,6,8));
-        writeValueCell(sheet, rowStart, 6, "(Ký, họ tên)", cellStyle);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,10,12));
-        writeValueCell(sheet, rowStart, 10, "(Ký, họ tên)", cellStyle);
-
-        rowStart += 1;
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,1,3));
-        writeValueCell(sheet, rowStart, 1, "(Ký, họ tên, đóng dấu)", cellStyle);
+        for (int rowIndex = rowStart; rowIndex < rowStart + rowNeeded; rowIndex++) {
+            Row row = sheet.getRow(rowIndex);
+            if (row == null) {
+                row = sheet.createRow(rowIndex);
+            }
+            for (int col = colStart; col <= colEnd; col++) {
+                Cell cell = row.getCell(col);
+                if (cell == null) {
+                    cell = row.createCell(col);
+                }
+                cell.setCellStyle(cellStyle);
+            }
+        }
     }
 
     private void writeDataBlueprintInventoryReport(Sheet sheet, BlueprintInventoryReportDto council) {
@@ -512,11 +522,20 @@ public class FileUploadService implements FilesStorageService {
     private void setInformationDetailsCouncilInventoryReport(Sheet sheet, List<CouncilInventoryReportDto> councilDtos) {
         int indexRowStart = 8;
         int indexColStart = 0;
+
+        int rowsNeeded = councilDtos.size();
+
+        int totalRows = sheet.getPhysicalNumberOfRows() ;
+
+        if (totalRows >= indexRowStart && rowsNeeded > 3) {
+            sheet.shiftRows(indexRowStart, totalRows , rowsNeeded - 3,  true, true);
+        }
+
         for (CouncilInventoryReportDto councilDto: councilDtos) {
             writeValueCell(sheet, indexRowStart, indexColStart,
-                    "- Ông /Bà....." + councilDto.getFullName() + "........."
-                    + "chức vụ....." + councilDto.getPosition() + "........."
-                    + "đại diện....." + councilDto.getInstancePosition() + ".........", null);
+                    "- Ông /Bà....." + (councilDto.getFullName() != null ? councilDto.getFullName() : "...") + "........."
+                            + "chức vụ....." + (councilDto.getPosition() != null ? councilDto.getPosition() : "...") + "........."
+                            + "đại diện....." + (councilDto.getInstancePosition() != null ? councilDto.getInstancePosition() : "...") + ".........", null);
             ++indexRowStart;
         }
     }
@@ -525,7 +544,7 @@ public class FileUploadService implements FilesStorageService {
         LocalDate localDate = LocalDate.parse(timeInventory, DateTimeFormatter.ofPattern(DateUtil.DDMMYYYY));
         writeValueCell(sheet, 6,0,"Thời điểm kiểm kê:.."
                 + "ngày.." + localDate.getDayOfMonth() + "....."
-                + "tháng.." + localDate.getMonth() + "....."
+                + "tháng.." + localDate.getMonthValue() + "....."
                 + "năm.." + localDate.getYear() + "....." , null);
     }
 
