@@ -12,7 +12,7 @@ import java.util.List;
 public class FindAllAssetLotChildrenRequest extends RequestPageBase {
     @NotNull
     private String saltAssetParent;
-    private String nameAsset;
     private Integer idDepartment;
+    private Integer idLocation;
     private List<Integer> idsDepartmentOriginal;
 }

@@ -50,29 +50,30 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Override
     public Page<FindAllAssetDto> findAllAssetDtoByIdsDepartment(FindAllAssetRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,            " +
-                "  asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,            " +
-                "  assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,            " +
-                "  de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,            " +
-                "  lo.id_location idLocation, lo.name nameLocation,            " +
-                "  asset.time_created, asset.time_modified,         " +
-                "  asset.parent, asset.salt, asset.quantity ,      " +
-                "  asset.is_increase,asset.is_decrease,      " +
-                "  group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue," +
-                "  assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase" +
-                "  from asset asset      " +
-                "  left join asset_categories assetCategories      " +
-                "  on asset.id_asset_category = assetCategories.id_asset_category            " +
-                "  left join department de on asset.id_department = de.id_department            " +
-                "  left join location lo on asset.id_location = lo.id_location  " +
-                "  left join asset_original_of_formation assetOriginalOfFormation " +
-                "  on asset.id_asset = assetOriginalOfFormation.id_asset " +
-                "  left join asset_depreciation assetDepreciation " +
-                "  on asset.id_asset = assetDepreciation.id_asset " +
-                "  left join asset_process on asset.id_asset = asset_process.id_asset " +
-                "  left join type_process on asset_process.id_type_process = type_process.id_type_process " +
-                "  left join document on asset_process.id_process = document.id_process " +
-                "  where 1 = 1 and asset.parent is null and (type_process.code = :typeProcess OR type_process.code IS NULL) " +
+        sb.append(" select asset.id_asset idAsset, asset.code_asset codeAsset, " +
+                "        asset.name nameAsset, assetCategories.id_asset_category idAssetCategory, " +
+                "        assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory, " +
+                "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment, " +
+                "        lo.id_location idLocation, lo.name nameLocation,  " +
+                "        asset.time_created, asset.time_modified,  " +
+                "        asset.parent, asset.salt, asset.quantity ,  " +
+                "        asset.is_increase,asset.is_decrease,        " +
+                "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
+                "        assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase " +
+                "from asset asset " +
+                "         left join asset_categories assetCategories " +
+                "                   on asset.id_asset_category = assetCategories.id_asset_category " +
+                "         left join department de on asset.id_department = de.id_department " +
+                "         left join location lo on asset.id_location = lo.id_location " +
+                "         left join asset_original_of_formation assetOriginalOfFormation " +
+                "                   on asset.id_asset = assetOriginalOfFormation.id_asset " +
+                "         left join asset_depreciation assetDepreciation " +
+                "                   on asset.id_asset = assetDepreciation.id_asset " +
+                "         left join asset_process on asset.id_asset = asset_process.id_asset " +
+                "         left join type_process on asset_process.id_type_process = type_process.id_type_process " +
+                "         left join document on asset_process.id_process = document.id_process " +
+                "where 1 = 1 " +
+                "  and asset.parent is null " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal) ");
         setConditionFindAllAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -162,20 +163,20 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private void setParameterFindAllAssetLotChildren(FindAllAssetLotChildrenRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("saltAssetParent", request.getSaltAssetParent());
-        if (StringUtils.isNotBlank(request.getNameAsset())){
-            query.setParameter("nameAsset", request.getNameAsset());
-        }
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdLocation())){
+            query.setParameter("idLocation", request.getIdLocation());
         }
     }
 
     private void setConditionFindAllAssetLotChildren(FindAllAssetLotChildrenRequest request, StringBuilder sb) {
-        if (StringUtils.isNotBlank(request.getNameAsset())){
-            sb.append(" and (asset.name REGEXP :nameAsset ) ");
-        }
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdLocation())){
+            sb.append(" and lo.id_location = :idLocation ");
         }
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
@@ -1597,31 +1598,32 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private long countFindAllAsset(FindAllAssetRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select count(0) " +
-                "  from (select asset.id_asset idAsset, asset.code_asset codeAsset,   " +
-                "     asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,   " +
-                "     assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,   " +
-                "     de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,   " +
-                "     lo.id_location idLocation, lo.name nameLocation,   " +
-                "     asset.time_created, asset.time_modified,      " +
-                "     asset.parent, asset.salt, asset.quantity ,   " +
-                "     asset.is_increase,asset.is_decrease,   " +
-                "     group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "     assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase " +
-                "     from asset asset   " +
-                "     left join asset_categories assetCategories   " +
-                "     on asset.id_asset_category = assetCategories.id_asset_category   " +
-                "     left join department de on asset.id_department = de.id_department   " +
-                "     left join location lo on asset.id_location = lo.id_location   " +
-                "     left join asset_original_of_formation assetOriginalOfFormation  " +
-                "     on asset.id_asset = assetOriginalOfFormation.id_asset  " +
-                "     left join asset_depreciation assetDepreciation  " +
-                "     on asset.id_asset = assetDepreciation.id_asset  " +
-                "     left join asset_process on asset.id_asset = asset_process.id_asset  " +
-                "     left join type_process on asset_process.id_type_process = type_process.id_type_process  " +
-                "     left join document on asset_process.id_process = document.id_process  " +
-                "     where 1 = 1 and asset.parent is null and (type_process.code = :typeProcess OR type_process.code IS NULL)  " +
-                "     and asset.id_department_origin in (:idsDepartmentOriginal) ");
+        sb.append(" select count(0)   " +
+                " from (select asset.id_asset idAsset, asset.code_asset codeAsset,     " +
+                "                      asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,     " +
+                "                      assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,     " +
+                "                      de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,     " +
+                "                      lo.id_location idLocation, lo.name nameLocation,     " +
+                "                      asset.time_created, asset.time_modified,        " +
+                "                      asset.parent, asset.salt, asset.quantity ,     " +
+                "                      asset.is_increase,asset.is_decrease,     " +
+                "                      group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,   " +
+                "                      assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase " +
+                "       from asset asset " +
+                "                left join asset_categories assetCategories " +
+                "        on asset.id_asset_category = assetCategories.id_asset_category " +
+                "                left join department de on asset.id_department = de.id_department " +
+                "                left join location lo on asset.id_location = lo.id_location " +
+                "                left join asset_original_of_formation assetOriginalOfFormation " +
+                "        on asset.id_asset = assetOriginalOfFormation.id_asset " +
+                "                left join asset_depreciation assetDepreciation " +
+                "        on asset.id_asset = assetDepreciation.id_asset " +
+                "                left join asset_process on asset.id_asset = asset_process.id_asset " +
+                "                left join type_process on asset_process.id_type_process = type_process.id_type_process " +
+                "                left join document on asset_process.id_process = document.id_process " +
+                "       where 1 = 1 " +
+                "         and asset.parent is null " +
+                "    and asset.id_department_origin in (:idsDepartmentOriginal)  ");
         setConditionCountFindAllAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAsset(request, query);
@@ -1648,7 +1650,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAsset(FindAllAssetRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("typeProcess", Constants.CODE_TYPE_PROCESS_INCREASE);
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }
@@ -1657,6 +1658,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIsUsed())){
+            query.setParameter("statusIncrease", request.getIsUsed());
         }
     }
 
@@ -1671,7 +1675,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             sb.append(" and de.id_department = :idDepartment ");
         }
-
+        if (ObjectUtils.isNotEmpty(request.getIsUsed())){
+            sb.append("   and (asset.is_increase = :statusIncrease) ");
+        }
         sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
                 "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
                 "         asset.time_created, asset.time_modified, " +
@@ -1703,7 +1709,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             sb.append(" and de.id_department = :idDepartment ");
         }
-
+        if (ObjectUtils.isNotEmpty(request.getIsUsed())){
+            sb.append(" and (asset.is_increase = :statusIncrease) ");
+        }
         sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
                 "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
                 "         asset.time_created, asset.time_modified, " +
