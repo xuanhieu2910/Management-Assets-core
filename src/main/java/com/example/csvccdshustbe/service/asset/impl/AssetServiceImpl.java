@@ -1028,6 +1028,26 @@ public class AssetServiceImpl implements AssetService {
             response.setQuantity(dto.getQuantity());
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
             response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setTotalOriginalOfFormation(String.valueOf(
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum()* dto.getQuantity())
+                            .orElse(0L)
+            ));
+            response.setCumulative(String.valueOf(
+                    Optional.ofNullable(dto.getCumulative())
+                            .map(Double::parseDouble)
+                            .map(cumulative -> cumulative * Optional.ofNullable(dto.getQuantity()).orElse(1)) // Nhân với quantity
+                            .orElse(0.0)
+            ));
+
+            response.setRestValue(String.valueOf(
+                    Optional.ofNullable(dto.getRestValue())
+                            .map(Double::parseDouble)
+                            .map(restValue -> restValue * Optional.ofNullable(dto.getQuantity()).orElse(1)) // Nhân với quantity
+                            .orElse(0.0)
+            ));
             responses.add(response);
         }
         return responses;
