@@ -35,6 +35,7 @@ public interface AssetService {
     String exportFileReportByPath(String pathFile) throws IOException;
     void uploadFileImportAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException;
     Page<FindAllAssetResponseToIncrease> findAllAssetToIncrease(FinaAllAssetToIncreaseRequest request);
+    Page<FindAllAssetResponseToIncrease> findAllAssetChildrenToIncrease(FinaAllAssetToIncreaseRequest request);
     String generateCodeAsset(String prefix);
     Page<FindAllAssetResponseToInventory> findAllAssetToInventory(FindAllAssetToInventoryRequest inventoryRequest);
     void createAssetFromFile(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException;

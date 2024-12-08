@@ -15,5 +15,6 @@ public class FinaAllAssetToIncreaseRequest extends RequestPageBase {
     private Integer idAssetCategory;
     private Integer idDepartment;
     private Boolean isSingle = true;
+    private String salt;
     private List<Integer> idsDepartmentOriginal;
 }

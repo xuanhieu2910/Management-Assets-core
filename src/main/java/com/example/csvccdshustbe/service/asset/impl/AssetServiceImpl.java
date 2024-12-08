@@ -1604,6 +1604,16 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
+    public Page<FindAllAssetResponseToIncrease> findAllAssetChildrenToIncrease(FinaAllAssetToIncreaseRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetChildrenDtoToIncrease(request, pageable);
+        return new PageImpl<>(convertToFindAllAssetToIncreaseResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
     public String generateCodeAsset(String prefix) {
         if (prefix.equals(Constants.PREFIX_ASSET_LOT)){
             return prefixAssetLot(prefix);

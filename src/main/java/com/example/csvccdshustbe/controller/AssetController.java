@@ -208,6 +208,21 @@ public class AssetController {
         }
     }
 
+    @GetMapping("/find-all-children-to-increase")
+    public ResponseEntity<?> findAllChildrenToIncreaseAsset(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FinaAllAssetToIncreaseRequest request){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllAssetChildrenToIncrease(request),
+                    "Find all asset children to increase success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
     @GetMapping("/find-all-to-inventory")
     public ResponseEntity<?> findAllToInventory(@And({
             @Spec(path = "page", params = "page", spec = Like.class),

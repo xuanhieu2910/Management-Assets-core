@@ -22,6 +22,7 @@ public interface AssetRepositoryCustom {
     Page<FindAllGroundAssetResponse> findAllGroundAsset(Pageable pageable, FindAllGroundAssetRequest request);
     List<FindAllGroundAssetDto> findAllGroundAssetToDownload();
     Page<FindAllAssetDto> findAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable);
+    Page<FindAllAssetDto> findAllAssetChildrenDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable);
     Optional<Asset> findAssetByIdDepartmentOrigin(Integer idDepartmentOrigin);
     Optional<Asset> findAssetLotByIdDepartmentOrigin(Integer idDepartmentOrigin);
     List<Asset> findAllAssetChildrenByParentId(Integer idAsset);
