@@ -423,7 +423,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         left join asset_depreciation ad on asset.id_asset = ad.id_asset " +
                 "where 1 = 1 " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                "  and asset.is_increase = :isIncrease " +
                 "  and asset.status_process_current != :statusProcessCurrent ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -1358,7 +1357,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         left join asset_depreciation ad on asset.id_asset = ad.id_asset " +
                 "where 1 = 1 " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                "  and asset.is_increase = :isIncrease " +
                 "  and asset.status_process_current != :statusProcessCurrent ");
         setConditionCountFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -1429,7 +1427,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("isIncrease",Constants.IS_NOT_INCREASED);
+        if (request.getIsSingle()) {
+            query.setParameter("isIncrease", Constants.IS_NOT_INCREASED);
+        } else {
+            query.setParameter("isIncrease", Constants.IS_NOT_INCREASED_LOT);
+            query.setParameter("isIncreasePart", Constants.IS_INCREASED_PART_LOT);
+        }
         query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameAsset())){
@@ -1477,8 +1480,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setConditionFindAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request,StringBuilder sb) {
         if (request.getIsSingle()){
-            sb.append("  and asset.quantity = :quantityDefault and asset.parent is null");
+            sb.append("  and asset.is_increase = :isIncrease ");
+            sb.append("  and asset.quantity = :quantityDefault and asset.parent is null ");
         } else {
+            sb.append(" and (asset.is_increase = :isIncrease or asset.is_increase = :isIncreasePart) ");
             sb.append("  and asset.quantity > :quantityDefault ");
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
@@ -1544,8 +1549,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setConditionCountFindAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request,StringBuilder sb) {
         if (request.getIsSingle()){
-            sb.append("  and asset.quantity = :quantityDefault and asset.parent is null");
+            sb.append("  and asset.is_increase = :isIncrease ");
+            sb.append("  and asset.quantity = :quantityDefault and asset.parent is null ");
         } else {
+            sb.append(" and (asset.is_increase = :isIncrease or asset.is_increase = :isIncreasePart) ");
             sb.append("  and asset.quantity > :quantityDefault ");
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
