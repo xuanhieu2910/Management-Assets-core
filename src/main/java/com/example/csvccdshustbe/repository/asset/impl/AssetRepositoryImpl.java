@@ -1927,6 +1927,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (Boolean.FALSE.equals(request.getIsSingle())){
             sb.append("   and (asset.quantity != :isSingle) ");
         }
+        if (Boolean.TRUE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity = :isSingle) ");
+        }
 
         sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
                 "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
@@ -1967,6 +1970,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         if (Boolean.FALSE.equals(request.getIsSingle())){
             sb.append("   and (asset.quantity != :isSingle) ");
+        }
+        if (Boolean.TRUE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity = :isSingle) ");
         }
         sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
                 "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
