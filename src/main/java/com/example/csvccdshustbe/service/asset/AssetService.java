@@ -49,4 +49,6 @@ public interface AssetService {
     Page<FindAllAssetResponseToDecrease> findAllAssetToDecrease(FindAllAssetToDecreaseRequest decreaseRequest);
     Asset duplicationAssetBySaltAsset(String saltAssetRoot) throws ValidateFiledException, IllegalAccessException;
     void updateInformationAssetByProcess(Process process, Integer status) throws JsonProcessingException, ValidateFiledException, IllegalAccessException;
+    void updateIncreaseOrDecreaseAssetLotByIdProcess(Integer idProcess, String typeProcess);
+    List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset);
 }

@@ -1082,7 +1082,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         return new PageImpl<>(responses, pageable, countFindAllAssetToDecrease(decreaseRequest));
     }
-
     private long countFindAllAssetToDecrease(FindAllAssetToDecreaseRequest decreaseRequest) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0)  " +

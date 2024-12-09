@@ -783,7 +783,8 @@ public class ProcessServiceImpl implements ProcessService {
                         Constants.CODE_TYPE_PROCESS_DECREASE -> {
                         assetService.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.getIdProcess(),
                                     status, typeProcess.getCode());
-                        }
+                        assetService.updateIncreaseOrDecreaseAssetLotByIdProcess(process.getIdProcess(), typeProcess.getCode());
+                }
                 case Constants.CODE_TYPE_PROCESS_CHANGE,
                         Constants.CODE_TYPE_PROCESS_REVALUATION ->{
                         assetService.updateInformationAssetByProcess(process, status);
