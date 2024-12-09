@@ -1902,7 +1902,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             query.setParameter("isDecrease", request.getIsDecrease());
         }
         if (ObjectUtils.isNotEmpty(request.getIsSingle()) && request.getIsSingle().equals(Boolean.FALSE)){
-            query.setParameter("isDecrease", Constants.QUANTITY_DEFAULT);
+            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
         }
 
     }
