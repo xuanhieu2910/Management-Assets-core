@@ -15,6 +15,7 @@ public class FindAllAssetRequest  extends RequestPageBase {
     private String nameAsset;
     private Integer idAssetCategory;
     private Integer idDepartment;
-    private Integer isUsed;
+    private Integer isIncrease;
+    private Integer isDecrease;
     private List<Integer> idsDepartmentOriginal;
 }
