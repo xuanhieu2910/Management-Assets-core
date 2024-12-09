@@ -1277,7 +1277,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAssetDtoToChange(Query query, FindAllAssetToChangeRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("isIncrease", Constants.IS_INCREASED);
         query.setParameter("isDecrease", Constants.IS_DECREASED);
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameAsset())) {
@@ -1289,8 +1288,13 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             query.setParameter("idDepartment", request.getIdDepartment());
         }
-        if (ObjectUtils.isNotEmpty(request.getIsSingle())){
+        if (Boolean.FALSE.equals(request.getIsSingle())){
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+            query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
+        }
+        if (Boolean.TRUE.equals(request.getIsSingle())){
+            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+            query.setParameter("isIncrease", Constants.IS_INCREASED);
         }
     }
 
@@ -1308,8 +1312,13 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             query.setParameter("idDepartment", request.getIdDepartment());
         }
-        if (ObjectUtils.isNotEmpty(request.getIsSingle())){
+        if (Boolean.FALSE.equals(request.getIsSingle())){
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+            query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
+        }
+        if (Boolean.TRUE.equals(request.getIsSingle())){
+            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+            query.setParameter("isIncrease", Constants.IS_INCREASED);
         }
     }
 
@@ -1516,12 +1525,14 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     private void setConditionFindAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request,StringBuilder sb) {
-        if (request.getIsSingle()){
-            sb.append("  and asset.is_increase = :isIncrease ");
-            sb.append("  and asset.quantity = :quantityDefault and asset.parent is null ");
-        } else {
-            sb.append(" and (asset.is_increase = :isIncrease or asset.is_increase = :isIncreasePart) ");
-            sb.append("  and asset.quantity > :quantityDefault ");
+        if (request.getIsSingle() != null) {
+            if (request.getIsSingle()) {
+                sb.append("  and asset.is_increase = :isIncrease ");
+                sb.append("  and asset.quantity = :quantityDefault and asset.parent is null ");
+            } else {
+                sb.append(" and (asset.is_increase = :isIncrease or asset.is_increase = :isIncreasePart) ");
+                sb.append("  and asset.quantity > :quantityDefault ");
+            }
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
