@@ -59,7 +59,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.parent, asset.salt, asset.quantity ,  " +
                 "        asset.is_increase,asset.is_decrease,        " +
                 "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "        assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase " +
+                "        assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase, asset.status_process_current " +
                 "from asset asset " +
                 "         left join asset_categories assetCategories " +
                 "                   on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -106,6 +106,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setCumulative(ValueUtil.getStringByObject(obj[19]));
                 findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[20]));
                 findAllAssetDto.setTimeIncrease(ValueUtil.getStringByObject(obj[21]));
+                findAllAssetDto.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[22]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -1885,9 +1886,13 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             query.setParameter("idDepartment", request.getIdDepartment());
         }
-        if (ObjectUtils.isNotEmpty(request.getIsUsed())){
-            query.setParameter("statusIncrease", request.getIsUsed());
+        if (ObjectUtils.isNotEmpty(request.getIsIncrease())){
+            query.setParameter("isIncrease", request.getIsIncrease());
         }
+        if (ObjectUtils.isNotEmpty(request.getIsDecrease())){
+            query.setParameter("isDecrease", request.getIsDecrease());
+        }
+
     }
 
     private void setConditionFindAllAsset(FindAllAssetRequest request, StringBuilder sb) {
@@ -1901,14 +1906,18 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             sb.append(" and de.id_department = :idDepartment ");
         }
-        if (ObjectUtils.isNotEmpty(request.getIsUsed())){
-            sb.append("   and (asset.is_increase = :statusIncrease) ");
+        if (ObjectUtils.isNotEmpty(request.getIsIncrease())){
+            sb.append("   and (asset.is_increase = :isIncrease) ");
         }
+        if (ObjectUtils.isNotEmpty(request.getIsDecrease())){
+            sb.append("   and (asset.is_decrease = :isDecrease) ");
+        }
+
         sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
                 "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
                 "         asset.time_created, asset.time_modified, " +
                 "         asset.salt, asset.quantity , " +
-                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,type_process.code ");
+                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,asset.status_process_current ");
 
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
@@ -1935,14 +1944,17 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             sb.append(" and de.id_department = :idDepartment ");
         }
-        if (ObjectUtils.isNotEmpty(request.getIsUsed())){
-            sb.append(" and (asset.is_increase = :statusIncrease) ");
+        if (ObjectUtils.isNotEmpty(request.getIsIncrease())){
+            sb.append("   and (asset.is_increase = :isIncrease) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIsDecrease())){
+            sb.append("   and (asset.is_decrease = :isDecrease) ");
         }
         sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
                 "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
                 "         asset.time_created, asset.time_modified, " +
                 "         asset.salt, asset.quantity , " +
-                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,type_process.code ");
+                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,asset.status_process_current ");
 
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
