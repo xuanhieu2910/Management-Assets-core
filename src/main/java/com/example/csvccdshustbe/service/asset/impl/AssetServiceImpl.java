@@ -236,6 +236,8 @@ public class AssetServiceImpl implements AssetService {
             response.setSalt(dto.getSalt());
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
             response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setIsIncrease(dto.getIsIncrease());
+            response.setIsDecrease(dto.getIsDecrease());
             responses.add(response);
         }
         return responses;

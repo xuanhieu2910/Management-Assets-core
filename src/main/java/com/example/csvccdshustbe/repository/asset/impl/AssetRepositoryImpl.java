@@ -122,7 +122,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,        " +
                 "        lo.id_location idLocation, lo.name nameLocation,        " +
                 "        asset.time_created, asset.time_modified,     " +
-                "        asset.parent, asset.salt     " +
+                "        asset.parent, asset.salt , asset.is_increase, asset.is_decrease   " +
                 " from asset asset        " +
                 "     inner join asset_categories assetCategories        " +
                 "             on asset.id_asset_category = assetCategories.id_asset_category        " +
@@ -155,6 +155,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
                 findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
+                findAllAssetDto.setIsIncrease(ValueUtil.getIntegerByObject(obj[15]));
+                findAllAssetDto.setIsDecrease(ValueUtil.getIntegerByObject(obj[16]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -1899,6 +1901,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIsDecrease())){
             query.setParameter("isDecrease", request.getIsDecrease());
         }
+        if (ObjectUtils.isNotEmpty(request.getIsSingle()) && request.getIsSingle().equals(Boolean.FALSE)){
+            query.setParameter("isDecrease", Constants.QUANTITY_DEFAULT);
+        }
 
     }
 
@@ -1918,6 +1923,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         if (ObjectUtils.isNotEmpty(request.getIsDecrease())){
             sb.append("   and (asset.is_decrease = :isDecrease) ");
+        }
+        if (Boolean.FALSE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity != :isSingle) ");
         }
 
         sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
@@ -1956,6 +1964,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         if (ObjectUtils.isNotEmpty(request.getIsDecrease())){
             sb.append("   and (asset.is_decrease = :isDecrease) ");
+        }
+        if (Boolean.FALSE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity != :isSingle) ");
         }
         sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
                 "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +

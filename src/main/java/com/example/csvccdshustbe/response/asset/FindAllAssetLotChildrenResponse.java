@@ -34,5 +34,9 @@ public class FindAllAssetLotChildrenResponse {
     private Integer parent;
     @JsonProperty("salt")
     private String salt;
+    @JsonProperty("is_increase")
+    private Integer isIncrease;
+    @JsonProperty("is_decrease")
+    private Integer isDecrease;
 
 }
