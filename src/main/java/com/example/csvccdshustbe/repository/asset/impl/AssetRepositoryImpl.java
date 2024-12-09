@@ -166,11 +166,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private void setParameterFindAllAssetLotChildren(FindAllAssetLotChildrenRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("saltAssetParent", request.getSaltAssetParent());
+
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             query.setParameter("idDepartment", request.getIdDepartment());
         }
         if (ObjectUtils.isNotEmpty(request.getIdLocation())){
             query.setParameter("idLocation", request.getIdLocation());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIsSingle())){
+            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
         }
     }
 
@@ -180,6 +184,18 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         if (ObjectUtils.isNotEmpty(request.getIdLocation())){
             sb.append(" and lo.id_location = :idLocation ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIsIncrease())){
+            sb.append("   and (asset.is_increase = :isIncrease) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIsDecrease())){
+            sb.append("   and (asset.is_decrease = :isDecrease) ");
+        }
+        if (Boolean.FALSE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity != :isSingle) ");
+        }
+        if (Boolean.TRUE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity = :isSingle) ");
         }
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
@@ -934,7 +950,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
-                "   and asset.quantity = 1    " +
+                "   and asset.parent is null    " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
@@ -989,7 +1005,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
-                "   and asset.quantity = 1    " +
+                "   and asset.parent is null       " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
@@ -1226,7 +1242,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
-                "   and asset.quantity = 1   " +
+                "   and asset.parent is null       " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
@@ -1248,7 +1264,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          left join asset_depreciation assetDepreciation     " +
                 "     on asset.id_asset = assetDepreciation.id_asset     " +
                 " where 1 = 1     " +
-                "   and asset.quantity = 1    " +
+                "   and asset.parent is null        " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
@@ -1273,6 +1289,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             query.setParameter("idDepartment", request.getIdDepartment());
         }
+        if (ObjectUtils.isNotEmpty(request.getIsSingle())){
+            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+        }
     }
 
     private void setParameterFindAllAssetDtoToRevaluation(Query query, FindAllAssetToRevaluationRequest request) {
@@ -1289,6 +1308,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             query.setParameter("idDepartment", request.getIdDepartment());
         }
+        if (ObjectUtils.isNotEmpty(request.getIsSingle())){
+            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+        }
     }
 
     private void setConditionFindAllAssetDtoToChange(StringBuilder sb, FindAllAssetToChangeRequest request) {
@@ -1300,6 +1322,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (Boolean.FALSE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity != :isSingle) ");
+        }
+        if (Boolean.TRUE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity = :isSingle) ");
         }
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
@@ -1324,6 +1352,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (Boolean.FALSE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity != :isSingle) ");
+        }
+        if (Boolean.TRUE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity = :isSingle) ");
         }
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");

@@ -14,5 +14,8 @@ public class FindAllAssetLotChildrenRequest extends RequestPageBase {
     private String saltAssetParent;
     private Integer idDepartment;
     private Integer idLocation;
+    private Integer isIncrease;
+    private Integer isDecrease;
+    private Boolean isSingle;
     private List<Integer> idsDepartmentOriginal;
 }
