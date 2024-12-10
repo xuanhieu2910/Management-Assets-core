@@ -1052,6 +1052,7 @@ public class AssetServiceImpl implements AssetService {
                             .map(restValue -> restValue * Optional.ofNullable(dto.getQuantity()).orElse(1)) // Nhân với quantity
                             .orElse(0.0)
             ));
+            response.setSalt(dto.getSalt());
             responses.add(response);
         }
         return responses;
