@@ -18,4 +18,6 @@ public interface AssetProcessService {
     void updateListAssetProcessByIdProcess(UpdateAllAssetProcessRequest request, Integer idProcess);
     void updateFinishListAssetProcessByIdProcess(UpdateAllAssetProcessRequest request);
     List<AssetProcessDto> findResultAssetLotByIdProcessAndCalculatorIsIncreaseAndIsDecrease(Integer idProcess);
+    Page<FindAllAssetProcessResponse> findAllAssetLotProcess(FindAllAssetProcessRequest request);
+    Page<FindAllAssetProcessResponse> findAllAssetChildrenProcess(FindAllAssetProcessRequest request);
 }
