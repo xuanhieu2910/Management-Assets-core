@@ -13,6 +13,8 @@ public class FindAllAssetToDecreaseRequest extends RequestPageBase {
     private String nameAsset;
     private Integer idAssetCategory;
     private Integer idDepartment;
+    private Boolean isSingle = true;
+    private String salt;
     private List<Integer> idsDepartmentOriginal;
 
 }
