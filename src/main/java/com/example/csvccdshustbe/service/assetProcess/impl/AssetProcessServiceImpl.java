@@ -86,6 +86,26 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         return assetProcessRepository.findResultAssetLotByIdProcessAndCalculatorIsIncreaseAndIsDecrease(idProcess);
     }
 
+    @Override
+    public Page<FindAllAssetProcessResponse> findAllAssetLotProcess(FindAllAssetProcessRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos  = assetProcessRepository.findAllAssetLotProcess(request, pageable);
+        return new PageImpl<>(convertToFindAllAssetLotProcess(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllAssetProcessResponse> findAllAssetChildrenProcess(FindAllAssetProcessRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos  = assetProcessRepository.findAllAssetChildrenProcess(request, pageable);
+        return new PageImpl<>(convertToFindAllAssetLotProcess(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
     private void updateChangeAssetProcess(List<AssetProcess> assetProcessList, UpdateAllAssetProcessRequest request) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String timeCurrent = String.valueOf(new Date().getTime());
@@ -124,6 +144,26 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             response.setSalt(dto.getSalt());
             response.setValue(dto.getValue());
             response.setQuantity(dto.getQuantity());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    private List<FindAllAssetProcessResponse> convertToFindAllAssetLotProcess(List<FindAllAssetDto> content) {
+        List<FindAllAssetProcessResponse> responses = new ArrayList<>();
+        for (FindAllAssetDto dto : content) {
+            FindAllAssetProcessResponse response = new FindAllAssetProcessResponse();
+            response.setCodeAsset(dto.getCodeAsset());
+            response.setNameAsset(dto.getNameAsset());
+            response.setNameAssetCategory(dto.getNameAssetCategory());
+            response.setCodeAssetCategory(dto.getCodeAssetCategory());
+            response.setCodeDepartment(dto.getCodeDepartment());
+            response.setNameDepartment(dto.getNameDepartment());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern( new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
+            response.setIdAsset(dto.getIdAsset());
+            response.setSalt(dto.getSalt());
+            response.setValue(dto.getValue());
             responses.add(response);
         }
         return responses;
