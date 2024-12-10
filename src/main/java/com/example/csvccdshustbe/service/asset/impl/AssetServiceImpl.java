@@ -1696,6 +1696,34 @@ public class AssetServiceImpl implements AssetService {
         return response;
     }
 
+    private List<FindAllAssetResponseToDecrease> convertToFindAllAssetChildrenToDecreaseResponse(List<FindAllAssetDto> content) {
+        List<FindAllAssetResponseToDecrease> response = new ArrayList<>();
+        for (FindAllAssetDto dto : content){
+            FindAllAssetResponseToDecrease decrease = new FindAllAssetResponseToDecrease();
+            decrease.setCodeAsset(dto.getCodeAsset());
+            decrease.setNameAsset(dto.getNameAsset());
+            decrease.setNameAssetCategory(dto.getNameAssetCategory());
+            decrease.setCodeAssetCategory(dto.getCodeAssetCategory());
+            decrease.setCodeDepartment(dto.getCodeDepartment());
+            decrease.setNameDepartment(dto.getNameDepartment());
+            decrease.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
+            decrease.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
+            decrease.setIdAsset(dto.getIdAsset());
+            decrease.setSalt(dto.getSalt());
+            decrease.setQuantity(dto.getQuantity());
+            decrease.setRestValue(dto.getRestValue());
+            decrease.setTotalOriginalOfFormation(String.valueOf(
+                    Arrays.stream(dto.getOriginalOfFormation().split("-"))
+                            .mapToLong(Long::parseLong)
+                            .sum()
+            ));
+            decrease.setCumulative(dto.getCumulative());
+            response.add(decrease);
+        }
+        return response;
+    }
+
+
     private String prefixAsset(String prefix) {
         int minLength = 4;
         Integer idDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdDepartmentCurrent();
@@ -1880,6 +1908,16 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset) {
         return assetRepository.findAllAssetByIdsAsset(idsAsset);
+    }
+
+    @Override
+    public Page<FindAllAssetResponseToDecrease> findAllAssetChildrenToDecrease(FindAllAssetToDecreaseRequest decreaseRequest) {
+        Pageable pageable = PageUtils.buildPage(decreaseRequest.getPage(), decreaseRequest.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        decreaseRequest.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetChildrenDtoToDecrease(decreaseRequest, pageable);
+        return new PageImpl<>(convertToFindAllAssetChildrenToDecreaseResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
     }
 
     private Asset duplicationAssetLot(FindDetailsAssetResponse assetRoot) {
