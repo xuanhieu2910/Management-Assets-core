@@ -1921,18 +1921,22 @@ public class AssetServiceImpl implements AssetService {
         assetProcessDtos.forEach(x->idsAsset.add(x.getIdAsset()));
         List<Asset> assets = findAllAssetByIdsAsset(idsAsset);
         switch (typeProcess) {
-            case Constants.CODE_TYPE_PROCESS_INCREASE:
-            for (AssetProcessDto assetProcessDto : assetProcessDtos) {
-                assets.stream().filter(x -> x.getIdAsset().equals(assetProcessDto.getIdAsset())).findFirst().ifPresent(x -> {
-                    x.setIsIncrease(assetProcessDto.getIsIncrease());
-                });
+            case Constants.CODE_TYPE_PROCESS_INCREASE -> {
+                for (AssetProcessDto assetProcessDto : assetProcessDtos) {
+                    assets.stream().filter(x -> x.getIdAsset().equals(assetProcessDto.getIdAsset())).findFirst().ifPresent(x -> {
+                        x.setIsIncrease(assetProcessDto.getIsIncrease());
+                    });
+                }
             }
-            case Constants.CODE_TYPE_PROCESS_DECREASE:
+            case Constants.CODE_TYPE_PROCESS_DECREASE -> {
                 for (AssetProcessDto assetProcessDto : assetProcessDtos) {
                     assets.stream().filter(x -> x.getIdAsset().equals(assetProcessDto.getIdAsset())).findFirst().ifPresent(x -> {
                         x.setIsDecrease(assetProcessDto.getIsDecrease());
                     });
                 }
+            }
+            default -> {
+            }
         }
         assetRepository.saveAll(assets);
     }
