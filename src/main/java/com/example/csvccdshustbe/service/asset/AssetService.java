@@ -52,4 +52,5 @@ public interface AssetService {
     void updateIncreaseOrDecreaseAssetLotByIdProcess(Integer idProcess, String typeProcess);
     List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset);
     Page<FindAllAssetResponseToDecrease> findAllAssetChildrenToDecrease(FindAllAssetToDecreaseRequest decreaseRequest);
+    Page<FindAllAssetResponseToInventory> findAllAssetChildrenToInventory(FindAllAssetToInventoryRequest inventoryRequest);
 }

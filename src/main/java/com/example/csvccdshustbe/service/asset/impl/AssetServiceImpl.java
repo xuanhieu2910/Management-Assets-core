@@ -1669,6 +1669,37 @@ public class AssetServiceImpl implements AssetService {
     }
 
 
+    private List<FindAllAssetResponseToInventory> convertToFindAllAssetChildrenToInventoryResponse(List<FindAllAssetDto> content) {
+        List<FindAllAssetResponseToInventory> response = new ArrayList<>();
+        for (FindAllAssetDto dto : content){
+            FindAllAssetResponseToInventory inventory = new FindAllAssetResponseToInventory();
+            inventory.setCodeAsset(dto.getCodeAsset());
+            inventory.setNameAsset(dto.getNameAsset());
+            inventory.setNameAssetCategory(dto.getNameAssetCategory());
+            inventory.setCodeAssetCategory(dto.getCodeAssetCategory());
+            inventory.setCodeDepartment(dto.getCodeDepartment());
+            inventory.setNameDepartment(dto.getNameDepartment());
+            inventory.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
+            inventory.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
+            inventory.setIdAsset(dto.getIdAsset());
+            inventory.setSalt(dto.getSalt());
+            inventory.setQuantityOriginal(dto.getQuantity());
+            inventory.setRestValueOriginal(dto.getRestValue());
+            inventory.setTotalOriginalOfFormationOriginal(String.valueOf(
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum())
+                            .orElse(0L)
+            ));
+            inventory.setQuantityInventory(dto.getQuantity());
+            inventory.setTotalOriginalOfFormationInventory(inventory.getTotalOriginalOfFormationOriginal());
+            inventory.setRestValueInventory(dto.getRestValue());
+            response.add(inventory);
+        }
+        return response;
+    }
+
     private List<FindAllAssetResponseToDecrease> convertToFindAllAssetToDecreaseResponse(List<FindAllAssetDto> content) {
         List<FindAllAssetResponseToDecrease> response = new ArrayList<>();
         for (FindAllAssetDto dto : content){
@@ -1917,6 +1948,16 @@ public class AssetServiceImpl implements AssetService {
         decreaseRequest.setIdsDepartmentOriginal(idsDepartment);
         Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetChildrenDtoToDecrease(decreaseRequest, pageable);
         return new PageImpl<>(convertToFindAllAssetChildrenToDecreaseResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllAssetResponseToInventory> findAllAssetChildrenToInventory(FindAllAssetToInventoryRequest inventoryRequest) {
+        Pageable pageable = PageUtils.buildPage(inventoryRequest.getPage(), inventoryRequest.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        inventoryRequest.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetChildrenDtoToInventory(inventoryRequest, pageable);
+        return new PageImpl<>(convertToFindAllAssetChildrenToInventoryResponse(findAllAssetDtos.getContent()),
                 pageable, findAllAssetDtos.getTotalElements());
     }
 
