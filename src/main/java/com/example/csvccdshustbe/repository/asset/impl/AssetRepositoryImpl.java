@@ -1147,12 +1147,16 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setConditionCountFindAllAssetDtoToDecrease(FindAllAssetToDecreaseRequest request,
                                                             StringBuilder sb) {
-        sb.append("group by asset.id_asset, asset.code_asset, asset.name,   " +
-                "          assetCategories.id_asset_category, assetCategories.name,   " +
-                "          assetCategories.code_name, de.id_department,   " +
-                "          de.code, de.name, lo.id_location, lo.name, asset.time_created,   " +
-                "          asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value," +
-                "          asset.quantity, assetDepreciation.cumulative ");
+        if (request.getIsSingle()){
+            sb.append(" and asset.is_increase = :isIncrease  " +
+                    "  and asset.is_decrease != :isDecrease  " +
+                    "  and asset.quantity = :quantityDefault and asset.parent is null ");
+        } else {
+            sb.append("   and (((asset.is_increase = :isIncrease or  " +
+                    "      asset.is_increase = :isIncreasePart) and  " +
+                    "     asset.is_decrease != :isDecrease))  " +
+                    "  and asset.quantity > :quantityDefault ");
+        }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
         }
@@ -1162,6 +1166,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        sb.append("group by asset.id_asset, asset.code_asset, asset.name,   " +
+                "          assetCategories.id_asset_category, assetCategories.name,   " +
+                "          assetCategories.code_name, de.id_department,   " +
+                "          de.code, de.name, lo.id_location, lo.name, asset.time_created,   " +
+                "          asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value," +
+                "          asset.quantity, assetDepreciation.cumulative ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -1178,10 +1188,17 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAssetDtoToDecrease(FindAllAssetToDecreaseRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("isIncrease", Constants.IS_INCREASED);
-        query.setParameter("isDecrease", Constants.IS_DECREASED);
         query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
-
+        if (request.getIsSingle()){
+            query.setParameter("isIncrease", Constants.IS_INCREASED);
+            query.setParameter("isDecrease", Constants.IS_DECREASED);
+            query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
+        } else {
+            query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
+            query.setParameter("isIncreasePart", Constants.IS_INCREASED_PART_LOT);
+            query.setParameter("isDecrease", Constants.IS_DECREASED_WHOLE_LOT);
+            query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
+        }
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }
@@ -1195,8 +1212,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setConditionFindAllAssetDtoToDecrease(FindAllAssetToDecreaseRequest request, StringBuilder sb) {
         if (request.getIsSingle()){
-            sb.append("   and asset.status_process_current != :statusProcess  " +
-                    "  and asset.is_increase = :isIncrease  " +
+            sb.append(" and asset.is_increase = :isIncrease  " +
                     "  and asset.is_decrease != :isDecrease  " +
                     "  and asset.quantity = :quantityDefault and asset.parent is null ");
         } else {
