@@ -442,7 +442,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         left join asset_depreciation ad on asset.id_asset = ad.id_asset " +
                 "where 1 = 1 " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                "  and asset.status_process_current != :statusProcessCurrent ");
+                "  and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null)  ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToIncrease(request, query);
@@ -1402,7 +1402,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         left join asset_depreciation ad on asset.id_asset = ad.id_asset " +
                 "where 1 = 1 " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                "  and asset.status_process_current != :statusProcessCurrent ");
+                "  and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null) ");
         setConditionCountFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToIncrease(request,query);
