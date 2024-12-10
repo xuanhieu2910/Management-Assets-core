@@ -958,7 +958,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
-                "   and (asset.status_process_current != :statusProcessCurrent  asset.status_process_current is null ) ");
+                "   and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null ) ");
         setConditionFindAllAssetDtoToChange(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToChange(query, request);
@@ -1013,7 +1013,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
-                "   and (asset.status_process_current != :statusProcessCurrent  asset.status_process_current is null ) ");
+                "   and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null ) ");
         setConditionFindAllAssetDtoToRevaluation(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToRevaluation(query, request);
@@ -1506,7 +1506,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
-                "   and (asset.status_process_current != :statusProcessCurrent  asset.status_process_current is null)   ");
+                "   and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null )   ");
         setConditionFindAllAssetDtoToChange(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToChange(query, request);
@@ -1528,7 +1528,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
                 "   and asset.is_decrease != :isDecrease  " +
-                "   and (asset.status_process_current != :statusProcessCurrent  asset.status_process_current is null )   ");
+                "   and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null )   ");
         setConditionFindAllAssetDtoToRevaluation(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToRevaluation(query, request);
@@ -1551,16 +1551,18 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (Boolean.FALSE.equals(request.getIsSingle())){
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
             query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
+            query.setParameter("isIncrease", Constants.IS_DECREASED_WHOLE_LOT);
         }
         if (Boolean.TRUE.equals(request.getIsSingle())){
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+            query.setParameter("isIncrease", Constants.IS_INCREASED);
             query.setParameter("isIncrease", Constants.IS_INCREASED);
         }
     }
 
     private void setParameterFindAllAssetDtoToRevaluation(Query query, FindAllAssetToRevaluationRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("isIncrease", Constants.IS_INCREASED);
+
         query.setParameter("isDecrease", Constants.IS_DECREASED);
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameAsset())) {
@@ -1575,9 +1577,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (Boolean.FALSE.equals(request.getIsSingle())){
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
             query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
+            query.setParameter("isIncrease", Constants.IS_DECREASED_WHOLE_LOT);
         }
         if (Boolean.TRUE.equals(request.getIsSingle())){
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+            query.setParameter("isIncrease", Constants.IS_INCREASED);
             query.setParameter("isIncrease", Constants.IS_INCREASED);
         }
     }
