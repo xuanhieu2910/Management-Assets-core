@@ -1524,14 +1524,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     private void setConditionFindAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request,StringBuilder sb) {
-        if (request.getIsSingle() != null) {
-            if (request.getIsSingle()) {
-                sb.append("  and asset.is_increase = :isIncrease ");
-                sb.append("  and asset.quantity = :quantityDefault and asset.parent is null ");
-            } else {
-                sb.append(" and (asset.is_increase = :isIncrease or asset.is_increase = :isIncreasePart) ");
-                sb.append("  and asset.quantity > :quantityDefault ");
-            }
+        if (request.getIsSingle()) {
+            sb.append("  and asset.is_increase = :isIncrease ");
+            sb.append("  and asset.quantity = :quantityDefault and asset.parent is null ");
+        } else {
+            sb.append(" and (asset.is_increase = :isIncrease or asset.is_increase = :isIncreasePart) ");
+            sb.append("  and asset.quantity > :quantityDefault ");
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             sb.append(" and (asset.name REGEXP :nameAsset ) ");

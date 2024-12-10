@@ -214,11 +214,11 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       case when  " +
                 "               (sum(case when assetChild.is_increase = 1 then 1 else 0 end) =  " +
                 "                count(assetChild.id_asset))  " +
-                "               then 1 else 0 end as resultIsCrease,  " +
+                "               then 2 else 1 end as resultIsCrease,  " +
                 "       case when  " +
                 "               (sum(case when assetChild.is_decrease = 1 then 1 else 0 end) =  " +
                 "                count(assetChild.id_asset))  " +
-                "               then 1 else 0 end as resultIsDecrease  " +
+                "               then 2 else 1 end as resultIsDecrease  " +
                 "from asset assetParent  " +
                 "         inner join asset assetChild on assetParent.id_asset = assetChild.parent  " +
                 "where exists (  " +
