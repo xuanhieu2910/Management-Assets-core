@@ -279,6 +279,20 @@ public class AssetController {
         }
     }
 
+    @GetMapping("/find-all-children-to-decrease")
+    public ResponseEntity<?> findAllChildrenToDecrease(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetToDecreaseRequest decreaseRequest){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllAssetToDecrease(decreaseRequest),
+                    "Find all asset to decrease success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 
     @GetMapping("/generate-code")
     public ResponseEntity<?> generateCodeAsset(){
