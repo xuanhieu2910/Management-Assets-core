@@ -239,6 +239,20 @@ public class AssetController {
         }
     }
 
+    @GetMapping("/find-all-children-to-inventory")
+    public ResponseEntity<?> findAllChildrenToInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetToInventoryRequest inventoryRequest){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllAssetChildrenToInventory(inventoryRequest),
+                    "Find all asset to inventory success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
     @GetMapping("/find-all-to-change")
     public ResponseEntity<?> findAllToChange(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
