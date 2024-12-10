@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetDepreciation.AssetDepreciationDto;
+import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
 import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
 import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
@@ -1850,6 +1851,35 @@ public class AssetServiceImpl implements AssetService {
             updateAsset(dataUpdateAsset);
         }
 
+    }
+
+    @Override
+    public void updateIncreaseOrDecreaseAssetLotByIdProcess(Integer idProcess, String typeProcess){
+        List<AssetProcessDto> assetProcessDtos =
+                assetProcessService.findResultAssetLotByIdProcessAndCalculatorIsIncreaseAndIsDecrease(idProcess);
+        List<Integer> idsAsset = new ArrayList<>();
+        assetProcessDtos.forEach(x->idsAsset.add(x.getIdAsset()));
+        List<Asset> assets = findAllAssetByIdsAsset(idsAsset);
+        switch (typeProcess) {
+            case Constants.CODE_TYPE_PROCESS_INCREASE:
+            for (AssetProcessDto assetProcessDto : assetProcessDtos) {
+                assets.stream().filter(x -> x.getIdAsset().equals(assetProcessDto.getIdAsset())).findFirst().ifPresent(x -> {
+                    x.setIsIncrease(assetProcessDto.getIsIncrease());
+                });
+            }
+            case Constants.CODE_TYPE_PROCESS_DECREASE:
+                for (AssetProcessDto assetProcessDto : assetProcessDtos) {
+                    assets.stream().filter(x -> x.getIdAsset().equals(assetProcessDto.getIdAsset())).findFirst().ifPresent(x -> {
+                        x.setIsDecrease(assetProcessDto.getIsDecrease());
+                    });
+                }
+        }
+        assetRepository.saveAll(assets);
+    }
+
+    @Override
+    public List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset) {
+        return assetRepository.findAllAssetByIdsAsset(idsAsset);
     }
 
     private Asset duplicationAssetLot(FindDetailsAssetResponse assetRoot) {

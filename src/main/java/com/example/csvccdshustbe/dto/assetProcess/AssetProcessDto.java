@@ -17,4 +17,6 @@ public class AssetProcessDto {
     private String value;
     private String timeCreated;
     private String timeModified;
+    private Integer isIncrease;
+    private Integer isDecrease;
 }

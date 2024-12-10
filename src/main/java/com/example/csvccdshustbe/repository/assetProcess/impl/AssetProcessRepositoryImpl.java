@@ -206,6 +206,46 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
         return assetProcessList;
     }
 
+    @Override
+    public List<AssetProcessDto> findResultAssetLotByIdProcessAndCalculatorIsIncreaseAndIsDecrease(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select assetParent.id_asset,  " +
+                "       case when  " +
+                "               (sum(case when assetChild.is_increase = 1 then 1 else 0 end) =  " +
+                "                count(assetChild.id_asset))  " +
+                "               then 1 else 0 end as resultIsCrease,  " +
+                "       case when  " +
+                "               (sum(case when assetChild.is_decrease = 1 then 1 else 0 end) =  " +
+                "                count(assetChild.id_asset))  " +
+                "               then 1 else 0 end as resultIsDecrease  " +
+                "from asset assetParent  " +
+                "         inner join asset assetChild on assetParent.id_asset = assetChild.parent  " +
+                "where exists (  " +
+                "    select distinct at.parent  " +
+                "                from asset at  " +
+                "                    inner join asset_process ap on at.id_asset = ap.id_asset  " +
+                "                    inner join process pr on ap.id_process = pr.id_process  " +
+                "                where pr.id_process = :idProcess  " +
+                "                and at.parent is not null and assetParent.id_asset = at.parent)  " +
+                "group by assetParent.id_asset  " +
+                "order by assetParent.id_asset ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        List<AssetProcessDto> responses = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                AssetProcessDto assetProcessDto = new AssetProcessDto();
+                assetProcessDto.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
+                assetProcessDto.setIsIncrease(ValueUtil.getIntegerByObject(obj[1]));
+                assetProcessDto.setIsDecrease(ValueUtil.getIntegerByObject(obj[2]));
+                responses.add(assetProcessDto);
+            }
+        }
+        return responses;
+    }
+
+
     private long countFindAllAssetProcess(FindAllAssetProcessRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append("  select count(0)   " +

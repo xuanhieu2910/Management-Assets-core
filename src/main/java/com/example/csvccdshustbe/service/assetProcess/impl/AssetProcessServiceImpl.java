@@ -81,6 +81,11 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         updateChangeAssetProcess(assetProcessList, request);
     }
 
+    @Override
+    public List<AssetProcessDto> findResultAssetLotByIdProcessAndCalculatorIsIncreaseAndIsDecrease(Integer idProcess) {
+        return assetProcessRepository.findResultAssetLotByIdProcessAndCalculatorIsIncreaseAndIsDecrease(idProcess);
+    }
+
     private void updateChangeAssetProcess(List<AssetProcess> assetProcessList, UpdateAllAssetProcessRequest request) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String timeCurrent = String.valueOf(new Date().getTime());
