@@ -51,4 +51,5 @@ public interface AssetService {
     void updateInformationAssetByProcess(Process process, Integer status) throws JsonProcessingException, ValidateFiledException, IllegalAccessException;
     void updateIncreaseOrDecreaseAssetLotByIdProcess(Integer idProcess, String typeProcess);
     List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset);
+    Page<FindAllAssetResponseToDecrease> findAllAssetChildrenToDecrease(FindAllAssetToDecreaseRequest decreaseRequest);
 }

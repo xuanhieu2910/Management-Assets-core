@@ -288,8 +288,8 @@ public class AssetController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllAssetToDecreaseRequest decreaseRequest){
         try {
-            return ApiResponseDto.createdWithState(assetService.findAllAssetToDecrease(decreaseRequest),
-                    "Find all asset to decrease success!", HttpStatus.OK);
+            return ApiResponseDto.createdWithState(assetService.findAllAssetChildrenToDecrease(decreaseRequest),
+                    "Find all asset children to decrease success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
