@@ -971,7 +971,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "   and asset.parent is null    " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
-                "   and asset.is_decrease != :isDecrease  " +
+                "   and asset.is_decrease = :isDecrease  " +
                 "   and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null ) ");
         setConditionFindAllAssetDtoToChange(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -1519,7 +1519,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "   and asset.parent is null       " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
                 "   and asset.is_increase = :isIncrease  " +
-                "   and asset.is_decrease != :isDecrease  " +
+                "   and asset.is_decrease = :isDecrease  " +
                 "   and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null )   ");
         setConditionFindAllAssetDtoToChange(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -1564,12 +1564,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (Boolean.FALSE.equals(request.getIsSingle())){
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
             query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
-            query.setParameter("isDecrease", Constants.IS_DECREASED_WHOLE_LOT);
+            query.setParameter("isDecrease", Constants.IS_NOT_DECREASED_LOT);
         }
         if (Boolean.TRUE.equals(request.getIsSingle())){
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
             query.setParameter("isIncrease", Constants.IS_INCREASED);
-            query.setParameter("isDecrease", Constants.IS_DECREASED);
+            query.setParameter("isDecrease", Constants.IS_NOT_DECREASED);
         }
     }
 
