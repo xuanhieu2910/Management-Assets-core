@@ -1306,7 +1306,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private void setParameterCountFindAllAssetDtoToDecrease(FindAllAssetToDecreaseRequest request,
                                                             Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
+        query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (request.getIsSingle()){
             query.setParameter("isIncrease", Constants.IS_INCREASED);
             query.setParameter("isDecrease", Constants.IS_DECREASED);
@@ -1403,7 +1403,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAssetDtoToDecrease(FindAllAssetToDecreaseRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
+        query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (request.getIsSingle()){
             query.setParameter("isIncrease", Constants.IS_INCREASED);
             query.setParameter("isDecrease", Constants.IS_DECREASED);

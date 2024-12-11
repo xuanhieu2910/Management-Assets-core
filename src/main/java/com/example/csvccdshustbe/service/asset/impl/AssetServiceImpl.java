@@ -1718,9 +1718,11 @@ public class AssetServiceImpl implements AssetService {
             decrease.setQuantity(dto.getQuantity());
             decrease.setRestValue(dto.getRestValue());
             decrease.setTotalOriginalOfFormation(String.valueOf(
-                    Arrays.stream(dto.getOriginalOfFormation().split("-"))
-                            .mapToLong(Long::parseLong)
-                            .sum()
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum())
+                            .orElse(0L)
             ));
             decrease.setCumulative(dto.getCumulative());
             response.add(decrease);
@@ -1745,9 +1747,11 @@ public class AssetServiceImpl implements AssetService {
             decrease.setQuantity(dto.getQuantity());
             decrease.setRestValue(dto.getRestValue());
             decrease.setTotalOriginalOfFormation(String.valueOf(
-                    Arrays.stream(dto.getOriginalOfFormation().split("-"))
-                            .mapToLong(Long::parseLong)
-                            .sum()
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum())
+                            .orElse(0L)
             ));
             decrease.setCumulative(dto.getCumulative());
             response.add(decrease);
