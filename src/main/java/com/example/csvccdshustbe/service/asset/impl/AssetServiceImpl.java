@@ -1842,14 +1842,10 @@ public class AssetServiceImpl implements AssetService {
     public void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status,
                                                                           String typeProcess) {
         if (typeProcess.equals(Constants.CODE_TYPE_PROCESS_INCREASE)) {
-            assetRepository.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(idProcess, status,
-                    Constants.IS_INCREASED,
-                    Constants.IS_NOT_DECREASED);
+            assetRepository.updateAssetStatusProcessCurrentAndIsIncrease(idProcess, status, Constants.IS_INCREASED);
         }
         if (typeProcess.equals(Constants.CODE_TYPE_PROCESS_DECREASE)) {
-            assetRepository.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(idProcess, status,
-                    Constants.IS_NOT_INCREASED,
-                    Constants.IS_DECREASED);
+            assetRepository.updateAssetStatusProcessCurrentAndIsDecrease(idProcess, status,Constants.IS_DECREASED);
         }
     }
 

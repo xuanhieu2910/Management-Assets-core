@@ -920,17 +920,31 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     @Transactional
     @Modifying
     @Override
-    public void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status,
-                                                                          Integer isIncrease, Integer isDecrease) {
+    public void updateAssetStatusProcessCurrentAndIsIncrease(Integer idProcess, Integer status, Integer isIncrease) {
         StringBuilder sb = new StringBuilder();
         sb.append("update asset  " +
                 "set status_process_current = :statusProcessCurrent, " +
-                "    is_increase = :isIncrease, " +
-                "    is_decrease = :isDecrease " +
+                "    is_increase = :isIncrease " +
                 "where asset.id_process_current = :idProcessCurrent ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("statusProcessCurrent", status);
         query.setParameter("isIncrease", isIncrease);
+        query.setParameter("idProcessCurrent", idProcess);
+        query.executeUpdate();
+    }
+
+
+    @Transactional
+    @Modifying
+    @Override
+    public void updateAssetStatusProcessCurrentAndIsDecrease(Integer idProcess, Integer status, Integer isDecrease) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("update asset  " +
+                "set status_process_current = :statusProcessCurrent, " +
+                "    is_decrease = :isDecrease " +
+                "where asset.id_process_current = :idProcessCurrent ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusProcessCurrent", status);
         query.setParameter("isDecrease", isDecrease);
         query.setParameter("idProcessCurrent", idProcess);
         query.executeUpdate();
