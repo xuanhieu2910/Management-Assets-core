@@ -24,12 +24,20 @@ public class FindAllAssetResponseToRevaluation {
     private String timeCreated;
     @JsonProperty("time_modified")
     private String timeModified;
-    @JsonProperty("parent")
-    private Integer parent;
-    @JsonProperty("salt")
-    private String salt;
-    @JsonProperty("quantity")
-    private Integer quantity;
     @JsonProperty("id_asset")
     private Integer idAsset;
+    @JsonProperty("salt")
+    private String salt;
+    @JsonProperty("quantity_original")
+    private Integer quantityOriginal;
+    @JsonProperty("total_original_of_formation_original")
+    private String totalOriginalOfFormationOriginal;
+    @JsonProperty("total_rest_value_original")
+    private String restValueOriginal;
+    @JsonProperty("quantity_revaluation")
+    private Integer quantityInventory;
+    @JsonProperty("total_original_of_formation_revaluation")
+    private String totalOriginalOfFormationRevaluation;
+    @JsonProperty("rest_value_revaluation")
+    private String restValueRevaluation;
 }

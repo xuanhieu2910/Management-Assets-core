@@ -41,4 +41,5 @@ public interface AssetRepositoryCustom {
     Page<FindAllAssetDto> findAllAssetChildrenDtoToDecrease(FindAllAssetToDecreaseRequest decreaseRequest, Pageable pageable);
 
     Page<FindAllAssetDto> findAllAssetChildrenDtoToInventory(FindAllAssetToInventoryRequest inventoryRequest, Pageable pageable);
+    Page<FindAllAssetDto> findAllAssetChildrenDtoToRevaluation(FindAllAssetToRevaluationRequest revaluationRequest, Pageable pageable);
 }

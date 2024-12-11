@@ -46,6 +46,7 @@ public interface AssetService {
     void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status, String typeProcess);
     Page<FindAllAssetResponseToChange> findAllAssetToChange(FindAllAssetToChangeRequest changeRequest);
     Page<FindAllAssetResponseToRevaluation> findAllAssetToRevaluation(FindAllAssetToRevaluationRequest changeRequest);
+    Page<FindAllAssetResponseToRevaluation> findAllAssetChildrenToRevaluation(FindAllAssetToRevaluationRequest changeRequest);
     Page<FindAllAssetResponseToDecrease> findAllAssetToDecrease(FindAllAssetToDecreaseRequest decreaseRequest);
     Asset duplicationAssetBySaltAsset(String saltAssetRoot) throws ValidateFiledException, IllegalAccessException;
     void updateInformationAssetByProcess(Process process, Integer status) throws JsonProcessingException, ValidateFiledException, IllegalAccessException;
