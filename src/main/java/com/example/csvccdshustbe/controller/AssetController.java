@@ -279,6 +279,21 @@ public class AssetController {
         }
     }
 
+    @GetMapping("/find-all-children-to-revaluation")
+    public ResponseEntity<?> findAllChildrenToRevaluation(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetToRevaluationRequest revaluationRequest){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllAssetChildrenToRevaluation(revaluationRequest),
+                    "Find all asset children to revaluation success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
     @GetMapping("/find-all-to-decrease")
     public ResponseEntity<?> findAllToDecrease(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
