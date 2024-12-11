@@ -37,6 +37,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.reflect.TypeToken;
 import com.nimbusds.jose.shaded.gson.Gson;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -317,30 +318,26 @@ public class ProcessServiceImpl implements ProcessService {
         createTaskSendMailDecrease(usersDto, document, process);
     }
 
+    @Transactional
     @Override
     public void createChangeAsset(CreateChangeAssetRequest request) throws ValidateFiledException {
-
-
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(contructionDocumentChange(request.getDocument(), process));
-//        assetProcessService.saveListAssetProcess(contructionAssetProcessChange(request, process));
         List<Integer> idsAssetChildren = new ArrayList<>();
-//        validateAssetProcessChange(List.of(request.getAssetDetail().getIdAsset()));
-        List<Asset> AssetChildren= assetRepository.findAllAssetChildrenByParentId(request.getAssetDetail().getIdAsset());
-        if(!AssetChildren.isEmpty()){
-            AssetChildren.forEach(x->idsAssetChildren.add(x.getIdAsset()));
-            validateAssetProcessIncrease(idsAssetChildren);
+        List<Asset> assetChildren= assetRepository.findAllAssetChildrenByParentId(request.getAssetDetail().getIdAsset());
+        if(!assetChildren.isEmpty()){
+            assetChildren.forEach(x->idsAssetChildren.add(x.getIdAsset()));
+            validateAssetProcessChange(idsAssetChildren);
+            assetProcessService.saveListAssetProcess(contructionAssetProcessLotChange(request, process,idsAssetChildren));
             updateInformationProcessCurrentAsset(idsAssetChildren, process);
             updateInformationProcessCurrentAsset(List.of(request.getAssetDetail().getIdAsset()), process);
-            assetProcessService.saveListAssetProcess(contructionAssetProcessLotChange(request, process,idsAssetChildren));
         }
         else {
             validateAssetProcessChange(List.of(request.getAssetDetail().getIdAsset()));
-            updateInformationProcessCurrentAsset(List.of(request.getAssetDetail().getIdAsset()), process);
             assetProcessService.saveListAssetProcess(contructionAssetProcessChange(request, process));
+            updateInformationProcessCurrentAsset(List.of(request.getAssetDetail().getIdAsset()), process);
         }
-//        updateInformationProcessCurrentAsset(List.of(request.getAssetDetail().getIdAsset()), process);
         List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
                 Arrays.asList(
                         Constants.CODE_TYPE_STATE_INIT,
