@@ -277,6 +277,7 @@ public class AssetController {
             return ApiResponseDto.createdWithState(assetService.findAllAssetToRevaluation(revaluationRequest),
                     "Find all asset to revaluation success!", HttpStatus.OK);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
