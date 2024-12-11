@@ -1082,7 +1082,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                   on asset.id_asset = assetDepreciation.id_asset  " +
                 "where 1 = 1  " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "  and asset.status_process_current != :statusProcess  ");
+                "  and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null)  ");
         setConditionFindAllAssetDtoToDecrease(decreaseRequest, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToDecrease(decreaseRequest, query);
@@ -1261,7 +1261,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "      on asset.id_asset = assetDepreciation.id_asset " +
                 "where 1 = 1 " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal)  "+
-                "  and asset.status_process_current != :statusProcess ");
+                "  and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null)  ");
         setConditionCountFindAllAssetDtoToDecrease(decreaseRequest, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterCountFindAllAssetDtoToDecrease(decreaseRequest, query);
@@ -1306,9 +1306,17 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private void setParameterCountFindAllAssetDtoToDecrease(FindAllAssetToDecreaseRequest request,
                                                             Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("isIncrease", Constants.IS_INCREASED);
-        query.setParameter("isDecrease", Constants.IS_DECREASED);
         query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
+        if (request.getIsSingle()){
+            query.setParameter("isIncrease", Constants.IS_INCREASED);
+            query.setParameter("isDecrease", Constants.IS_DECREASED);
+            query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
+        } else {
+            query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
+            query.setParameter("isIncreasePart", Constants.IS_INCREASED_PART_LOT);
+            query.setParameter("isDecrease", Constants.IS_DECREASED_WHOLE_LOT);
+            query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
+        }
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }
@@ -1708,7 +1716,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                          on asset.parent = assetParent.id_asset " +
                 "      where 1 = 1 " +
                 "        and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                "        and asset.is_increase = :isIncrease ");
+                "        and asset.is_increase = :isIncrease " +
+                "        and asset.status_process_current != :statusProcessCurrent ");
         setConditionCountFindAllAssetChildrenDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetChildrenDtoToIncrease(request,query);

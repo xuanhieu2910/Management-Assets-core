@@ -292,6 +292,7 @@ public class AssetController {
             return ApiResponseDto.createdWithState(assetService.findAllAssetToDecrease(decreaseRequest),
                     "Find all asset to decrease success!", HttpStatus.OK);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
