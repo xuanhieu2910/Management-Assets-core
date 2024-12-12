@@ -71,6 +71,8 @@ public class Constants {
      * */
     public static final Integer UNITS_IS_ACTIVE = 1;
     public static final Integer UNITES_UN_ACTIVE = -1;
+    public static final Integer UNITES_IS_NOT_DISPLAY = -1;
+    public static final Integer UNITES_IS_DISPLAY = 1;
     /*----------------------------------------------------*/
 
 

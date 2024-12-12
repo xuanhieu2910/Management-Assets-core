@@ -50,4 +50,8 @@ public class AssetCategories {
     private String maximumTimeDepreciation;
     @Column(name = "id_department_original")
     private Integer idDepartmentOriginal;
+    @Column(name = "number_code_pattern")
+    private String numberCodePattern;
+    @Column(name = "type_target")
+    private Integer typeTarget;
 }

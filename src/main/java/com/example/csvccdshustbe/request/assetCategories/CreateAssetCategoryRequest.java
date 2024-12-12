@@ -22,4 +22,6 @@ public class CreateAssetCategoryRequest {
     private String yearUsedWearTear;
     private String minimumTimeDepreciation;
     private String maximumTimeDepreciation;
+    private String numberCodePattern;
+    private Integer typeTarget;
 }

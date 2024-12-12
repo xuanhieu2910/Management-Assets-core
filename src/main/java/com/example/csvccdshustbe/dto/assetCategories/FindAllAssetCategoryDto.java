@@ -29,4 +29,6 @@ public class FindAllAssetCategoryDto {
     private String maximumTimeDepreciation;
     private String nameParent;
     private Integer idDepartmentOriginal;
+    private String numberCodePattern;
+    private String nameUnit;
 }
