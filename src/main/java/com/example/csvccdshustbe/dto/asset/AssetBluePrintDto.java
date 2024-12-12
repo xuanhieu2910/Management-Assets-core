@@ -60,4 +60,6 @@ public class AssetBluePrintDto {
     private Integer idAssetRoot;
     private Integer idUserCreated;
     private Integer idUserModified;
+    private Integer statusUse;
+    private String yearUse;
 }

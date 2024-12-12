@@ -59,7 +59,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.parent, asset.salt, asset.quantity ,  " +
                 "        asset.is_increase,asset.is_decrease,        " +
                 "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "        assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase, asset.status_process_current " +
+                "        assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase, " +
+                "        asset.status_process_current, asset.status_use, asset.year_use " +
                 "from asset asset " +
                 "         left join asset_categories assetCategories " +
                 "                   on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -107,6 +108,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[20]));
                 findAllAssetDto.setTimeIncrease(ValueUtil.getStringByObject(obj[21]));
                 findAllAssetDto.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[22]));
+                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[23]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[24]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -122,7 +125,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,        " +
                 "        lo.id_location idLocation, lo.name nameLocation,        " +
                 "        asset.time_created, asset.time_modified,     " +
-                "        asset.parent, asset.salt , asset.is_increase, asset.is_decrease   " +
+                "        asset.parent, asset.salt , asset.is_increase, asset.is_decrease," +
+                "        asset.status_use, asset.year_use   " +
                 " from asset asset        " +
                 "     inner join asset_categories assetCategories        " +
                 "             on asset.id_asset_category = assetCategories.id_asset_category        " +
@@ -157,6 +161,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
                 findAllAssetDto.setIsIncrease(ValueUtil.getIntegerByObject(obj[15]));
                 findAllAssetDto.setIsDecrease(ValueUtil.getIntegerByObject(obj[16]));
+                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[17]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[18]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -182,6 +188,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIsSingle())){
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            query.setParameter("statusUse", request.getStatusUse());
+        }
     }
 
     private void setConditionFindAllAssetLotChildren(FindAllAssetLotChildrenRequest request, StringBuilder sb) {
@@ -202,6 +211,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         if (Boolean.TRUE.equals(request.getIsSingle())){
             sb.append("   and (asset.quantity = :isSingle) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            sb.append(" and asset.status_use = :statusUse ");
         }
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
@@ -245,7 +257,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         assetCategory.maximum_time_depreciation, asset.parent, asset.salt, asset.quantity, " +
                 "         asset.id_department_origin, asset.id_process_current, asset.status_process_current, " +
                 "         asset.id_type_process_current, asset.is_increase, asset.is_decrease, " +
-                "         asset.id_user_created, asset.id_user_modified " +
+                "         asset.id_user_created, asset.id_user_modified, asset.status_use, asset.year_use " +
                 " from asset asset       " +
                 "      left join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category      " +
                 "      left join department de on asset.id_department = de.id_department      " +
@@ -319,7 +331,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.id_user_modified, asset.quantity, asset.id_instance,  " +
                 "        asset.id_department_origin, asset.parent, asset.salt,  " +
                 "        asset.id_process_current,asset.status_process_current, asset.id_type_process_current,  " +
-                "        asset.is_increase, asset.is_decrease  " +
+                "        asset.is_increase, asset.is_decrease, asset.status_use,asset.year_use  " +
                 "from asset       " +
                 "where asset.salt = :salt ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -357,6 +369,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
                 return Optional.of(asset);
             }
         }
@@ -438,7 +452,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,asset.id_type_process_current,   " +
                 "        asset.status_process_current,asset.quantity, " +
                 "       group_concat(aoof.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "       ad.cumulative,ad.rest_value " +
+                "       ad.cumulative,ad.rest_value, asset.status_use, asset.year_use " +
                 "from asset asset " +
                 "         inner join asset_categories assetCategories " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -477,6 +491,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[18]));
                 findAllAssetDto.setCumulative(ValueUtil.getStringByObject(obj[19]));
                 findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[20]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[21]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -494,7 +509,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,asset.id_type_process_current,     " +
                 "        asset.status_process_current,asset.quantity,   " +
                 "       group_concat(aoof.value SEPARATOR '-') assetOriginalOfFormationValue,   " +
-                "       ad.cumulative,ad.rest_value " +
+                "       ad.cumulative,ad.rest_value, asset.status_use, asset.year_use " +
                 "from asset asset " +
                 "         inner join asset_categories assetCategories " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -536,6 +551,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[18]));
                 findAllAssetDto.setCumulative(ValueUtil.getStringByObject(obj[19]));
                 findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[20]));
+                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[21]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[22]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -552,7 +569,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       id_level_type_asset, id_user_created, id_user_modified,       " +
                 "       description, quantity, id_instance, id_department_origin,  " +
                 "       parent, salt, id_process_current, status_process_current,  " +
-                "       id_type_process_current, is_increase, is_decrease " +
+                "       id_type_process_current, is_increase, is_decrease, status_use, " +
+                "       year_use " +
                 "from asset where id_department_origin = :idDepartmentOrigin  " +
                 "order by id_asset desc limit 1 ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -590,6 +608,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
                 return Optional.of(asset);
             }
         }
@@ -606,7 +626,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        id_level_type_asset, id_user_created, id_user_modified,  " +
                 "        description, quantity, id_instance, id_department_origin,  " +
                 "        parent, salt, id_process_current, status_process_current,  " +
-                "        id_type_process_current, is_increase, is_decrease  " +
+                "        id_type_process_current, is_increase, is_decrease, status_use," +
+                "        year_use  " +
                 " from asset             " +
                 " where id_department_origin = :idDepartmentOrigin             " +
                 " and parent is not null             " +
@@ -646,6 +667,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
                 return Optional.of(asset);
             }
         }
@@ -662,7 +685,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        id_level_type_asset, id_user_created, id_user_modified,  " +
                 "        description, quantity, id_instance, id_department_origin,  " +
                 "        parent, salt, id_process_current, status_process_current,  " +
-                "        id_type_process_current, is_increase, is_decrease  " +
+                "        id_type_process_current, is_increase, is_decrease, status_use,  " +
+                "        year_use  " +
                 " from asset  " +
                 " where asset.parent = :idAssetParent  ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -701,6 +725,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
                 assetChildren.add(asset);
             }
         }
@@ -717,7 +743,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        lo.id_location idLocation, lo.name nameLocation,  " +
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
                 "        assetDepreciation.rest_value,asset.quantity,  " +
-                "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue  " +
+                "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,  " +
+                "        asset.status_use, asset.year_use " +
                 "from asset asset  " +
                 "         inner join asset_categories assetCategories  " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category  " +
@@ -757,6 +784,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[15]));
                 findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[16]));
                 findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[17]));
+                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[18]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[19]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -773,7 +802,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        id_level_type_asset, id_user_created, id_user_modified,      " +
                 "        description, quantity, id_instance, id_department_origin,  " +
                 "        parent, salt, id_process_current, status_process_current,  " +
-                "        id_type_process_current, is_increase, is_decrease  " +
+                "        id_type_process_current, is_increase, is_decrease, status_use, " +
+                "        year_use " +
                 "from asset where id_asset in (:idsAsset) ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsAsset", idsAsset);
@@ -811,6 +841,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
                 assets.add(asset);
             }
         }
@@ -827,7 +859,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        id_level_type_asset, id_user_created, id_user_modified,      " +
                 "        description, quantity, id_instance, id_department_origin,  " +
                 "        parent, salt, id_process_current, status_process_current,  " +
-                "        id_type_process_current, is_increase, is_decrease  " +
+                "        id_type_process_current, is_increase, is_decrease, status_use, " +
+                "        year_use  " +
                 "from asset where id_asset = :idAsset ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAsset", idAsset);
@@ -864,6 +897,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
                 return Optional.of(asset);
             }
         }
@@ -959,7 +994,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,  " +
                 "       lo.id_location idLocation, lo.name nameLocation,  " +
                 "       asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
-                "       asset.id_type_process_current,asset.status_process_current , asset.quantity  " +
+                "       asset.id_type_process_current,asset.status_process_current , asset.quantity, " +
+                "       asset.status_use, asset.year_use  " +
                 " from asset asset     " +
                 "          inner join asset_categories assetCategories     " +
                 "     on asset.id_asset_category = assetCategories.id_asset_category     " +
@@ -998,6 +1034,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
                 findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[17]));
+                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[18]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[19]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -1015,7 +1053,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         lo.id_location idLocation, lo.name nameLocation,   " +
                 "         asset.time_created, asset.time_modified, asset.parent, asset.salt,   " +
                 "         assetDepreciation.rest_value,asset.quantity,   " +
-                "         group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue   " +
+                "         group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,  " +
+                "         asset.status_use, asset.year_use " +
                 "from asset asset   " +
                 "         inner join asset_categories assetCategories   " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category   " +
@@ -1055,6 +1094,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[15]));
                 findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[16]));
                 findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[17]));
+                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[18]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[19]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -1072,7 +1113,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
                 "        assetDepreciation.rest_value,asset.quantity,  " +
                 "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,  " +
-                "        assetDepreciation.cumulative  " +
+                "        assetDepreciation.cumulative, asset.status_use, asset.year_use  " +
                 "from asset asset  " +
                 "         inner join asset_categories assetCategories  " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category  " +
@@ -1112,6 +1153,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[16]));
                 findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[17]));
                 findAllAssetDto.setCumulative(ValueUtil.getStringByObject(obj[18]));
+                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[19]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[20]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -1130,7 +1173,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
                 "        assetDepreciation.rest_value,asset.quantity,  " +
                 "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,  " +
-                "        assetDepreciation.cumulative  " +
+                "        assetDepreciation.cumulative, asset.status_use, asset.year_use  " +
                 "from asset asset  " +
                 "         inner join asset_categories assetCategories  " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category  " +
@@ -1174,6 +1217,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[16]));
                 findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[17]));
                 findAllAssetDto.setCumulative(ValueUtil.getStringByObject(obj[18]));
+                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[19]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[20]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -1190,7 +1235,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        lo.id_location idLocation, lo.name nameLocation,  " +
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
                 "        assetDepreciation.rest_value,asset.quantity,  " +
-                "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue  " +
+                "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
+                "        asset.status_use, asset.year_use  " +
                 "from asset asset  " +
                 "         inner join asset_categories assetCategories  " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category  " +
@@ -1234,6 +1280,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[15]));
                 findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[16]));
                 findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[17]));
+                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[18]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[19]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -1251,7 +1299,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        lo.id_location idLocation, lo.name nameLocation,  " +
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
                 "        assetDepreciation.rest_value,asset.quantity,  " +
-                "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue  " +
+                "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
+                "        asset.status_use, asset.year_use  " +
                 "from asset asset  " +
                 "         inner join asset_categories assetCategories  " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category  " +
@@ -1312,7 +1361,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt, " +
                 "          assetDepreciation.rest_value,asset.quantity, " +
                 "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "          assetDepreciation.cumulative  " +
+                "          assetDepreciation.cumulative, asset.status_use, asset.year_use  " +
                 "from asset asset " +
                 "           inner join asset_categories assetCategories " +
                 "      on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -1342,7 +1391,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt, " +
                 "          assetDepreciation.rest_value,asset.quantity, " +
                 "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "          assetDepreciation.cumulative  " +
+                "          assetDepreciation.cumulative, asset.status_use, asset.year_use  " +
                 "from asset asset " +
                 "           inner join asset_categories assetCategories " +
                 "      on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -1417,7 +1466,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          assetCategories.code_name, de.id_department,   " +
                 "          de.code, de.name, lo.id_location, lo.name, asset.time_created,   " +
                 "          asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value," +
-                "          asset.quantity, assetDepreciation.cumulative ");
+                "          asset.quantity, assetDepreciation.cumulative, asset.status_use, asset.year_use ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -1448,7 +1497,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          assetCategories.code_name, de.id_department,   " +
                 "          de.code, de.name, lo.id_location, lo.name, asset.time_created,   " +
                 "          asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value," +
-                "          asset.quantity, assetDepreciation.cumulative ");
+                "          asset.quantity, assetDepreciation.cumulative, asset.status_use, asset.year_use ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -1530,7 +1579,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          assetCategories.code_name, de.id_department,   " +
                 "          de.code, de.name, lo.id_location, lo.name, asset.time_created,   " +
                 "          asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value," +
-                "          asset.quantity, assetDepreciation.cumulative ");
+                "          asset.quantity, assetDepreciation.cumulative, asset.status_use, asset.year_use ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -1561,7 +1610,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          assetCategories.code_name, de.id_department,   " +
                 "          de.code, de.name, lo.id_location, lo.name, asset.time_created,   " +
                 "          asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value," +
-                "          asset.quantity, assetDepreciation.cumulative ");
+                "          asset.quantity, assetDepreciation.cumulative, asset.status_use, asset.year_use ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -1607,7 +1656,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          lo.id_location idLocation, lo.name nameLocation,   " +
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt,        " +
                 "          assetDepreciation.rest_value,asset.quantity,        " +
-                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue     " +
+                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,  " +
+                "          asset.status_use, asset.year_use    " +
                 "   from asset asset        " +
                 "       inner join asset_categories assetCategories   " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category   " +
@@ -1651,7 +1701,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         assetCategories.id_asset_category, assetCategories.name,  " +
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
-                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity  ");
+                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity, " +
+                "         asset.status_use, asset.year_use  ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -1786,7 +1837,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         assetCategories.id_asset_category, assetCategories.name,  " +
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
-                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity ");
+                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity, " +
+                "         asset.status_use, asset.year_use ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -1812,7 +1864,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,asset.id_type_process_current,   " +
                 "        asset.status_process_current,asset.quantity, " +
                 "       group_concat(aoof.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "       ad.cumulative,ad.rest_value " +
+                "       ad.cumulative,ad.rest_value, asset.status_use, asset.year_use " +
                 "from asset asset " +
                 "         inner join asset_categories assetCategories " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -1840,7 +1892,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "           asset.time_created, asset.time_modified, asset.parent, asset.salt,asset.id_type_process_current,     " +
                 "           asset.status_process_current,asset.quantity,   " +
                 "          group_concat(aoof.value SEPARATOR '-') assetOriginalOfFormationValue,   " +
-                "          ad.cumulative,ad.rest_value " +
+                "          ad.cumulative,ad.rest_value, asset.status_use, asset.year_use " +
                 "      from asset asset " +
                 "               inner join asset_categories assetCategories " +
                 "                          on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -1869,7 +1921,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          lo.id_location idLocation, lo.name nameLocation,   " +
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt,        " +
                 "          assetDepreciation.rest_value,asset.quantity,        " +
-                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue     " +
+                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
+                "          asset.status_use, asset.year_use  " +
                 "   from asset asset        " +
                 "       inner join asset_categories assetCategories   " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category   " +
@@ -1897,7 +1950,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          lo.id_location idLocation, lo.name nameLocation,   " +
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt,        " +
                 "          assetDepreciation.rest_value,asset.quantity,        " +
-                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue     " +
+                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,    " +
+                "          asset.status_use, asset.year_use " +
                 "   from asset asset        " +
                 "       inner join asset_categories assetCategories   " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category   " +
@@ -1930,7 +1984,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          lo.id_location idLocation, lo.name nameLocation,   " +
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt,        " +
                 "          assetDepreciation.rest_value,asset.quantity,        " +
-                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue     " +
+                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,   " +
+                "          asset.status_use, asset.year_use  " +
                 "   from asset asset        " +
                 "       inner join asset_categories assetCategories   " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category   " +
@@ -1973,6 +2028,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             query.setParameter("idDepartment", request.getIdDepartment());
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            query.setParameter("statusUse", request.getStatusUse());
+        }
     }
 
     private void setParameterFindAllAssetChildrenDtoToIncrease(FinaAllAssetToIncreaseRequest request, Query query) {
@@ -1988,6 +2046,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            query.setParameter("statusUse", request.getStatusUse());
         }
     }
 
@@ -2013,6 +2074,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             query.setParameter("idDepartment", request.getIdDepartment());
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            query.setParameter("statusUse", request.getStatusUse());
+        }
     }
 
 
@@ -2031,6 +2095,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             query.setParameter("idDepartment", request.getIdDepartment());
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            query.setParameter("statusUse", request.getStatusUse());
+        }
     }
 
     private void setParameterFindAllAssetChildrenDtoToRevaluation(FindAllAssetToRevaluationRequest request, Query query) {
@@ -2047,6 +2114,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
             query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            query.setParameter("statusUse", request.getStatusUse());
         }
     }
 
@@ -2067,6 +2137,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            sb.append(" and asset.status_use = : statusUse ");
+        }
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2083,7 +2156,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                     "         de.id_department, de.code, de.name, " +
                     "         lo.id_location, lo.name, " +
                     "         asset.time_created, asset.time_modified, asset.parent, asset.salt, asset.id_type_process_current, " +
-                    "         asset.status_process_current, asset.quantity, ad.cumulative, ad.rest_value ");
+                    "         asset.status_process_current, asset.quantity, ad.cumulative, ad.rest_value, asset.status_use ");
             sb.append(" ORDER BY asset.id_asset desc ");
         }
     }
@@ -2098,6 +2171,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            sb.append(" and asset.status_use = :status_use ");
+        }
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2114,7 +2190,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                     "         de.id_department, de.code, de.name, " +
                     "         lo.id_location, lo.name, " +
                     "         asset.time_created, asset.time_modified, asset.parent, asset.salt, asset.id_type_process_current, " +
-                    "         asset.status_process_current, asset.quantity, ad.cumulative, ad.rest_value ");
+                    "         asset.status_process_current, asset.quantity, ad.cumulative, ad.rest_value,asset.status_use, " +
+                    "         asset.year_use ");
             sb.append(" ORDER BY asset.id_asset desc ");
         }
     }
@@ -2136,6 +2213,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            sb.append(" and asset.status_use = :statusUse ");
+        }
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2152,7 +2232,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                     "         de.id_department, de.code, de.name, " +
                     "         lo.id_location, lo.name, " +
                     "         asset.time_created, asset.time_modified, asset.parent, asset.salt, asset.id_type_process_current, " +
-                    "         asset.status_process_current, asset.quantity, ad.cumulative, ad.rest_value ) result");
+                    "         asset.status_process_current, asset.quantity, ad.cumulative, ad.rest_value," +
+                    "         asset.status_use, asset.year_use ) result");
         }
     }
 
@@ -2166,6 +2247,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            sb.append(" and asset.status_use = :statusUse ");
+        }
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2182,7 +2266,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                     "         de.id_department, de.code, de.name, " +
                     "         lo.id_location, lo.name, " +
                     "         asset.time_created, asset.time_modified, asset.parent, asset.salt, asset.id_type_process_current, " +
-                    "         asset.status_process_current, asset.quantity, ad.cumulative, ad.rest_value ) result");
+                    "         asset.status_process_current, asset.quantity, ad.cumulative, ad.rest_value, " +
+                    "         asset.status_use, asset.year_use ) result");
         }
     }
 
@@ -2207,11 +2292,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            sb.append(" and asset.status_use = :statusUse ");
+        }
         sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
                 "         assetCategories.id_asset_category, assetCategories.name,  " +
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
-                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity ");
+                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity, " +
+                "         asset.status_use, asset.year_use  ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2237,11 +2326,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            sb.append(" and asset.status_use = :statusUse ");
+        }
         sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
                 "         assetCategories.id_asset_category, assetCategories.name,  " +
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
-                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity ");
+                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity, " +
+                "         asset.status_use, asset.year_use ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2267,11 +2360,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            sb.append(" and asset.status_use = :statusUse ");
+        }
         sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
                 "         assetCategories.id_asset_category, assetCategories.name,  " +
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
-                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity ");
+                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity, " +
+                "         asset.status_use, asset.year_use ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2308,11 +2405,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            sb.append(" and asset.status_use = :statusUse ");
+        }
         sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
                 "         assetCategories.id_asset_category, assetCategories.name,  " +
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
-                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity  ");
+                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity," +
+                "         asset.status_use, asset.year_use  ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2338,11 +2439,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            sb.append(" and asset.status_use = : statusUse ");
+        }
         sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
                 "         assetCategories.id_asset_category, assetCategories.name,  " +
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
-                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity  ");
+                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity, " +
+                "         asset.status_use, asset.year_use ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2367,11 +2472,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            sb.append(" and asset.status_use = :statusUse ");
+        }
         sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
                 "         assetCategories.id_asset_category, assetCategories.name,  " +
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
-                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity  ");
+                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity,  " +
+                "         asset.status_use, asset.year_use ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2482,6 +2591,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         dto.setIsDecrease(ValueUtil.getIntegerByObject(obj[67]));
         dto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[68]));
         dto.setIdUserModified(ValueUtil.getIntegerByObject(obj[69]));
+        dto.setStatusUse(ValueUtil.getIntegerByObject(obj[70]));
+        dto.setYearUse(ValueUtil.getStringByObject(obj[71]));
     }
 
     private void setBluePrintDepartmentLevelTypeAsset(AssetBluePrintDto dto, Object[] obj) {
@@ -2553,7 +2664,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                      asset.parent, asset.salt, asset.quantity ,     " +
                 "                      asset.is_increase,asset.is_decrease,     " +
                 "                      group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,   " +
-                "                      assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase " +
+                "                      assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase," +
+                "                      asset.status_use, asset.year_use " +
                 "       from asset asset " +
                 "                left join asset_categories assetCategories " +
                 "        on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -2613,7 +2725,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIsSingle())){
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
         }
-
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            query.setParameter("statusUse", request.getStatusUse());
+        }
     }
 
     private void setConditionFindAllAsset(FindAllAssetRequest request, StringBuilder sb) {
@@ -2639,12 +2753,16 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (Boolean.TRUE.equals(request.getIsSingle())){
             sb.append("   and (asset.quantity = :isSingle) ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            sb.append(" and asset.status_use = :statusUse ");
+        }
 
         sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
                 "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
                 "         asset.time_created, asset.time_modified, " +
                 "         asset.salt, asset.quantity , " +
-                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,asset.status_process_current ");
+                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative," +
+                "         assetDepreciation.rest_value,asset.status_process_current, asset.status_use ");
 
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
@@ -2683,11 +2801,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (Boolean.TRUE.equals(request.getIsSingle())){
             sb.append("   and (asset.quantity = :isSingle) ");
         }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            sb.append("  and asset.status_use = :statusUse ");
+        }
         sb.append(" group by asset.name,assetCategories.id_asset_category, assetCategories.name, " +
                 "         assetCategories.code_name,de.id_department, de.code,de.name, lo.id_location, lo.name, " +
                 "         asset.time_created, asset.time_modified, " +
                 "         asset.salt, asset.quantity , " +
-                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative,assetDepreciation.rest_value,asset.status_process_current ");
+                "         asset.is_increase,asset.is_decrease,assetDepreciation.cumulative," +
+                "         assetDepreciation.rest_value,asset.status_process_current, asset.status_use, asset.year_use ");
 
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");

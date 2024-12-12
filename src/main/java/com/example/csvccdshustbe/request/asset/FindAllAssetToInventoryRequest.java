@@ -17,6 +17,7 @@ public class FindAllAssetToInventoryRequest extends RequestPageBase {
     private Integer idDepartment;
     private Boolean isSingle;
     private String salt;
+    private Integer statusUse;
     private List<Integer> idsDepartmentOriginal;
 
 }

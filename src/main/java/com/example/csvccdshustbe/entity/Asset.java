@@ -73,4 +73,8 @@ public class Asset {
     private Integer isIncrease;
     @Column(name = "is_decrease")
     private Integer isDecrease;
+    @Column(name = "status_use")
+    private Integer statusUse;
+    @Column(name = "year_use")
+    private String yearUse;
 }
