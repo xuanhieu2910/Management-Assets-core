@@ -1648,6 +1648,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
+        if (Boolean.FALSE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity != :isSingle) ");
+        }
+        if (Boolean.TRUE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity = :isSingle) ");
+        }
         sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
                 "         assetCategories.id_asset_category, assetCategories.name,  " +
                 "         assetCategories.code_name, de.id_department,  " +
