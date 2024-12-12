@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetDepreciation.AssetDepreciationDto;
+import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
 import com.example.csvccdshustbe.dto.declare.BluePrintDeclareDto;
 import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
@@ -236,6 +237,8 @@ public class AssetServiceImpl implements AssetService {
             response.setSalt(dto.getSalt());
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
             response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setIsIncrease(dto.getIsIncrease());
+            response.setIsDecrease(dto.getIsDecrease());
             responses.add(response);
         }
         return responses;
@@ -366,8 +369,8 @@ public class AssetServiceImpl implements AssetService {
     private void updateDataAssetLot(Map<String, Object> dataUpdateAssetRequest) throws ValidateFiledException, IllegalAccessException {
         Asset assetParent = updateAttributeAssetLotParent(dataUpdateAssetRequest);
         //original of formation for assetParent
-        Map<String,Object> commonDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_COMMON);
-        updateOriginalOfFormation(assetParent, commonDataAsset);
+//        Map<String,Object> commonDataAsset = (Map<String, Object>) dataUpdateAssetRequest.get(Constants.KEY_COMMON);
+//        updateOriginalOfFormation(assetParent, commonDataAsset);
         updateAssetDepreciation(dataUpdateAssetRequest, assetParent);
         updateModulesDataAsset(dataUpdateAssetRequest, assetParent);
         updateOriginalDataAsset(dataUpdateAssetRequest, assetParent);
@@ -1009,6 +1012,7 @@ public class AssetServiceImpl implements AssetService {
                             .orElse(0.0)
             ));
             response.setTimeIncrease(dto.getTimeIncrease());
+            response.setStatusProcessCurrent(dto.getStatusProcessCurrent());
             responses.add(response);
         }
         return responses;
@@ -1028,6 +1032,27 @@ public class AssetServiceImpl implements AssetService {
             response.setQuantity(dto.getQuantity());
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
             response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
+            response.setTotalOriginalOfFormation(String.valueOf(
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum()* dto.getQuantity())
+                            .orElse(0L)
+            ));
+            response.setCumulative(String.valueOf(
+                    Optional.ofNullable(dto.getCumulative())
+                            .map(Double::parseDouble)
+                            .map(cumulative -> cumulative * Optional.ofNullable(dto.getQuantity()).orElse(1)) // Nhân với quantity
+                            .orElse(0.0)
+            ));
+
+            response.setRestValue(String.valueOf(
+                    Optional.ofNullable(dto.getRestValue())
+                            .map(Double::parseDouble)
+                            .map(restValue -> restValue * Optional.ofNullable(dto.getQuantity()).orElse(1)) // Nhân với quantity
+                            .orElse(0.0)
+            ));
+            response.setSalt(dto.getSalt());
             responses.add(response);
         }
         return responses;
@@ -1053,24 +1078,35 @@ public class AssetServiceImpl implements AssetService {
         return responses;
     }
 
-    private List<FindAllAssetResponseToRevaluation> convertToFindAllAssetToRevaluationResponse(List<FindAllAssetDto> collect) {
-        List<FindAllAssetResponseToRevaluation> responses = new ArrayList<>();
-        for (FindAllAssetDto dto : collect) {
-            FindAllAssetResponseToRevaluation response = new FindAllAssetResponseToRevaluation();
-            response.setCodeAsset(dto.getCodeAsset());
-            response.setIdAsset(dto.getIdAsset());
-            response.setNameAsset(dto.getNameAsset());
-            response.setNameAssetCategory(dto.getNameAssetCategory());
-            response.setCodeAssetCategory(dto.getCodeAssetCategory());
-            response.setCodeDepartment(dto.getCodeDepartment());
-            response.setNameDepartment(dto.getNameDepartment());
-            response.setQuantity(dto.getQuantity());
-            response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
-            response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
-            response.setSalt(dto.getSalt());
-            responses.add(response);
+    private List<FindAllAssetResponseToRevaluation> convertToFindAllAssetToRevaluationResponse(List<FindAllAssetDto> content) {
+        List<FindAllAssetResponseToRevaluation> response = new ArrayList<>();
+        for (FindAllAssetDto dto : content){
+            FindAllAssetResponseToRevaluation revaluation = new FindAllAssetResponseToRevaluation();
+            revaluation.setCodeAsset(dto.getCodeAsset());
+            revaluation.setNameAsset(dto.getNameAsset());
+            revaluation.setNameAssetCategory(dto.getNameAssetCategory());
+            revaluation.setCodeAssetCategory(dto.getCodeAssetCategory());
+            revaluation.setCodeDepartment(dto.getCodeDepartment());
+            revaluation.setNameDepartment(dto.getNameDepartment());
+            revaluation.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
+            revaluation.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
+            revaluation.setIdAsset(dto.getIdAsset());
+            revaluation.setSalt(dto.getSalt());
+            revaluation.setQuantityOriginal(dto.getQuantity());
+            revaluation.setRestValueOriginal(dto.getRestValue());
+            revaluation.setTotalOriginalOfFormationOriginal(String.valueOf(
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum())
+                            .orElse(0L)
+            ));
+            revaluation.setQuantityInventory(dto.getQuantity());
+            revaluation.setTotalOriginalOfFormationRevaluation(revaluation.getTotalOriginalOfFormationOriginal());
+            revaluation.setRestValueRevaluation(dto.getRestValue());
+            response.add(revaluation);
         }
-        return responses;
+        return response;
     }
 
     private void validateDataCreateAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
@@ -1202,8 +1238,8 @@ public class AssetServiceImpl implements AssetService {
         log.info("Init store asset");
         Asset assetParent = createDataAssetParentLot(createAssetLotRequest);
         //CREATE ORIGINAL OF FORMATION FOR ASSSETPARENT
-        Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetLotRequest.get(Constants.KEY_COMMON);
-        saveAssetOriginalOfFormations(assetParent, commonDataAsset);
+//        Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetLotRequest.get(Constants.KEY_COMMON);
+//      saveAssetOriginalOfFormations(assetParent, commonDataAsset);
         storeDepreciation(createAssetLotRequest, assetParent);
         storeModulesDataAsset(createAssetLotRequest, assetParent);
         storeOriginalDataAsset(createAssetLotRequest, assetParent);
@@ -1584,6 +1620,16 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
+    public Page<FindAllAssetResponseToIncrease> findAllAssetChildrenToIncrease(FinaAllAssetToIncreaseRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetChildrenDtoToIncrease(request, pageable);
+        return new PageImpl<>(convertToFindAllAssetToIncreaseResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
     public String generateCodeAsset(String prefix) {
         if (prefix.equals(Constants.PREFIX_ASSET_LOT)){
             return prefixAssetLot(prefix);
@@ -1635,6 +1681,68 @@ public class AssetServiceImpl implements AssetService {
     }
 
 
+    private List<FindAllAssetResponseToInventory> convertToFindAllAssetChildrenToInventoryResponse(List<FindAllAssetDto> content) {
+        List<FindAllAssetResponseToInventory> response = new ArrayList<>();
+        for (FindAllAssetDto dto : content){
+            FindAllAssetResponseToInventory inventory = new FindAllAssetResponseToInventory();
+            inventory.setCodeAsset(dto.getCodeAsset());
+            inventory.setNameAsset(dto.getNameAsset());
+            inventory.setNameAssetCategory(dto.getNameAssetCategory());
+            inventory.setCodeAssetCategory(dto.getCodeAssetCategory());
+            inventory.setCodeDepartment(dto.getCodeDepartment());
+            inventory.setNameDepartment(dto.getNameDepartment());
+            inventory.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
+            inventory.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
+            inventory.setIdAsset(dto.getIdAsset());
+            inventory.setSalt(dto.getSalt());
+            inventory.setQuantityOriginal(dto.getQuantity());
+            inventory.setRestValueOriginal(dto.getRestValue());
+            inventory.setTotalOriginalOfFormationOriginal(String.valueOf(
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum())
+                            .orElse(0L)
+            ));
+            inventory.setQuantityInventory(dto.getQuantity());
+            inventory.setTotalOriginalOfFormationInventory(inventory.getTotalOriginalOfFormationOriginal());
+            inventory.setRestValueInventory(dto.getRestValue());
+            response.add(inventory);
+        }
+        return response;
+    }
+
+    private List<FindAllAssetResponseToRevaluation> convertToFindAllAssetChildrenToRevaluationResponse(List<FindAllAssetDto> content) {
+        List<FindAllAssetResponseToRevaluation> response = new ArrayList<>();
+        for (FindAllAssetDto dto : content){
+            FindAllAssetResponseToRevaluation revaluation = new FindAllAssetResponseToRevaluation();
+            revaluation.setCodeAsset(dto.getCodeAsset());
+            revaluation.setNameAsset(dto.getNameAsset());
+            revaluation.setNameAssetCategory(dto.getNameAssetCategory());
+            revaluation.setCodeAssetCategory(dto.getCodeAssetCategory());
+            revaluation.setCodeDepartment(dto.getCodeDepartment());
+            revaluation.setNameDepartment(dto.getNameDepartment());
+            revaluation.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
+            revaluation.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
+            revaluation.setIdAsset(dto.getIdAsset());
+            revaluation.setSalt(dto.getSalt());
+            revaluation.setQuantityOriginal(dto.getQuantity());
+            revaluation.setRestValueOriginal(dto.getRestValue());
+            revaluation.setTotalOriginalOfFormationOriginal(String.valueOf(
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum())
+                            .orElse(0L)
+            ));
+            revaluation.setQuantityInventory(dto.getQuantity());
+            revaluation.setTotalOriginalOfFormationRevaluation(revaluation.getTotalOriginalOfFormationOriginal());
+            revaluation.setRestValueRevaluation(dto.getRestValue());
+            response.add(revaluation);
+        }
+        return response;
+    }
+
     private List<FindAllAssetResponseToDecrease> convertToFindAllAssetToDecreaseResponse(List<FindAllAssetDto> content) {
         List<FindAllAssetResponseToDecrease> response = new ArrayList<>();
         for (FindAllAssetDto dto : content){
@@ -1652,15 +1760,47 @@ public class AssetServiceImpl implements AssetService {
             decrease.setQuantity(dto.getQuantity());
             decrease.setRestValue(dto.getRestValue());
             decrease.setTotalOriginalOfFormation(String.valueOf(
-                    Arrays.stream(dto.getOriginalOfFormation().split("-"))
-                            .mapToLong(Long::parseLong)
-                            .sum()
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum())
+                            .orElse(0L)
             ));
             decrease.setCumulative(dto.getCumulative());
             response.add(decrease);
         }
         return response;
     }
+
+    private List<FindAllAssetResponseToDecrease> convertToFindAllAssetChildrenToDecreaseResponse(List<FindAllAssetDto> content) {
+        List<FindAllAssetResponseToDecrease> response = new ArrayList<>();
+        for (FindAllAssetDto dto : content){
+            FindAllAssetResponseToDecrease decrease = new FindAllAssetResponseToDecrease();
+            decrease.setCodeAsset(dto.getCodeAsset());
+            decrease.setNameAsset(dto.getNameAsset());
+            decrease.setNameAssetCategory(dto.getNameAssetCategory());
+            decrease.setCodeAssetCategory(dto.getCodeAssetCategory());
+            decrease.setCodeDepartment(dto.getCodeDepartment());
+            decrease.setNameDepartment(dto.getNameDepartment());
+            decrease.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
+            decrease.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
+            decrease.setIdAsset(dto.getIdAsset());
+            decrease.setSalt(dto.getSalt());
+            decrease.setQuantity(dto.getQuantity());
+            decrease.setRestValue(dto.getRestValue());
+            decrease.setTotalOriginalOfFormation(String.valueOf(
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum())
+                            .orElse(0L)
+            ));
+            decrease.setCumulative(dto.getCumulative());
+            response.add(decrease);
+        }
+        return response;
+    }
+
 
     private String prefixAsset(String prefix) {
         int minLength = 4;
@@ -1748,14 +1888,10 @@ public class AssetServiceImpl implements AssetService {
     public void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status,
                                                                           String typeProcess) {
         if (typeProcess.equals(Constants.CODE_TYPE_PROCESS_INCREASE)) {
-            assetRepository.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(idProcess, status,
-                    Constants.IS_INCREASED,
-                    Constants.IS_NOT_DECREASED);
+            assetRepository.updateAssetStatusProcessCurrentAndIsIncrease(idProcess, status, Constants.IS_INCREASED);
         }
         if (typeProcess.equals(Constants.CODE_TYPE_PROCESS_DECREASE)) {
-            assetRepository.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(idProcess, status,
-                    Constants.IS_NOT_INCREASED,
-                    Constants.IS_DECREASED);
+            assetRepository.updateAssetStatusProcessCurrentAndIsDecrease(idProcess, status,Constants.IS_DECREASED);
         }
     }
 
@@ -1776,6 +1912,16 @@ public class AssetServiceImpl implements AssetService {
         revaluationRequest.setIdsDepartmentOriginal(idsDepartment);
         Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoToRevaluation(revaluationRequest, pageable);
         return new PageImpl<>(convertToFindAllAssetToRevaluationResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllAssetResponseToRevaluation> findAllAssetChildrenToRevaluation(FindAllAssetToRevaluationRequest revaluationRequest) {
+        Pageable pageable = PageUtils.buildPage(revaluationRequest.getPage(), revaluationRequest.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        revaluationRequest.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetChildrenDtoToRevaluation(revaluationRequest, pageable);
+        return new PageImpl<>(convertToFindAllAssetChildrenToRevaluationResponse(findAllAssetDtos.getContent()),
                 pageable, findAllAssetDtos.getTotalElements());
     }
 
@@ -1809,11 +1955,67 @@ public class AssetServiceImpl implements AssetService {
         HashMap<String, Object> value = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
         HashMap<String, Object> dataUpdateAsset = (HashMap<String, Object>) value.get(Constants.KEY_NEW_INFORMATION);
         dataUpdateAsset.put("statusProcessCurrent", status);
-//        HashMap<String, Object> dataCommonUpdateAsset = (HashMap<String, Object>) dataUpdateAsset.get(Constants.KEY_COMMON);
-//        if (dataCommonUpdateAsset.get("distribution") != null){
-//            updateAssetLot(dataUpdateAsset);
-//        }
-        updateAsset(dataUpdateAsset);
+        HashMap<String, Object> dataCommonUpdateAsset = (HashMap<String, Object>) dataUpdateAsset.get(Constants.KEY_COMMON);
+        if (dataCommonUpdateAsset.get("distribution") != null){
+            updateAssetLot(dataUpdateAsset);
+        }
+        else {
+            updateAsset(dataUpdateAsset);
+        }
+
+    }
+
+    @Override
+    public void updateIncreaseOrDecreaseAssetLotByIdProcess(Integer idProcess, String typeProcess){
+        List<AssetProcessDto> assetProcessDtos =
+                assetProcessService.findResultAssetLotByIdProcessAndCalculatorIsIncreaseAndIsDecrease(idProcess);
+        List<Integer> idsAsset = new ArrayList<>();
+        assetProcessDtos.forEach(x->idsAsset.add(x.getIdAsset()));
+        List<Asset> assets = findAllAssetByIdsAsset(idsAsset);
+        switch (typeProcess) {
+            case Constants.CODE_TYPE_PROCESS_INCREASE -> {
+                for (AssetProcessDto assetProcessDto : assetProcessDtos) {
+                    assets.stream().filter(x -> x.getIdAsset().equals(assetProcessDto.getIdAsset())).findFirst().ifPresent(x -> {
+                        x.setIsIncrease(assetProcessDto.getIsIncrease());
+                    });
+                }
+            }
+            case Constants.CODE_TYPE_PROCESS_DECREASE -> {
+                for (AssetProcessDto assetProcessDto : assetProcessDtos) {
+                    assets.stream().filter(x -> x.getIdAsset().equals(assetProcessDto.getIdAsset())).findFirst().ifPresent(x -> {
+                        x.setIsDecrease(assetProcessDto.getIsDecrease());
+                    });
+                }
+            }
+            default -> {
+            }
+        }
+        assetRepository.saveAll(assets);
+    }
+
+    @Override
+    public List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset) {
+        return assetRepository.findAllAssetByIdsAsset(idsAsset);
+    }
+
+    @Override
+    public Page<FindAllAssetResponseToDecrease> findAllAssetChildrenToDecrease(FindAllAssetToDecreaseRequest decreaseRequest) {
+        Pageable pageable = PageUtils.buildPage(decreaseRequest.getPage(), decreaseRequest.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        decreaseRequest.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetChildrenDtoToDecrease(decreaseRequest, pageable);
+        return new PageImpl<>(convertToFindAllAssetChildrenToDecreaseResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllAssetResponseToInventory> findAllAssetChildrenToInventory(FindAllAssetToInventoryRequest inventoryRequest) {
+        Pageable pageable = PageUtils.buildPage(inventoryRequest.getPage(), inventoryRequest.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        inventoryRequest.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetChildrenDtoToInventory(inventoryRequest, pageable);
+        return new PageImpl<>(convertToFindAllAssetChildrenToInventoryResponse(findAllAssetDtos.getContent()),
+                pageable, findAllAssetDtos.getTotalElements());
     }
 
     private Asset duplicationAssetLot(FindDetailsAssetResponse assetRoot) {

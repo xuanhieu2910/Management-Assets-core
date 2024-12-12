@@ -196,26 +196,18 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
     @Override
     public BlueprintInventoryReportDto findBlueprintInventoryReportDtoByCodeDocument(String codeDocument){
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT " +
-                "    d.code codeDocument, d.time_increase timeInventory, " +
-                "    d.time_document timeDocument, de.id_department, " +
-                "    de.code codeDepartment, de.name nameDepartment, " +
-                "    u.user_name, u.full_name, rsh.position, " +
-                "    rsh.position_instance, rsh.level " +
-                "FROM " +
-                "    document d " +
-                "        JOIN" +
-                "    process p ON d.id_process = p.id_process" +
-                "        JOIN" +
-                "    request r ON p.id_process = r.id_process" +
-                "        JOIN" +
-                "    request_stake_holder rsh ON r.id_request = rsh.id_request" +
-                "        JOIN" +
-                "    csvc_user u ON rsh.id_user = u.id_user" +
-                "        JOIN" +
-                "    department de on d.id_department = de.id_department " +
-                "WHERE" +
-                "        d.code = :codeDocument ORDER BY rsh.level ASC");
+        sb.append(" select do.code codeDocument, do.time_increase timeInventory, " +
+                "       do.time_document timeDocument, de.id_department, " +
+                "       de.code codeDepartment, de.name nameDepartment, " +
+                "       cu.user_name, cu.full_name, rsh.position,  " +
+                "       rsh.position_instance, rsh.level " +
+                "from document do " +
+                "    inner join department de on do.id_department = de.id_department " +
+                "    inner join process pr on do.id_process = pr.id_process " +
+                "    inner join request re on pr.id_process = re.id_process " +
+                "    inner join request_stake_holder rsh on re.id_request = rsh.id_request " +
+                "    inner join csvc_user cu on rsh.id_user = cu.id_user " +
+                "where do.code = :codeDocument ORDER BY rsh.level ASC ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("codeDocument", codeDocument);
         List<Object[]> result = query.getResultList();

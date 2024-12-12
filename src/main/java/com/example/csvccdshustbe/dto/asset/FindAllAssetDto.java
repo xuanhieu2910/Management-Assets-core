@@ -32,5 +32,5 @@ public class FindAllAssetDto {
     private String cumulative;
     private String timeIncrease;
     private String value;
-
+    private Integer statusProcessCurrent;
 }

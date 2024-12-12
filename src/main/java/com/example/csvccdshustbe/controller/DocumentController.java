@@ -144,7 +144,8 @@ public class DocumentController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllProcessAssetChangeRequest findAllProcessAssetRequest){
         try {
-            return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetChange(findAllProcessAssetRequest),
+            return ApiResponseDto.createdWithState(
+                    documentService.findAllDataProcessAssetChange(findAllProcessAssetRequest),
                     "Find all document change success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -159,7 +160,8 @@ public class DocumentController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllProcessAssetRevaluationRequest findAllProcessAssetRequest){
         try {
-            return ApiResponseDto.createdWithState(documentService.findAllDataProcessAssetRevaluation(findAllProcessAssetRequest),
+            return ApiResponseDto.createdWithState(
+                    documentService.findAllDataProcessAssetRevaluation(findAllProcessAssetRequest),
                     "Find all document revaluation success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -211,10 +213,8 @@ public class DocumentController {
             processService.createChangeAsset(request);
             return ApiResponseDto.createdWithMessage("Create change asset success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

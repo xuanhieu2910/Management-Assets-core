@@ -16,4 +16,7 @@ public interface AssetProcessRepositoryCustom {
     List<AssetProcessDto> findAssetProcessDtoByIdProcess(Integer idProcess);
     List<AssetProcess> findAssetProcessListByIdsAssetAndIdProcess(List<Integer> idsAsset, Integer idProcess);
     List<AssetProcess> findAllAssetProcessListByIdProcess(Integer idProcess);
+    List<AssetProcessDto> findResultAssetLotByIdProcessAndCalculatorIsIncreaseAndIsDecrease(Integer idProcess);
+    Page<FindAllAssetDto> findAllAssetLotProcess(FindAllAssetProcessRequest request, Pageable pageable);
+    Page<FindAllAssetDto> findAllAssetChildrenProcess(FindAllAssetProcessRequest request, Pageable pageable);
 }

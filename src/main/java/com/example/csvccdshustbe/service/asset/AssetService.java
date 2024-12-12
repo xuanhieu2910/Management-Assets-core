@@ -35,6 +35,7 @@ public interface AssetService {
     String exportFileReportByPath(String pathFile) throws IOException;
     void uploadFileImportAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException;
     Page<FindAllAssetResponseToIncrease> findAllAssetToIncrease(FinaAllAssetToIncreaseRequest request);
+    Page<FindAllAssetResponseToIncrease> findAllAssetChildrenToIncrease(FinaAllAssetToIncreaseRequest request);
     String generateCodeAsset(String prefix);
     Page<FindAllAssetResponseToInventory> findAllAssetToInventory(FindAllAssetToInventoryRequest inventoryRequest);
     void createAssetFromFile(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException;
@@ -45,7 +46,12 @@ public interface AssetService {
     void updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status, String typeProcess);
     Page<FindAllAssetResponseToChange> findAllAssetToChange(FindAllAssetToChangeRequest changeRequest);
     Page<FindAllAssetResponseToRevaluation> findAllAssetToRevaluation(FindAllAssetToRevaluationRequest changeRequest);
+    Page<FindAllAssetResponseToRevaluation> findAllAssetChildrenToRevaluation(FindAllAssetToRevaluationRequest changeRequest);
     Page<FindAllAssetResponseToDecrease> findAllAssetToDecrease(FindAllAssetToDecreaseRequest decreaseRequest);
     Asset duplicationAssetBySaltAsset(String saltAssetRoot) throws ValidateFiledException, IllegalAccessException;
     void updateInformationAssetByProcess(Process process, Integer status) throws JsonProcessingException, ValidateFiledException, IllegalAccessException;
+    void updateIncreaseOrDecreaseAssetLotByIdProcess(Integer idProcess, String typeProcess);
+    List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset);
+    Page<FindAllAssetResponseToDecrease> findAllAssetChildrenToDecrease(FindAllAssetToDecreaseRequest decreaseRequest);
+    Page<FindAllAssetResponseToInventory> findAllAssetChildrenToInventory(FindAllAssetToInventoryRequest inventoryRequest);
 }

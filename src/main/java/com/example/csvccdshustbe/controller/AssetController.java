@@ -208,6 +208,21 @@ public class AssetController {
         }
     }
 
+    @GetMapping("/find-all-children-to-increase")
+    public ResponseEntity<?> findAllChildrenToIncreaseAsset(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FinaAllAssetToIncreaseRequest request){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllAssetChildrenToIncrease(request),
+                    "Find all asset children to increase success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
     @GetMapping("/find-all-to-inventory")
     public ResponseEntity<?> findAllToInventory(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
@@ -216,6 +231,20 @@ public class AssetController {
     }) FindAllAssetToInventoryRequest inventoryRequest){
         try {
             return ApiResponseDto.createdWithState(assetService.findAllAssetToInventory(inventoryRequest),
+                    "Find all asset to inventory success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/find-all-children-to-inventory")
+    public ResponseEntity<?> findAllChildrenToInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetToInventoryRequest inventoryRequest){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllAssetChildrenToInventory(inventoryRequest),
                     "Find all asset to inventory success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
@@ -250,6 +279,21 @@ public class AssetController {
         }
     }
 
+    @GetMapping("/find-all-children-to-revaluation")
+    public ResponseEntity<?> findAllChildrenToRevaluation(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetToRevaluationRequest revaluationRequest){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllAssetChildrenToRevaluation(revaluationRequest),
+                    "Find all asset children to revaluation success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
     @GetMapping("/find-all-to-decrease")
     public ResponseEntity<?> findAllToDecrease(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
@@ -259,6 +303,20 @@ public class AssetController {
         try {
             return ApiResponseDto.createdWithState(assetService.findAllAssetToDecrease(decreaseRequest),
                     "Find all asset to decrease success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/find-all-children-to-decrease")
+    public ResponseEntity<?> findAllChildrenToDecrease(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetToDecreaseRequest decreaseRequest){
+        try {
+            return ApiResponseDto.createdWithState(assetService.findAllAssetChildrenToDecrease(decreaseRequest),
+                    "Find all asset children to decrease success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }

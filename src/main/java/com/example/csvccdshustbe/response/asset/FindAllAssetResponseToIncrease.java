@@ -31,4 +31,10 @@ public class FindAllAssetResponseToIncrease {
     private String salt;
     @JsonProperty("quantity")
     private Integer quantity;
+    @JsonProperty("total_original_of_formation")
+    private String totalOriginalOfFormation;
+    @JsonProperty("cumulative")
+    private String cumulative;
+    @JsonProperty("rest_value")
+    private String restValue;
 }

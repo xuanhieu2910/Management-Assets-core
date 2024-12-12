@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.repository.process.ProcessRepository;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.request.process.asset.AssetDetailDecreaseRequest;
@@ -36,6 +37,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.reflect.TypeToken;
 import com.nimbusds.jose.shaded.gson.Gson;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -77,6 +79,8 @@ public class ProcessServiceImpl implements ProcessService {
     AssetProcessService assetProcessService;
     @Autowired
     AssetService assetService;
+    @Autowired
+    private AssetRepository assetRepository;
 
 
     @Override
@@ -314,14 +318,26 @@ public class ProcessServiceImpl implements ProcessService {
         createTaskSendMailDecrease(usersDto, document, process);
     }
 
+    @Transactional
     @Override
     public void createChangeAsset(CreateChangeAssetRequest request) throws ValidateFiledException {
-        validateAssetProcessChange(List.of(request.getAssetDetail().getIdAsset()));
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(contructionDocumentChange(request.getDocument(), process));
-        assetProcessService.saveListAssetProcess(contructionAssetProcessChange(request, process));
-        updateInformationProcessCurrentAsset(List.of(request.getAssetDetail().getIdAsset()), process);
+        List<Integer> idsAssetChildren = new ArrayList<>();
+        List<Asset> assetChildren= assetRepository.findAllAssetChildrenByParentId(request.getAssetDetail().getIdAsset());
+        if(!assetChildren.isEmpty()){
+            assetChildren.forEach(x->idsAssetChildren.add(x.getIdAsset()));
+            validateAssetProcessChange(idsAssetChildren);
+            assetProcessService.saveListAssetProcess(contructionAssetProcessLotChange(request, process,idsAssetChildren));
+            updateInformationProcessCurrentAsset(idsAssetChildren, process);
+            updateInformationProcessCurrentAsset(List.of(request.getAssetDetail().getIdAsset()), process);
+        }
+        else {
+            validateAssetProcessChange(List.of(request.getAssetDetail().getIdAsset()));
+            assetProcessService.saveListAssetProcess(contructionAssetProcessChange(request, process));
+            updateInformationProcessCurrentAsset(List.of(request.getAssetDetail().getIdAsset()), process);
+        }
         List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
                 Arrays.asList(
                         Constants.CODE_TYPE_STATE_INIT,
@@ -471,6 +487,25 @@ public class ProcessServiceImpl implements ProcessService {
         assetProcess.setIdUserCreated(csvcUser.getIdUser());
         assetProcess.setIdUserModified(csvcUser.getIdUser());
         assetProcessList.add(assetProcess);
+        return assetProcessList;
+    }
+    private List<AssetProcess> contructionAssetProcessLotChange(CreateChangeAssetRequest request, Process process, List<Integer> idsAssetChildren) {
+        List<AssetProcess> assetProcessList = new ArrayList<>();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        for (Integer idAssetChildren : idsAssetChildren) {
+        AssetProcess assetProcess = new AssetProcess();
+        assetProcess.setIdAsset(idAssetChildren);
+        assetProcess.setIdProcess(process.getIdProcess());
+        assetProcess.setIdTypeProcess(process.getIdTypeProcess());
+        assetProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+        assetProcess.setValue(request.getAssetDetail().getValue());
+        assetProcess.setTimeCreated(timeCurrent);
+        assetProcess.setTimeModified(timeCurrent);
+        assetProcess.setIdUserCreated(csvcUser.getIdUser());
+        assetProcess.setIdUserModified(csvcUser.getIdUser());
+        assetProcessList.add(assetProcess);
+    }
         return assetProcessList;
     }
 
@@ -783,7 +818,8 @@ public class ProcessServiceImpl implements ProcessService {
                         Constants.CODE_TYPE_PROCESS_DECREASE -> {
                         assetService.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.getIdProcess(),
                                     status, typeProcess.getCode());
-                        }
+                        assetService.updateIncreaseOrDecreaseAssetLotByIdProcess(process.getIdProcess(), typeProcess.getCode());
+                }
                 case Constants.CODE_TYPE_PROCESS_CHANGE,
                         Constants.CODE_TYPE_PROCESS_REVALUATION ->{
                         assetService.updateInformationAssetByProcess(process, status);

@@ -499,6 +499,19 @@ public class Constants {
     public final static Integer IS_NOT_DECREASED = -1;
 
     /*-----------------------------------------------------*/
+
+    /**
+     * Constants IS_INCREASE_AND_DECREASE_LOT
+     * */
+    public final static Integer IS_INCREASED_WHOLE_LOT = 2;
+    public final static Integer IS_INCREASED_PART_LOT = 1;
+    public final static Integer IS_NOT_INCREASED_LOT = -1;
+    public final static Integer IS_DECREASED_WHOLE_LOT = 2;
+    public final static Integer IS_DECREASED_PART_LOT = 1;
+    public final static Integer IS_NOT_DECREASED_LOT = -1;
+
+    /*-----------------------------------------------------*/
+
     /**
      * Constants ERROR
      * */

@@ -39,4 +39,31 @@ public class AssetProcessController {
         }
     }
 
+    @GetMapping("/find-all-lot")
+    public ResponseEntity<?> findAllAssetLotProcess(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetProcessRequest request){
+        try {
+            return ApiResponseDto.createdWithState(assetProcessService.findAllAssetLotProcess(request),
+                    "Find all data asset lot document success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/find-all-children")
+    public ResponseEntity<?> findAllAssetChildren(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetProcessRequest request){
+        try {
+            return ApiResponseDto.createdWithState(assetProcessService.findAllAssetChildrenProcess(request),
+                    "Find all data asset children document success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }
