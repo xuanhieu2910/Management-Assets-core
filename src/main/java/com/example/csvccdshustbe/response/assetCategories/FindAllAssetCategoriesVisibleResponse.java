@@ -33,4 +33,6 @@ public class FindAllAssetCategoriesVisibleResponse {
     private String minimumTimeDepreciation;
     @JsonProperty("maximum_time_depreciation")
     private String maximumTimeDepreciation;
+    @JsonProperty("code_number_pattern")
+    private String codeNumberPattern;
 }

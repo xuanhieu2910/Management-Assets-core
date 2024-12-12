@@ -92,7 +92,8 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "              CAST(assetCategires.id_asset_category as NCHAR ) as path,     " +
                 "              assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,     " +
                 "              assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
-                "              assetCategires.id_department_original  " +
+                "              assetCategires.id_department_original,  " +
+                "              assetCategires.number_code_pattern " +
                 "       from asset_categories assetCategires        " +
                 "       where assetCategires.code_name = :codeName        " +
                 "       and assetCategires.visible = :visible        " +
@@ -107,7 +108,8 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "              concat_ws('/',cte.path,CAST(assetCategires.id_asset_category as NCHAR)) as path,     " +
                 "              assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,     " +
                 "              assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
-                "              assetCategires.id_department_original  " +
+                "              assetCategires.id_department_original,  " +
+                "              assetCategires.number_code_pattern  " +
                 "       from asset_categories assetCategires        " +
                 "                INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category        " +
                 "       )        " +
@@ -117,7 +119,8 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "       cte.visible, cte.time_created, cte.time_modified,  " +
                 "       cte.is_pick, cte.depth, cte.path,  " +
                 "       cte.value_wear_tear, cte.year_used_wear_tear,  " +
-                "       cte.minimum_time_depreciation, cte.maximum_time_depreciation  " +
+                "       cte.minimum_time_depreciation, cte.maximum_time_depreciation,  " +
+                "       cte.number_code_pattern " +
                 "from cte_asset_categories cte  " +
                 "where 1 = 1 and id_department_original in (:idsDepartment) ");
         setConditionFindAllAssetCategoriesByCodeAndVisible(request, sb);
@@ -147,6 +150,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 dto.setYearUsedWearTear(ValueUtil.getStringByObject(obj[15]));
                 dto.setMinimumTimeDepreciation(ValueUtil.getStringByObject(obj[16]));
                 dto.setMaximumTimeDepreciation(ValueUtil.getStringByObject(obj[17]));
+                dto.setNumberCodePattern(ValueUtil.getStringByObject(obj[18]));
                 dtos.add(dto);
             }
         }
@@ -850,7 +854,8 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "              CAST(assetCategires.id_asset_category as NCHAR ) as path,     " +
                 "              assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,     " +
                 "              assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
-                "              assetCategires.id_department_original  " +
+                "              assetCategires.id_department_original,  " +
+                "              assetCategires.number_code_pattern " +
                 "       from asset_categories assetCategires        " +
                 "       where assetCategires.code_name = :codeName        " +
                 "       and assetCategires.visible = :visible        " +
@@ -865,7 +870,8 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "              concat_ws('/',cte.path,CAST(assetCategires.id_asset_category as NCHAR)) as path,     " +
                 "              assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,     " +
                 "              assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
-                "              assetCategires.id_department_original  " +
+                "              assetCategires.id_department_original,  " +
+                "              assetCategires.number_code_pattern " +
                 "       from asset_categories assetCategires        " +
                 "                INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category        " +
                 "       )        " +
