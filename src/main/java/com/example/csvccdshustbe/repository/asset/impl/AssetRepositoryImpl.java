@@ -507,7 +507,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "where 1 = 1 " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal) " +
                 "  and asset.is_increase = :isIncrease " +
-                "  and asset.status_process_current != :statusProcessCurrent ");
+                "  and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null) ");
         setConditionFindAllAssetChildrenDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetChildrenDtoToIncrease(request, query);
@@ -1853,7 +1853,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "      where 1 = 1 " +
                 "        and asset.id_department_origin in (:idsDepartmentOriginal) " +
                 "        and asset.is_increase = :isIncrease " +
-                "        and asset.status_process_current != :statusProcessCurrent ");
+                "        and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null) ");
         setConditionCountFindAllAssetChildrenDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetChildrenDtoToIncrease(request,query);

@@ -1796,6 +1796,7 @@ public class AssetServiceImpl implements AssetService {
                             .orElse(0L)
             ));
             decrease.setCumulative(dto.getCumulative());
+            decrease.setParent(dto.getParent());
             response.add(decrease);
         }
         return response;
@@ -2555,8 +2556,13 @@ public class AssetServiceImpl implements AssetService {
 
         Map<String, Object> depreciationData = processDepreciationData(row);
         createAssetRequest.put(Constants.KEY_DEPRECIATION, depreciationData);
+        if(!errorList.isEmpty()){
+            createAssetRequest.put(Constants.KEY_ERROR, errorList);
+        }
+        else {
+            createAssetRequest.put(Constants.KEY_ERROR, null);
+        }
 
-        createAssetRequest.put(Constants.KEY_ERROR, errorList);
         return createAssetRequest;
 
     }
