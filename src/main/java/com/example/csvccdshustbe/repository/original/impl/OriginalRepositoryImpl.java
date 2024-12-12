@@ -129,44 +129,35 @@ public class OriginalRepositoryImpl implements OriginalRepositoryCustom {
     @Override
     public Map<String, List<FindAllOriginalDto>> findAllOriginalToDownload() {
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH RECURSIVE cte_asset_categories as (  " +
-                "      select assetCategires.id_asset_category,assetCategires.name,  " +
-                "             assetCategires.code_name, assetCategires.short_name,  " +
-                "             assetCategires.description, assetCategires.parent,  " +
-                "             assetCategires.sort_order, assetCategires.asset_count,  " +
-                "             assetCategires.visible, assetCategires.time_created,  " +
-                "             assetCategires.time_modified, assetCategires.is_pick,  " +
-                "             1 as depth,  " +
-                "             CAST(assetCategires.id_asset_category as NCHAR ) as path,  " +
-                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,  " +
-                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
-                "             assetCategires.id_department_original  " +
-                "      from asset_categories assetCategires  " +
-                "      where parent is null  " +
-                "      union all  " +
-                "      select assetCategires.id_asset_category,assetCategires.name,  " +
-                "             assetCategires.code_name, assetCategires.short_name,  " +
-                "             assetCategires.description, assetCategires.parent,  " +
-                "             assetCategires.sort_order, assetCategires.asset_count,  " +
-                "             assetCategires.visible, assetCategires.time_created,  " +
-                "             assetCategires.time_modified, assetCategires.is_pick,  " +
-                "             cte.depth + 1 as depth,  " +
-                "             concat_ws('/',cte.path,CAST(assetCategires.id_asset_category as NCHAR)) as path,  " +
-                "             assetCategires.value_wear_tear, assetCategires.year_used_wear_tear,  " +
-                "             assetCategires.minimum_time_depreciation, assetCategires.maximum_time_depreciation,  " +
-                "             assetCategires.id_department_original  " +
-                "      from asset_categories assetCategires  " +
-                "               INNER JOIN cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category  " +
-                "      )  " +
-                "select cte.id_asset_category, cte.name,ori.id_original, ori.name  " +
-                "from cte_asset_categories cte  " +
-                "    inner join asset_categories ac on cte.parent = ac.id_asset_category  " +
-                "    inner join original ori on ori.id_asset_category = ac.id_asset_category  " +
-                "where 1 = 1 and cte.visible = :visible  " +
-                "      and cte.is_pick = 1  " +
-                "      and cte.parent is not null  " +
-                "order by id_asset_category, id_original ");
+        sb.append(" WITH RECURSIVE cte_asset_category as (     " +
+                "  select assetCategories.id_asset_category, assetCategories.name, assetCategories.short_name,     " +
+                "         assetCategories.code_name, assetCategories.description, assetCategories.parent,     " +
+                "         assetCategories.sort_order, assetCategories.asset_count,     " +
+                "         assetCategories.visible, assetCategories.time_created, assetCategories.time_modified,     " +
+                "         assetCategories.path_image,assetCategories.is_pick ,     " +
+                "         assetCategories.id_asset_category as idParent     " +
+                "  from asset_categories   assetCategories     " +
+                "  where assetCategories.parent is null " +
+                "  union all         " +
+                "  select assetCategories.id_asset_category, assetCategories.name,     " +
+                "         assetCategories.short_name, assetCategories.code_name,     " +
+                "         assetCategories.description, assetCategories.parent,     " +
+                "         assetCategories.sort_order, assetCategories.asset_count,     " +
+                "         assetCategories.visible, assetCategories.time_created,     " +
+                "         assetCategories.time_modified, assetCategories.path_image,     " +
+                "         assetCategories.is_pick,     " +
+                "         cte.id_asset_category as idParent     " +
+                "  from asset_categories assetCategories " +
+                "           INNER JOIN cte_asset_category cte ON assetCategories.parent = cte.id_asset_category " +
+                "               )         " +
+                "                select cte.id_asset_category, cte.name,ori.id_original, ori.name " +
+                "from cte_asset_category cte  inner join asset_categories ac on cte.idParent = ac.id_asset_category " +
+                "   inner join original ori on ori.id_asset_category = ac.id_asset_category " +
+                "where 1 = 1 and cte.visible = :visible " +
+                "  and cte.is_pick = :isPicked " +
+                "order by id_asset_category, id_original; ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("isPicked", Constants.ASSET_CATEGORY_IS_PICK);
         query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
         List<Object[]> result = query.getResultList();
         Map<String, List<FindAllOriginalDto>> responses = new HashMap<>();
