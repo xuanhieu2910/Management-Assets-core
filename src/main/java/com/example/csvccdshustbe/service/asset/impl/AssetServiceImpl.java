@@ -2005,7 +2005,7 @@ public class AssetServiceImpl implements AssetService {
         List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
         decreaseRequest.setIdsDepartmentOriginal(idsDepartment);
         Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetChildrenDtoToDecrease(decreaseRequest, pageable);
-        return new PageImpl<>(convertToFindAllAssetChildrenToDecreaseResponse(findAllAssetDtos.getContent()),
+        return new PageImpl<>(convertToFindAllAssetChildrenToDecreaseResponse(findAllAssetDtos.get().collect(Collectors.toList())),
                 pageable, findAllAssetDtos.getTotalElements());
     }
 
@@ -2015,7 +2015,7 @@ public class AssetServiceImpl implements AssetService {
         List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
         inventoryRequest.setIdsDepartmentOriginal(idsDepartment);
         Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetChildrenDtoToInventory(inventoryRequest, pageable);
-        return new PageImpl<>(convertToFindAllAssetChildrenToInventoryResponse(findAllAssetDtos.getContent()),
+        return new PageImpl<>(convertToFindAllAssetChildrenToInventoryResponse(findAllAssetDtos.get().collect(Collectors.toList())),
                 pageable, findAllAssetDtos.getTotalElements());
     }
 
