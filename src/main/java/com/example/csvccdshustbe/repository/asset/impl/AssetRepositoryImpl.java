@@ -1006,8 +1006,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 " where 1 = 1     " +
                 "   and asset.parent is null    " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
-                "   and asset.is_increase = :isIncrease  " +
-                "   and asset.is_decrease = :isDecrease  " +
                 "   and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null ) ");
         setConditionFindAllAssetDtoToChange(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -1058,7 +1056,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "from asset asset   " +
                 "         inner join asset_categories assetCategories   " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category   " +
-                "         inner join department de on asset.id_department = de.id_department   " +
+                "         left join department de on asset.id_department = de.id_department   " +
                 "         left join location lo on asset.id_location = lo.id_location   " +
                 "         left join asset_original_of_formation assetOriginalOfFormation   " +
                 "                   on asset.id_asset = assetOriginalOfFormation.id_asset   " +
@@ -1066,7 +1064,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                   on asset.id_asset = assetDepreciation.id_asset   " +
                 "where 1 = 1   " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal)   " +
-                "  and asset.status_process_current != :statusProcess ");
+                "  and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null ) ");
         setConditionFindAllAssetDtoToRevaluation(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToRevaluation(query, request);
@@ -1639,8 +1637,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 " where 1 = 1     " +
                 "   and asset.parent is null       " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
-                "   and asset.is_increase = :isIncrease  " +
-                "   and asset.is_decrease = :isDecrease  " +
                 "   and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null )   ");
         setConditionFindAllAssetDtoToChange(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -1662,15 +1658,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "   from asset asset        " +
                 "       inner join asset_categories assetCategories   " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category   " +
-                "       inner join department de on asset.id_department = de.id_department   " +
+                "       left join department de on asset.id_department = de.id_department   " +
                 "       left join location lo on asset.id_location = lo.id_location   " +
-                "       inner join asset_original_of_formation assetOriginalOfFormation        " +
+                "       left join asset_original_of_formation assetOriginalOfFormation        " +
                 "           on asset.id_asset = assetOriginalOfFormation.id_asset        " +
                 "       left join asset_depreciation assetDepreciation     " +
                 "          on asset.id_asset = assetDepreciation.id_asset        " +
                 "   where 1 = 1 " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal)     " +
-                "  and asset.status_process_current != :statusProcess   ");
+                "  and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null )   ");
         setCountConditionFindAllAssetDtoToRevaluation(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToRevaluation(query, request);
@@ -1722,30 +1718,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private void setParameterFindAllAssetDtoToChange(Query query, FindAllAssetToChangeRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
-        if (StringUtils.isNotBlank(request.getNameAsset())) {
-            query.setParameter("nameAsset", request.getNameAsset());
-        }
-        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())) {
-            query.setParameter("idAssetCategory", request.getIdAssetCategory());
-        }
-        if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
-            query.setParameter("idDepartment", request.getIdDepartment());
-        }
-        if (Boolean.FALSE.equals(request.getIsSingle())){
-            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
-            query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
-            query.setParameter("isDecrease", Constants.IS_NOT_DECREASED_LOT);
-        }
-        if (Boolean.TRUE.equals(request.getIsSingle())){
-            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
-            query.setParameter("isIncrease", Constants.IS_INCREASED);
-            query.setParameter("isDecrease", Constants.IS_NOT_DECREASED);
-        }
-    }
-
-    private void setParameterFindAllAssetDtoToRevaluation(Query query, FindAllAssetToRevaluationRequest request) {
-        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
         if (request.getIsSingle()){
             query.setParameter("isIncrease", Constants.IS_INCREASED);
             query.setParameter("isDecrease", Constants.IS_DECREASED);
@@ -1765,19 +1737,44 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             query.setParameter("idDepartment", request.getIdDepartment());
         }
-        if (Boolean.FALSE.equals(request.getIsSingle())){
-            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
-            query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
-            query.setParameter("isDecrease", Constants.IS_NOT_DECREASED_LOT);
-        }
-        if (Boolean.TRUE.equals(request.getIsSingle())){
-            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+    }
+
+    private void setParameterFindAllAssetDtoToRevaluation(Query query, FindAllAssetToRevaluationRequest request) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
+        if (request.getIsSingle()){
             query.setParameter("isIncrease", Constants.IS_INCREASED);
-            query.setParameter("isDecrease", Constants.IS_NOT_DECREASED);
+            query.setParameter("isDecrease", Constants.IS_DECREASED);
+            query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
+        } else {
+            query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
+            query.setParameter("isIncreasePart", Constants.IS_INCREASED_PART_LOT);
+            query.setParameter("isDecrease", Constants.IS_DECREASED_WHOLE_LOT);
+            query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
+        }
+        if (StringUtils.isNotBlank(request.getNameAsset())) {
+            query.setParameter("nameAsset", request.getNameAsset());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())) {
+            query.setParameter("idAssetCategory", request.getIdAssetCategory());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
+            query.setParameter("idDepartment", request.getIdDepartment());
         }
     }
 
     private void setConditionFindAllAssetDtoToChange(StringBuilder sb, FindAllAssetToChangeRequest request) {
+        if (request.getIsSingle()) {
+            sb.append("   and asset.is_increase = :isIncrease  " +
+                    "  and asset.is_decrease = :isDecrease  " +
+                    "  and asset.quantity = :quantityDefault  " +
+                    "  and asset.parent is null ");
+        } else {
+            sb.append("   and (((asset.is_increase = :isIncrease or " +
+                    "         asset.is_increase = :isIncreasePart) and " +
+                    "        asset.is_decrease != :isDecrease)) " +
+                    "  and asset.quantity > :quantityDefault ");
+        }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
         }
@@ -1787,12 +1784,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
         }
-        if (Boolean.FALSE.equals(request.getIsSingle())){
-            sb.append("   and (asset.quantity != :isSingle) ");
-        }
-        if (Boolean.TRUE.equals(request.getIsSingle())){
-            sb.append("   and (asset.quantity = :isSingle) ");
-        }
+
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -1827,12 +1819,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             sb.append(" and de.id_department = :idDepartment ");
-        }
-        if (Boolean.FALSE.equals(request.getIsSingle())){
-            sb.append("   and (asset.quantity != :isSingle) ");
-        }
-        if (Boolean.TRUE.equals(request.getIsSingle())){
-            sb.append("   and (asset.quantity = :isSingle) ");
         }
         sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
                 "         assetCategories.id_asset_category, assetCategories.name,  " +
