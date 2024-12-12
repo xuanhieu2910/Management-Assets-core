@@ -328,7 +328,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "         cte.nameParent, cte.id_department_original, cte.number_code_pattern,  " +
                 "         group_concat(concat_ws(':', units.id_unit, units.name) SEPARATOR  '/') nameUnits  " +
                 "from cte_asset_categories cte  " +
-                "         left join (select id_asset_category,name from units un where un.is_display = :isDisplay" +
+                "         left join (select id_unit, id_asset_category,name from units un where un.is_display = :isDisplay" +
                 "                   and un.status = :status )  units  " +
                 "             on cte.id_asset_category = units.id_asset_category  " +
                 "where 1 = 1  " +
