@@ -721,6 +721,8 @@ public class AssetServiceImpl implements AssetService {
         childAsset.setCodeAsset(ValueUtil.getStringByObject(obj.get("codeAsset")));
         childAsset.setIdDepartment(ValueUtil.getIntegerByObject(obj.get("idDepartment")));
         childAsset.setIdLocation(ValueUtil.getIntegerByObject(obj.get("idLocation")));
+        childAsset.setStatusUse(assetParent.getStatusUse());
+        childAsset.setYearUse(assetParent.getYearUse());
         assetRepository.save(childAsset);
     }
 
@@ -847,6 +849,8 @@ public class AssetServiceImpl implements AssetService {
         if (commonDataAsset.get("statusProcessCurrent") != null){
             asset.setStatusProcessCurrent(ValueUtil.getIntegerByObject(commonDataAsset.get("statusProcessCurrent")));
         }
+        asset.setStatusUse(ValueUtil.getIntegerByObject(commonDataAsset.get("statusUse")));
+        asset.setYearUse(ValueUtil.getStringByObject(commonDataAsset.get("yearUse")));
         assetRepository.save(asset);
     }
 
@@ -877,6 +881,8 @@ public class AssetServiceImpl implements AssetService {
         assetParent.get().setIdLevelTypeAsset(ValueUtil.getIntegerByObject(commonDataAsset.get("idLevelTypeAsset")));
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         assetParent.get().setIdUserModified(csvcUser.getIdUser());
+        assetParent.get().setStatusUse(ValueUtil.getIntegerByObject(commonDataAsset.get("statusUse")));
+        assetParent.get().setYearUse(ValueUtil.getStringByObject(commonDataAsset.get("yearUse")));
         return assetRepository.save(assetParent.get());
     }
 
@@ -1480,6 +1486,8 @@ public class AssetServiceImpl implements AssetService {
         childAsset.setParent(parentAsset.getIdAsset());
         childAsset.setIsIncrease(Constants.IS_NOT_INCREASED);
         childAsset.setIsDecrease(Constants.IS_NOT_DECREASED);
+        childAsset.setStatusUse(parentAsset.getStatusUse());
+        childAsset.setYearUse(parentAsset.getYearUse());
         assetRepository.save(childAsset);
 
         return childAsset;
@@ -1514,6 +1522,8 @@ public class AssetServiceImpl implements AssetService {
         assetParent.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
         assetParent.setIsIncrease(Constants.IS_NOT_INCREASED);
         assetParent.setIsDecrease(Constants.IS_NOT_DECREASED);
+        assetParent.setStatusUse(ValueUtil.getIntegerByObject(dataAssetParent.get("statusUse")));
+        assetParent.setYearUse(ValueUtil.getStringByObject(dataAssetParent.get("yearUse")));
         return assetRepository.save(assetParent);
     }
 
@@ -1558,6 +1568,8 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdDepartmentDefault(ValueUtil.getIntegerByObject(dataAsset.get("idDepartmentDefault")));
         asset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(dataAsset.get("idLevelTypeAsset")));
         asset.setIdInstance(ValueUtil.getIntegerByObject(dataAsset.get("idInstance")));
+        asset.setStatusUse(ValueUtil.getIntegerByObject(dataAsset.get("statusUse")));
+        asset.setYearUse(ValueUtil.getStringByObject(dataAsset.get("yearUse")));
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());
@@ -2141,6 +2153,8 @@ public class AssetServiceImpl implements AssetService {
         assetDup.setIdTypeProcessCurrent(assetRoot.getIdTypeProcessCurrent());
         assetDup.setIsIncrease(assetRoot.getIsIncrease());
         assetDup.setIsDecrease(assetRoot.getIsDecrease());
+        assetDup.setStatusUse(assetRoot.getStatusUse());
+        assetDup.setYearUse(assetRoot.getYearUse());
         return assetDup;
     }
 

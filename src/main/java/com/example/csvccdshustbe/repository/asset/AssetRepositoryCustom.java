@@ -33,13 +33,11 @@ public interface AssetRepositoryCustom {
     Integer countAssetByIdsAssetAndNotIncreaseOrDecreasedOrPending(List<Integer> idsAsset);
     void updateAssetStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer statusProcessCurrent);
     void updateAssetStatusProcessCurrentAndIsIncrease(Integer idProcess, Integer status, Integer isIncrease);
-
     void updateAssetStatusProcessCurrentAndIsDecrease(Integer idProcess, Integer status, Integer isDecrease);
     Page<FindAllAssetDto> findAllAssetDtoToChange(FindAllAssetToChangeRequest request, Pageable pageable);
     Page<FindAllAssetDto> findAllAssetDtoToRevaluation(FindAllAssetToRevaluationRequest revaluationRequest, Pageable pageable);
     Page<FindAllAssetDto> findAllAssetDtoToDecrease(FindAllAssetToDecreaseRequest decreaseRequest, Pageable pageable);
     Page<FindAllAssetDto> findAllAssetChildrenDtoToDecrease(FindAllAssetToDecreaseRequest decreaseRequest, Pageable pageable);
-
     Page<FindAllAssetDto> findAllAssetChildrenDtoToInventory(FindAllAssetToInventoryRequest inventoryRequest, Pageable pageable);
     Page<FindAllAssetDto> findAllAssetChildrenDtoToRevaluation(FindAllAssetToRevaluationRequest revaluationRequest, Pageable pageable);
 }
