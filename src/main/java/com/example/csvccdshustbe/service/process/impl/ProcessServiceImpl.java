@@ -325,7 +325,7 @@ public class ProcessServiceImpl implements ProcessService {
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(contructionDocumentChange(request.getDocument(), process));
         List<Integer> idsAssetChildren = new ArrayList<>();
-        List<Asset> assetChildren= assetRepository.findAllAssetChildrenByParentId(request.getAssetDetail().getIdAsset());
+        List<Asset> assetChildren= assetRepository.findAllAssetChildrenToChangeByParentId(request.getAssetDetail().getIdAsset());
         if(!assetChildren.isEmpty()){
             assetChildren.forEach(x->idsAssetChildren.add(x.getIdAsset()));
             validateAssetProcessChange(idsAssetChildren);
