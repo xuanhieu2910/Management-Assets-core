@@ -12,6 +12,8 @@ import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
 import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
 import com.example.csvccdshustbe.dto.originalOfFormation.AssetOriginalOfFormDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToInventoryDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.exception.FileExcelException;
@@ -1655,41 +1657,65 @@ public class AssetServiceImpl implements AssetService {
     public Page<FindAllAssetResponseToInventory> findAllAssetToInventory(FindAllAssetToInventoryRequest inventoryRequest) {
         Pageable pageable = PageUtils.buildPage(inventoryRequest.getPage(), inventoryRequest.getSize());
         List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
         inventoryRequest.setIdsDepartmentOriginal(idsDepartment);
-        Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetDtoToInventory(inventoryRequest, pageable);
+        Page<FindAllAssetParentToInventoryDto> findAllAssetDtos = assetRepository.findAllAssetDtoToInventory(inventoryRequest, pageable);
         return new PageImpl<>(convertToFindAllAssetToInventoryResponse(findAllAssetDtos.getContent()),
                 pageable, findAllAssetDtos.getTotalElements());
     }
 
-    private List<FindAllAssetResponseToInventory> convertToFindAllAssetToInventoryResponse(List<FindAllAssetDto> content) {
+    private List<FindAllAssetResponseToInventory> convertToFindAllAssetToInventoryResponse(List<FindAllAssetParentToInventoryDto> content) {
         List<FindAllAssetResponseToInventory> response = new ArrayList<>();
-        for (FindAllAssetDto dto : content){
+        for (FindAllAssetParentToInventoryDto dto : content){
             FindAllAssetResponseToInventory inventory = new FindAllAssetResponseToInventory();
-            inventory.setCodeAsset(dto.getCodeAsset());
-            inventory.setNameAsset(dto.getNameAsset());
+            inventory.setIdAssetCategory(dto.getIdAssetCategory());
             inventory.setNameAssetCategory(dto.getNameAssetCategory());
+            inventory.setDepth(dto.getDepth());
+            inventory.setIdParentAssetCategory(dto.getIdParentAssetCategory());
             inventory.setCodeAssetCategory(dto.getCodeAssetCategory());
-            inventory.setCodeDepartment(dto.getCodeDepartment());
-            inventory.setNameDepartment(dto.getNameDepartment());
-            inventory.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
-            inventory.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
-            inventory.setIdAsset(dto.getIdAsset());
-            inventory.setSalt(dto.getSalt());
-            inventory.setQuantityOriginal(dto.getQuantity());
-            inventory.setRestValueOriginal(dto.getRestValue());
-            inventory.setTotalOriginalOfFormationOriginal(String.valueOf(
-                    Optional.ofNullable(dto.getOriginalOfFormation())
-                            .map(original -> Arrays.stream(original.split("-"))
-                                    .mapToLong(Long::parseLong)
-                                    .sum())
-                            .orElse(0L)
-            ));
-            inventory.setQuantityInventory(dto.getQuantity());
-            inventory.setTotalOriginalOfFormationInventory(inventory.getTotalOriginalOfFormationOriginal());
-            inventory.setRestValueInventory(dto.getRestValue());
+            inventory.setPath(dto.getPath());
+            inventory.setNumberCodePattern(dto.getNumberCodePattern());
+            inventory.setIsLeaf(dto.getIsLeaf());
+            inventory.setTypeTarget(dto.getTypeTarget());
+            if (!CollectionUtils.isEmpty(dto.getAssetLeaves())) {
+                List<FindAllAssetChildrenToInventoryResponse> assetLeaves = new ArrayList<>();
+                for (FindAllAssetChildrenToInventoryDto assetLeaf : dto.getAssetLeaves()) {
+                    FindAllAssetChildrenToInventoryResponse leaf = constructionAssetLeaf(assetLeaf);
+                    assetLeaves.add(leaf);
+                }
+                inventory.setAssetLeaves(assetLeaves);
+            }
             response.add(inventory);
         }
         return response;
+    }
+
+    private FindAllAssetChildrenToInventoryResponse constructionAssetLeaf(FindAllAssetChildrenToInventoryDto assetLeaf) {
+        FindAllAssetChildrenToInventoryResponse leaf = new FindAllAssetChildrenToInventoryResponse();
+        leaf.setIdAsset(assetLeaf.getIdAsset());
+        leaf.setCodeAsset(assetLeaf.getCodeAsset());
+        leaf.setNameAsset(assetLeaf.getNameAsset());
+        leaf.setIdDepartment(assetLeaf.getIdDepartment());
+        leaf.setCodeDepartment(assetLeaf.getCodeDepartment());
+        leaf.setNameDepartment(assetLeaf.getNameDepartment());
+        leaf.setIdLocation(assetLeaf.getIdLocation());
+        leaf.setNameLocation(assetLeaf.getNameLocation());
+        leaf.setQuantity(assetLeaf.getQuantity());
+        leaf.setSalt(assetLeaf.getSalt());
+        leaf.setRestValue(assetLeaf.getRestValue());
+        leaf.setCumulative(assetLeaf.getCumulative());
+        leaf.setStatusUse(assetLeaf.getStatusUse());
+        leaf.setYearUse(assetLeaf.getYearUse());
+        leaf.setUnit(assetLeaf.getUnit());
+        leaf.setIsIncrease(assetLeaf.getIsIncrease());
+        leaf.setOriginalOfFormation(String.valueOf(
+                Optional.ofNullable(assetLeaf.getOriginalOfFormation())
+                        .map(original -> Arrays.stream(original.split("-"))
+                                .mapToLong(Long::parseLong)
+                                .sum())
+                        .orElse(0L)
+        ));
+        return leaf;
     }
 
 
@@ -1697,28 +1723,28 @@ public class AssetServiceImpl implements AssetService {
         List<FindAllAssetResponseToInventory> response = new ArrayList<>();
         for (FindAllAssetDto dto : content){
             FindAllAssetResponseToInventory inventory = new FindAllAssetResponseToInventory();
-            inventory.setCodeAsset(dto.getCodeAsset());
-            inventory.setNameAsset(dto.getNameAsset());
-            inventory.setNameAssetCategory(dto.getNameAssetCategory());
-            inventory.setCodeAssetCategory(dto.getCodeAssetCategory());
-            inventory.setCodeDepartment(dto.getCodeDepartment());
-            inventory.setNameDepartment(dto.getNameDepartment());
-            inventory.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
-            inventory.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
-            inventory.setIdAsset(dto.getIdAsset());
-            inventory.setSalt(dto.getSalt());
-            inventory.setQuantityOriginal(dto.getQuantity());
-            inventory.setRestValueOriginal(dto.getRestValue());
-            inventory.setTotalOriginalOfFormationOriginal(String.valueOf(
-                    Optional.ofNullable(dto.getOriginalOfFormation())
-                            .map(original -> Arrays.stream(original.split("-"))
-                                    .mapToLong(Long::parseLong)
-                                    .sum())
-                            .orElse(0L)
-            ));
-            inventory.setQuantityInventory(dto.getQuantity());
-            inventory.setTotalOriginalOfFormationInventory(inventory.getTotalOriginalOfFormationOriginal());
-            inventory.setRestValueInventory(dto.getRestValue());
+//            inventory.setCodeAsset(dto.getCodeAsset());
+//            inventory.setNameAsset(dto.getNameAsset());
+//            inventory.setNameAssetCategory(dto.getNameAssetCategory());
+//            inventory.setCodeAssetCategory(dto.getCodeAssetCategory());
+//            inventory.setCodeDepartment(dto.getCodeDepartment());
+//            inventory.setNameDepartment(dto.getNameDepartment());
+//            inventory.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
+//            inventory.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
+//            inventory.setIdAsset(dto.getIdAsset());
+//            inventory.setSalt(dto.getSalt());
+//            inventory.setQuantityOriginal(dto.getQuantity());
+//            inventory.setRestValueOriginal(dto.getRestValue());
+//            inventory.setTotalOriginalOfFormationOriginal(String.valueOf(
+//                    Optional.ofNullable(dto.getOriginalOfFormation())
+//                            .map(original -> Arrays.stream(original.split("-"))
+//                                    .mapToLong(Long::parseLong)
+//                                    .sum())
+//                            .orElse(0L)
+//            ));
+//            inventory.setQuantityInventory(dto.getQuantity());
+//            inventory.setTotalOriginalOfFormationInventory(inventory.getTotalOriginalOfFormationOriginal());
+//            inventory.setRestValueInventory(dto.getRestValue());
             response.add(inventory);
         }
         return response;

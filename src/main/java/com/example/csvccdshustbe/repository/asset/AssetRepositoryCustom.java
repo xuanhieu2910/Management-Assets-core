@@ -3,12 +3,14 @@ package com.example.csvccdshustbe.repository.asset;
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
 import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.request.asset.*;
 import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +28,7 @@ public interface AssetRepositoryCustom {
     Optional<Asset> findAssetByIdDepartmentOrigin(Integer idDepartmentOrigin);
     Optional<Asset> findAssetLotByIdDepartmentOrigin(Integer idDepartmentOrigin);
     List<Asset> findAllAssetChildrenByParentId(Integer idAsset);
-    Page<FindAllAssetDto> findAllAssetDtoToInventory(FindAllAssetToInventoryRequest inventoryRequest, Pageable pageable);
+    Page<FindAllAssetParentToInventoryDto> findAllAssetDtoToInventory(FindAllAssetToInventoryRequest inventoryRequest, Pageable pageable);
     List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset);
     Optional<Asset> findAllAssetByIdAsset(Integer idAsset);
     Integer countAssetIncreasedNotDecreasedByIdsAssetOrPending(List<Integer> idsAsset);

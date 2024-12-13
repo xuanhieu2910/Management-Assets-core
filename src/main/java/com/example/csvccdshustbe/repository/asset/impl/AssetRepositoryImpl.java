@@ -16,6 +16,8 @@ import com.example.csvccdshustbe.dto.modules.AssetModulesDto;
 import com.example.csvccdshustbe.dto.modules.BluePrintAssetModulesDto;
 import com.example.csvccdshustbe.dto.original.AssetOriginalDto;
 import com.example.csvccdshustbe.dto.original.BluePrintOriginalDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToInventoryDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
 import com.example.csvccdshustbe.dto.projects.BluePrintProjectsDto;
 import com.example.csvccdshustbe.dto.unit.BluePrintUnitDto;
 import com.example.csvccdshustbe.entity.Asset;
@@ -29,6 +31,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
+import org.apache.commons.collections4.map.ListOrderedMap;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -37,9 +40,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
@@ -734,62 +735,127 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     @Override
-    public Page<FindAllAssetDto> findAllAssetDtoToInventory(FindAllAssetToInventoryRequest request, Pageable pageable) {
+    public Page<FindAllAssetParentToInventoryDto> findAllAssetDtoToInventory(FindAllAssetToInventoryRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select asset.id_asset idAsset, asset.code_asset codeAsset,  " +
-                "        asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,  " +
-                "        assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,  " +
-                "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,  " +
-                "        lo.id_location idLocation, lo.name nameLocation,  " +
-                "        asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
-                "        assetDepreciation.rest_value,asset.quantity,  " +
-                "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,  " +
-                "        asset.status_use, asset.year_use " +
-                "from asset asset  " +
-                "         inner join asset_categories assetCategories  " +
-                "                    on asset.id_asset_category = assetCategories.id_asset_category  " +
-                "         inner join department de on asset.id_department = de.id_department  " +
-                "         left join location lo on asset.id_location = lo.id_location  " +
-                "         left join asset_original_of_formation assetOriginalOfFormation  " +
-                "                   on asset.id_asset = assetOriginalOfFormation.id_asset  " +
-                "         left join asset_depreciation assetDepreciation  " +
-                "                   on asset.id_asset = assetDepreciation.id_asset  " +
-                "where 1 = 1  " +
-                "  and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "  and asset.status_process_current != :statusProcess " );
+        sb.append(" WITH ROOT_ASSET_CATEGORIES as  " +
+                "         (WITH RECURSIVE cte_asset_categories as  " +
+                "                             (select assetCategires.id_asset_category,  " +
+                "                                     assetCategires.name,  " +
+                "                                     assetCategires.code_name,  " +
+                "                                     1                                               as depth,  " +
+                "                                     CAST(assetCategires.id_asset_category as NCHAR) as path,  " +
+                "                                     assetCategires.number_code_pattern,  " +
+                "                                     assetCategires.id_department_original,  " +
+                "                                     assetCategires.type_target,  " +
+                "                                     assetCategires.parent  " +
+                "                              from asset_categories assetCategires  " +
+                "                              where assetCategires.parent is null  " +
+                "                                and assetCategires.visible = :visible  " +
+                "                              union all  " +
+                "                              select assetCategires.id_asset_category,  " +
+                "                                     assetCategires.name,  " +
+                "                                     assetCategires.code_name,  " +
+                "                                     cte.depth + 1                                              as depth,  " +
+                "                                     concat_ws('/', cte.path,  " +
+                "                                               CAST(assetCategires.id_asset_category as NCHAR)) as path,  " +
+                "                                     assetCategires.number_code_pattern,  " +
+                "                                     assetCategires.id_department_original,  " +
+                "                                     assetCategires.type_target,  " +
+                "                                     assetCategires.parent  " +
+                "                              from asset_categories assetCategires  " +
+                "                                       INNER JOIN cte_asset_categories cte  " +
+                "                                                  ON assetCategires.parent = cte.id_asset_category)  " +
+                "          select cte.id_asset_category,  " +
+                "                 cte.name,  " +
+                "                 cte.code_name,  " +
+                "                 cte.depth,  " +
+                "                 cte.path,  " +
+                "                 cte.number_code_pattern,  " +
+                "                 group_concat(un.name SEPARATOR '/') as unitMeasure,  " +
+                "                 cte.parent,  " +
+                "                 CASE  " +
+                "                     WHEN EXISTS (SELECT 1  " +
+                "                                  FROM asset_categories ac  " +
+                "                                  WHERE ac.parent = cte.id_asset_category) THEN 0  " +
+                "                     ELSE 1 END                      AS is_leaf, " +
+                "                cte.type_target  " +
+                "          from cte_asset_categories cte  " +
+                "                   left join (select un.id_asset_category, un.id_unit, un.name  " +
+                "                              from units un  " +
+                "                              where un.is_display = :isDisplay) un  " +
+                "                             on cte.id_asset_category = un.id_asset_category  " +
+                "          where 1 = 1  " +
+                "            and cte.id_department_original in (:idsDepartmentOriginal)  " +
+                "          group by cte.id_asset_category, cte.name, cte.code_name,  " +
+                "                   cte.depth, cte.path, cte.number_code_pattern, is_leaf, cte.type_target  " +
+                "          order by cte.path),  " +
+                "     ROOT_ASSET as (select asset.id_asset                                             idAsset,  " +
+                "                           asset.code_asset                                           codeAsset,  " +
+                "                           asset.name                                                 nameAsset,  " +
+                "                           assetCategories.id_asset_category                          idAssetCategory,  " +
+                "                           assetCategories.name                                       nameAssetCategory,  " +
+                "                           assetCategories.code_name                                  codeAssetCategory,  " +
+                "                           de.id_department                                           idDepartment,  " +
+                "                           de.code                                                    codeDepartment,  " +
+                "                           de.name                                                    nameDepartment,  " +
+                "                           lo.id_location                                             idLocation,  " +
+                "                           lo.name                                                    nameLocation,  " +
+                "                           asset.time_created,  " +
+                "                           asset.time_modified,  " +
+                "                           asset.parent,  " +
+                "                           asset.salt,  " +
+                "                           assetDepreciation.rest_value,  " +
+                "                           asset.quantity,  " +
+                "                           group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,  " +
+                "                           asset.status_use,  " +
+                "                           asset.year_use,  " +
+                "                           units.name as nameUnit " +
+                "                    from asset asset  " +
+                "                             inner join asset_categories assetCategories  " +
+                "                                        on asset.id_asset_category = assetCategories.id_asset_category  " +
+                "                             inner join department de on asset.id_department = de.id_department  " +
+                "                             left join location lo on asset.id_location = lo.id_location  " +
+                "                             left join asset_original_of_formation assetOriginalOfFormation  " +
+                "                                       on asset.id_asset = assetOriginalOfFormation.id_asset  " +
+                "                             left join asset_depreciation assetDepreciation  " +
+                "                                       on asset.id_asset = assetDepreciation.id_asset  " +
+                "                             left join units on asset.id_unit = units.id_unit " +
+                "                    where 1 = 1  " +
+                "                        and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "                        and asset.status_process_current != :statusProcess ") ;
         setConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToInventory(request, query);
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
-        List<FindAllAssetDto> responses = new ArrayList<>();
+        ListOrderedMap<Integer, FindAllAssetParentToInventoryDto> assetMap = new ListOrderedMap<>();
+        Integer idAssetCategory, idAsset, isLeaf;
+        int index = 0;
         if (!CollectionUtils.isEmpty(result)) {
             for (Object[] obj : result) {
-                FindAllAssetDto findAllAssetDto = new FindAllAssetDto();
-                findAllAssetDto.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
-                findAllAssetDto.setCodeAsset(ValueUtil.getStringByObject(obj[1]));
-                findAllAssetDto.setNameAsset(ValueUtil.getStringByObject(obj[2]));
-                findAllAssetDto.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
-                findAllAssetDto.setNameAssetCategory(ValueUtil.getStringByObject(obj[4]));
-                findAllAssetDto.setCodeAssetCategory(ValueUtil.getStringByObject(obj[5]));
-                findAllAssetDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
-                findAllAssetDto.setCodeDepartment(ValueUtil.getStringByObject(obj[7]));
-                findAllAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
-                findAllAssetDto.setIdLocation(ValueUtil.getIntegerByObject(obj[9]));
-                findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
-                findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[11]));
-                findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
-                findAllAssetDto.setParent(ValueUtil.getIntegerByObject(obj[13]));
-                findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
-                findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[15]));
-                findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[16]));
-                findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[17]));
-                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[18]));
-                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[19]));
-                responses.add(findAllAssetDto);
+                idAssetCategory = ValueUtil.getIntegerByObject(obj[0]);
+                idAsset = obj[7] == null ? null : ValueUtil.getIntegerByObject(obj[7]);
+                isLeaf = ValueUtil.getIntegerByObject(obj[24]);
+                if (idAsset != null) {
+                    if (!assetMap.containsKey(idAssetCategory)) {
+                        FindAllAssetParentToInventoryDto parentToInventoryDto = new FindAllAssetParentToInventoryDto(obj);
+                        assetMap.put(index,idAssetCategory,parentToInventoryDto);
+                        ++index;
+                    }
+                    if (assetMap.containsKey(idAssetCategory)){
+                        assetMap.computeIfPresent(idAssetCategory, (k, v) -> {
+                            v.getAssetLeaves().add(new FindAllAssetChildrenToInventoryDto(obj));
+                            return v;
+                        });
+                    }
+                } else {
+                    FindAllAssetParentToInventoryDto parentToInventoryDto = new FindAllAssetParentToInventoryDto(obj);
+                    assetMap.put(index,idAssetCategory,parentToInventoryDto);
+                    ++index;
+                }
             }
         }
-        return new PageImpl<>(responses, pageable, countFindAllAssetToInventory(request));
+        return new PageImpl<>(assetMap.valueList(), pageable, countFindAllAssetToInventory(request));
     }
 
     @Override
@@ -1901,27 +1967,89 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private long countFindAllAssetToInventory(FindAllAssetToInventoryRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append("select count(0) from (select asset.id_asset idAsset, asset.code_asset codeAsset,   " +
-                "          asset.name nameAsset, assetCategories.id_asset_category idAssetCategory,   " +
-                "          assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory,   " +
-                "          de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,   " +
-                "          lo.id_location idLocation, lo.name nameLocation,   " +
-                "          asset.time_created, asset.time_modified, asset.parent, asset.salt,        " +
-                "          assetDepreciation.rest_value,asset.quantity,        " +
-                "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "          asset.status_use, asset.year_use  " +
-                "   from asset asset        " +
-                "       inner join asset_categories assetCategories   " +
-                "               on asset.id_asset_category = assetCategories.id_asset_category   " +
-                "       inner join department de on asset.id_department = de.id_department   " +
-                "       left join location lo on asset.id_location = lo.id_location   " +
-                "       inner join asset_original_of_formation assetOriginalOfFormation        " +
-                "           on asset.id_asset = assetOriginalOfFormation.id_asset        " +
-                "       left join asset_depreciation assetDepreciation     " +
-                "          on asset.id_asset = assetDepreciation.id_asset        " +
-                "   where 1 = 1 " +
-                "  and asset.id_department_origin in (:idsDepartmentOriginal)     " +
-                "  and asset.status_process_current != :statusProcess   ");
+        sb.append(" WITH ROOT_ASSET_CATEGORIES as  " +
+                "         (WITH RECURSIVE cte_asset_categories as  " +
+                "                             (select assetCategires.id_asset_category,  " +
+                "                                     assetCategires.name,  " +
+                "                                     assetCategires.code_name,  " +
+                "                                     1                                               as depth,  " +
+                "                                     CAST(assetCategires.id_asset_category as NCHAR) as path,  " +
+                "                                     assetCategires.number_code_pattern,  " +
+                "                                     assetCategires.id_department_original,  " +
+                "                                     assetCategires.type_target,  " +
+                "                                     assetCategires.parent  " +
+                "                              from asset_categories assetCategires  " +
+                "                              where assetCategires.parent is null  " +
+                "                                and assetCategires.visible = :visible  " +
+                "                              union all  " +
+                "                              select assetCategires.id_asset_category,  " +
+                "                                     assetCategires.name,  " +
+                "                                     assetCategires.code_name,  " +
+                "                                     cte.depth + 1                                              as depth,  " +
+                "                                     concat_ws('/', cte.path,  " +
+                "                                               CAST(assetCategires.id_asset_category as NCHAR)) as path,  " +
+                "                                     assetCategires.number_code_pattern,  " +
+                "                                     assetCategires.id_department_original,  " +
+                "                                     assetCategires.type_target,  " +
+                "                                     assetCategires.parent  " +
+                "                              from asset_categories assetCategires  " +
+                "                                       INNER JOIN cte_asset_categories cte  " +
+                "                                                  ON assetCategires.parent = cte.id_asset_category)  " +
+                "          select cte.id_asset_category,  " +
+                "                 cte.name,  " +
+                "                 cte.code_name,  " +
+                "                 cte.depth,  " +
+                "                 cte.path,  " +
+                "                 cte.number_code_pattern,  " +
+                "                 group_concat(un.name SEPARATOR '/') as unitMeasure,  " +
+                "                 cte.parent,  " +
+                "                 CASE  " +
+                "                     WHEN EXISTS (SELECT 1  " +
+                "                                  FROM asset_categories ac  " +
+                "                                  WHERE ac.parent = cte.id_asset_category) THEN 0  " +
+                "                     ELSE 1 END                      AS is_leaf  " +
+                "          from cte_asset_categories cte  " +
+                "                   left join (select un.id_asset_category, un.id_unit, un.name  " +
+                "                              from units un  " +
+                "                              where un.is_display = :isDisplay) un  " +
+                "                             on cte.id_asset_category = un.id_asset_category  " +
+                "          where 1 = 1  " +
+                "            and cte.id_department_original in (:idsDepartmentOriginal)  " +
+                "          group by cte.id_asset_category, cte.name, cte.code_name,  " +
+                "                   cte.depth, cte.path, cte.number_code_pattern, is_leaf  " +
+                "          order by cte.path),  " +
+                "     ROOT_ASSET as (select asset.id_asset                                             idAsset,  " +
+                "                           asset.code_asset                                           codeAsset,  " +
+                "                           asset.name                                                 nameAsset,  " +
+                "                           assetCategories.id_asset_category                          idAssetCategory,  " +
+                "                           assetCategories.name                                       nameAssetCategory,  " +
+                "                           assetCategories.code_name                                  codeAssetCategory,  " +
+                "                           de.id_department                                           idDepartment,  " +
+                "                           de.code                                                    codeDepartment,  " +
+                "                           de.name                                                    nameDepartment,  " +
+                "                           lo.id_location                                             idLocation,  " +
+                "                           lo.name                                                    nameLocation,  " +
+                "                           asset.time_created,  " +
+                "                           asset.time_modified,  " +
+                "                           asset.parent,  " +
+                "                           asset.salt,  " +
+                "                           assetDepreciation.rest_value,  " +
+                "                           asset.quantity,  " +
+                "                           group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,  " +
+                "                           asset.status_use,  " +
+                "                           asset.year_use  " +
+                "                    from asset asset  " +
+                "                             inner join asset_categories assetCategories  " +
+                "                                        on asset.id_asset_category = assetCategories.id_asset_category  " +
+                "                             inner join department de on asset.id_department = de.id_department  " +
+                "                             left join location lo on asset.id_location = lo.id_location  " +
+                "                             left join asset_original_of_formation assetOriginalOfFormation  " +
+                "                                       on asset.id_asset = assetOriginalOfFormation.id_asset  " +
+                "                             left join asset_depreciation assetDepreciation  " +
+                "                                       on asset.id_asset = assetDepreciation.id_asset  " +
+                "                    where 1 = 1 " +
+                "                   and asset.id_department_origin in (:idsDepartmentOriginal)   " +
+                "                   and asset.status_process_current != :statusProcess   ");
         setCountConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToInventory(request,query);
@@ -2042,6 +2170,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private void setParameterFindAllAssetDtoToInventory(FindAllAssetToInventoryRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
+        query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
+        query.setParameter("isDisplay", Constants.UNITES_IS_DISPLAY);
         if (request.getIsSingle()){
             query.setParameter("isIncrease", Constants.IS_INCREASED);
             query.setParameter("isDecrease", Constants.IS_DECREASED);
@@ -2283,24 +2413,41 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             sb.append(" and asset.status_use = :statusUse ");
         }
         sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
-                "         assetCategories.id_asset_category, assetCategories.name,  " +
-                "         assetCategories.code_name, de.id_department,  " +
-                "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
-                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity, " +
-                "         asset.status_use, asset.year_use  ");
-        if (StringUtils.isNotBlank(request.getSortBy())) {
-            sb.append("ORDER BY ");
-            if (request.getSortBy().equals("nameAsset")) {
-                sb.append(" asset.name ");
-            }
-            if (request.getSortBy().equals("nameDepartment")) {
-                sb.append(" de.name ");
-            }
-            sb.append(" ").append(request.getSortOrder());
-        } else {
-            sb.append(" ORDER BY asset.id_asset desc ");
-        }
-
+                "                             assetCategories.id_asset_category, assetCategories.name,  " +
+                "                             assetCategories.code_name, de.id_department,  " +
+                "                             de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
+                "                             asset.time_modified, asset.parent, asset.salt, assetDepreciation.rest_value,  " +
+                "                             asset.quantity, asset.status_use, asset.year_use, units.name )  " +
+                "select rootAssetCategories.id_asset_category   as idAssetCategory,  " +
+                "       rootAssetCategories.name                as nameAssetCategory,  " +
+                "       rootAssetCategories.parent              as idParentAssetCategory,  " +
+                "       rootAssetCategories.code_name           as codeAssetCategory,  " +
+                "       rootAssetCategories.depth               as depth,  " +
+                "       rootAssetCategories.path                as path,  " +
+                "       rootAssetCategories.number_code_pattern as numberCodePattern,  " +
+                "       rootAsset.idAsset                       as idAsset,  " +
+                "       rootAsset.nameAsset                     as nameAsset,  " +
+                "       rootAsset.codeAsset                     as codeAsset,  " +
+                "       rootAsset.idDepartment                  as idDepartment,  " +
+                "       rootAsset.codeDepartment                as codeDepartment,  " +
+                "       rootAsset.nameDepartment                as nameDepartment,  " +
+                "       rootAsset.idLocation                    as idLocation,  " +
+                "       rootAsset.nameLocation                  as nameLocation,  " +
+                "       rootAsset.time_created                  as timeCreated,  " +
+                "       rootAsset.time_modified                 as timeModified,  " +
+                "       rootAsset.parent                        as parent,  " +
+                "       rootAsset.salt                          as salt,  " +
+                "       rootAsset.rest_value                    as restValue,  " +
+                "       rootAsset.quantity                      as quantity,  " +
+                "       rootAsset.assetOriginalOfFormationValue as originalOfFormation,  " +
+                "       rootAsset.status_use                    as statusUse,  " +
+                "       rootAsset.year_use                      as yearUse,  " +
+                "       rootAssetCategories.is_leaf, " +
+                "       rootAssetCategories.type_target,  " +
+                "       rootAsset.nameUnit  " +
+                "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
+                "         left join ROOT_ASSET rootAsset on rootAssetCategories.id_asset_category = rootAsset.idAssetCategory  " +
+                "order by rootAssetCategories.path ");
     }
 
     private void setConditionFindAllAssetChildrenDtoToInventory(FindAllAssetToInventoryRequest request,StringBuilder sb) {
@@ -2395,24 +2542,16 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
             sb.append(" and asset.status_use = :statusUse ");
         }
-        sb.append(" group by asset.id_asset, asset.code_asset, asset.name,  " +
-                "         assetCategories.id_asset_category, assetCategories.name,  " +
-                "         assetCategories.code_name, de.id_department,  " +
-                "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
-                "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity," +
-                "         asset.status_use, asset.year_use  ");
-        if (StringUtils.isNotBlank(request.getSortBy())) {
-            sb.append("ORDER BY ");
-            if (request.getSortBy().equals("nameAsset")) {
-                sb.append(" asset.name ");
-            }
-            if (request.getSortBy().equals("nameDepartment")) {
-                sb.append(" de.name ");
-            }
-            sb.append(" ").append(request.getSortOrder());
-        } else {
-            sb.append(" ORDER BY asset.id_asset desc ) as result ");
-        }
+        sb.append("                     group by asset.id_asset, asset.code_asset, asset.name,  " +
+                "                             assetCategories.id_asset_category, assetCategories.name,  " +
+                "                             assetCategories.code_name, de.id_department,  " +
+                "                             de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
+                "                             asset.time_modified, asset.parent, asset.salt, assetDepreciation.rest_value,  " +
+                "                             asset.quantity, asset.status_use, asset.year_use)  " +
+                "select count(0)  " +
+                "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
+                "         left join ROOT_ASSET rootAsset on rootAssetCategories.id_asset_category = rootAsset.idAssetCategory  " +
+                "order by rootAssetCategories.path ");
 
     }
 

@@ -15,7 +15,7 @@ public class FindAllAssetToInventoryRequest extends RequestPageBase {
     private String nameAsset;
     private Integer idAssetCategory;
     private Integer idDepartment;
-    private Boolean isSingle;
+    private Boolean isSingle = true;
     private String salt;
     private Integer statusUse;
     private List<Integer> idsDepartmentOriginal;
