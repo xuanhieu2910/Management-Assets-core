@@ -733,6 +733,61 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         }
         return assetChildren;
     }
+    @Override
+    public List<Asset> findAllAssetChildrenToChangeByParentId(Integer idAsset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select id_asset, name, code_asset, id_asset_category,  " +
+                "        id_document_attack, id_department, id_location,  " +
+                "        id_unit, id_projects, purpose, notes, file_attack,  " +
+                "        time_created, time_modified, id_department_default,  " +
+                "        id_level_type_asset, id_user_created, id_user_modified,  " +
+                "        description, quantity, id_instance, id_department_origin,  " +
+                "        parent, salt, id_process_current, status_process_current,  " +
+                "        id_type_process_current, is_increase, is_decrease  " +
+                " from asset  " +
+                " where asset.parent = :idAssetParent and asset.is_decrease != :isDecrease ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("isDecrease", Constants.IS_DECREASED);
+        query.setParameter("idAssetParent", idAsset);
+        List<Object[]> result = query.getResultList();
+        List<Asset> assetChildren = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Asset asset = new Asset();
+                asset.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
+                asset.setName(ValueUtil.getStringByObject(obj[1]));
+                asset.setCodeAsset(ValueUtil.getStringByObject(obj[2]));
+                asset.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
+                asset.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[4]));
+                asset.setIdDepartment(ValueUtil.getIntegerByObject(obj[5]));
+                asset.setIdLocation(ValueUtil.getIntegerByObject(obj[6]));
+                asset.setIdUnit(ValueUtil.getIntegerByObject(obj[7]));
+                asset.setIdProjects(ValueUtil.getIntegerByObject(obj[8]));
+                asset.setPurpose(ValueUtil.getStringByObject(obj[9]));
+                asset.setNotes(ValueUtil.getStringByObject(obj[10]));
+                asset.setFileAttack(ValueUtil.getStringByObject(obj[11]));
+                asset.setTimeCreated(ValueUtil.getStringByObject(obj[12]));
+                asset.setTimeModified(ValueUtil.getStringByObject(obj[13]));
+                asset.setIdDepartmentDefault(ValueUtil.getIntegerByObject(obj[14]));
+                asset.setIdLevelTypeAsset(ValueUtil.getIntegerByObject(obj[15]));
+                asset.setIdUserCreated(ValueUtil.getIntegerByObject(obj[16]));
+                asset.setIdUserModified(ValueUtil.getIntegerByObject(obj[17]));
+                asset.setDescription(ValueUtil.getStringByObject(obj[18]));
+                asset.setQuantity(ValueUtil.getIntegerByObject(obj[19]));
+                asset.setIdInstance(ValueUtil.getIntegerByObject(obj[20]));
+                asset.setIdDepartmentDefault(ValueUtil.getIntegerByObject(obj[21]));
+                asset.setParent(ValueUtil.getIntegerByObject(obj[22]));
+                asset.setSalt(ValueUtil.getStringByObject(obj[23]));
+                asset.setIdProcessCurrent(ValueUtil.getIntegerByObject(obj[24]));
+                asset.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[25]));
+                asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
+                asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
+                asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                assetChildren.add(asset);
+            }
+        }
+        return assetChildren;
+    }
 
     @Override
     public Page<FindAllAssetParentToInventoryDto> findAllAssetDtoToInventory(FindAllAssetToInventoryRequest request, Pageable pageable) {
@@ -1072,6 +1127,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 " where 1 = 1     " +
                 "   and asset.parent is null    " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
+                "   and asset.is_increase = :isIncrease  " +
+                "   and asset.is_decrease != :isDecrease  " +
                 "   and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null ) ");
         setConditionFindAllAssetDtoToChange(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -1703,6 +1760,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 " where 1 = 1     " +
                 "   and asset.parent is null       " +
                 "   and asset.id_department_origin in (:idsDepartmentOriginal)     " +
+                "   and asset.is_increase = :isIncrease  " +
+                "   and asset.is_decrease != :isDecrease  " +
                 "   and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null )   ");
         setConditionFindAllAssetDtoToChange(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -1784,15 +1843,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private void setParameterFindAllAssetDtoToChange(Query query, FindAllAssetToChangeRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
-        if (request.getIsSingle()){
+        if (Boolean.FALSE.equals(request.getIsSingle())){
+            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+            query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
+            query.setParameter("isDecrease", Constants.IS_DECREASED_WHOLE_LOT);
+        }
+        if (Boolean.TRUE.equals(request.getIsSingle())){
+            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
             query.setParameter("isIncrease", Constants.IS_INCREASED);
             query.setParameter("isDecrease", Constants.IS_DECREASED);
-            query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
-        } else {
-            query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
-            query.setParameter("isIncreasePart", Constants.IS_INCREASED_PART_LOT);
-            query.setParameter("isDecrease", Constants.IS_DECREASED_WHOLE_LOT);
-            query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             query.setParameter("nameAsset", request.getNameAsset());
@@ -1830,16 +1889,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     private void setConditionFindAllAssetDtoToChange(StringBuilder sb, FindAllAssetToChangeRequest request) {
-        if (request.getIsSingle()) {
-            sb.append("   and asset.is_increase = :isIncrease  " +
-                    "  and asset.is_decrease = :isDecrease  " +
-                    "  and asset.quantity = :quantityDefault  " +
-                    "  and asset.parent is null ");
-        } else {
-            sb.append("   and (((asset.is_increase = :isIncrease or " +
-                    "         asset.is_increase = :isIncreasePart) and " +
-                    "        asset.is_decrease != :isDecrease)) " +
-                    "  and asset.quantity > :quantityDefault ");
+        if (Boolean.FALSE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity != :isSingle) ");
+        }
+        if (Boolean.TRUE.equals(request.getIsSingle())){
+            sb.append("   and (asset.quantity = :isSingle) ");
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
@@ -1868,7 +1922,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private void setConditionFindAllAssetDtoToRevaluation(StringBuilder sb, FindAllAssetToRevaluationRequest request) {
         if (request.getIsSingle()) {
             sb.append("   and asset.is_increase = :isIncrease  " +
-                    "  and asset.is_decrease = :isDecrease  " +
+                    "  and asset.is_decrease != :isDecrease  " +
                     "  and asset.quantity = :quantityDefault  " +
                     "  and asset.parent is null ");
         } else {
