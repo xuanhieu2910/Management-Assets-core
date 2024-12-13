@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.repository.asset;
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
 import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.request.asset.*;
 import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
