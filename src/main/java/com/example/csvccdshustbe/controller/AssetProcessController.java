@@ -39,6 +39,36 @@ public class AssetProcessController {
         }
     }
 
+    @GetMapping("/find-all-update-inventory")
+    public ResponseEntity<?> findAllAssetUpdateInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetProcessRequest request) {
+        try {
+            return ApiResponseDto.createdWithState(assetProcessService.findAllAssetUpdateInventoryProcess(request),
+                    "Find all data asset process document success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
+    @GetMapping("/find-all-lot-update-inventory")
+    public ResponseEntity<?> findAllAssetLotUpdateInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllAssetProcessRequest request) {
+        try {
+            return ApiResponseDto.createdWithState(assetProcessService.findAllAssetProcessLotUpdateInventoryProcess(request),
+                    "Find all data asset process lot to update inventory success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+
     @GetMapping("/find-all-lot")
     public ResponseEntity<?> findAllAssetLotProcess(@And({
             @Spec(path = "page", params = "page", spec = Like.class),

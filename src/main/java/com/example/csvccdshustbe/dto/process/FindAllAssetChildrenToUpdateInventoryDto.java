@@ -1,0 +1,22 @@
+package com.example.csvccdshustbe.dto.process;
+
+
+import com.example.csvccdshustbe.utility.ValueUtil;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class FindAllAssetChildrenToUpdateInventoryDto {
+
+    private Integer idAsset;
+    private String salt;
+    private String value;
+
+    public FindAllAssetChildrenToUpdateInventoryDto(Object[] obj){
+        this.idAsset = ValueUtil.getIntegerByObject(obj[9]);
+        this.salt = ValueUtil.getStringByObject(obj[10]);
+        this.value = ValueUtil.getStringByObject(obj[11]);
+    }
+
+}

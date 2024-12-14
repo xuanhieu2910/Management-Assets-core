@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.request.assetProcess.UpdateAllAssetProcessRequest;
+import com.example.csvccdshustbe.response.asset.FindAllAssetResponseUpdateInventory;
 import com.example.csvccdshustbe.response.assetProcess.FindAllAssetProcessResponse;
 import org.springframework.data.domain.Page;
 
@@ -20,4 +21,6 @@ public interface AssetProcessService {
     List<AssetProcessDto> findResultAssetLotByIdProcessAndCalculatorIsIncreaseAndIsDecrease(Integer idProcess);
     Page<FindAllAssetProcessResponse> findAllAssetLotProcess(FindAllAssetProcessRequest request);
     Page<FindAllAssetProcessResponse> findAllAssetChildrenProcess(FindAllAssetProcessRequest request);
+    Page<FindAllAssetResponseUpdateInventory> findAllAssetUpdateInventoryProcess(FindAllAssetProcessRequest request);
+    Page<FindAllAssetResponseUpdateInventory> findAllAssetProcessLotUpdateInventoryProcess(FindAllAssetProcessRequest request);
 }
