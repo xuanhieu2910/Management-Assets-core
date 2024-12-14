@@ -186,6 +186,12 @@ public class AssetServiceImpl implements AssetService {
     AssetInstanceRepository assetInstanceRepository;
     @Autowired
     AssetProcessService assetProcessService;
+
+    @Override
+    public Asset storeAsset(Asset asset) {
+        return assetRepository.save(asset);
+    }
+
     @Transactional
     @Override
     public void createAsset(Map<String, Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException {

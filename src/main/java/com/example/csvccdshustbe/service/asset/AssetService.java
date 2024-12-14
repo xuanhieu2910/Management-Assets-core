@@ -19,6 +19,7 @@ import java.util.Map;
 
 public interface AssetService {
 
+    Asset storeAsset(Asset asset);
     void createAsset(Map<String,Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException;
     void createAssetLot(Map<String,Object> createAssetRequest) throws JsonProcessingException, ValidateFiledException;
     Page<FindAllAssetResponse> findAllAsset(FindAllAssetRequest request);

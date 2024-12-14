@@ -38,4 +38,6 @@ public class FindAllAssetProcessResponse {
     private Integer quantity;
     @JsonProperty("value")
     private String value;
+    @JsonProperty("id_asset_process")
+    private Integer idAssetProcess;
 }

@@ -2,6 +2,8 @@ package com.example.csvccdshustbe.service.assetProcess;
 
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
+import com.example.csvccdshustbe.request.assetProcess.AssetNotDeclareWhenInventoryRequest;
+import com.example.csvccdshustbe.request.assetProcess.AssetProcessRequest;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.request.assetProcess.UpdateAllAssetProcessRequest;
 import com.example.csvccdshustbe.response.asset.FindAllAssetResponseUpdateInventory;
@@ -23,4 +25,5 @@ public interface AssetProcessService {
     Page<FindAllAssetProcessResponse> findAllAssetChildrenProcess(FindAllAssetProcessRequest request);
     Page<FindAllAssetResponseUpdateInventory> findAllAssetUpdateInventoryProcess(FindAllAssetProcessRequest request);
     Page<FindAllAssetResponseUpdateInventory> findAllAssetProcessLotUpdateInventoryProcess(FindAllAssetProcessRequest request);
+    void createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request);
 }

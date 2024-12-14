@@ -35,4 +35,5 @@ public class FindAllAssetDto {
     private Integer statusProcessCurrent;
     private Integer statusUse;
     private String yearUse;
+    private Integer idAssetProcess;
 }
