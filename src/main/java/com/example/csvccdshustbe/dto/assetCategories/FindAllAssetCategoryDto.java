@@ -31,4 +31,6 @@ public class FindAllAssetCategoryDto {
     private Integer idDepartmentOriginal;
     private String numberCodePattern;
     private String nameUnit;
+    private Integer typeTarget;
+    private Integer isLeaf;
 }

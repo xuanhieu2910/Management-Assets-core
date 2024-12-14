@@ -35,4 +35,6 @@ public class FindAllAssetCategoriesVisibleResponse {
     private String maximumTimeDepreciation;
     @JsonProperty("code_number_pattern")
     private String codeNumberPattern;
+    @JsonProperty("is_leaf")
+    private Integer isLeaf;
 }

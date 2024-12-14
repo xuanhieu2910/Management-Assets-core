@@ -28,4 +28,6 @@ public class FindAllAssetCategoriesByCodeAndVisibleDto {
     private String minimumTimeDepreciation;
     private String maximumTimeDepreciation;
     private String numberCodePattern;
+    private Integer typeTarget;
+    private Integer isLeaf;
 }
