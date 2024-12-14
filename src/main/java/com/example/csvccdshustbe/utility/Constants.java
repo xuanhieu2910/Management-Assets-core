@@ -407,6 +407,7 @@ public class Constants {
      * */
     public static Integer STATUS_ASSET_PROCESS_ACTIVE = 1;
     public static Integer STATUS_ASSET_PROCESS_UN_ACTIVE = -1;
+    public static Integer STATUS_ASSET_PROCESS_NOT_DECLARE_IN_ASSET = 2;
     /*----------------------------------------------------*/
 
     /**

@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.repository.assetProcess;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToUpdateInventoryDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import org.springframework.data.domain.Page;
@@ -19,4 +20,8 @@ public interface AssetProcessRepositoryCustom {
     List<AssetProcessDto> findResultAssetLotByIdProcessAndCalculatorIsIncreaseAndIsDecrease(Integer idProcess);
     Page<FindAllAssetDto> findAllAssetLotProcess(FindAllAssetProcessRequest request, Pageable pageable);
     Page<FindAllAssetDto> findAllAssetChildrenProcess(FindAllAssetProcessRequest request, Pageable pageable);
+    Page<FindAllAssetParentToUpdateInventoryDto> findALlAssetProcessToUpdateInventory(FindAllAssetProcessRequest request,
+                                                                                Pageable pageable);
+    Page<FindAllAssetParentToUpdateInventoryDto> findALlAssetProcessLotToUpdateInventory(FindAllAssetProcessRequest request,
+                                                                                         Pageable pageable);
 }
