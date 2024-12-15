@@ -4,10 +4,10 @@ import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
 import com.example.csvccdshustbe.dto.document.FindDetailsDocumentDto;
 import com.example.csvccdshustbe.dto.process.*;
 import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
-import com.example.csvccdshustbe.entity.CsvcUser;
-import com.example.csvccdshustbe.entity.Department;
-import com.example.csvccdshustbe.entity.Document;
+import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.repository.document.DocumentRepository;
+import com.example.csvccdshustbe.request.assetProcess.AssetProcessRequest;
+import com.example.csvccdshustbe.request.assetProcess.UpdateAllAssetProcessRequest;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.process.*;
@@ -18,6 +18,8 @@ import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.document.DocumentService;
+import com.example.csvccdshustbe.service.fluctuatingSituationAssetService.FluctuatingSituationAssetService;
+import com.example.csvccdshustbe.service.fluctuatingSituationService.FluctuatingSituationService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -47,6 +49,11 @@ public class DocumentServiceImpl implements DocumentService {
     DepartmentService departmentService;
     @Autowired
     AssetProcessService assetProcessService;
+    @Autowired
+    FluctuatingSituationService fluctuatingSituationService;
+    @Autowired
+    FluctuatingSituationAssetService fluctuatingSituationAssetService;
+
 
     @Override
     public Document findDocumentByCodeAndIdDepartment(String code, Integer idDepartment) {
@@ -327,6 +334,52 @@ public class DocumentServiceImpl implements DocumentService {
         request.getAssetProcess().setIdProcess(document.getIdProcess());
         documentRepository.save(document);
         assetProcessService.updateFinishListAssetProcessByIdProcess(request.getAssetProcess());
+        createFluctuatingSituation(request);
+    }
+
+    private void createFluctuatingSituation(UpdateInventoryDraftRequest request) {
+        FluctuatingSituation fluctuatingSituation = constructionFluctuatingSituation(request.getAssetProcess().getIdProcess());
+        List<FluctuatingSituationAsset> fluctuatingSituationAssetList =
+                constructionFluctuatingSituationAssetList(fluctuatingSituation, request.getAssetProcess());
+    }
+
+    private List<FluctuatingSituationAsset> constructionFluctuatingSituationAssetList(FluctuatingSituation fluctuatingSituation,
+                                                                                  UpdateAllAssetProcessRequest assetProcess) {
+        List<FluctuatingSituationAsset>  fluctuatingSituationAssets = new ArrayList<>();
+        for (AssetProcessRequest assetProcessRequest : assetProcess.getFluctuatingSituationAsset()) {
+            fluctuatingSituationAssets.add(constructionFluctuatingSituationAsset(fluctuatingSituation,
+                    assetProcessRequest));
+
+        }
+        return fluctuatingSituationAssetService.saveAllFluctuatingSituationAsset(fluctuatingSituationAssets);
+    }
+
+    private FluctuatingSituationAsset constructionFluctuatingSituationAsset(FluctuatingSituation fluctuatingSituation,
+                                                                            AssetProcessRequest assetProcessRequest) {
+        String timeCurrent = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        FluctuatingSituationAsset fluctuatingSituationAsset = new FluctuatingSituationAsset();
+        fluctuatingSituationAsset.setIdAsset(fluctuatingSituationAsset.getIdAsset());
+        fluctuatingSituationAsset.setIdProcess(fluctuatingSituationAsset.getIdProcess());
+        fluctuatingSituationAsset.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_ASSET_NOT_FINISH);
+        fluctuatingSituationAsset.setType(assetProcessRequest.getTypeFluctuatingSituationAsset());
+        fluctuatingSituationAsset.setTimeCreated(timeCurrent);
+        fluctuatingSituationAsset.setTimeModified(timeCurrent);
+        fluctuatingSituationAsset.setIdUserModified(csvcUser.getIdUser());
+        fluctuatingSituationAsset.setIdFluctuatingSituation(fluctuatingSituation.getIdFluctuatingSituation());
+        return fluctuatingSituationAsset;
+    }
+
+    private FluctuatingSituation constructionFluctuatingSituation(Integer idProcess) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String timeCurrent = String.valueOf(new Date().getTime());
+        FluctuatingSituation fluctuatingSituation = new FluctuatingSituation();
+        fluctuatingSituation.setIdProcess(idProcess);
+        fluctuatingSituation.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
+        fluctuatingSituation.setTimeCreated(timeCurrent);
+        fluctuatingSituation.setTimeModified(timeCurrent);
+        fluctuatingSituation.setIdUserModified(csvcUser.getIdUser());
+        return fluctuatingSituationService.saveFluctuatingSituation(fluctuatingSituation);
     }
 
     @Override

@@ -71,6 +71,8 @@ public class Constants {
      * */
     public static final Integer UNITS_IS_ACTIVE = 1;
     public static final Integer UNITES_UN_ACTIVE = -1;
+    public static final Integer UNITES_IS_NOT_DISPLAY = -1;
+    public static final Integer UNITES_IS_DISPLAY = 1;
     /*----------------------------------------------------*/
 
 
@@ -548,5 +550,28 @@ public class Constants {
      * */
     public static Integer STATUS_TYPE_PROCESS_ACTIVE = 1;
     public static Integer STATUS_TYPE_PROCESS_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
+
+    /**
+     * Constant status use Of Asset
+     * */
+    public static Integer STATUS_USE = 1;
+    public static Integer STATUS_NOT_USE = -1;
+    /*----------------------------------------------------*/
+
+    public static Integer ASSET_CATEGORY_IS_DISPLAY = 1;
+    /*----------------------------------------------------*/
+
+
+    /**
+     * Constant status fluctuating situation
+     * */
+    public static Integer STATUS_FLUCTUATING_SITUATION_NOT_FINISH = -1;
+    public static Integer STATUS_FLUCTUATING_SITUATION_FINISH = 1;
+    /*----------------------------------------------------*/ /**
+     * Constant status fluctuating situation asset
+     * */
+    public static Integer STATUS_FLUCTUATING_SITUATION_ASSET_NOT_FINISH = -1;
+    public static Integer STATUS_FLUCTUATING_SITUATION_ASSET_FINISH = 1;
     /*----------------------------------------------------*/
 }

@@ -157,6 +157,8 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         assetCategories.setParent(request.getParentId());
         assetCategories.setVisible(request.getVisible());
         assetCategories.setPathImage(request.getPathImage());
+        assetCategories.setTypeTarget(request.getTypeTarget());
+        assetCategories.setNumberCodePattern(request.getNumberCodePattern());
 //        assetCategories.setIsPick(request.getIsPick());
 //        assetCategories.setAssetCount(Constants.ASSET_CATEGORY_INIT_ASSET_COUNT);
 //        assetCategories.setSortOrder(null);
@@ -221,12 +223,28 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
         List<Integer> idsDepartment = departmentService.findIdsStructureDepartment(idDepartment);
         idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
-        Map<String, List<FindAllAssetCategoriesToDownloadDto>> responses = new HashMap<>();
+        Map<String, List<FindAllAssetCategoriesToDownloadDto>> responses = new LinkedHashMap<>();
         String keyword;
         for (FindAllAssetCategoriesPickedResponse assetPicked : assetCategoriesIsPicked){
             keyword = "STT_" + assetPicked.getIdAssetCategory() + "_" + assetPicked.getName();
             keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
-            responses.put(keyword, assetCategoriesRepository.findAllAssetCategoriesByCodeParentVisibleToDownload(idsDepartment, assetPicked.getCodeName()));
+            responses.put(keyword, assetCategoriesRepository.findAllAssetCategoriesLeafByCodeParentVisibleToDownload(idsDepartment, assetPicked.getCodeName()));
+        }
+        return responses;
+    }
+
+    @Override
+    public Map<String, List<FindAllAssetCategoriesToDownloadDto>> findAllAssetCategoriesVisibleResponseToView() {
+        List<FindAllAssetCategoriesPickedResponse> assetCategoriesIsPicked = findAllAssetCategoriesIsPicked();
+        Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
+        List<Integer> idsDepartment = departmentService.findIdsStructureDepartment(idDepartment);
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        Map<String, List<FindAllAssetCategoriesToDownloadDto>> responses = new LinkedHashMap<>();
+        String keyword;
+        for (FindAllAssetCategoriesPickedResponse assetPicked : assetCategoriesIsPicked){
+            keyword = "STT_" + assetPicked.getIdAssetCategory() + "_" + assetPicked.getName();
+            keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
+            responses.put(keyword, assetCategoriesRepository.findAllAssetCategoriesByCodeParentVisible(idsDepartment, assetPicked.getCodeName()));
         }
         return responses;
     }
@@ -245,10 +263,12 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         String timeCurrent = String.valueOf(new Date().getTime());
         categories.setTimeCreated(timeCurrent);
         categories.setTimeModified(timeCurrent);
+        categories.setNumberCodePattern(request.getNumberCodePattern());
         categories.setValueWearTear(request.getValueWearTear());
         categories.setYearUsedWearTear(request.getYearUsedWearTear());
         categories.setMinimumTimeDepreciation(request.getMinimumTimeDepreciation());
         categories.setMaximumTimeDepreciation(request.getMaximumTimeDepreciation());
+        categories.setTypeTarget(request.getTypeTarget());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Role> roles = new ArrayList<>(csvcUser.getRole());
         if (roles.get(0).getTitle().equals(RolePattern.SuperAdmin.name())){
@@ -260,7 +280,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
     }
 
     private void validateCreateAssetCategory(CreateAssetCategoryRequest request) throws ValidateFiledException {
-        if (StringUtils.isBlank(request.getName())){
+        if (StringUtils.isBlank(request.getName()) || StringUtils.isBlank(request.getNumberCodePattern())){
             throw new ValidateFiledException("Validate data request!");
         }
         if (Objects.nonNull(request.getParentId())){
@@ -319,6 +339,8 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             } else {
                 response.setIsDefault(Constants.NOT_IS_DEFAULT);
             }
+            response.setNumberCodePattern(categorie.getNumberCodePattern());
+            response.setValueUnitDisplay(categorie.getNameUnit());
             responses.add(response);
         }
         return responses;

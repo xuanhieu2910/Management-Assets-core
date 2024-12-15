@@ -82,7 +82,7 @@ public class AssetCategoriesController {
     }) FindAllDocumentAssetCategoriesRequest request){
         try {
             Page<FindAllAssetCategoriesResponse> responses =
-                    assetCategoriesService. findAllAssetCategories(request);
+                    assetCategoriesService.findAllAssetCategories(request);
             return ApiResponseDto.createdWithState(responses, "Find all asset categories by code success!",
                     HttpStatus.OK);
         } catch (NotFoundException e){

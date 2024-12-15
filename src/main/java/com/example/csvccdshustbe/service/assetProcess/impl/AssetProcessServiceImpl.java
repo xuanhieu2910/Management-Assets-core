@@ -2,25 +2,42 @@ package com.example.csvccdshustbe.service.assetProcess.impl;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToInventoryDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToUpdateInventoryDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToUpdateInventoryDto;
+import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.repository.assetProcess.AssetProcessRepository;
-import com.example.csvccdshustbe.request.assetProcess.AssetProcessRequest;
-import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
-import com.example.csvccdshustbe.request.assetProcess.UpdateAllAssetProcessRequest;
+import com.example.csvccdshustbe.request.assetProcess.*;
+import com.example.csvccdshustbe.response.asset.FindAllAssetChildrenToInventoryResponse;
+import com.example.csvccdshustbe.response.asset.FindAllAssetChildrenToUpdateInventoryResponse;
+import com.example.csvccdshustbe.response.asset.FindAllAssetResponseToInventory;
+import com.example.csvccdshustbe.response.asset.FindAllAssetResponseUpdateInventory;
 import com.example.csvccdshustbe.response.assetProcess.FindAllAssetProcessResponse;
+import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
+import com.example.csvccdshustbe.service.process.ProcessService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
+import com.example.csvccdshustbe.utility.ValueUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.sl.draw.geom.GuideIf;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
 
 import java.util.*;
@@ -30,6 +47,14 @@ public class AssetProcessServiceImpl implements AssetProcessService {
 
     @Autowired
     AssetProcessRepository assetProcessRepository;
+    @Lazy
+    @Autowired
+    ProcessService processService;
+
+    @Lazy
+    @Autowired
+    AssetService assetService;
+
 
     @Override
     public List<AssetProcess> saveListAssetProcess(List<AssetProcess> assetProcessList) {
@@ -106,6 +131,150 @@ public class AssetProcessServiceImpl implements AssetProcessService {
                 pageable, findAllAssetDtos.getTotalElements());
     }
 
+    @Override
+    public Page<FindAllAssetResponseUpdateInventory> findAllAssetUpdateInventoryProcess(FindAllAssetProcessRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetParentToUpdateInventoryDto> responses = assetProcessRepository.findALlAssetProcessToUpdateInventory(request, pageable);
+        return new PageImpl<>(convertToFindAllAssetProcessToUpdateInventoryResponse(responses.getContent()),
+                pageable,
+                responses.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllAssetResponseUpdateInventory> findAllAssetProcessLotUpdateInventoryProcess(FindAllAssetProcessRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<FindAllAssetParentToUpdateInventoryDto> responses = assetProcessRepository.findALlAssetProcessLotToUpdateInventory(request, pageable);
+        return new PageImpl<>(convertToFindAllAssetProcessLotToUpdateInventoryResponse(responses.getContent()), pageable, responses.getTotalElements());
+    }
+
+    @Transactional
+    @Override
+    public void createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request) throws JsonProcessingException {
+        Process process = processService.findProcessByIdProcess(request.getIdProcess());
+        List<AssetProcess> assetProcessList = new ArrayList<>();
+        for (AssetProcessNotDeclareInventoryRequest assetProcess: request.getListAssetDeclare()){
+            Asset asset = constructionAssetNotDeclareWhenInventory(assetProcess);
+            assetProcessList.add(constructionAssetProcessDeclareWhenInventory(process,asset,assetProcess));
+        }
+        assetProcessRepository.saveAll(assetProcessList);
+    }
+
+    private Asset constructionAssetNotDeclareWhenInventory(AssetProcessNotDeclareInventoryRequest assetProcess) throws JsonProcessingException {
+
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        HashMap<String, Object> informationAsset = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
+        Asset asset = new Asset();
+        asset.setName(ValueUtil.getStringByObject(informationAsset.get("name_asset")));
+        asset.setIdAssetCategory(ValueUtil.getIntegerByObject(informationAsset.get("id_asset_category")));
+        asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
+        asset.setQuantity(Constants.QUANTITY_DEFAULT);
+//        asset.setIsIncrease(Constants.IS_NOT_INCREASED);
+//        asset.setIsDecrease(Constants.IS_NOT_DECREASED);
+        asset.setIdUserCreated(csvcUser.getIdUser());
+        asset.setIdUserModified(csvcUser.getIdUser());
+        asset.setStatusUse(ValueUtil.getIntegerByObject(informationAsset.get("status_use")));
+        asset.setYearUse(ValueUtil.getStringByObject(informationAsset.get("year_use")));
+        asset.setIdUnit(ValueUtil.getIntegerByObject(informationAsset.get("id_unit")));
+        return assetService.storeAsset(asset);
+    }
+
+    private AssetProcess constructionAssetProcessDeclareWhenInventory(Process process, Asset asset,
+                                                                      AssetProcessNotDeclareInventoryRequest assetProcessRequest) {
+        String timeCurrent = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AssetProcess assetProcess = new AssetProcess();
+        assetProcess.setIdProcess(process.getIdProcess());
+        assetProcess.setIdTypeProcess(process.getIdTypeProcess());
+        assetProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+        assetProcess.setValue(assetProcessRequest.getValue());
+        assetProcess.setTimeCreated(timeCurrent);
+        assetProcess.setTimeModified(timeCurrent);
+        assetProcess.setIdUserCreated(csvcUser.getIdUser());
+        assetProcess.setIdUserModified(csvcUser.getIdUser());
+        assetProcess.setIdAsset(asset.getIdAsset());
+        return assetProcess;
+    }
+
+    private List<FindAllAssetResponseUpdateInventory>
+    convertToFindAllAssetProcessToUpdateInventoryResponse(List<FindAllAssetParentToUpdateInventoryDto> content) {
+        List<FindAllAssetResponseUpdateInventory> response = new ArrayList<>();
+        for (FindAllAssetParentToUpdateInventoryDto dto : content){
+            FindAllAssetResponseUpdateInventory inventory = new FindAllAssetResponseUpdateInventory();
+            inventory.setIdAssetCategory(dto.getIdAssetCategory());
+            inventory.setNameAssetCategory(dto.getNameAssetCategory());
+            inventory.setDepth(dto.getDepth());
+            inventory.setIdParentAssetCategory(dto.getIdParentAssetCategory());
+            inventory.setCodeAssetCategory(dto.getCodeAssetCategory());
+            inventory.setPath(dto.getPath());
+            inventory.setNumberCodePattern(dto.getNumberCodePattern());
+            inventory.setIsLeaf(dto.getIsLeaf());
+            inventory.setTypeTarget(dto.getTypeTarget());
+            if (!CollectionUtils.isEmpty(dto.getAssetLeaves())) {
+                List<FindAllAssetChildrenToUpdateInventoryResponse> assetLeaves = new ArrayList<>();
+                for (FindAllAssetChildrenToUpdateInventoryDto assetLeaf : dto.getAssetLeaves()) {
+                    FindAllAssetChildrenToUpdateInventoryResponse leaf = constructionAssetProcessToUpdateInventoryLeaf(assetLeaf);
+                    assetLeaves.add(leaf);
+                }
+                inventory.setAssetLeaves(assetLeaves);
+            }
+            response.add(inventory);
+        }
+        return response;
+    }
+
+    private FindAllAssetChildrenToUpdateInventoryResponse
+    constructionAssetProcessToUpdateInventoryLeaf(FindAllAssetChildrenToUpdateInventoryDto assetLeaf) {
+        FindAllAssetChildrenToUpdateInventoryResponse leaf = new FindAllAssetChildrenToUpdateInventoryResponse();
+        leaf.setIdAsset(assetLeaf.getIdAsset());
+        leaf.setSalt(assetLeaf.getSalt());
+        leaf.setValue(assetLeaf.getValue());
+        return leaf;
+    }
+
+
+    private List<FindAllAssetResponseUpdateInventory>
+    convertToFindAllAssetProcessLotToUpdateInventoryResponse(List<FindAllAssetParentToUpdateInventoryDto> content) {
+        List<FindAllAssetResponseUpdateInventory> response = new ArrayList<>();
+        for (FindAllAssetParentToUpdateInventoryDto dto : content){
+            FindAllAssetResponseUpdateInventory inventory = new FindAllAssetResponseUpdateInventory();
+            inventory.setIdAssetCategory(dto.getIdAssetCategory());
+            inventory.setNameAssetCategory(dto.getNameAssetCategory());
+            inventory.setDepth(dto.getDepth());
+            inventory.setIdParentAssetCategory(dto.getIdParentAssetCategory());
+            inventory.setCodeAssetCategory(dto.getCodeAssetCategory());
+            inventory.setPath(dto.getPath());
+            inventory.setNumberCodePattern(dto.getNumberCodePattern());
+            inventory.setIsLeaf(dto.getIsLeaf());
+            inventory.setTypeTarget(dto.getTypeTarget());
+            if (!CollectionUtils.isEmpty(dto.getAssetLeaves())) {
+                List<FindAllAssetChildrenToUpdateInventoryResponse> assetLeaves = new ArrayList<>();
+                for (FindAllAssetChildrenToUpdateInventoryDto assetLeaf : dto.getAssetLeaves()) {
+                    FindAllAssetChildrenToUpdateInventoryResponse leaf = constructionAssetProcessLotToUpdateInventoryLeaf(assetLeaf);
+                    assetLeaves.add(leaf);
+                }
+                inventory.setAssetLeaves(assetLeaves);
+            }
+            response.add(inventory);
+        }
+        return response;
+    }
+
+    private FindAllAssetChildrenToUpdateInventoryResponse
+    constructionAssetProcessLotToUpdateInventoryLeaf(FindAllAssetChildrenToUpdateInventoryDto assetLeaf) {
+        FindAllAssetChildrenToUpdateInventoryResponse leaf = new FindAllAssetChildrenToUpdateInventoryResponse();
+        leaf.setIdAsset(assetLeaf.getIdAsset());
+        leaf.setSalt(assetLeaf.getSalt());
+        leaf.setValue(assetLeaf.getValue());
+        return leaf;
+    }
+
+
     private void updateChangeAssetProcess(List<AssetProcess> assetProcessList, UpdateAllAssetProcessRequest request) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String timeCurrent = String.valueOf(new Date().getTime());
@@ -144,6 +313,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             response.setSalt(dto.getSalt());
             response.setValue(dto.getValue());
             response.setQuantity(dto.getQuantity());
+            response.setIdAssetProcess(dto.getIdAssetProcess());
             responses.add(response);
         }
         return responses;
@@ -164,6 +334,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             response.setIdAsset(dto.getIdAsset());
             response.setSalt(dto.getSalt());
             response.setValue(dto.getValue());
+            response.setIdAssetProcess(dto.getIdAssetProcess());
             responses.add(response);
         }
         return responses;

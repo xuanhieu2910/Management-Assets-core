@@ -33,7 +33,9 @@ public interface AssetCategoriesRepositoryCustom {
     Optional<FindAssetCategoryDetailsResponse> findAssetCategoryDetailsPickedResponseByCode(String code);
     boolean isCheckExitsAssetByIdAssetCategory(Integer idAssetCategory);
     List<FindAllAssetCategoriesToDownloadDto>
-    findAllAssetCategoriesByCodeParentVisibleToDownload(List<Integer> idsDepartment, String code);
+    findAllAssetCategoriesByCodeParentVisible(List<Integer> idsDepartment, String code);
+
+    List<FindAllAssetCategoriesToDownloadDto> findAllAssetCategoriesLeafByCodeParentVisibleToDownload(List<Integer> idsDepartment, String code);
     Optional<AssetCategories> findAssetCategoryByName(String name);
     List<AssetCategories> findAllAssetCategoriesByIdIn(List<Integer> idCategory);
 }

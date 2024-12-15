@@ -33,4 +33,7 @@ public class FindAllAssetDto {
     private String timeIncrease;
     private String value;
     private Integer statusProcessCurrent;
+    private Integer statusUse;
+    private String yearUse;
+    private Integer idAssetProcess;
 }

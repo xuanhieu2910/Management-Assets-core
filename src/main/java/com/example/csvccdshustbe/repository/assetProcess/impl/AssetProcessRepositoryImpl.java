@@ -2,6 +2,10 @@ package com.example.csvccdshustbe.repository.assetProcess.impl;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToInventoryDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToUpdateInventoryDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToUpdateInventoryDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.repository.assetProcess.AssetProcessRepositoryCustom;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
@@ -11,6 +15,7 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.collections4.map.ListOrderedMap;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -37,7 +42,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "          de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,   " +
                 "          lo.id_location idLocation, lo.name nameLocation,   " +
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt,   " +
-                "          asset.quantity, assetProcess.value   " +
+                "          asset.quantity, assetProcess.value, assetProcess.id_asset_process   " +
                 "from asset asset   " +
                 "       left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset   " +
                 "       left join process process on assetProcess.id_process = process.id_process   " +
@@ -48,7 +53,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       left join document do on process.id_process = do.id_process           " +
                 "where 1 = 1        " +
                 "and asset.id_department_origin in (:idsDepartmentOriginal)        " +
-                "and do.code = :codeDocument  ");
+                "and do.code = :codeDocument  and asset.parent is null ");
         setConditionFindAllAssetProcess(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetProcess(request, query);
@@ -75,6 +80,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
                 findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[15]));
                 findAllAssetDto.setValue(ValueUtil.getStringByObject(obj[16]));
+                findAllAssetDto.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[17]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -307,7 +313,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,      " +
                 "        lo.id_location idLocation, lo.name nameLocation,      " +
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,      " +
-                "        asset.quantity, assetProcess.value  " +
+                "        asset.quantity, assetProcess.value, assetProcess.id_asset_process  " +
                 "from asset asset  " +
                 "         left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
                 "         left join process process on assetProcess.id_process = process.id_process  " +
@@ -347,10 +353,496 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[14]));
                 findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[15]));
                 findAllAssetDto.setValue(ValueUtil.getStringByObject(obj[16]));
+                findAllAssetDto.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[17]));
                 responses.add(findAllAssetDto);
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllAssetChildrenProcess(request));
+    }
+
+    @Override
+    public Page<FindAllAssetParentToUpdateInventoryDto>
+    findALlAssetProcessToUpdateInventory(FindAllAssetProcessRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH ROOT_ASSET_CATEGORIES as  " +
+                "         (WITH RECURSIVE cte_asset_categories as  " +
+                "           (select assetCategires.id_asset_category,  " +
+                "                   assetCategires.name,  " +
+                "                   assetCategires.code_name,  " +
+                "                   1           as depth,  " +
+                "                   CAST(assetCategires.id_asset_category as NCHAR) as path,  " +
+                "                   assetCategires.number_code_pattern,  " +
+                "                   assetCategires.id_department_original,  " +
+                "                   assetCategires.type_target,  " +
+                "                   assetCategires.parent  " +
+                "            from asset_categories assetCategires  " +
+                "            where assetCategires.parent is null  " +
+                "              and assetCategires.visible = :visible  " +
+                "            union all  " +
+                "            select assetCategires.id_asset_category,  " +
+                "                   assetCategires.name,  " +
+                "                   assetCategires.code_name,  " +
+                "                   cte.depth + 1          as depth,  " +
+                "                   concat_ws('/', cte.path,  " +
+                "           CAST(assetCategires.id_asset_category as NCHAR)) as path,  " +
+                "                   assetCategires.number_code_pattern,  " +
+                "                   assetCategires.id_department_original,  " +
+                "                   assetCategires.type_target,  " +
+                "                   assetCategires.parent  " +
+                "            from asset_categories assetCategires  " +
+                "                     INNER JOIN cte_asset_categories cte  " +
+                "              ON assetCategires.parent = cte.id_asset_category)  " +
+                "          select cte.id_asset_category,  " +
+                "                 cte.name,  " +
+                "                 cte.code_name,  " +
+                "                 cte.depth,  " +
+                "                 cte.path,  " +
+                "                 cte.number_code_pattern,  " +
+                "                 group_concat(un.name SEPARATOR '/') as unitMeasure,  " +
+                "                 cte.parent,  " +
+                "                 CASE  " +
+                "   WHEN EXISTS (SELECT 1  " +
+                "                FROM asset_categories ac  " +
+                "                WHERE ac.parent = cte.id_asset_category) THEN 0  " +
+                "   ELSE 1 END    AS is_leaf,  " +
+                "                 cte.type_target  " +
+                "          from cte_asset_categories cte  " +
+                "                   left join (select un.id_asset_category, un.id_unit, un.name  " +
+                "            from units un  " +
+                "            where un.is_display = :isDisplay) un  " +
+                "           on cte.id_asset_category = un.id_asset_category  " +
+                "          where 1 = 1  " +
+                "            and cte.id_department_original in (:idsDepartmentOriginal)  " +
+                "          group by cte.id_asset_category, cte.name, cte.code_name,  " +
+                "                   cte.depth, cte.path, cte.number_code_pattern, is_leaf, cte.type_target  " +
+                "          order by cte.path),  " +
+                "     ROOT_ASSET_PROCESS as (  " +
+                "         select asset.id_asset idAsset, assetCategories.id_asset_category idAssetCategory,  " +
+                "                assetProcess.value, asset.salt, assetProcess.id_asset_process  " +
+                "         from asset asset  " +
+                "                  left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
+                "                  left join process process on assetProcess.id_process = process.id_process  " +
+                "                  left join asset_categories assetCategories  " +
+                "                       on asset.id_asset_category = assetCategories.id_asset_category  " +
+                "                  left join department de on asset.id_department = de.id_department  " +
+                "                  left join location lo on asset.id_location = lo.id_location  " +
+                "                  left join document do on process.id_process = do.id_process  " +
+                "         where 1 = 1  " +
+                "           and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "           and do.code = :codeDocument  and asset.parent is null ");
+        setConditionFindAllAssetProcessToUpdateInventory(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllAssetProcessToUpdateInventory(query, request);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        ListOrderedMap<Integer, FindAllAssetParentToUpdateInventoryDto> assetMap = new ListOrderedMap<>();
+        Integer idAssetCategory, idAsset;
+        int index = 0;
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                idAssetCategory = ValueUtil.getIntegerByObject(obj[0]);
+                idAsset = obj[9] == null ? null : ValueUtil.getIntegerByObject(obj[9]);
+                if (idAsset != null) {
+                    if (!assetMap.containsKey(idAssetCategory)) {
+                        FindAllAssetParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetParentToUpdateInventoryDto(obj);
+                        assetMap.put(index,idAssetCategory,parentToInventoryDto);
+                        ++index;
+                    }
+                    if (assetMap.containsKey(idAssetCategory)){
+                        assetMap.computeIfPresent(idAssetCategory, (k, v) -> {
+                            v.getAssetLeaves().add(new FindAllAssetChildrenToUpdateInventoryDto(obj));
+                            return v;
+                        });
+                    }
+                } else {
+                    FindAllAssetParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetParentToUpdateInventoryDto(obj);
+                    assetMap.put(index,idAssetCategory,parentToInventoryDto);
+                    ++index;
+                }
+            }
+        }
+        return new PageImpl<>(assetMap.valueList(), pageable, countFindAllAssetProcessToUpdateInventory(request));
+    }
+
+    @Override
+    public Page<FindAllAssetParentToUpdateInventoryDto>
+    findALlAssetProcessLotToUpdateInventory(FindAllAssetProcessRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH ROOT_ASSET_CATEGORIES as  " +
+                "         (WITH RECURSIVE cte_asset_categories as  " +
+                "           (select assetCategires.id_asset_category,  " +
+                "   assetCategires.name,  " +
+                "   assetCategires.code_name,  " +
+                "   1           as depth,  " +
+                "   CAST(assetCategires.id_asset_category as NCHAR) as path,  " +
+                "   assetCategires.number_code_pattern,  " +
+                "   assetCategires.id_department_original,  " +
+                "   assetCategires.type_target,  " +
+                "   assetCategires.parent  " +
+                "            from asset_categories assetCategires  " +
+                "            where assetCategires.parent is null  " +
+                "              and assetCategires.visible = :visible  " +
+                "            union all  " +
+                "            select assetCategires.id_asset_category,  " +
+                "   assetCategires.name,  " +
+                "   assetCategires.code_name,  " +
+                "   cte.depth + 1          as depth,  " +
+                "   concat_ws('/', cte.path,  " +
+                "           CAST(assetCategires.id_asset_category as NCHAR)) as path,  " +
+                "   assetCategires.number_code_pattern,  " +
+                "   assetCategires.id_department_original,  " +
+                "   assetCategires.type_target,  " +
+                "   assetCategires.parent  " +
+                "            from asset_categories assetCategires  " +
+                "     INNER JOIN cte_asset_categories cte  " +
+                "              ON assetCategires.parent = cte.id_asset_category)  " +
+                "          select cte.id_asset_category,  " +
+                "                 cte.name,  " +
+                "                 cte.code_name,  " +
+                "                 cte.depth,  " +
+                "                 cte.path,  " +
+                "                 cte.number_code_pattern,  " +
+                "                 group_concat(un.name SEPARATOR '/') as unitMeasure,  " +
+                "                 cte.parent,  " +
+                "                 CASE  " +
+                "   WHEN EXISTS (SELECT 1  " +
+                "                FROM asset_categories ac  " +
+                "                WHERE ac.parent = cte.id_asset_category) THEN 0  " +
+                "   ELSE 1 END    AS is_leaf,  " +
+                "                 cte.type_target  " +
+                "          from cte_asset_categories cte  " +
+                "   left join (select un.id_asset_category, un.id_unit, un.name  " +
+                "            from units un  " +
+                "            where un.is_display = :isDisplay) un  " +
+                "           on cte.id_asset_category = un.id_asset_category  " +
+                "          where 1 = 1  " +
+                "            and cte.id_department_original in (:idsDepartmentOriginal)  " +
+                "          group by cte.id_asset_category, cte.name, cte.code_name,  " +
+                "   cte.depth, cte.path, cte.number_code_pattern, is_leaf, cte.type_target  " +
+                "          order by cte.path),  " +
+                "     ROOT_ASSET_PROCESS as (  " +
+                "         select assetParent.id_asset idAsset,assetCategories.id_asset_category idAssetCategory,  " +
+                "                assetParent.salt  " +
+                "         from asset asset  " +
+                "                  left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
+                "                  left join process process on assetProcess.id_process = process.id_process  " +
+                "                  left join asset_categories assetCategories  " +
+                "                            on asset.id_asset_category = assetCategories.id_asset_category  " +
+                "                  left join department de on asset.id_department = de.id_department  " +
+                "                  left join location lo on asset.id_location = lo.id_location  " +
+                "                  left join document do on process.id_process = do.id_process  " +
+                "                  inner join asset assetParent on asset.parent = assetParent.id_asset  " +
+                "         where 1 = 1  " +
+                "           and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "           and do.code = :codeDocument ");
+        setConditionFindAllAssetProcessLotToUpdateInventory(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllAssetProcessLotToUpdateInventory(query, request);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        ListOrderedMap<Integer, FindAllAssetParentToUpdateInventoryDto> assetMap = new ListOrderedMap<>();
+        Integer idAssetCategory, idAsset;
+        int index = 0;
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                idAssetCategory = ValueUtil.getIntegerByObject(obj[0]);
+                idAsset = obj[9] == null ? null : ValueUtil.getIntegerByObject(obj[9]);
+                if (idAsset != null) {
+                    if (!assetMap.containsKey(idAssetCategory)) {
+                        FindAllAssetParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetParentToUpdateInventoryDto(obj);
+                        assetMap.put(index,idAssetCategory,parentToInventoryDto);
+                        ++index;
+                    }
+                    if (assetMap.containsKey(idAssetCategory)){
+                        assetMap.computeIfPresent(idAssetCategory, (k, v) -> {
+                            v.getAssetLeaves().add(new FindAllAssetChildrenToUpdateInventoryDto(obj));
+                            return v;
+                        });
+                    }
+                } else {
+                    FindAllAssetParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetParentToUpdateInventoryDto(obj);
+                    assetMap.put(index,idAssetCategory,parentToInventoryDto);
+                    ++index;
+                }
+            }
+        }
+        return new PageImpl<>(assetMap.valueList(), pageable, countFindAllAssetProcessLotToUpdateInventory(request));
+    }
+
+    private long countFindAllAssetProcessLotToUpdateInventory(FindAllAssetProcessRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH ROOT_ASSET_CATEGORIES as   " +
+                "         (WITH RECURSIVE cte_asset_categories as   " +
+                "           (select assetCategires.id_asset_category,   " +
+                "   assetCategires.name,   " +
+                "   assetCategires.code_name,   " +
+                "   1           as depth,   " +
+                "   CAST(assetCategires.id_asset_category as NCHAR) as path,   " +
+                "   assetCategires.number_code_pattern,   " +
+                "   assetCategires.id_department_original,   " +
+                "   assetCategires.type_target,   " +
+                "   assetCategires.parent   " +
+                "            from asset_categories assetCategires   " +
+                "            where assetCategires.parent is null   " +
+                "              and assetCategires.visible = :visible   " +
+                "            union all   " +
+                "            select assetCategires.id_asset_category,   " +
+                "   assetCategires.name,   " +
+                "   assetCategires.code_name,   " +
+                "   cte.depth + 1          as depth,   " +
+                "   concat_ws('/', cte.path,   " +
+                "           CAST(assetCategires.id_asset_category as NCHAR)) as path,   " +
+                "   assetCategires.number_code_pattern,   " +
+                "   assetCategires.id_department_original,   " +
+                "   assetCategires.type_target,   " +
+                "   assetCategires.parent   " +
+                "            from asset_categories assetCategires   " +
+                "     INNER JOIN cte_asset_categories cte   " +
+                "              ON assetCategires.parent = cte.id_asset_category)   " +
+                "          select cte.id_asset_category,   " +
+                "                 cte.name,   " +
+                "                 cte.code_name,   " +
+                "                 cte.depth,   " +
+                "                 cte.path,   " +
+                "                 cte.number_code_pattern,   " +
+                "                 group_concat(un.name SEPARATOR '/') as unitMeasure,   " +
+                "                 cte.parent,   " +
+                "                 CASE   " +
+                "   WHEN EXISTS (SELECT 1   " +
+                "                FROM asset_categories ac   " +
+                "                WHERE ac.parent = cte.id_asset_category) THEN 0   " +
+                "   ELSE 1 END    AS is_leaf,   " +
+                "                 cte.type_target   " +
+                "          from cte_asset_categories cte   " +
+                "   left join (select un.id_asset_category, un.id_unit, un.name   " +
+                "            from units un   " +
+                "            where un.is_display = :isDisplay) un   " +
+                "           on cte.id_asset_category = un.id_asset_category   " +
+                "          where 1 = 1   " +
+                "            and cte.id_department_original in (:idsDepartmentOriginal)   " +
+                "          group by cte.id_asset_category, cte.name, cte.code_name,   " +
+                "   cte.depth, cte.path, cte.number_code_pattern, is_leaf, cte.type_target   " +
+                "          order by cte.path),   " +
+                "     ROOT_ASSET_PROCESS as (   " +
+                "         select assetParent.id_asset idAsset,assetCategories.id_asset_category idAssetCategory,   " +
+                "                assetParent.salt   " +
+                "         from asset asset   " +
+                "                  left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset   " +
+                "                  left join process process on assetProcess.id_process = process.id_process   " +
+                "                  left join asset_categories assetCategories   " +
+                "                            on asset.id_asset_category = assetCategories.id_asset_category   " +
+                "                  left join department de on asset.id_department = de.id_department   " +
+                "                  left join location lo on asset.id_location = lo.id_location   " +
+                "                  left join document do on process.id_process = do.id_process   " +
+                "                  inner join asset assetParent on asset.parent = assetParent.id_asset   " +
+                "         where 1 = 1   " +
+                "           and asset.id_department_origin in (:idsDepartmentOriginal)   " +
+                "           and do.code = :codeDocument ");
+        setCountConditionFindAllAssetProcessLotToUpdateInventory(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllAssetProcessLotToUpdateInventory(query, request);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+    private void setCountConditionFindAllAssetProcessLotToUpdateInventory(StringBuilder sb, FindAllAssetProcessRequest request) {
+        if (StringUtils.isNotBlank(request.getNameAsset())){
+            sb.append(" and (assetParent.name REGEXP :nameAsset)  ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+            sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        sb.append(" group by assetParent.id_asset, assetCategories.id_asset_category,   " +
+                "                  assetParent.salt   " +
+                "     )   " +
+                "select count(0)   " +
+                "from ROOT_ASSET_CATEGORIES rootAssetCategories   " +
+                "         left join ROOT_ASSET_PROCESS rootAssetProcess" +
+                "  on rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory   " +
+                "order by rootAssetCategories.path ");
+    }
+
+    private void setParameterFindAllAssetProcessLotToUpdateInventory(Query query, FindAllAssetProcessRequest request) {
+        query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
+        query.setParameter("isDisplay", Constants.UNITES_IS_DISPLAY);
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("codeDocument", request.getCodeDocument());
+        if (StringUtils.isNotBlank(request.getNameAsset())){
+            query.setParameter("nameAsset", request.getNameAsset());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+            query.setParameter("idAssetCategory", request.getIdAssetCategory());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+    }
+
+    private void setConditionFindAllAssetProcessLotToUpdateInventory(StringBuilder sb, FindAllAssetProcessRequest request) {
+        if (StringUtils.isNotBlank(request.getNameAsset())){
+            sb.append(" and (assetParent.name REGEXP :nameAsset)  ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+            sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        sb.append(" group by assetParent.id_asset, assetCategories.id_asset_category,   " +
+                "                  assetParent.salt   " +
+                "     )   " +
+                "select rootAssetCategories.id_asset_category   as idAssetCategory,   " +
+                "       rootAssetCategories.name                as nameAssetCategory,   " +
+                "       rootAssetCategories.parent              as idParentAssetCategory,   " +
+                "       rootAssetCategories.code_name           as codeAssetCategory,   " +
+                "       rootAssetCategories.depth               as depth,   " +
+                "       rootAssetCategories.path                as path,   " +
+                "       rootAssetCategories.number_code_pattern as numberCodePattern,   " +
+                "       rootAssetCategories.is_leaf             as isLeaf,   " +
+                "       rootAssetCategories.type_target         as targetType,   " +
+                "       rootAssetProcess.idAsset                as idAsset,   " +
+                "       rootAssetProcess.salt                   as salt   " +
+                "from ROOT_ASSET_CATEGORIES rootAssetCategories   " +
+                "         left join ROOT_ASSET_PROCESS rootAssetProcess on rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory   " +
+                "order by rootAssetCategories.path ");
+    }
+
+    private long countFindAllAssetProcessToUpdateInventory(FindAllAssetProcessRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH ROOT_ASSET_CATEGORIES as  " +
+                "         (WITH RECURSIVE cte_asset_categories as  " +
+                "           (select assetCategires.id_asset_category,  " +
+                "                   assetCategires.name,  " +
+                "                   assetCategires.code_name,  " +
+                "                   1           as depth,  " +
+                "                   CAST(assetCategires.id_asset_category as NCHAR) as path,  " +
+                "                   assetCategires.number_code_pattern,  " +
+                "                   assetCategires.id_department_original,  " +
+                "                   assetCategires.type_target,  " +
+                "                   assetCategires.parent  " +
+                "            from asset_categories assetCategires  " +
+                "            where assetCategires.parent is null  " +
+                "              and assetCategires.visible = :visible  " +
+                "            union all  " +
+                "            select assetCategires.id_asset_category,  " +
+                "                   assetCategires.name,  " +
+                "                   assetCategires.code_name,  " +
+                "                   cte.depth + 1          as depth,  " +
+                "                   concat_ws('/', cte.path,  " +
+                "           CAST(assetCategires.id_asset_category as NCHAR)) as path,  " +
+                "                   assetCategires.number_code_pattern,  " +
+                "                   assetCategires.id_department_original,  " +
+                "                   assetCategires.type_target,  " +
+                "                   assetCategires.parent  " +
+                "            from asset_categories assetCategires  " +
+                "                     INNER JOIN cte_asset_categories cte  " +
+                "              ON assetCategires.parent = cte.id_asset_category)  " +
+                "          select cte.id_asset_category,  " +
+                "                 cte.name,  " +
+                "                 cte.code_name,  " +
+                "                 cte.depth,  " +
+                "                 cte.path,  " +
+                "                 cte.number_code_pattern,  " +
+                "                 group_concat(un.name SEPARATOR '/') as unitMeasure,  " +
+                "                 cte.parent,  " +
+                "                 CASE  " +
+                "   WHEN EXISTS (SELECT 1  " +
+                "                FROM asset_categories ac  " +
+                "                WHERE ac.parent = cte.id_asset_category) THEN 0  " +
+                "   ELSE 1 END    AS is_leaf,  " +
+                "                 cte.type_target  " +
+                "          from cte_asset_categories cte  " +
+                "                   left join (select un.id_asset_category, un.id_unit, un.name  " +
+                "            from units un  " +
+                "            where un.is_display = :isDisplay) un  " +
+                "           on cte.id_asset_category = un.id_asset_category  " +
+                "          where 1 = 1  " +
+                "            and cte.id_department_original in (:idsDepartmentOriginal)  " +
+                "          group by cte.id_asset_category, cte.name, cte.code_name,  " +
+                "                   cte.depth, cte.path, cte.number_code_pattern, is_leaf, cte.type_target  " +
+                "          order by cte.path),  " +
+                "     ROOT_ASSET_PROCESS as (  " +
+                "         select asset.id_asset idAsset, assetCategories.id_asset_category idAssetCategory,  " +
+                "                assetProcess.value, asset.salt, assetProcess.id_asset_process  " +
+                "         from asset asset  " +
+                "                  left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
+                "                  left join process process on assetProcess.id_process = process.id_process  " +
+                "                  left join asset_categories assetCategories  " +
+                "                       on asset.id_asset_category = assetCategories.id_asset_category  " +
+                "                  left join department de on asset.id_department = de.id_department  " +
+                "                  left join location lo on asset.id_location = lo.id_location  " +
+                "                  left join document do on process.id_process = do.id_process  " +
+                "         where 1 = 1  " +
+                "           and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "           and do.code = :codeDocument  and asset.parent is null ");
+        setCountConditionFindAllAssetProcessToUpdateInventory(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllAssetProcessToUpdateInventory(query, request);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindAllAssetProcessToUpdateInventory(Query query, FindAllAssetProcessRequest request) {
+        query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
+        query.setParameter("isDisplay", Constants.UNITES_IS_DISPLAY);
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("codeDocument", request.getCodeDocument());
+        if (StringUtils.isNotBlank(request.getNameAsset())){
+            query.setParameter("nameAsset", request.getNameAsset());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+            query.setParameter("idAssetCategory", request.getIdAssetCategory());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+    }
+
+    private void setConditionFindAllAssetProcessToUpdateInventory(StringBuilder sb, FindAllAssetProcessRequest request) {
+        if (StringUtils.isNotBlank(request.getNameAsset())){
+            sb.append(" and (asset.name REGEXP :nameAsset ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+            sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        sb.append("      )  " +
+                "select rootAssetCategories.id_asset_category   as idAssetCategory,  " +
+                "       rootAssetCategories.name                as nameAssetCategory,  " +
+                "       rootAssetCategories.parent              as idParentAssetCategory,  " +
+                "       rootAssetCategories.code_name           as codeAssetCategory,  " +
+                "       rootAssetCategories.depth               as depth,  " +
+                "       rootAssetCategories.path                as path,  " +
+                "       rootAssetCategories.number_code_pattern as numberCodePattern,  " +
+                "       rootAssetCategories.is_leaf             as isLeaf,  " +
+                "       rootAssetCategories.type_target         as targetType,  "+
+                "       rootAssetProcess.idAsset                as idAsset,  " +
+                "       rootAssetProcess.salt                   as salt,  " +
+                "       rootAssetProcess.value                  as valueAssetProcess,  " +
+                "       rootAssetProcess.id_asset_process       as idAssetProcess " +
+                "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
+                "         left join ROOT_ASSET_PROCESS rootAssetProcess on rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory  " +
+                "order by rootAssetCategories.path ");
+    }
+
+    private void setCountConditionFindAllAssetProcessToUpdateInventory(StringBuilder sb, FindAllAssetProcessRequest request) {
+        if (StringUtils.isNotBlank(request.getNameAsset())){
+            sb.append(" and (asset.name REGEXP :nameAsset ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+            sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        sb.append("      )  " +
+                "select count(0)  " +
+                "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
+                "         left join ROOT_ASSET_PROCESS rootAssetProcess on rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory  " +
+                "order by rootAssetCategories.path ");
     }
 
     private long countFindAllAssetChildrenProcess(FindAllAssetProcessRequest request) {

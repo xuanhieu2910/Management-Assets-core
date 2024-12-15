@@ -79,4 +79,8 @@ public class CommonAssetDto {
     private Integer idUserCreated;
     @JsonProperty("id_user_modified")
     private Integer idUserModified;
+    @JsonProperty("status_use")
+    private Integer statusUse;
+    @JsonProperty("year_use")
+    private String yearUse;
 }

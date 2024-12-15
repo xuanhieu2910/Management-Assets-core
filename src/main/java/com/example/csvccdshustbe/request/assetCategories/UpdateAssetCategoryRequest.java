@@ -23,4 +23,6 @@ public class UpdateAssetCategoryRequest {
     private String minimumTimeDepreciation;
     private String maximumTimeDepreciation;
     private Integer isPick;
+    private String numberCodePattern;
+    private Integer typeTarget;
 }
