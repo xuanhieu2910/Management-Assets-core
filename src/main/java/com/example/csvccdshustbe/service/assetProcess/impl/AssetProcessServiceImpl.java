@@ -23,6 +23,10 @@ import com.example.csvccdshustbe.service.process.ProcessService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
+import com.example.csvccdshustbe.utility.ValueUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.sl.draw.geom.GuideIf;
@@ -46,6 +50,10 @@ public class AssetProcessServiceImpl implements AssetProcessService {
     @Lazy
     @Autowired
     ProcessService processService;
+
+    @Lazy
+    @Autowired
+    AssetService assetService;
 
 
     @Override
@@ -147,28 +155,49 @@ public class AssetProcessServiceImpl implements AssetProcessService {
 
     @Transactional
     @Override
-    public void createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request) {
+    public void createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request) throws JsonProcessingException {
         Process process = processService.findProcessByIdProcess(request.getIdProcess());
         List<AssetProcess> assetProcessList = new ArrayList<>();
         for (AssetProcessNotDeclareInventoryRequest assetProcess: request.getListAssetDeclare()){
-            assetProcessList.add(constructionAssetProcessDeclareWhenInventory(process, assetProcess));
+            Asset asset = constructionAssetNotDeclareWhenInventory(assetProcess);
+            assetProcessList.add(constructionAssetProcessDeclareWhenInventory(process,asset,assetProcess));
         }
         assetProcessRepository.saveAll(assetProcessList);
     }
 
-    private AssetProcess constructionAssetProcessDeclareWhenInventory(Process process,
+    private Asset constructionAssetNotDeclareWhenInventory(AssetProcessNotDeclareInventoryRequest assetProcess) throws JsonProcessingException {
+
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        HashMap<String, Object> informationAsset = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
+        Asset asset = new Asset();
+        asset.setName(ValueUtil.getStringByObject(informationAsset.get("name_asset")));
+        asset.setIdAssetCategory(ValueUtil.getIntegerByObject(informationAsset.get("id_asset_category")));
+        asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
+        asset.setQuantity(Constants.QUANTITY_DEFAULT);
+//        asset.setIsIncrease(Constants.IS_NOT_INCREASED);
+//        asset.setIsDecrease(Constants.IS_NOT_DECREASED);
+        asset.setIdUserCreated(csvcUser.getIdUser());
+        asset.setIdUserModified(csvcUser.getIdUser());
+        asset.setStatusUse(ValueUtil.getIntegerByObject(informationAsset.get("status_use")));
+        asset.setYearUse(ValueUtil.getStringByObject(informationAsset.get("year_use")));
+        asset.setIdUnit(ValueUtil.getIntegerByObject(informationAsset.get("id_unit")));
+        return assetService.storeAsset(asset);
+    }
+
+    private AssetProcess constructionAssetProcessDeclareWhenInventory(Process process, Asset asset,
                                                                       AssetProcessNotDeclareInventoryRequest assetProcessRequest) {
         String timeCurrent = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AssetProcess assetProcess = new AssetProcess();
         assetProcess.setIdProcess(process.getIdProcess());
         assetProcess.setIdTypeProcess(process.getIdTypeProcess());
-        assetProcess.setStatus(Constants.STATUS_ASSET_PROCESS_UN_ACTIVE);
+        assetProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
         assetProcess.setValue(assetProcessRequest.getValue());
         assetProcess.setTimeCreated(timeCurrent);
         assetProcess.setTimeModified(timeCurrent);
         assetProcess.setIdUserCreated(csvcUser.getIdUser());
         assetProcess.setIdUserModified(csvcUser.getIdUser());
+        assetProcess.setIdAsset(asset.getIdAsset());
         return assetProcess;
     }
 

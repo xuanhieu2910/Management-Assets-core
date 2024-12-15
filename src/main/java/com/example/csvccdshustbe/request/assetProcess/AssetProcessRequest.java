@@ -9,4 +9,5 @@ public class AssetProcessRequest {
 
     private Integer idAsset;
     private String value;
+    private Integer typeFluctuatingSituationAsset;
 }
