@@ -822,7 +822,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       rootAssetProcess.idAsset                as idAsset,  " +
                 "       rootAssetProcess.salt                   as salt,  " +
                 "       rootAssetProcess.value                  as valueAssetProcess,  " +
-                "       rootAssetProcess.id_asset_process       as idAssetProcess" +
+                "       rootAssetProcess.id_asset_process       as idAssetProcess " +
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
                 "         left join ROOT_ASSET_PROCESS rootAssetProcess on rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory  " +
                 "order by rootAssetCategories.path ");
