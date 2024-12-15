@@ -552,4 +552,14 @@ public class Constants {
     public static Integer STATUS_TYPE_PROCESS_ACTIVE = 1;
     public static Integer STATUS_TYPE_PROCESS_UN_ACTIVE = -1;
     /*----------------------------------------------------*/
+
+    /**
+     * Constant status use Of Asset
+     * */
+    public static Integer STATUS_USE = 1;
+    public static Integer STATUS_NOT_USE = -1;
+    /*----------------------------------------------------*/
+
+    public static Integer ASSET_CATEGORY_IS_DISPLAY = 1;
+    /*----------------------------------------------------*/
 }

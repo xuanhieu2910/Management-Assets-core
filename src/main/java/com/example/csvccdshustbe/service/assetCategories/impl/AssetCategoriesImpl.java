@@ -223,12 +223,28 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
         Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
         List<Integer> idsDepartment = departmentService.findIdsStructureDepartment(idDepartment);
         idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
-        Map<String, List<FindAllAssetCategoriesToDownloadDto>> responses = new HashMap<>();
+        Map<String, List<FindAllAssetCategoriesToDownloadDto>> responses = new LinkedHashMap<>();
         String keyword;
         for (FindAllAssetCategoriesPickedResponse assetPicked : assetCategoriesIsPicked){
             keyword = "STT_" + assetPicked.getIdAssetCategory() + "_" + assetPicked.getName();
             keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
-            responses.put(keyword, assetCategoriesRepository.findAllAssetCategoriesByCodeParentVisibleToDownload(idsDepartment, assetPicked.getCodeName()));
+            responses.put(keyword, assetCategoriesRepository.findAllAssetCategoriesLeafByCodeParentVisibleToDownload(idsDepartment, assetPicked.getCodeName()));
+        }
+        return responses;
+    }
+
+    @Override
+    public Map<String, List<FindAllAssetCategoriesToDownloadDto>> findAllAssetCategoriesVisibleResponseToView() {
+        List<FindAllAssetCategoriesPickedResponse> assetCategoriesIsPicked = findAllAssetCategoriesIsPicked();
+        Integer idDepartment = csvcUserService.getInformationUser().getIdDepartment();
+        List<Integer> idsDepartment = departmentService.findIdsStructureDepartment(idDepartment);
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        Map<String, List<FindAllAssetCategoriesToDownloadDto>> responses = new LinkedHashMap<>();
+        String keyword;
+        for (FindAllAssetCategoriesPickedResponse assetPicked : assetCategoriesIsPicked){
+            keyword = "STT_" + assetPicked.getIdAssetCategory() + "_" + assetPicked.getName();
+            keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
+            responses.put(keyword, assetCategoriesRepository.findAllAssetCategoriesByCodeParentVisible(idsDepartment, assetPicked.getCodeName()));
         }
         return responses;
     }
