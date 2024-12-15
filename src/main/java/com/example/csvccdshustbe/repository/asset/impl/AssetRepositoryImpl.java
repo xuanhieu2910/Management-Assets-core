@@ -868,7 +868,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                    from asset asset  " +
                 "                             inner join asset_categories assetCategories  " +
                 "                                        on asset.id_asset_category = assetCategories.id_asset_category  " +
-                "                             inner join department de on asset.id_department = de.id_department  " +
+                "                             left join department de on asset.id_department = de.id_department  " +
                 "                             left join location lo on asset.id_location = lo.id_location  " +
                 "                             left join asset_original_of_formation assetOriginalOfFormation  " +
                 "                                       on asset.id_asset = assetOriginalOfFormation.id_asset  " +
@@ -877,7 +877,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                             left join units on asset.id_unit = units.id_unit " +
                 "                    where 1 = 1  " +
                 "                        and asset.id_department_origin in (:idsDepartmentOriginal)  " +
-                "                        and asset.status_process_current != :statusProcess ") ;
+                "                        and (asset.status_process_current != :statusProcess or asset.status_process_current is null) ") ;
         setConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToInventory(request, query);
@@ -2095,7 +2095,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                    from asset asset  " +
                 "                             inner join asset_categories assetCategories  " +
                 "                                        on asset.id_asset_category = assetCategories.id_asset_category  " +
-                "                             inner join department de on asset.id_department = de.id_department  " +
+                "                             left join department de on asset.id_department = de.id_department  " +
                 "                             left join location lo on asset.id_location = lo.id_location  " +
                 "                             left join asset_original_of_formation assetOriginalOfFormation  " +
                 "                                       on asset.id_asset = assetOriginalOfFormation.id_asset  " +
@@ -2103,7 +2103,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                                       on asset.id_asset = assetDepreciation.id_asset  " +
                 "                    where 1 = 1 " +
                 "                   and asset.id_department_origin in (:idsDepartmentOriginal)   " +
-                "                   and asset.status_process_current != :statusProcess   ");
+                "                   and (asset.status_process_current != :statusProcess or asset.status_process_current is null)   ");
         setCountConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToInventory(request,query);
