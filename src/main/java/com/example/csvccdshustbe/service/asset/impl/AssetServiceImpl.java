@@ -1732,6 +1732,7 @@ public class AssetServiceImpl implements AssetService {
         leaf.setUnit(assetLeaf.getUnit());
         leaf.setIsIncrease(assetLeaf.getIsIncrease());
         leaf.setAcreage(assetLeaf.getAcreage());
+        leaf.setTypeTarget(assetLeaf.getTypeTarget());
         leaf.setOriginalOfFormation(String.valueOf(
                 Optional.ofNullable(assetLeaf.getOriginalOfFormation())
                         .map(original -> Arrays.stream(original.split("-"))

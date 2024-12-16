@@ -1361,7 +1361,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
                 "        assetDepreciation.rest_value,asset.quantity,  " +
                 "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "        asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name,assetCategories.type_target " +
+                "        asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name " +
                 "from asset asset  " +
                 "         inner join asset_categories assetCategories  " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category  " +
@@ -1411,7 +1411,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setTypeTarget(ValueUtil.getIntegerByObject(obj[20]));
                 findAllAssetDto.setAcreage(ValueUtil.getDoubleByObject(obj[21]));
                 findAllAssetDto.setUnit(ValueUtil.getStringByObject(obj[22]));
-                findAllAssetDto.setTypeTarget(ValueUtil.getIntegerByObject(obj[23]));
+
                 responses.add(findAllAssetDto);
             }
         }
@@ -2128,7 +2128,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt,        " +
                 "          assetDepreciation.rest_value,asset.quantity,        " +
                 "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,    " +
-                "          asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name,assetCategories.type_target " +
+                "          asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name " +
                 "   from asset asset        " +
                 "       inner join asset_categories assetCategories   " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category   " +
