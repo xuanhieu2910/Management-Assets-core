@@ -55,4 +55,6 @@ public interface AssetService {
     List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset);
     Page<FindAllAssetResponseToDecrease> findAllAssetChildrenToDecrease(FindAllAssetToDecreaseRequest decreaseRequest);
     Page<FindAllAssetChildrenToInventoryResponse> findAllAssetChildrenToInventory(FindAllAssetToInventoryRequest inventoryRequest);
+
+    Asset findAssetByIdAsset(Integer idAsset);
 }

@@ -334,7 +334,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.id_user_modified, asset.quantity, asset.id_instance,  " +
                 "        asset.id_department_origin, asset.parent, asset.salt,  " +
                 "        asset.id_process_current,asset.status_process_current, asset.id_type_process_current,  " +
-                "        asset.is_increase, asset.is_decrease, asset.status_use,asset.year_use  " +
+                "        asset.is_increase, asset.is_decrease, asset.status_use,asset.year_use, asset.acreage   " +
                 "from asset       " +
                 "where asset.salt = :salt ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -374,6 +374,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
                 asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
                 asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
+                asset.setAcreage(ValueUtil.getDoubleByObject(obj[31]));
                 return Optional.of(asset);
             }
         }
@@ -573,7 +574,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       description, quantity, id_instance, id_department_origin,  " +
                 "       parent, salt, id_process_current, status_process_current,  " +
                 "       id_type_process_current, is_increase, is_decrease, status_use, " +
-                "       year_use " +
+                "       year_use, acreage " +
                 "from asset where id_department_origin = :idDepartmentOrigin  " +
                 "order by id_asset desc limit 1 ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -613,6 +614,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
                 asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
                 asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
+                asset.setAcreage(ValueUtil.getDoubleByObject(obj[31]));
                 return Optional.of(asset);
             }
         }
@@ -630,7 +632,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        description, quantity, id_instance, id_department_origin,  " +
                 "        parent, salt, id_process_current, status_process_current,  " +
                 "        id_type_process_current, is_increase, is_decrease, status_use," +
-                "        year_use  " +
+                "        year_use, acreage  " +
                 " from asset             " +
                 " where id_department_origin = :idDepartmentOrigin             " +
                 " and parent is not null             " +
@@ -672,6 +674,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
                 asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
                 asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
+                asset.setAcreage(ValueUtil.getDoubleByObject(obj[31]));
                 return Optional.of(asset);
             }
         }
@@ -689,7 +692,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        description, quantity, id_instance, id_department_origin,  " +
                 "        parent, salt, id_process_current, status_process_current,  " +
                 "        id_type_process_current, is_increase, is_decrease, status_use,  " +
-                "        year_use  " +
+                "        year_use, acreage  " +
                 " from asset  " +
                 " where asset.parent = :idAssetParent  ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -730,6 +733,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
                 asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
                 asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
+                asset.setAcreage(ValueUtil.getDoubleByObject(obj[31]));
                 assetChildren.add(asset);
             }
         }
@@ -745,7 +749,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        id_level_type_asset, id_user_created, id_user_modified,  " +
                 "        description, quantity, id_instance, id_department_origin,  " +
                 "        parent, salt, id_process_current, status_process_current,  " +
-                "        id_type_process_current, is_increase, is_decrease  " +
+                "        id_type_process_current, is_increase, is_decrease, status_use, " +
+                "        year_use, acreage " +
                 " from asset  " +
                 " where asset.parent = :idAssetParent and asset.is_decrease != :isDecrease ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -785,6 +790,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 asset.setIsIncrease(ValueUtil.getIntegerByObject(obj[27]));
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
+                asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
+                asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
+                asset.setAcreage(ValueUtil.getDoubleByObject(obj[31]));
                 assetChildren.add(asset);
             }
         }
@@ -927,7 +935,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        description, quantity, id_instance, id_department_origin,  " +
                 "        parent, salt, id_process_current, status_process_current,  " +
                 "        id_type_process_current, is_increase, is_decrease, status_use, " +
-                "        year_use " +
+                "        year_use, acreage " +
                 "from asset where id_asset in (:idsAsset) ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsAsset", idsAsset);
@@ -967,6 +975,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
                 asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
                 asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
+                asset.setAcreage(ValueUtil.getDoubleByObject(obj[31]));
                 assets.add(asset);
             }
         }
@@ -974,7 +983,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     @Override
-    public Optional<Asset> findAllAssetByIdAsset(Integer idAsset) {
+    public Optional<Asset> findAssetByIdAsset(Integer idAsset) {
         StringBuilder sb = new StringBuilder();
         sb.append("select id_asset, name, code_asset, id_asset_category,  " +
                 "        id_document_attack, id_department, id_location,  " +
@@ -984,7 +993,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        description, quantity, id_instance, id_department_origin,  " +
                 "        parent, salt, id_process_current, status_process_current,  " +
                 "        id_type_process_current, is_increase, is_decrease, status_use, " +
-                "        year_use  " +
+                "        year_use, acreage  " +
                 "from asset where id_asset = :idAsset ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idAsset", idAsset);
@@ -1023,6 +1032,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 asset.setIsDecrease(ValueUtil.getIntegerByObject(obj[28]));
                 asset.setStatusUse(ValueUtil.getIntegerByObject(obj[29]));
                 asset.setYearUse(ValueUtil.getStringByObject(obj[30]));
+                asset.setAcreage(ValueUtil.getDoubleByObject(obj[31]));
                 return Optional.of(asset);
             }
         }
@@ -1361,7 +1371,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
                 "        assetDepreciation.rest_value,asset.quantity,  " +
                 "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "        asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name " +
+                "        asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name,assetCategories.type_target " +
                 "from asset asset  " +
                 "         inner join asset_categories assetCategories  " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category  " +
@@ -1411,6 +1421,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setTypeTarget(ValueUtil.getIntegerByObject(obj[20]));
                 findAllAssetDto.setAcreage(ValueUtil.getDoubleByObject(obj[21]));
                 findAllAssetDto.setUnit(ValueUtil.getStringByObject(obj[22]));
+                findAllAssetDto.setTypeTarget(ValueUtil.getIntegerByObject(obj[23]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -2127,7 +2138,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt,        " +
                 "          assetDepreciation.rest_value,asset.quantity,        " +
                 "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,    " +
-                "          asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage " +
+                "          asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name,assetCategories.type_target " +
                 "   from asset asset        " +
                 "       inner join asset_categories assetCategories   " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category   " +
@@ -2532,7 +2543,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
                 "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity, " +
-                "         asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name ");
+                "         asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name,assetCategories.type_target ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2637,7 +2648,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
                 "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity, " +
-                "         asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name ");
+                "         asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name,assetCategories.type_target  ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {

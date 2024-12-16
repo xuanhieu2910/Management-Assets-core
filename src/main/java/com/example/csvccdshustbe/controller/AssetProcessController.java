@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.assetProcess.AssetNotDeclareWhenInventoryRequest;
 import com.example.csvccdshustbe.request.assetProcess.AssetProcessRequest;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
+import com.example.csvccdshustbe.request.assetProcess.UpdateAssetProcessRequest;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -65,7 +66,6 @@ public class AssetProcessController {
             return ApiResponseDto.createdWithState(assetProcessService.findAllAssetProcessLotUpdateInventoryProcess(request),
                     "Find all data asset process lot to update inventory success!", HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -104,9 +104,19 @@ public class AssetProcessController {
     public ResponseEntity<?>
     createNewAssetNotDeclareWhenInventory(@RequestBody AssetNotDeclareWhenInventoryRequest request){
         try {
-            assetProcessService.createNewAssetNotDeclareWhenInventory(request);
-            return ApiResponseDto.createdWithMessage("Create new asset not declare when inventory success!",
+            return ApiResponseDto.createdWithState(assetProcessService.createNewAssetNotDeclareWhenInventory(request),
+                    "Create new asset not declare when inventory success!",
                     HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PutMapping("/update-asset-inventory")
+    public ResponseEntity<?> updateAssetProcessInventory(@RequestBody UpdateAssetProcessRequest request){
+        try {
+            assetProcessService.updateAssetProcessInventory(request);
+            return ApiResponseDto.createdWithMessage("Update asset inventory success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
