@@ -18,6 +18,7 @@ import jakarta.persistence.Query;
 import org.apache.commons.collections4.map.ListOrderedMap;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.sl.draw.geom.GuideIf;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -567,6 +568,43 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
             }
         }
         return new PageImpl<>(assetMap.valueList(), pageable, countFindAllAssetProcessLotToUpdateInventory(request));
+    }
+
+    @Override
+    public Optional<AssetProcess> findAssetProcessByIdAssetProcess(Integer idAssetProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_asset_process,   " +
+                "       id_asset,   " +
+                "       id_process,   " +
+                "       id_type_process,   " +
+                "       status,   " +
+                "       value,   " +
+                "       time_created,   " +
+                "       time_modified,   " +
+                "       id_user_created,   " +
+                "       id_user_modified   " +
+                "from asset_process   " +
+                "where id_asset_process = :idAssetProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idAssetProcess", idAssetProcess);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                AssetProcess assetProcess = new AssetProcess();
+                assetProcess.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[0]));
+                assetProcess.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                assetProcess.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                assetProcess.setIdTypeProcess(ValueUtil.getIntegerByObject(obj[3]));
+                assetProcess.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                assetProcess.setValue(ValueUtil.getStringByObject(obj[5]));
+                assetProcess.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                assetProcess.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                assetProcess.setIdUserCreated(ValueUtil.getIntegerByObject(obj[8]));
+                assetProcess.setIdUserModified(ValueUtil.getIntegerByObject(obj[9]));
+                return Optional.of(assetProcess);
+            }
+        }
+        return Optional.empty();
     }
 
     private long countFindAllAssetProcessLotToUpdateInventory(FindAllAssetProcessRequest request) {

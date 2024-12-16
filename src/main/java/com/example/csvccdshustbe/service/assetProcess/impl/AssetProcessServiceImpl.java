@@ -155,18 +155,58 @@ public class AssetProcessServiceImpl implements AssetProcessService {
 
     @Transactional
     @Override
-    public void createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request) throws JsonProcessingException {
+    public List<AssetProcess> createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request) throws JsonProcessingException {
         Process process = processService.findProcessByIdProcess(request.getIdProcess());
         List<AssetProcess> assetProcessList = new ArrayList<>();
         for (AssetProcessNotDeclareInventoryRequest assetProcess: request.getListAssetDeclare()){
             Asset asset = constructionAssetNotDeclareWhenInventory(assetProcess);
             assetProcessList.add(constructionAssetProcessDeclareWhenInventory(process,asset,assetProcess));
         }
-        assetProcessRepository.saveAll(assetProcessList);
+        return assetProcessRepository.saveAll(assetProcessList);
+    }
+
+    @Override
+    public AssetProcess updateAssetProcessInventory(UpdateAssetProcessRequest request) throws JsonProcessingException {
+        AssetProcess assetProcess = findAssetProcessByIdAssetProcess(request.getIdAssetProcess());
+        updateInformationAsset(request.getValue(), assetProcess.getIdAsset());
+        return updateInformationAssetProcess(request, assetProcess);
+    }
+
+    private void updateInformationAsset(String value, Integer idAsset) throws JsonProcessingException {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Asset asset = assetService.findAssetByIdAsset(idAsset);
+        HashMap<String, Object> informationAsset = (new ObjectMapper()).readValue(value, new TypeReference<>() {});
+        asset.setName(ValueUtil.getStringByObject(informationAsset.get("name_asset")));
+        asset.setIdAssetCategory(ValueUtil.getIntegerByObject(informationAsset.get("id_asset_category")));
+        asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
+        asset.setQuantity(Constants.QUANTITY_DEFAULT);
+        asset.setTimeModified(String.valueOf(new Date().getTime()));
+        asset.setIdUserModified(csvcUser.getIdUser());
+        asset.setStatusUse(ValueUtil.getIntegerByObject(informationAsset.get("status_use")));
+        asset.setYearUse(ValueUtil.getStringByObject(informationAsset.get("year_use")));
+        asset.setIdUnit(ValueUtil.getIntegerByObject(informationAsset.get("id_unit")));
+        assetService.storeAsset(asset);
+    }
+
+    private AssetProcess updateInformationAssetProcess(UpdateAssetProcessRequest request, AssetProcess assetProcess) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        assetProcess.setValue(request.getValue());
+        assetProcess.setTimeModified(String.valueOf(new Date().getTime()));
+        assetProcess.setIdUserModified(csvcUser.getIdUser());
+        return assetProcessRepository.save(assetProcess);
+    }
+
+    @Override
+    public AssetProcess findAssetProcessByIdAssetProcess(Integer idAssetProcess) {
+        Optional<AssetProcess> assetProcess = assetProcessRepository.findAssetProcessByIdAssetProcess(idAssetProcess);
+        if (assetProcess.isEmpty()){
+            throw new NotFoundException("Don't exits asset process by id!");
+        }
+        return assetProcess.get();
     }
 
     private Asset constructionAssetNotDeclareWhenInventory(AssetProcessNotDeclareInventoryRequest assetProcess) throws JsonProcessingException {
-
+        String currentTime = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         HashMap<String, Object> informationAsset = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
         Asset asset = new Asset();
@@ -174,10 +214,10 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         asset.setIdAssetCategory(ValueUtil.getIntegerByObject(informationAsset.get("id_asset_category")));
         asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
         asset.setQuantity(Constants.QUANTITY_DEFAULT);
-//        asset.setIsIncrease(Constants.IS_NOT_INCREASED);
-//        asset.setIsDecrease(Constants.IS_NOT_DECREASED);
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());
+        asset.setTimeCreated(currentTime);
+        asset.setTimeModified(currentTime);
         asset.setStatusUse(ValueUtil.getIntegerByObject(informationAsset.get("status_use")));
         asset.setYearUse(ValueUtil.getStringByObject(informationAsset.get("year_use")));
         asset.setIdUnit(ValueUtil.getIntegerByObject(informationAsset.get("id_unit")));
