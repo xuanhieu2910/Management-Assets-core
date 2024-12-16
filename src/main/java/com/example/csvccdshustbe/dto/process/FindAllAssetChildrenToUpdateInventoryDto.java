@@ -16,8 +16,8 @@ public class FindAllAssetChildrenToUpdateInventoryDto {
     public FindAllAssetChildrenToUpdateInventoryDto(Object[] obj){
         this.idAsset = ValueUtil.getIntegerByObject(obj[9]);
         this.salt = ValueUtil.getStringByObject(obj[10]);
-        this.idAssetProcess = ValueUtil.getIntegerByObject(obj[11]);
-        this.value = ValueUtil.getStringByObject(obj[12]);
+        this.value = ValueUtil.getStringByObject(obj[11]);
+        this.idAssetProcess = ValueUtil.getIntegerByObject(obj[12]);
     }
 
 }

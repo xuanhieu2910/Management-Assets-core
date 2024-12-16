@@ -427,7 +427,7 @@ public class DocumentServiceImpl implements DocumentService {
             response.setNameUserCreate(dto.getNameUserCreate());
             response.setStatus(dto.getStatus());
             response.setTimeInventory(dto.getTimeInventory());
-
+            response.setIdProcess(dto.getIdProcess());
             response.setCodeDepartment(dto.getCodeDepartment());
             response.setNameDepartment(dto.getNameDepartment());
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
