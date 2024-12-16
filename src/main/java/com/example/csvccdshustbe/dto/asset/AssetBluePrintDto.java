@@ -62,4 +62,5 @@ public class AssetBluePrintDto {
     private Integer idUserModified;
     private Integer statusUse;
     private String yearUse;
+    private Double acreage;
 }

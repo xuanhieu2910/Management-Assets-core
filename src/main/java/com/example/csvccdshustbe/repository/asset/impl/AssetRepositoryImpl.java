@@ -61,7 +61,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.is_increase,asset.is_decrease,        " +
                 "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
                 "        assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase, " +
-                "        asset.status_process_current, asset.status_use, asset.year_use " +
+                "        asset.status_process_current, asset.status_use, asset.year_use,asset.acreage " +
                 "from asset asset " +
                 "         left join asset_categories assetCategories " +
                 "                   on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -111,6 +111,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[22]));
                 findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[23]));
                 findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[24]));
+                findAllAssetDto.setAcreage(ValueUtil.getDoubleByObject(obj[25]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -127,7 +128,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        lo.id_location idLocation, lo.name nameLocation,        " +
                 "        asset.time_created, asset.time_modified,     " +
                 "        asset.parent, asset.salt , asset.is_increase, asset.is_decrease," +
-                "        asset.status_use, asset.year_use   " +
+                "        asset.status_use, asset.year_use,asset.acreage   " +
                 " from asset asset        " +
                 "     inner join asset_categories assetCategories        " +
                 "             on asset.id_asset_category = assetCategories.id_asset_category        " +
@@ -164,6 +165,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setIsDecrease(ValueUtil.getIntegerByObject(obj[16]));
                 findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[17]));
                 findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[18]));
+                findAllAssetDto.setAcreage(ValueUtil.getDoubleByObject(obj[19]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -258,7 +260,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         assetCategory.maximum_time_depreciation, asset.parent, asset.salt, asset.quantity, " +
                 "         asset.id_department_origin, asset.id_process_current, asset.status_process_current, " +
                 "         asset.id_type_process_current, asset.is_increase, asset.is_decrease, " +
-                "         asset.id_user_created, asset.id_user_modified, asset.status_use, asset.year_use " +
+                "         asset.id_user_created, asset.id_user_modified, asset.status_use, asset.year_use,asset.acreage " +
                 " from asset asset       " +
                 "      left join asset_categories assetCategory on asset.id_asset_category = assetCategory.id_asset_category      " +
                 "      left join department de on asset.id_department = de.id_department      " +
@@ -2781,6 +2783,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         dto.setIdUserModified(ValueUtil.getIntegerByObject(obj[69]));
         dto.setStatusUse(ValueUtil.getIntegerByObject(obj[70]));
         dto.setYearUse(ValueUtil.getStringByObject(obj[71]));
+        dto.setAcreage(ValueUtil.getDoubleByObject(obj[72]));
     }
 
     private void setBluePrintDepartmentLevelTypeAsset(AssetBluePrintDto dto, Object[] obj) {

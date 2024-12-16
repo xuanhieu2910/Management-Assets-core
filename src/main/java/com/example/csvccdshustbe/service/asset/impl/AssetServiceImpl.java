@@ -965,6 +965,9 @@ public class AssetServiceImpl implements AssetService {
         commonAssetDto.setIdAssetRoot(assetBluePrintDto.getIdAssetRoot());
         commonAssetDto.setIdUserCreated(assetBluePrintDto.getIdUserCreated());
         commonAssetDto.setIdUserModified(assetBluePrintDto.getIdUserModified());
+        commonAssetDto.setStatusUse(assetBluePrintDto.getStatusUse());
+        commonAssetDto.setYearUse(assetBluePrintDto.getYearUse());
+        commonAssetDto.setAcreage(assetBluePrintDto.getAcreage());
         return commonAssetDto;
     }
 
@@ -1037,6 +1040,7 @@ public class AssetServiceImpl implements AssetService {
             ));
             response.setTimeIncrease(dto.getTimeIncrease());
             response.setStatusProcessCurrent(dto.getStatusProcessCurrent());
+            response.setStatusUse(dto.getStatusUse());
             responses.add(response);
         }
         return responses;

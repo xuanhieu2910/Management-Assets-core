@@ -83,4 +83,6 @@ public class CommonAssetDto {
     private Integer statusUse;
     @JsonProperty("year_use")
     private String yearUse;
+    @JsonProperty("acreage")
+    private Double acreage;
 }
