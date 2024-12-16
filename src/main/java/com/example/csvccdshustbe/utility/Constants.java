@@ -196,6 +196,11 @@ public class Constants {
     public static final String KEY_NEW_INFORMATION = "new_information";
     /*----------------------------------------------------*/
     /**
+     * Constant Asset LOT LIST ASSET CHILDREN
+     * */
+    public static final String KEY_INFORMATION_FLUCTUATING_SITUATION_ASSET = "fluctuating_situation_asset";
+    /*----------------------------------------------------*/
+    /**
      * Constant Original
      * */
     public static final Integer ORIGINAL_VISIBLE = 1;
@@ -573,5 +578,11 @@ public class Constants {
      * */
     public static Integer STATUS_FLUCTUATING_SITUATION_ASSET_NOT_FINISH = -1;
     public static Integer STATUS_FLUCTUATING_SITUATION_ASSET_FINISH = 1;
+    /*----------------------------------------------------*/
+    /* Constant type fluctuating situation asset
+     * */
+    public final static Integer TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE = 1;
+    public final static Integer TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE = 2;
+    public final static Integer TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE = 3;
     /*----------------------------------------------------*/
 }

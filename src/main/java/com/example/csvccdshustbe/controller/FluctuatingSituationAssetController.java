@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.fluctuatingSituationAsset.FindAllFluctuatingSituationAssetRequest;
+import com.example.csvccdshustbe.request.fluctuatingSituationAsset.FluctuatingSituationAssetRequest;
 import com.example.csvccdshustbe.service.fluctuatingSituationAssetService.FluctuatingSituationAssetService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
@@ -20,7 +21,7 @@ import java.util.HashMap;
 @Log4j2
 @Tag(name = "Fluctuating Situation Asset Controller", description = "The Fluctuating Situation Asset APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
-@RequestMapping("/api/v1/fluctuating-situation")
+@RequestMapping("/api/v1/fluctuating-situation-asset")
 public class FluctuatingSituationAssetController {
 
     @Autowired
@@ -41,10 +42,11 @@ public class FluctuatingSituationAssetController {
         }
     }
 
-    @PostMapping("/update-asset")
-    public ResponseEntity<?> updateDeclareAsset(@RequestBody HashMap<String,Object> updateAssetRequest) {
+    @PostMapping("/update-declare-asset")
+    public ResponseEntity<?> updateDeclareAsset(@RequestBody FluctuatingSituationAssetRequest request) {
         try {
-            return null;
+            fluctuatingSituationAssetService.updateDeclareAssetFluctuatingSituation(request);
+            return ApiResponseDto.createdWithMessage("Update declare asset success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

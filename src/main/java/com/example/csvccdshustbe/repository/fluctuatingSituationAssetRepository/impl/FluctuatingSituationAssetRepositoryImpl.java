@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.fluctuatingSituationAssetRepository.impl;
 
+import com.example.csvccdshustbe.entity.FluctuatingSituationAsset;
 import com.example.csvccdshustbe.repository.fluctuatingSituationAssetRepository.FluctuatingSituationAssetRepositoryCustom;
 import com.example.csvccdshustbe.request.fluctuatingSituationAsset.FindAllFluctuatingSituationAssetRequest;
 import com.example.csvccdshustbe.response.fluctuatingSituationAsset.FindAllFluctuatingSituationAssetResponses;
@@ -17,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FluctuatingSituationAssetRepositoryImpl implements FluctuatingSituationAssetRepositoryCustom {
 
@@ -60,6 +62,41 @@ public class FluctuatingSituationAssetRepositoryImpl implements FluctuatingSitua
             }
         }
         return new PageImpl<>(responses, pageable, countFindFluctuatingSituationAsset(request));
+    }
+
+    @Override
+    public Optional<FluctuatingSituationAsset> findFluctuatingSituationAssetById(Integer idFluctuatingSituationAsset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_fluctuating_situation_asset, " +
+                "       id_asset, " +
+                "       id_process, " +
+                "       status, " +
+                "       type, " +
+                "       time_created, " +
+                "       time_modified, " +
+                "       id_user_modified, " +
+                "       id_fluctuating_situation " +
+                "from fluctuating_situation_asset " +
+                "where id_fluctuating_situation_asset = :id ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("id", idFluctuatingSituationAsset);
+        List<Object[]> result = query.getResultList();
+        if (CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                FluctuatingSituationAsset fluctuatingSituationAsset = new FluctuatingSituationAsset();
+                fluctuatingSituationAsset.setIdFluctuatingSituationAsset(ValueUtil.getIntegerByObject(obj[0]));
+                fluctuatingSituationAsset.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                fluctuatingSituationAsset.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                fluctuatingSituationAsset.setStatus(ValueUtil.getIntegerByObject(obj[3]));
+                fluctuatingSituationAsset.setType(ValueUtil.getIntegerByObject(obj[4]));
+                fluctuatingSituationAsset.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+                fluctuatingSituationAsset.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                fluctuatingSituationAsset.setIdUserModified(ValueUtil.getIntegerByObject(obj[7]));
+                fluctuatingSituationAsset.setIdFluctuatingSituation(ValueUtil.getIntegerByObject(obj[8]));
+                return Optional.of(fluctuatingSituationAsset);
+            }
+        }
+        return Optional.empty();
     }
 
     private long countFindFluctuatingSituationAsset(FindAllFluctuatingSituationAssetRequest request) {

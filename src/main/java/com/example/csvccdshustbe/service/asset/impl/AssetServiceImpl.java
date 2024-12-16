@@ -72,6 +72,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -859,6 +860,12 @@ public class AssetServiceImpl implements AssetService {
         }
         asset.setStatusUse(ValueUtil.getIntegerByObject(commonDataAsset.get("statusUse")));
         asset.setYearUse(ValueUtil.getStringByObject(commonDataAsset.get("yearUse")));
+        if (ObjectUtils.isEmpty(asset.getIsIncrease())) {
+            asset.setIsIncrease(Constants.IS_NOT_INCREASED);
+        }
+        if (ObjectUtils.isEmpty(asset.getIsDecrease())){
+            asset.setIsDecrease(Constants.IS_NOT_DECREASED);
+        }
         assetRepository.save(asset);
     }
 
