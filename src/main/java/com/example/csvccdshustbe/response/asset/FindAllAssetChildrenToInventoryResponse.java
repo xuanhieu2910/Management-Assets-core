@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.response.asset;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import net.kaczmarzyk.spring.data.jpa.domain.In;
 
 @Getter
 @Setter
@@ -45,6 +46,9 @@ public class FindAllAssetChildrenToInventoryResponse {
     private Integer isIncrease;
     @JsonProperty("acreage")
     private Double acreage;
+    @JsonProperty("type_target")
+    private Integer typeTarget;
+
 
 
 

@@ -1764,6 +1764,7 @@ public class AssetServiceImpl implements AssetService {
             leaf.setUnit(dto.getUnit());
             leaf.setIsIncrease(dto.getIsIncrease());
             leaf.setAcreage(dto.getAcreage());
+            leaf.setTypeTarget(dto.getTypeTarget());
             leaf.setOriginalOfFormation(String.valueOf(
                     Optional.ofNullable(dto.getOriginalOfFormation())
                             .map(original -> Arrays.stream(original.split("-"))
