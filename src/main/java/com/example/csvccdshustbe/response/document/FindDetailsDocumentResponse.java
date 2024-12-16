@@ -46,5 +46,7 @@ public class FindDetailsDocumentResponse {
     private List<BluePrintStateResponse> states;
     @JsonProperty("status_document")
     private Integer statusDocument;
+    @JsonProperty("id_process")
+    private Integer idProcess;
 
 }
