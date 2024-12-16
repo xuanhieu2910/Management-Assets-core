@@ -9,6 +9,7 @@ import com.example.csvccdshustbe.request.fluctuatingSituationAsset.FluctuatingSi
 import com.example.csvccdshustbe.response.fluctuatingSituationAsset.FindAllFluctuatingSituationAssetResponses;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.fluctuatingSituationAssetService.FluctuatingSituationAssetService;
+import com.example.csvccdshustbe.service.fluctuatingSituationService.FluctuatingSituationService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -32,6 +33,10 @@ public class FluctuatingSituationAssetServiceImpl implements FluctuatingSituatio
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
+    @Lazy
+    @Autowired
+    FluctuatingSituationService fluctuatingSituationService;
+
     @Autowired
     FluctuatingSituationAssetRepository fluctuatingSituationAssetRepository;
     @Override
@@ -49,13 +54,23 @@ public class FluctuatingSituationAssetServiceImpl implements FluctuatingSituatio
     @Transactional
     @Override
     public void updateDeclareAssetFluctuatingSituation(FluctuatingSituationAssetRequest updateAssetRequest) {
-        FluctuatingSituationAsset fluctuatingSituationAsset = findFluctuatingSituationAssetById(updateAssetRequest.getIdFluctuatingSituationAsset());
-//        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        fluctuatingSituationAsset.setType(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
-//        fluctuatingSituationAsset.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_ASSET_NOT_FINISH);
-//        fluctuatingSituationAsset.setTimeModified(String.valueOf(new Date().getTime()));
-//        fluctuatingSituationAsset.setIdUserModified(csvcUser.getIdUser());
-//        fluctuatingSituationAssetRepository.save(fluctuatingSituationAsset);
+        FluctuatingSituationAsset fluctuatingSituationAsset =
+                findFluctuatingSituationAssetById(updateAssetRequest.getIdFluctuatingSituationAsset());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        fluctuatingSituationAsset.setTimeModified(String.valueOf(new Date().getTime()));
+        fluctuatingSituationAsset.setIdUserModified(csvcUser.getIdUser());
+        if (updateAssetRequest.getTypeCurrent().equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE)) {
+            fluctuatingSituationAsset.setType(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
+            fluctuatingSituationAsset.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_ASSET_NOT_FINISH);
+        } else {
+            fluctuatingSituationAsset.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_ASSET_FINISH);
+        }
+        fluctuatingSituationAssetRepository.save(fluctuatingSituationAsset);
+        updateStatusFluctuatingSituation(fluctuatingSituationAsset.getIdFluctuatingSituation());
+    }
+
+    private void updateStatusFluctuatingSituation(Integer idFluctuatingSituation) {
+        fluctuatingSituationService.calculatorStatusFluctuatingSituationById(idFluctuatingSituation);
     }
 
     @Override

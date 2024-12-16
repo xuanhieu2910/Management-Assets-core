@@ -8,4 +8,5 @@ import org.springframework.data.domain.Pageable;
 public interface FluctuatingSituationRepositoryCustom {
     Page<FindAllFluctuationSituationResponse> findAllFluctuationSituationResponse(Pageable pageable,
                                                                                   FindAllFluctuatingSituationRequest request);
+    void calculatorStatusFluctuatingSituationById(Integer idFluctuatingSituation);
 }

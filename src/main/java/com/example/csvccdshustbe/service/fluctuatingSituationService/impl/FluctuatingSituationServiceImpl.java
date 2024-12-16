@@ -33,4 +33,9 @@ public class FluctuatingSituationServiceImpl implements FluctuatingSituationServ
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         return fluctuatingSituationRepository.findAllFluctuationSituationResponse(pageable, request);
     }
+
+    @Override
+    public void calculatorStatusFluctuatingSituationById(Integer idFluctuatingSituation) {
+        fluctuatingSituationRepository.calculatorStatusFluctuatingSituationById(idFluctuatingSituation);
+    }
 }

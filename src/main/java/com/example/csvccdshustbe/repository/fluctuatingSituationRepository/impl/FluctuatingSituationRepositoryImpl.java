@@ -8,11 +8,13 @@ import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -64,6 +66,26 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllFluctuationSituation(request));
+    }
+
+
+    @Modifying
+    @Transactional
+    @Override
+    public void calculatorStatusFluctuatingSituationById(Integer idFluctuatingSituation) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update fluctuating_situation fs  " +
+                "    inner join (select fsa.id_fluctuating_situation,  " +
+                "                    case when fsa.status = :notYetFinish then -1 else 1 end totalyStatus  " +
+                "                from fluctuating_situation_asset fsa  " +
+                "                where fsa.id_fluctuating_situation = :idFsa  " +
+                "                group by fsa.id_fluctuating_situation) fsa  " +
+                "    on fs.id_fluctuating_situation = fsa.id_fluctuating_situation  " +
+                "set fs.status = fsa.totalyStatus  " +
+                "where 1 = 1   ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idFsa", idFluctuatingSituation);
+        query.executeUpdate();
     }
 
     private long countFindAllFluctuationSituation(FindAllFluctuatingSituationRequest request) {
