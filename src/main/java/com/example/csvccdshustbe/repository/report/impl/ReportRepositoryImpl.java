@@ -146,13 +146,83 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
 
     public List<FindAllAssetForInventoryReportDto> findInfoAssetForInventoryReportByCodeDocument(String codeDocument) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select do.code, pr.id_process, ap.id_asset, " +
-                "       ap.value, ap.id_asset_process " +
-                "from document do " +
-                "    inner join process pr on do.id_process = pr.id_process " +
-                "    inner join asset_process ap on pr.id_process = ap.id_process " +
-                "where do.code = :codeDocument ");
+        sb.append(" WITH RECURSIVE cte_asset_categories AS ( " +
+                "    SELECT assetCategires.id_asset_category, " +
+                "           assetCategires.name, " +
+                "           assetCategires.code_name, " +
+                "           1 AS depth, " +
+                "           CAST(assetCategires.id_asset_category AS NCHAR) AS path, " +
+                "           assetCategires.number_code_pattern, " +
+                "           assetCategires.id_department_original, " +
+                "           assetCategires.type_target, " +
+                "           assetCategires.parent " +
+                "    FROM asset_categories assetCategires " +
+                "    WHERE assetCategires.parent IS NULL " +
+                "      AND assetCategires.visible = :visible " +
+                "    UNION ALL " +
+                "    SELECT assetCategires.id_asset_category, " +
+                "           assetCategires.name, " +
+                "           assetCategires.code_name, " +
+                "           cte.depth + 1 AS depth, " +
+                "           CONCAT_WS('/', cte.path, CAST(assetCategires.id_asset_category AS NCHAR)) AS path, " +
+                "           assetCategires.number_code_pattern, " +
+                "           assetCategires.id_department_original, " +
+                "           assetCategires.type_target, " +
+                "           assetCategires.parent " +
+                "    FROM asset_categories assetCategires " +
+                "             INNER JOIN cte_asset_categories cte " +
+                "                        ON assetCategires.parent = cte.id_asset_category " +
+                " ) " +
+                " SELECT do.code, " +
+                "       p.id_process, " +
+                "       ap.id_asset, " +
+                "       ap.value, " +
+                "       ap.id_asset_process, " +
+                "       a.code_asset, " +
+                "       a.name, " +
+                "       a.year_use, " +
+                "       u.name AS unit_name, " +
+                "       a.is_increase, " +
+                "       a.status_use, " +
+                "       cte.id_asset_category, " +
+                "       cte.name, " +
+                "       cte.code_name, " +
+                "       cte.depth, " +
+                "       cte.path, " +
+                "       cte.number_code_pattern, " +
+                "       GROUP_CONCAT(un.name SEPARATOR '/') AS unitMeasure, " +
+                "       cte.parent, " +
+                "       CASE " +
+                "           WHEN EXISTS ( " +
+                "               SELECT 1 " +
+                "               FROM asset_categories ac " +
+                "               WHERE ac.parent = cte.id_asset_category " +
+                "           ) THEN 0 " +
+                "           ELSE 1 " +
+                "           END AS is_leaf " +
+                " FROM cte_asset_categories cte " +
+                "         LEFT JOIN ( " +
+                "    SELECT un.id_asset_category, un.id_unit, un.name " +
+                "    FROM units un " +
+                "    WHERE un.is_display = :isDisplay " +
+                " ) un ON cte.id_asset_category = un.id_asset_category " +
+                "         INNER JOIN asset a ON cte.id_asset_category = a.id_asset_category " +
+                "         INNER JOIN asset_process ap ON ap.id_asset = a.id_asset " +
+                "         INNER JOIN process p ON p.id_process = ap.id_process " +
+                "         INNER JOIN units u ON u.id_unit = a.id_unit " +
+                "         INNER JOIN document do ON do.id_process = p.id_process " +
+                " WHERE do.code = :codeDocument       " +
+                " GROUP BY cte.id_asset_category,    " +
+                "         cte.name, " +
+                "         cte.code_name, " +
+                "         cte.depth, " +
+                "         cte.path, " +
+                "         cte.number_code_pattern, " +
+                "         is_leaf " +
+                " ORDER BY cte.path;  ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("visible",1);
+        query.setParameter("isDisplay",1);
         query.setParameter("codeDocument",codeDocument);
         List<FindAllAssetForInventoryReportDto> responses = new ArrayList<>();
         List<Object[]> result = query.getResultList();
@@ -164,6 +234,13 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 response.setIdAsset(ValueUtil.getIntegerByObject(obj[2]));
                 response.setValue(ValueUtil.getStringByObject(obj[3]));
                 response.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[4]));
+                response.setCodeAsset(ValueUtil.getStringByObject(obj[5]));
+                response.setName(ValueUtil.getStringByObject(obj[6]));
+                response.setYearUse(ValueUtil.getStringByObject(obj[7]));
+                response.setUnits(ValueUtil.getStringByObject(obj[8]));
+                response.setIsIncrease(ValueUtil.getIntegerByObject(obj[9]));
+                response.setStatusUse(ValueUtil.getIntegerByObject(obj[10]));
+                response.setNumberCodePattern(ValueUtil.getStringByObject(obj[16]));
                 responses.add(response);
             }
         }

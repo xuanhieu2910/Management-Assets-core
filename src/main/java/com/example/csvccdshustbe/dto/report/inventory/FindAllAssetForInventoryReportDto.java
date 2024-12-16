@@ -12,4 +12,11 @@ public class FindAllAssetForInventoryReportDto {
     private Integer idAssetProcess;
     private String value;
     private String codeDocument;
+    private String name;
+    private String codeAsset;
+    private String yearUse;
+    private String units;
+    private Integer isIncrease;
+    private Integer statusUse;
+    private String numberCodePattern;
 }

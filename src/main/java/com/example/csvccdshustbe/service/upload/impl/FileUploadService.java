@@ -411,23 +411,25 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public String downloadInventoryReportByCodeDocument(String codeDocument) throws IOException {
-        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static")
-                + SEPARATOR
-                + FileUtil.FOLDER_NAME_REPORT
-                + SEPARATOR
-                + Constants.NAME_REPORTS[36];
+//        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static")
+//                + SEPARATOR
+//                + FileUtil.FOLDER_NAME_REPORT
+//                + SEPARATOR
+//                + Constants.NAME_REPORTS[36];
+        String fileExcel = "C:\\Users\\ADMIN\\Downloads\\1_01-tscd-co-quan-to-chuc-don-vi-1.8.xlsx";
         List<FindAllAssetForInventoryReportDto> assetReport =
                 reportRepository.findInfoAssetForInventoryReportByCodeDocument(codeDocument);
         BlueprintInventoryReportDto council = reportRepository.findBlueprintInventoryReportDtoByCodeDocument(codeDocument);
         FileInputStream file = new FileInputStream(new File(fileExcel));
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
-        writeDataBlueprintInventoryReport(sheet,council);
+        writeDataBlueprintInventoryReport(sheet, council);
         writeDataAssetInventoryReport(sheet, assetReport, council.getCouncilInventoryReportDtos().size());
         String fileFinal = createFileExportInventoryReport();
-        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
+        //File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
         String fileReturn = fileFinal.replace(PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe")
                 , PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
+        String filePathOutput = "C:\\Users\\ADMIN\\Downloads\\exportExcel\\modified_output4.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
             workbook.close();
@@ -442,79 +444,111 @@ public class FileUploadService implements FilesStorageService {
         String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
         String folder = root + SEPARATOR + FileUtil.FOLDER_NAME_REPORT + SEPARATOR + FileUtil.getFolderInfo();
         FileUtil.createFolder(folder);
-        return folder + SEPARATOR + "Inventory_Report_" + new Date().getTime() + "." + ExcelUtil.FILE_EXCEL[1];
+        return folder + SEPARATOR + "Inventory_Report_" + new Date().getTime() + ExcelUtil.FILE_EXCEL[1];
     }
 
     private void writeDataAssetInventoryReport(Sheet sheet,
                                                List<FindAllAssetForInventoryReportDto> assetReport,
                                                int sizeIncrease) throws JsonProcessingException {
-
-        int rowStart = 17 + (sizeIncrease > 3 ? (sizeIncrease - 6) : 0);
-        int stt = 1;
         ObjectMapper objectMapper = new ObjectMapper();
-        if (assetReport.size() > 6) {
-            sheet.shiftRows(rowStart + 6, rowStart + 6 , assetReport.size() - 6);
-        }
-        CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
-        Font font = sheet.getWorkbook().createFont();
-        font.setFontName("Times New Roman");
-        cellStyle.setFont(font);
-        cellStyle.setBorderBottom(BorderStyle.THIN);
-        cellStyle.setBorderLeft(BorderStyle.THIN);
-        cellStyle.setBorderRight(BorderStyle.THIN);
-        cellStyle.setBorderTop(BorderStyle.THIN);
         for (FindAllAssetForInventoryReportDto asset : assetReport){
             HashMap<String, Object> dataAsset =  objectMapper.readValue(asset.getValue(), new TypeReference<>() {});
-            writeValueCell(sheet, rowStart, 0, String.valueOf(stt), null);
-            writeValueCell(sheet, rowStart, 1,ValueUtil.getStringByObject(dataAsset.get("name_asset")), cellStyle);
-            writeValueCell(sheet, rowStart, 2,ValueUtil.getStringByObject(dataAsset.get("code_asset")), cellStyle);
-            writeValueCell(sheet, rowStart, 3,ValueUtil.getStringByObject(dataAsset.get("name_department")), cellStyle);
-            writeValueCell(sheet, rowStart, 4,ValueUtil.getStringByObject(dataAsset.get("quantity_original")), cellStyle);
-            writeValueCell(sheet, rowStart, 5,ValueUtil.getStringByObject(dataAsset.get("total_original_of_formation_original")), cellStyle);
-            writeValueCell(sheet, rowStart, 6,ValueUtil.getStringByObject(dataAsset.get("total_rest_value_original")), cellStyle);
-            writeValueCell(sheet, rowStart, 7,ValueUtil.getStringByObject(dataAsset.get("name_asset")), cellStyle);
-            writeValueCell(sheet, rowStart, 8,ValueUtil.getStringByObject(dataAsset.get("quantity_inventory")), cellStyle);
-            writeValueCell(sheet, rowStart, 9,ValueUtil.getStringByObject(dataAsset.get("total_original_of_formation_inventory")), cellStyle);
-            writeValueCell(sheet, rowStart, 10,ValueUtil.getStringByObject(dataAsset.get("rest_value_inventory")), cellStyle);
-            writeValueCell(sheet, rowStart, 11,ValueUtil.getStringByObject(dataAsset.get("quantity_difference")), cellStyle);
-            writeValueCell(sheet, rowStart, 12,ValueUtil.getStringByObject(dataAsset.get("origin_value_difference")), cellStyle);
-            writeValueCell(sheet, rowStart, 13,ValueUtil.getStringByObject(dataAsset.get("rest_value_difference")), cellStyle);
-            ++rowStart;
-            ++stt;
+            int rowStart = setRowstart(sheet, asset.getNumberCodePattern());
+            writeValueCell(sheet, rowStart, 1, ValueUtil.getStringByObject(dataAsset.get("name_asset")), null);
+            writeValueCell(sheet, rowStart, 2, ValueUtil.getStringByObject(dataAsset.get("code_asset")), null);
+            writeValueCell(sheet, rowStart, 3, ValueUtil.getStringByObject(dataAsset.get("year_use")), null);
+            writeValueCell(sheet, rowStart, 4, ValueUtil.getStringByObject(dataAsset.get("unit")), null);
+            writeValueCell(sheet, rowStart, 5,ValueUtil.getStringByObject(dataAsset.get("quantity")), null);
+            writeValueCell(sheet, rowStart, 6,ValueUtil.getStringByObject(dataAsset.get("quantity_inventory")), null);
+            writeValueCell(sheet, rowStart, 7,ValueUtil.getStringByObject(dataAsset.get("quantity_difference")), null);
+            writeValueCell(sheet, rowStart, 8,ValueUtil.getStringByObject(dataAsset.get("artifact_unit")), null);
+            writeValueCell(sheet, rowStart, 9,ValueUtil.getStringByObject(dataAsset.get("artifact_accounting")), null);
+            writeValueCell(sheet, rowStart, 10,ValueUtil.getStringByObject(dataAsset.get("artifact_inventory")), null);
+            writeValueCell(sheet, rowStart, 11,ValueUtil.getStringByObject(dataAsset.get("artifact_difference")), null);
+            writeValueCell(sheet, rowStart, 12,ValueUtil.getStringByObject(dataAsset.get("original_of_formation")), null);
+            writeValueCell(sheet, rowStart, 13,ValueUtil.getStringByObject(dataAsset.get("rest_value")), null);
+            writeValueCell(sheet, rowStart, 14,ValueUtil.getStringByObject(dataAsset.get("recorded_accounting")), null);
+            writeValueCell(sheet, rowStart, 15,ValueUtil.getStringByObject(dataAsset.get("not_recorded_accounting")), null);
+            writeValueCell(sheet, rowStart, (ValueUtil.getStringByObject(dataAsset.get("status_use")).equals("1") ||
+                            ValueUtil.getStringByObject(dataAsset.get("status_use")).isEmpty() ||
+                            ValueUtil.getStringByObject(dataAsset.get("status_use")) == null) ? 16 : 17, "1", null
+            );
+            addBoldBorderToRows(sheet, rowStart ,  1, 0 ,17, true);
         }
-        writeInformationSignInventoryReport(sheet, rowStart, sizeIncrease);
+    }
+    public static void formatCell(Sheet sheet, int rowIndex, int colIndex, boolean isBold) {
+
+        Font font = sheet.getWorkbook().createFont();
+        font.setFontName("Times New Roman");
+        font.setFontHeightInPoints((short) 13);
+        font.setBold(isBold);
+
+        CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+        cellStyle.setFont(font);
+        cellStyle.setWrapText(true);
+
+        Row row = sheet.getRow(rowIndex);
+        if (row == null) {
+            row = sheet.createRow(rowIndex);
+        }
+        Cell cell = row.getCell(colIndex);
+        if (cell == null) {
+            cell = row.createCell(colIndex);
+        }
+        cell.setCellStyle(cellStyle);
+    }
+    private int setRowstart(Sheet sheet, String numberCodePattern) {
+        int rowStart = -1;
+        for (Row row : sheet) {
+            Cell cell = row.getCell(2);
+            if (cell != null) {
+                String cellValue = "";
+                if (cell.getCellType() == CellType.STRING) {
+                    cellValue = cell.getStringCellValue();
+                }
+                else if (cell.getCellType() == CellType.NUMERIC) {
+                    cellValue = String.valueOf(cell.getNumericCellValue());
+                }
+                if (cellValue.equals(numberCodePattern)) {
+                    rowStart = row.getRowNum() + 1;
+                    sheet.shiftRows(rowStart , sheet.getPhysicalNumberOfRows(), 1,  true, true);
+                    break;
+                }
+            }
+        }
+        return rowStart;
     }
 
-    private void writeInformationSignInventoryReport(Sheet sheet, int rowStart, int sizeIncrease) {
-        rowStart = 24 + (rowStart > 24 ?  5 : 0);
-        rowStart += sizeIncrease > 3 ? sizeIncrease - 3 : 0;
+
+    private void addBoldBorderToRows(Sheet sheet, int rowStart, int rowNeeded, int colStart, int colEnd, boolean addBorder) {
         CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+        if (addBorder) {
+            cellStyle.setBorderLeft(BorderStyle.THIN);
+            cellStyle.setBorderRight(BorderStyle.THIN);
+            cellStyle.setBorderBottom(BorderStyle.THIN);
+        }
+
         Font font = sheet.getWorkbook().createFont();
-        font.setBold(true);
         font.setFontName("Times New Roman");
+        font.setFontHeightInPoints((short) 13);
+        cellStyle.setFont(font);
+        cellStyle.setWrapText(true);
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
-        cellStyle.setFont(font);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,1,3));
-        writeValueCell(sheet, rowStart, 1, "Thủ trưởng đơn vị", cellStyle);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,6,8));
-        writeValueCell(sheet, rowStart, 6, "Kế toán trưởng", cellStyle);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,10,12));
-        writeValueCell(sheet, rowStart, 10, "Trưởng Ban kiểm kê", cellStyle);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
-        rowStart += 1;
-        font.setBold(false);
-        font.setItalic(true);
-        cellStyle.setFont(font);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,1,3));
-        writeValueCell(sheet, rowStart, 1, "(Ý kiến giải quyết số chênh lệch)", cellStyle);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,6,8));
-        writeValueCell(sheet, rowStart, 6, "(Ký, họ tên)", cellStyle);
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,10,12));
-        writeValueCell(sheet, rowStart, 10, "(Ký, họ tên)", cellStyle);
-
-        rowStart += 1;
-        sheet.addMergedRegion(new CellRangeAddress(rowStart,rowStart,1,3));
-        writeValueCell(sheet, rowStart, 1, "(Ký, họ tên, đóng dấu)", cellStyle);
+        for (int rowIndex = rowStart; rowIndex < rowStart + rowNeeded; rowIndex++) {
+            Row row = sheet.getRow(rowIndex);
+            if (row == null) {
+                row = sheet.createRow(rowIndex);
+            }
+            for (int col = colStart; col <= colEnd; col++) {
+                Cell cell = row.getCell(col);
+                if (cell == null) {
+                    cell = row.createCell(col);
+                }
+                cell.setCellStyle(cellStyle);
+            }
+        }
     }
 
     private void writeDataBlueprintInventoryReport(Sheet sheet, BlueprintInventoryReportDto council) {
@@ -527,32 +561,44 @@ public class FileUploadService implements FilesStorageService {
         setInformationDetailsCouncilInventoryReport(sheet, council.getCouncilInventoryReportDtos());
     }
 
-    private void setInformationDetailsCouncilInventoryReport(Sheet sheet,
-                                                             List<CouncilInventoryReportDto> councilDtos) {
-        int indexRowStart = 8;
+    private void setInformationDetailsCouncilInventoryReport(Sheet sheet, List<CouncilInventoryReportDto> councilDtos) {
+        int indexRowStart = 9;
         int indexColStart = 0;
-        if (councilDtos.size() > 3) {
-            sheet.shiftRows(11, 21 , councilDtos.size()- 3);
+
+        int rowsNeeded = councilDtos.size();
+
+        int totalRows = sheet.getPhysicalNumberOfRows() ;
+
+        if (totalRows >= indexRowStart && rowsNeeded > 3) {
+            sheet.shiftRows(indexRowStart, totalRows , rowsNeeded - 3,  true, true);
         }
+        int stt = 1;
         for (CouncilInventoryReportDto councilDto: councilDtos) {
-            writeValueCell(sheet, indexRowStart, indexColStart,
-                    "- Ông /Bà....." + councilDto.getFullName() + "........."
-                    + "chức vụ....." + councilDto.getPosition() + "........."
-                    + "đại diện....." + councilDto.getInstancePosition() + ".........", null);
+            writeValueCell(sheet, indexRowStart, indexColStart, stt +
+                    ". Ông /Bà....." + (councilDto.getFullName() != null ? councilDto.getFullName() : "...") + "........."
+                            + "Chức vụ:....." + (councilDto.getPosition() != null ? councilDto.getPosition() : "...") + "........."
+                            +  "...", null);
+            formatCell(sheet, indexRowStart, 0, false);
             ++indexRowStart;
+            ++stt;
         }
     }
 
     private void setInformationDateInventoryReport(Sheet sheet, String timeInventory) {
         LocalDate localDate = LocalDate.parse(timeInventory, DateTimeFormatter.ofPattern(DateUtil.DDMMYYYY));
-        writeValueCell(sheet, 6,0,"Thời điểm kiểm kê:.."
+        writeValueCell(sheet, 7,0,"Hôm nay, "
                 + "ngày.." + localDate.getDayOfMonth() + "....."
                 + "tháng.." + localDate.getMonthValue() + "....."
                 + "năm.." + localDate.getYear() + "....." , null);
+        formatCell(sheet,7,0, false);
     }
 
     private void setInformationDepartmentInventoryReport(Sheet sheet, BlueprintInventoryReportDto council) {
-        writeValueCell(sheet, 0, 0, "Đơn vị : " + council.getNameDepartment() + ".............", null);
+        writeValueCell(sheet, 1, 1, "Tên đơn vị kiểm kê: " + (council.getNameDepartment() != null ? council.getNameDepartment() : "...") + "(*)", true);
+        formatCell(sheet, 1,1, true);
+        writeValueCell(sheet, 13, 0, "Đã tiến hành kiểm kê tài sản công là tài sản cố định tại cơ quan, tổ chức, đơn vị do "
+                + (council.getNameDepartment() != null ? council.getNameDepartment() : "...") + "(*)  quản lý/tạm quản lý, kết quả như sau:", false);
+        formatCell(sheet, 13, 0, false);
     }
 
     @Override
@@ -676,26 +722,29 @@ public class FileUploadService implements FilesStorageService {
         cell.setCellValue(content);
     }
 
-    private void writeValueCell(Sheet sheet, int rowIndex, int colIndex, String content, CellStyle style){
+
+    private void writeValueCell(Sheet sheet, int rowIndex, int colIndex, String content, Boolean isBold) {
+        Workbook workbook = sheet.getWorkbook();
+        Font font = workbook.createFont();
+        if (isBold != null && isBold) {
+            font.setBold(true);
+        }
+        CellStyle style = workbook.createCellStyle();
+        style.setFont(font);
         Row row = sheet.getRow(rowIndex);
         if (row == null) {
             row = sheet.createRow(rowIndex);
         }
         Cell cell = row.getCell(colIndex, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
         cell.setCellValue(content);
-        if (cell.getCellType() != null){
-            cell.setCellStyle(null);
-        }
-        if (style != null){
-            cell.setCellStyle(style);
-        }
+        cell.setCellStyle(style);
     }
 
     public static String extractValue(String jsonString, String regex) {
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
         java.util.regex.Matcher matcher = pattern.matcher(jsonString);
         if (matcher.find()) {
-            return matcher.group(1); // Trả về nhóm đầu tiên, giá trị cần tách
+            return matcher.group(1);
         }
         return null;
     }
