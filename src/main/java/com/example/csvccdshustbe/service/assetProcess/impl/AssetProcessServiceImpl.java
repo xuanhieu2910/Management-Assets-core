@@ -2,10 +2,7 @@ package com.example.csvccdshustbe.service.assetProcess.impl;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToInventoryDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToUpdateInventoryDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetParentToUpdateInventoryDto;
+import com.example.csvccdshustbe.dto.process.*;
 import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.entity.CsvcUser;
@@ -149,7 +146,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
         idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
         request.setIdsDepartmentOriginal(idsDepartment);
-        Page<FindAllAssetParentToUpdateInventoryDto> responses = assetProcessRepository.findALlAssetProcessLotToUpdateInventory(request, pageable);
+        Page<FindAllAssetLotParentToUpdateInventoryDto> responses = assetProcessRepository.findALlAssetProcessLotToUpdateInventory(request, pageable);
         return new PageImpl<>(convertToFindAllAssetProcessLotToUpdateInventoryResponse(responses.getContent()), pageable, responses.getTotalElements());
     }
 
@@ -279,9 +276,9 @@ public class AssetProcessServiceImpl implements AssetProcessService {
 
 
     private List<FindAllAssetResponseUpdateInventory>
-    convertToFindAllAssetProcessLotToUpdateInventoryResponse(List<FindAllAssetParentToUpdateInventoryDto> content) {
+    convertToFindAllAssetProcessLotToUpdateInventoryResponse(List<FindAllAssetLotParentToUpdateInventoryDto> content) {
         List<FindAllAssetResponseUpdateInventory> response = new ArrayList<>();
-        for (FindAllAssetParentToUpdateInventoryDto dto : content){
+        for (FindAllAssetLotParentToUpdateInventoryDto dto : content){
             FindAllAssetResponseUpdateInventory inventory = new FindAllAssetResponseUpdateInventory();
             inventory.setIdAssetCategory(dto.getIdAssetCategory());
             inventory.setNameAssetCategory(dto.getNameAssetCategory());
@@ -294,7 +291,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             inventory.setTypeTarget(dto.getTypeTarget());
             if (!CollectionUtils.isEmpty(dto.getAssetLeaves())) {
                 List<FindAllAssetChildrenToUpdateInventoryResponse> assetLeaves = new ArrayList<>();
-                for (FindAllAssetChildrenToUpdateInventoryDto assetLeaf : dto.getAssetLeaves()) {
+                for (FindAllAssetLotChildrenToUpdateInventoryDto assetLeaf : dto.getAssetLeaves()) {
                     FindAllAssetChildrenToUpdateInventoryResponse leaf = constructionAssetProcessLotToUpdateInventoryLeaf(assetLeaf);
                     assetLeaves.add(leaf);
                 }
@@ -306,11 +303,10 @@ public class AssetProcessServiceImpl implements AssetProcessService {
     }
 
     private FindAllAssetChildrenToUpdateInventoryResponse
-    constructionAssetProcessLotToUpdateInventoryLeaf(FindAllAssetChildrenToUpdateInventoryDto assetLeaf) {
+    constructionAssetProcessLotToUpdateInventoryLeaf(FindAllAssetLotChildrenToUpdateInventoryDto assetLeaf) {
         FindAllAssetChildrenToUpdateInventoryResponse leaf = new FindAllAssetChildrenToUpdateInventoryResponse();
         leaf.setIdAsset(assetLeaf.getIdAsset());
         leaf.setSalt(assetLeaf.getSalt());
-        leaf.setValue(assetLeaf.getValue());
         return leaf;
     }
 

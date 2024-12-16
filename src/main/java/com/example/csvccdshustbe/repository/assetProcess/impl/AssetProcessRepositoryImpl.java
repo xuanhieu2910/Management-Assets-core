@@ -2,10 +2,7 @@ package com.example.csvccdshustbe.repository.assetProcess.impl;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToInventoryDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToUpdateInventoryDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetParentToUpdateInventoryDto;
+import com.example.csvccdshustbe.dto.process.*;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.repository.assetProcess.AssetProcessRepositoryCustom;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
@@ -466,7 +463,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
     }
 
     @Override
-    public Page<FindAllAssetParentToUpdateInventoryDto>
+    public Page<FindAllAssetLotParentToUpdateInventoryDto>
     findALlAssetProcessLotToUpdateInventory(FindAllAssetProcessRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" WITH ROOT_ASSET_CATEGORIES as  " +
@@ -523,7 +520,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "          order by cte.path),  " +
                 "     ROOT_ASSET_PROCESS as (  " +
                 "         select assetParent.id_asset idAsset,assetCategories.id_asset_category idAssetCategory,  " +
-                "                assetParent.salt, assetProcess.id_asset_process, assetProcess.value  " +
+                "                assetParent.salt  " +
                 "         from asset asset  " +
                 "                  left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
                 "                  left join process process on assetProcess.id_process = process.id_process  " +
@@ -541,7 +538,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
         setParameterFindAllAssetProcessLotToUpdateInventory(query, request);
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
-        ListOrderedMap<Integer, FindAllAssetParentToUpdateInventoryDto> assetMap = new ListOrderedMap<>();
+        ListOrderedMap<Integer, FindAllAssetLotParentToUpdateInventoryDto> assetMap = new ListOrderedMap<>();
         Integer idAssetCategory, idAsset;
         int index = 0;
         if (!CollectionUtils.isEmpty(result)) {
@@ -550,18 +547,18 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 idAsset = obj[9] == null ? null : ValueUtil.getIntegerByObject(obj[9]);
                 if (idAsset != null) {
                     if (!assetMap.containsKey(idAssetCategory)) {
-                        FindAllAssetParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetParentToUpdateInventoryDto(obj);
+                        FindAllAssetLotParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetLotParentToUpdateInventoryDto(obj);
                         assetMap.put(index,idAssetCategory,parentToInventoryDto);
                         ++index;
                     }
                     if (assetMap.containsKey(idAssetCategory)){
                         assetMap.computeIfPresent(idAssetCategory, (k, v) -> {
-                            v.getAssetLeaves().add(new FindAllAssetChildrenToUpdateInventoryDto(obj));
+                            v.getAssetLeaves().add(new FindAllAssetLotChildrenToUpdateInventoryDto(obj));
                             return v;
                         });
                     }
                 } else {
-                    FindAllAssetParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetParentToUpdateInventoryDto(obj);
+                    FindAllAssetLotParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetLotParentToUpdateInventoryDto(obj);
                     assetMap.put(index,idAssetCategory,parentToInventoryDto);
                     ++index;
                 }
@@ -741,9 +738,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       rootAssetCategories.is_leaf             as isLeaf,   " +
                 "       rootAssetCategories.type_target         as targetType,   " +
                 "       rootAssetProcess.idAsset                as idAsset,   " +
-                "       rootAssetProcess.salt                   as salt,   " +
-                "       rootAssetProcess.id_asset_process       as idAssetProcess, " +
-                "       rootAssetProcess.value                  as value " +
+                "       rootAssetProcess.salt                   as salt   " +
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories   " +
                 "         left join ROOT_ASSET_PROCESS rootAssetProcess on rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory   " +
                 "order by rootAssetCategories.path ");
