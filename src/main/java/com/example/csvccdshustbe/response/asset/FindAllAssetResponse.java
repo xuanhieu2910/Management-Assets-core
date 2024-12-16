@@ -44,4 +44,6 @@ public class FindAllAssetResponse {
     private String timeIncrease;
     @JsonProperty("status_process_current")
     private Integer statusProcessCurrent;
+    @JsonProperty("status_use")
+    private Integer statusUse;
 }

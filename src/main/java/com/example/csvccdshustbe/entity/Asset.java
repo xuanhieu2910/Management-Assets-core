@@ -77,4 +77,6 @@ public class Asset {
     private Integer statusUse;
     @Column(name = "year_use")
     private String yearUse;
+    @Column(name = "acreage")
+    private Double acreage;
 }

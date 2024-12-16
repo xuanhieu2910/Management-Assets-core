@@ -43,6 +43,8 @@ public class FindAllAssetChildrenToInventoryResponse {
     private String unit;
     @JsonProperty("is_increase")
     private Integer isIncrease;
+    @JsonProperty("acreage")
+    private Double acreage;
 
 
 
