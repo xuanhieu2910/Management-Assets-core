@@ -72,6 +72,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -731,6 +732,7 @@ public class AssetServiceImpl implements AssetService {
         childAsset.setIdLocation(ValueUtil.getIntegerByObject(obj.get("idLocation")));
         childAsset.setStatusUse(assetParent.getStatusUse());
         childAsset.setYearUse(assetParent.getYearUse());
+        childAsset.setAcreage(assetParent.getAcreage());
         assetRepository.save(childAsset);
     }
 
@@ -859,6 +861,13 @@ public class AssetServiceImpl implements AssetService {
         }
         asset.setStatusUse(ValueUtil.getIntegerByObject(commonDataAsset.get("statusUse")));
         asset.setYearUse(ValueUtil.getStringByObject(commonDataAsset.get("yearUse")));
+        if (ObjectUtils.isEmpty(asset.getIsIncrease())) {
+            asset.setIsIncrease(Constants.IS_NOT_INCREASED);
+        }
+        if (ObjectUtils.isEmpty(asset.getIsDecrease())){
+            asset.setIsDecrease(Constants.IS_NOT_DECREASED);
+        }
+        asset.setAcreage(ValueUtil.getDoubleByObject(commonDataAsset.get("acreage")));
         assetRepository.save(asset);
     }
 
@@ -891,6 +900,7 @@ public class AssetServiceImpl implements AssetService {
         assetParent.get().setIdUserModified(csvcUser.getIdUser());
         assetParent.get().setStatusUse(ValueUtil.getIntegerByObject(commonDataAsset.get("statusUse")));
         assetParent.get().setYearUse(ValueUtil.getStringByObject(commonDataAsset.get("yearUse")));
+        assetParent.get().setAcreage(ValueUtil.getDoubleByObject(commonDataAsset.get("acreage")));
         return assetRepository.save(assetParent.get());
     }
 
@@ -955,6 +965,9 @@ public class AssetServiceImpl implements AssetService {
         commonAssetDto.setIdAssetRoot(assetBluePrintDto.getIdAssetRoot());
         commonAssetDto.setIdUserCreated(assetBluePrintDto.getIdUserCreated());
         commonAssetDto.setIdUserModified(assetBluePrintDto.getIdUserModified());
+        commonAssetDto.setStatusUse(assetBluePrintDto.getStatusUse());
+        commonAssetDto.setYearUse(assetBluePrintDto.getYearUse());
+        commonAssetDto.setAcreage(assetBluePrintDto.getAcreage());
         return commonAssetDto;
     }
 
@@ -1027,6 +1040,7 @@ public class AssetServiceImpl implements AssetService {
             ));
             response.setTimeIncrease(dto.getTimeIncrease());
             response.setStatusProcessCurrent(dto.getStatusProcessCurrent());
+            response.setStatusUse(dto.getStatusUse());
             responses.add(response);
         }
         return responses;
@@ -1496,6 +1510,7 @@ public class AssetServiceImpl implements AssetService {
         childAsset.setIsDecrease(Constants.IS_NOT_DECREASED);
         childAsset.setStatusUse(parentAsset.getStatusUse());
         childAsset.setYearUse(parentAsset.getYearUse());
+        childAsset.setAcreage(parentAsset.getAcreage());
         assetRepository.save(childAsset);
 
         return childAsset;
@@ -1532,6 +1547,7 @@ public class AssetServiceImpl implements AssetService {
         assetParent.setIsDecrease(Constants.IS_NOT_DECREASED);
         assetParent.setStatusUse(ValueUtil.getIntegerByObject(dataAssetParent.get("statusUse")));
         assetParent.setYearUse(ValueUtil.getStringByObject(dataAssetParent.get("yearUse")));
+        assetParent.setAcreage(ValueUtil.getDoubleByObject(dataAssetParent.get("acreage")));
         return assetRepository.save(assetParent);
     }
 
@@ -1578,6 +1594,7 @@ public class AssetServiceImpl implements AssetService {
         asset.setIdInstance(ValueUtil.getIntegerByObject(dataAsset.get("idInstance")));
         asset.setStatusUse(ValueUtil.getIntegerByObject(dataAsset.get("statusUse")));
         asset.setYearUse(ValueUtil.getStringByObject(dataAsset.get("yearUse")));
+        asset.setAcreage(ValueUtil.getDoubleByObject(dataAsset.get("acreage")));
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());
@@ -1714,6 +1731,7 @@ public class AssetServiceImpl implements AssetService {
         leaf.setYearUse(assetLeaf.getYearUse());
         leaf.setUnit(assetLeaf.getUnit());
         leaf.setIsIncrease(assetLeaf.getIsIncrease());
+        leaf.setAcreage(assetLeaf.getAcreage());
         leaf.setOriginalOfFormation(String.valueOf(
                 Optional.ofNullable(assetLeaf.getOriginalOfFormation())
                         .map(original -> Arrays.stream(original.split("-"))
@@ -1725,33 +1743,35 @@ public class AssetServiceImpl implements AssetService {
     }
 
 
-    private List<FindAllAssetResponseToInventory> convertToFindAllAssetChildrenToInventoryResponse(List<FindAllAssetDto> content) {
-        List<FindAllAssetResponseToInventory> response = new ArrayList<>();
+    private List<FindAllAssetChildrenToInventoryResponse> convertToFindAllAssetChildrenToInventoryResponse(List<FindAllAssetDto> content) {
+        List<FindAllAssetChildrenToInventoryResponse> response = new ArrayList<>();
         for (FindAllAssetDto dto : content){
-            FindAllAssetResponseToInventory inventory = new FindAllAssetResponseToInventory();
-//            inventory.setCodeAsset(dto.getCodeAsset());
-//            inventory.setNameAsset(dto.getNameAsset());
-//            inventory.setNameAssetCategory(dto.getNameAssetCategory());
-//            inventory.setCodeAssetCategory(dto.getCodeAssetCategory());
-//            inventory.setCodeDepartment(dto.getCodeDepartment());
-//            inventory.setNameDepartment(dto.getNameDepartment());
-//            inventory.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()),DateUtil.DATE_FORMAT));
-//            inventory.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()),DateUtil.DATE_FORMAT));
-//            inventory.setIdAsset(dto.getIdAsset());
-//            inventory.setSalt(dto.getSalt());
-//            inventory.setQuantityOriginal(dto.getQuantity());
-//            inventory.setRestValueOriginal(dto.getRestValue());
-//            inventory.setTotalOriginalOfFormationOriginal(String.valueOf(
-//                    Optional.ofNullable(dto.getOriginalOfFormation())
-//                            .map(original -> Arrays.stream(original.split("-"))
-//                                    .mapToLong(Long::parseLong)
-//                                    .sum())
-//                            .orElse(0L)
-//            ));
-//            inventory.setQuantityInventory(dto.getQuantity());
-//            inventory.setTotalOriginalOfFormationInventory(inventory.getTotalOriginalOfFormationOriginal());
-//            inventory.setRestValueInventory(dto.getRestValue());
-            response.add(inventory);
+            FindAllAssetChildrenToInventoryResponse leaf = new FindAllAssetChildrenToInventoryResponse();
+            leaf.setIdAsset(dto.getIdAsset());
+            leaf.setCodeAsset(dto.getCodeAsset());
+            leaf.setNameAsset(dto.getNameAsset());
+            leaf.setIdDepartment(dto.getIdDepartment());
+            leaf.setCodeDepartment(dto.getCodeDepartment());
+            leaf.setNameDepartment(dto.getNameDepartment());
+            leaf.setIdLocation(dto.getIdLocation());
+            leaf.setNameLocation(dto.getNameLocation());
+            leaf.setQuantity(dto.getQuantity());
+            leaf.setSalt(dto.getSalt());
+            leaf.setRestValue(dto.getRestValue());
+            leaf.setCumulative(dto.getCumulative());
+            leaf.setStatusUse(dto.getStatusUse());
+            leaf.setYearUse(dto.getYearUse());
+            leaf.setUnit(dto.getUnit());
+            leaf.setIsIncrease(dto.getIsIncrease());
+            leaf.setAcreage(dto.getAcreage());
+            leaf.setOriginalOfFormation(String.valueOf(
+                    Optional.ofNullable(dto.getOriginalOfFormation())
+                            .map(original -> Arrays.stream(original.split("-"))
+                                    .mapToLong(Long::parseLong)
+                                    .sum())
+                            .orElse(0L)
+            ));
+            response.add(leaf);
         }
         return response;
     }
@@ -2054,7 +2074,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Page<FindAllAssetResponseToInventory> findAllAssetChildrenToInventory(FindAllAssetToInventoryRequest inventoryRequest) {
+    public Page<FindAllAssetChildrenToInventoryResponse> findAllAssetChildrenToInventory(FindAllAssetToInventoryRequest inventoryRequest) {
         Pageable pageable = PageUtils.buildPage(inventoryRequest.getPage(), inventoryRequest.getSize());
         List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
         inventoryRequest.setIdsDepartmentOriginal(idsDepartment);
@@ -2728,6 +2748,7 @@ public class AssetServiceImpl implements AssetService {
         }
         String yearUse = (String) ExcelUtil.convertValue(row.getCell(12), CellType.STRING);
         String statusUse = (String) ExcelUtil.convertValue(row.getCell(13), CellType.STRING);
+        Double acreage = (Double) ExcelUtil.convertValue(row.getCell(121), CellType.STRING);
         if (statusUse != null && statusUse.equals("Còn sử dụng được")) {
             commonData.put("statusUse",Constants.STATUS_USE);
         } else if (statusUse != null && statusUse.equals("Hỏng không sử dụng được")) {
@@ -2772,6 +2793,7 @@ public class AssetServiceImpl implements AssetService {
         commonData.put("valueWearTear", valueWearTear);
         commonData.put("yearUsedWearTear", yearUsedWearTear);
         commonData.put("yearUse", yearUse);
+        commonData.put("acreage", acreage);
         // Các lỗi liên quan validate các trường
 
         return commonData;

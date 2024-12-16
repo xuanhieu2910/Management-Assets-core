@@ -36,4 +36,7 @@ public class FindAllAssetDto {
     private Integer statusUse;
     private String yearUse;
     private Integer idAssetProcess;
+    private Integer typeTarget;
+    private Double acreage;
+    private String unit;
 }

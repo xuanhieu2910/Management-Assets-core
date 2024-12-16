@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.entity.FluctuatingSituation;
 import com.example.csvccdshustbe.repository.fluctuatingSituationRepository.FluctuatingSituationRepository;
 import com.example.csvccdshustbe.request.fluctuatingSituation.FindAllFluctuatingSituationRequest;
 import com.example.csvccdshustbe.response.fluctuatingSituation.FindAllFluctuationSituationResponse;
+import com.example.csvccdshustbe.response.fluctuatingSituation.StatisticFluctuatingSituation;
 import com.example.csvccdshustbe.service.fluctuatingSituationService.FluctuatingSituationService;
 import com.example.csvccdshustbe.utility.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +33,15 @@ public class FluctuatingSituationServiceImpl implements FluctuatingSituationServ
         request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         return fluctuatingSituationRepository.findAllFluctuationSituationResponse(pageable, request);
+    }
+
+    @Override
+    public void calculatorStatusFluctuatingSituationById(Integer idFluctuatingSituation) {
+        fluctuatingSituationRepository.calculatorStatusFluctuatingSituationById(idFluctuatingSituation);
+    }
+
+    @Override
+    public StatisticFluctuatingSituation getStatisticFluctuatingSituationNotFinish() {
+        return fluctuatingSituationRepository.getStatisticFluctuatingSituationNotFinish();
     }
 }

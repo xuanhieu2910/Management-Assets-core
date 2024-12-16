@@ -3,20 +3,23 @@ package com.example.csvccdshustbe.repository.fluctuatingSituationRepository.impl
 import com.example.csvccdshustbe.repository.fluctuatingSituationRepository.FluctuatingSituationRepositoryCustom;
 import com.example.csvccdshustbe.request.fluctuatingSituation.FindAllFluctuatingSituationRequest;
 import com.example.csvccdshustbe.response.fluctuatingSituation.FindAllFluctuationSituationResponse;
+import com.example.csvccdshustbe.response.fluctuatingSituation.StatisticFluctuatingSituation;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationRepositoryCustom {
@@ -64,6 +67,44 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllFluctuationSituation(request));
+    }
+
+
+    @Modifying
+    @Transactional
+    @Override
+    public void calculatorStatusFluctuatingSituationById(Integer idFluctuatingSituation) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update fluctuating_situation fs  " +
+                "    inner join (select fsa.id_fluctuating_situation,  " +
+                "                    case when fsa.status = :notYetFinish then -1 else 1 end totalyStatus  " +
+                "                from fluctuating_situation_asset fsa  " +
+                "                where fsa.id_fluctuating_situation = :idFsa  " +
+                "                group by fsa.id_fluctuating_situation) fsa  " +
+                "    on fs.id_fluctuating_situation = fsa.id_fluctuating_situation  " +
+                "set fs.status = fsa.totalyStatus  " +
+                "where 1 = 1   ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idFsa", idFluctuatingSituation);
+        query.executeUpdate();
+    }
+
+    @Override
+    public StatisticFluctuatingSituation getStatisticFluctuatingSituationNotFinish() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) " +
+                "from fluctuating_situation  " +
+                "where fluctuating_situation.status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
+        StatisticFluctuatingSituation situation = new StatisticFluctuatingSituation();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                situation.setTotalNotYetFinish(ValueUtil.getIntegerByObject(obj[0]));
+            }
+        }
+        return situation;
     }
 
     private long countFindAllFluctuationSituation(FindAllFluctuatingSituationRequest request) {
