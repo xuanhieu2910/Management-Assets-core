@@ -485,7 +485,6 @@ public class FileUploadService implements FilesStorageService {
 
         CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
         cellStyle.setFont(font);
-        cellStyle.setWrapText(true);
 
         Row row = sheet.getRow(rowIndex);
         if (row == null) {
@@ -577,7 +576,7 @@ public class FileUploadService implements FilesStorageService {
             writeValueCell(sheet, indexRowStart, indexColStart, stt +
                     ". Ông /Bà....." + (councilDto.getFullName() != null ? councilDto.getFullName() : "...") + "........."
                             + "Chức vụ:....." + (councilDto.getPosition() != null ? councilDto.getPosition() : "...") + "........."
-                            +  "...", null);
+                            +  "Đại diện:....." + (councilDto.getInstancePosition() != null ? councilDto.getInstancePosition() : "...") + ".........", null);
             formatCell(sheet, indexRowStart, 0, false);
             ++indexRowStart;
             ++stt;
@@ -596,6 +595,8 @@ public class FileUploadService implements FilesStorageService {
     private void setInformationDepartmentInventoryReport(Sheet sheet, BlueprintInventoryReportDto council) {
         writeValueCell(sheet, 1, 1, "Tên đơn vị kiểm kê: " + (council.getNameDepartment() != null ? council.getNameDepartment() : "...") + "(*)", true);
         formatCell(sheet, 1,1, true);
+        writeValueCell(sheet,2,1, "Mã đơn vị kiểm kê:" +(council.getCodeDepartment() != null ? council.getCodeDepartment():"...") +" (**)",true);
+        formatCell(sheet, 2,1, true);
         writeValueCell(sheet, 13, 0, "Đã tiến hành kiểm kê tài sản công là tài sản cố định tại cơ quan, tổ chức, đơn vị do "
                 + (council.getNameDepartment() != null ? council.getNameDepartment() : "...") + "(*)  quản lý/tạm quản lý, kết quả như sau:", false);
         formatCell(sheet, 13, 0, false);
