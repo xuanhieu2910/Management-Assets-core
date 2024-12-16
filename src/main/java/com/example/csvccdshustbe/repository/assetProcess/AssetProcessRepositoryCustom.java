@@ -24,4 +24,5 @@ public interface AssetProcessRepositoryCustom {
                                                                                 Pageable pageable);
     Page<FindAllAssetParentToUpdateInventoryDto> findALlAssetProcessLotToUpdateInventory(FindAllAssetProcessRequest request,
                                                                                          Pageable pageable);
+    Optional<AssetProcess> findAssetProcessByIdAssetProcess(Integer idAssetProcess);
 }

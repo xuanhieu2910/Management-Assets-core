@@ -1886,7 +1886,7 @@ public class AssetServiceImpl implements AssetService {
         if (String.valueOf(codeValueCurrent).length() > minLength) {
             minLength = minLength + 2;
         }
-        return prefix + String.format("%0" + minLength + "d",(codeValueCurrent + 1)) + "-";
+        return prefix + String.format("%0" + minLength + "d",(codeValueCurrent + 1)) + "-" + String.valueOf(new Date().getTime());
     }
 
     private String prefixAssetLot(String prefix) {
@@ -1907,7 +1907,7 @@ public class AssetServiceImpl implements AssetService {
         if (String.valueOf(codeValueCurrent).length() > minLength) {
             minLength = minLength + 2;
         }
-        return prefix + String.format("%0" + minLength + "d",(codeValueCurrent + 1)) + "-";
+        return prefix + String.format("%0" + minLength + "d",(codeValueCurrent + 1)) + "-" + String.valueOf(new Date().getTime());
     }
 
 
@@ -2083,6 +2083,15 @@ public class AssetServiceImpl implements AssetService {
         Page<FindAllAssetDto> findAllAssetDtos = assetRepository.findAllAssetChildrenDtoToInventory(inventoryRequest, pageable);
         return new PageImpl<>(convertToFindAllAssetChildrenToInventoryResponse(findAllAssetDtos.get().collect(Collectors.toList())),
                 pageable, findAllAssetDtos.getTotalElements());
+    }
+
+    @Override
+    public Asset findAssetByIdAsset(Integer idAsset) {
+        Optional<Asset> asset = assetRepository.findAssetByIdAsset(idAsset);
+        if (asset.isEmpty()){
+            throw new NotFoundException("Don't exits asset by id asset!");
+        }
+        return asset.get();
     }
 
     private Asset duplicationAssetLot(FindDetailsAssetResponse assetRoot) {
