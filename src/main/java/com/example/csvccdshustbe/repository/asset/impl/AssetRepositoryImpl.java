@@ -863,7 +863,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                           asset.quantity,  " +
                 "                           group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,  " +
                 "                           asset.status_use,  " +
-                "                           asset.year_use,  " +
+                "                           asset.year_use," +
+                "                           asset.acreage,  " +
                 "                           units.name as nameUnit " +
                 "                    from asset asset  " +
                 "                             inner join asset_categories assetCategories  " +
@@ -1358,11 +1359,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
                 "        assetDepreciation.rest_value,asset.quantity,  " +
                 "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "        asset.status_use, asset.year_use  " +
+                "        asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name " +
                 "from asset asset  " +
                 "         inner join asset_categories assetCategories  " +
                 "                    on asset.id_asset_category = assetCategories.id_asset_category  " +
-                "         inner join department de on asset.id_department = de.id_department  " +
+                "         inner join department de on asset.id_department = de.id_department" +
+                "         inner join  units on asset.id_unit = units.id_unit   " +
                 "         left join location lo on asset.id_location = lo.id_location  " +
                 "         left join asset_original_of_formation assetOriginalOfFormation  " +
                 "                   on asset.id_asset = assetOriginalOfFormation.id_asset  " +
@@ -1404,6 +1406,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[17]));
                 findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[18]));
                 findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[19]));
+                findAllAssetDto.setTypeTarget(ValueUtil.getIntegerByObject(obj[20]));
+                findAllAssetDto.setAcreage(ValueUtil.getDoubleByObject(obj[21]));
+                findAllAssetDto.setUnit(ValueUtil.getStringByObject(obj[22]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -2091,7 +2096,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                           asset.quantity,  " +
                 "                           group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,  " +
                 "                           asset.status_use,  " +
-                "                           asset.year_use  " +
+                "                           asset.year_use , asset.acreage " +
                 "                    from asset asset  " +
                 "                             inner join asset_categories assetCategories  " +
                 "                                        on asset.id_asset_category = assetCategories.id_asset_category  " +
@@ -2120,11 +2125,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "          asset.time_created, asset.time_modified, asset.parent, asset.salt,        " +
                 "          assetDepreciation.rest_value,asset.quantity,        " +
                 "          group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,    " +
-                "          asset.status_use, asset.year_use " +
+                "          asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage " +
                 "   from asset asset        " +
                 "       inner join asset_categories assetCategories   " +
                 "               on asset.id_asset_category = assetCategories.id_asset_category   " +
-                "       inner join department de on asset.id_department = de.id_department   " +
+                "       inner join department de on asset.id_department = de.id_department " +
+                "       inner join  units on asset.id_unit = units.id_unit   " +
                 "       left join location lo on asset.id_location = lo.id_location   " +
                 "       inner join asset_original_of_formation assetOriginalOfFormation        " +
                 "           on asset.id_asset = assetOriginalOfFormation.id_asset        " +
@@ -2471,7 +2477,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                             assetCategories.code_name, de.id_department,  " +
                 "                             de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
                 "                             asset.time_modified, asset.parent, asset.salt, assetDepreciation.rest_value,  " +
-                "                             asset.quantity, asset.status_use, asset.year_use, units.name )  " +
+                "                             asset.quantity, asset.status_use, asset.year_use,asset.acreage , units.name )  " +
                 "select rootAssetCategories.id_asset_category   as idAssetCategory,  " +
                 "       rootAssetCategories.name                as nameAssetCategory,  " +
                 "       rootAssetCategories.parent              as idParentAssetCategory,  " +
@@ -2496,9 +2502,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       rootAsset.assetOriginalOfFormationValue as originalOfFormation,  " +
                 "       rootAsset.status_use                    as statusUse,  " +
                 "       rootAsset.year_use                      as yearUse,  " +
-                "       rootAssetCategories.is_leaf, " +
+                "rootAssetCategories.is_leaf, " +
                 "       rootAssetCategories.type_target,  " +
-                "       rootAsset.nameUnit  " +
+
+                "       rootAsset.nameUnit,  " +
+                "       rootAsset.acreage " +
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
                 "         left join ROOT_ASSET rootAsset on rootAssetCategories.id_asset_category = rootAsset.idAssetCategory  " +
                 "order by rootAssetCategories.path ");
@@ -2522,7 +2530,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
                 "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity, " +
-                "         asset.status_use, asset.year_use ");
+                "         asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -2601,7 +2609,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                             assetCategories.code_name, de.id_department,  " +
                 "                             de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
                 "                             asset.time_modified, asset.parent, asset.salt, assetDepreciation.rest_value,  " +
-                "                             asset.quantity, asset.status_use, asset.year_use)  " +
+                "                             asset.quantity, asset.status_use, asset.year_use,asset.acreage)  " +
                 "select count(0)  " +
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
                 "         left join ROOT_ASSET rootAsset on rootAssetCategories.id_asset_category = rootAsset.idAssetCategory  " +
@@ -2627,7 +2635,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "         assetCategories.code_name, de.id_department,  " +
                 "         de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
                 "         asset.time_modified, asset.parent, asset.salt,assetDepreciation.rest_value, asset.quantity, " +
-                "         asset.status_use, asset.year_use ");
+                "         asset.status_use, asset.year_use,assetCategories.type_target,asset.acreage,units.name ");
         if (StringUtils.isNotBlank(request.getSortBy())) {
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
