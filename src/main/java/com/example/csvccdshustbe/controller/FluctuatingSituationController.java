@@ -40,4 +40,14 @@ public class FluctuatingSituationController {
         }
     }
 
+
+    @GetMapping("/statistic-fluctuating-situation")
+    public ResponseEntity<?> getStatisticFluctuatingSituation(){
+        try {
+            return ApiResponseDto.createdWithState(fluctuatingSituationService.getStatisticFluctuatingSituationNotFinish(),
+                    "Get statistic fluctuating situation", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

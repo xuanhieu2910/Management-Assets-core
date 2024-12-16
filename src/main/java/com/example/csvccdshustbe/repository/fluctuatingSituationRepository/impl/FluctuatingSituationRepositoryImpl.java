@@ -3,6 +3,8 @@ package com.example.csvccdshustbe.repository.fluctuatingSituationRepository.impl
 import com.example.csvccdshustbe.repository.fluctuatingSituationRepository.FluctuatingSituationRepositoryCustom;
 import com.example.csvccdshustbe.request.fluctuatingSituation.FindAllFluctuatingSituationRequest;
 import com.example.csvccdshustbe.response.fluctuatingSituation.FindAllFluctuationSituationResponse;
+import com.example.csvccdshustbe.response.fluctuatingSituation.StatisticFluctuatingSituation;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -18,7 +20,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationRepositoryCustom {
@@ -86,6 +87,24 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idFsa", idFluctuatingSituation);
         query.executeUpdate();
+    }
+
+    @Override
+    public StatisticFluctuatingSituation getStatisticFluctuatingSituationNotFinish() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) " +
+                "from fluctuating_situation  " +
+                "where fluctuating_situation.status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
+        StatisticFluctuatingSituation situation = new StatisticFluctuatingSituation();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                situation.setTotalNotYetFinish(ValueUtil.getIntegerByObject(obj[0]));
+            }
+        }
+        return situation;
     }
 
     private long countFindAllFluctuationSituation(FindAllFluctuatingSituationRequest request) {
