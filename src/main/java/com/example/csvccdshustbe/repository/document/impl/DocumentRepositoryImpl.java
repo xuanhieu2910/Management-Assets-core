@@ -204,6 +204,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
         dto.setTimeDocument(ValueUtil.getStringByObject(obj[7]));
         dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
         dto.setDescription(ValueUtil.getStringByObject(obj[9]));
+        dto.setIdProcess(ValueUtil.getIntegerByObject(obj[15]));
         dto.setStatus(ValueUtil.getIntegerByObject(obj[16]));
         dto.setCodeDepartment(ValueUtil.getStringByObject(obj[17]));
         dto.setNameDepartment(ValueUtil.getStringByObject(obj[18]));

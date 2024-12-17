@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.assetProcess;
 
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
+import com.example.csvccdshustbe.dto.fluctuatingSituationAsset.AssetsFluctuatingSituationAssetDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.request.assetProcess.*;
 import com.example.csvccdshustbe.response.asset.FindAllAssetResponseUpdateInventory;
@@ -26,4 +27,5 @@ public interface AssetProcessService {
     List<AssetProcess> createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request) throws JsonProcessingException;
     AssetProcess updateAssetProcessInventory(UpdateAssetProcessRequest request) throws JsonProcessingException;
     AssetProcess findAssetProcessByIdAssetProcess(Integer idAssetProcess);
+    List<AssetsFluctuatingSituationAssetDto> findAssetsToFluctuatingSituationByIdProcess(Integer idProcess);
 }

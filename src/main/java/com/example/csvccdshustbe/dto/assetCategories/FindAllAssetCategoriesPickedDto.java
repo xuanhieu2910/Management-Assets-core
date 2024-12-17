@@ -15,4 +15,6 @@ public class FindAllAssetCategoriesPickedDto {
     private String codeName;
     private String pathImage;
     private Integer idParent;
+    private String numberCodePattern;
+    private Integer typeTarget;
 }
