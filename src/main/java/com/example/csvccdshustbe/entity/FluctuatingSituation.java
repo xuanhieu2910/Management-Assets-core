@@ -1,10 +1,7 @@
 package com.example.csvccdshustbe.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +15,7 @@ public class FluctuatingSituation {
 
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_fluctuating_situation")
     private Integer idFluctuatingSituation;
     @Column(name = "id_process")

@@ -234,7 +234,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         AssetProcess assetProcess = new AssetProcess();
         assetProcess.setIdProcess(process.getIdProcess());
         assetProcess.setIdTypeProcess(process.getIdTypeProcess());
-        assetProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+        assetProcess.setStatus(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE);
         assetProcess.setValue(assetProcessRequest.getValue());
         assetProcess.setTimeCreated(timeCurrent);
         assetProcess.setTimeModified(timeCurrent);
@@ -277,6 +277,8 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         leaf.setIdAsset(assetLeaf.getIdAsset());
         leaf.setSalt(assetLeaf.getSalt());
         leaf.setValue(assetLeaf.getValue());
+        leaf.setStatus(assetLeaf.getStatus());
+        leaf.setIsIncrease(assetLeaf.getIsCrease());
         return leaf;
     }
 
@@ -313,6 +315,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         FindAllAssetChildrenToUpdateInventoryResponse leaf = new FindAllAssetChildrenToUpdateInventoryResponse();
         leaf.setIdAsset(assetLeaf.getIdAsset());
         leaf.setSalt(assetLeaf.getSalt());
+        leaf.setNameAsset(assetLeaf.getNameAsset());
         return leaf;
     }
 
@@ -378,6 +381,8 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             response.setSalt(dto.getSalt());
             response.setValue(dto.getValue());
             response.setIdAssetProcess(dto.getIdAssetProcess());
+            response.setStatus(dto.getStatusAssetProcess());
+            response.setIsIncrease(dto.getIsIncrease());
             responses.add(response);
         }
         return responses;

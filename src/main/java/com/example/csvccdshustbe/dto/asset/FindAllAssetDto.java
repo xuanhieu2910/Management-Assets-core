@@ -39,4 +39,5 @@ public class FindAllAssetDto {
     private Integer typeTarget;
     private Double acreage;
     private String unit;
+    private Integer statusAssetProcess;
 }

@@ -41,7 +41,7 @@ public class FluctuatingSituationServiceImpl implements FluctuatingSituationServ
     }
 
     @Override
-    public StatisticFluctuatingSituation getStatisticFluctuatingSituationNotFinish() {
-        return fluctuatingSituationRepository.getStatisticFluctuatingSituationNotFinish();
+    public StatisticFluctuatingSituation getStatisticFluctuatingSituation(Integer idFluctuatingSituation) {
+        return fluctuatingSituationRepository.getStatisticFluctuatingSituation(idFluctuatingSituation);
     }
 }

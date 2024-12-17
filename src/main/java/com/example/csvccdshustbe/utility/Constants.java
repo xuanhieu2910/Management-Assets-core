@@ -581,8 +581,8 @@ public class Constants {
     /*----------------------------------------------------*/
     /* Constant type fluctuating situation asset
      * */
-    public static final Integer TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE = 1;
-    public final static Integer TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE = 2;
-    public final static Integer TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE = 3;
+    public static final Integer TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE = 10;
+    public final static Integer TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE = 11;
+    public final static Integer TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE = 12;
     /*----------------------------------------------------*/
 }
