@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.repository.assetProcess;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
+import com.example.csvccdshustbe.dto.fluctuatingSituationAsset.AssetsFluctuatingSituationAssetDto;
 import com.example.csvccdshustbe.dto.process.FindAllAssetLotParentToUpdateInventoryDto;
 import com.example.csvccdshustbe.dto.process.FindAllAssetParentToUpdateInventoryDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
@@ -26,4 +27,5 @@ public interface AssetProcessRepositoryCustom {
     Page<FindAllAssetLotParentToUpdateInventoryDto> findALlAssetProcessLotToUpdateInventory(FindAllAssetProcessRequest request,
                                                                                             Pageable pageable);
     Optional<AssetProcess> findAssetProcessByIdAssetProcess(Integer idAssetProcess);
+    List<AssetsFluctuatingSituationAssetDto> findAssetsToFluctuatingSituationByIdProcess(Integer idProcess);
 }

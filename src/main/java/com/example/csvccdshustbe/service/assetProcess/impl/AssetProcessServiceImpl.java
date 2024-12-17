@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.assetProcess.impl;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
+import com.example.csvccdshustbe.dto.fluctuatingSituationAsset.AssetsFluctuatingSituationAssetDto;
 import com.example.csvccdshustbe.dto.process.*;
 import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.entity.AssetProcess;
@@ -202,6 +203,11 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         return assetProcess.get();
     }
 
+    @Override
+    public List<AssetsFluctuatingSituationAssetDto> findAssetsToFluctuatingSituationByIdProcess(Integer idProcess) {
+        return assetProcessRepository.findAssetsToFluctuatingSituationByIdProcess(idProcess);
+    }
+
     private Asset constructionAssetNotDeclareWhenInventory(AssetProcessNotDeclareInventoryRequest assetProcess) throws JsonProcessingException {
         String currentTime = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -322,6 +328,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
                         x.setValue(assetProcessRequest.getValue());
                         x.setIdUserModified(csvcUser.getIdUser());
                         x.setTimeModified(timeCurrent);
+                        x.setStatus(assetProcessRequest.getStatus());
                     });
         }
         assetProcessRepository.saveAll(assetProcessList);

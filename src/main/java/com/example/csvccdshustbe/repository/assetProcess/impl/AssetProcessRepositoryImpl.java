@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.repository.assetProcess.impl;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
+import com.example.csvccdshustbe.dto.fluctuatingSituationAsset.AssetsFluctuatingSituationAssetDto;
 import com.example.csvccdshustbe.dto.process.*;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.repository.assetProcess.AssetProcessRepositoryCustom;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -602,6 +604,38 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<AssetsFluctuatingSituationAssetDto> findAssetsToFluctuatingSituationByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_asset, value, status " +
+                "from asset_process where id_process = :idProcess " +
+                "and asset_process.status in (:statusFluctuationSituation) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusFluctuationSituation", Arrays.asList(
+                Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE,
+                Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE,
+                Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE));
+        List<AssetsFluctuatingSituationAssetDto> fluctuatingSituationAssetDtos = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result) {
+                AssetsFluctuatingSituationAssetDto situationAssetDto = new AssetsFluctuatingSituationAssetDto();
+                situationAssetDto.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
+                situationAssetDto.setValue(ValueUtil.getStringByObject(obj[1]));
+                situationAssetDto.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE)) {
+                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE);
+                } else if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE)) {
+                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
+                } else if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE)) {
+                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
+                }
+                fluctuatingSituationAssetDtos.add(situationAssetDto);
+            }
+        }
+        return fluctuatingSituationAssetDtos;
     }
 
     private long countFindAllAssetProcessLotToUpdateInventory(FindAllAssetProcessRequest request) {
