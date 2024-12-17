@@ -26,6 +26,7 @@ import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.repository.report.ReportRepository;
+import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.countryProducer.CountryProducerService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
@@ -410,7 +411,7 @@ public class FileUploadService implements FilesStorageService {
     }
 
     @Override
-    public String downloadInventoryReportByCodeDocument(String codeDocument) throws IOException {
+    public String downloadInventoryReportByCodeDocument(FindAllAssetProcessRequest request) throws IOException {
 //        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static")
 //                + SEPARATOR
 //                + FileUtil.FOLDER_NAME_REPORT
@@ -418,8 +419,8 @@ public class FileUploadService implements FilesStorageService {
 //                + Constants.NAME_REPORTS[36];
         String fileExcel = "C:\\Users\\ADMIN\\Downloads\\1_01-tscd-co-quan-to-chuc-don-vi-1.8.xlsx";
         List<FindAllAssetForInventoryReportDto> assetReport =
-                reportRepository.findInfoAssetForInventoryReportByCodeDocument(codeDocument);
-        BlueprintInventoryReportDto council = reportRepository.findBlueprintInventoryReportDtoByCodeDocument(codeDocument);
+                reportRepository.findInfoAssetForInventoryReportByCodeDocument(request);
+        BlueprintInventoryReportDto council = reportRepository.findBlueprintInventoryReportDtoByCodeDocument(request);
         FileInputStream file = new FileInputStream(new File(fileExcel));
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -450,12 +451,20 @@ public class FileUploadService implements FilesStorageService {
     private void writeDataAssetInventoryReport(Sheet sheet,
                                                List<FindAllAssetForInventoryReportDto> assetReport,
                                                int sizeIncrease) throws JsonProcessingException {
+        int rowStart = 18;
+        int rowNeeded = 0;
+        if(sizeIncrease > 3) {
+            rowNeeded = sizeIncrease - 3;
+            rowStart = rowStart + rowNeeded;
+        }
+        sheet.shiftRows(rowStart , sheet.getPhysicalNumberOfRows(), assetReport.size() - 117,  true, true);
         ObjectMapper objectMapper = new ObjectMapper();
         for (FindAllAssetForInventoryReportDto asset : assetReport){
-            HashMap<String, Object> dataAsset =  objectMapper.readValue(asset.getValue(), new TypeReference<>() {});
-            int rowStart = setRowstart(sheet, asset.getNumberCodePattern());
-            writeValueCell(sheet, rowStart, 1, ValueUtil.getStringByObject(dataAsset.get("name_asset")), null);
-            writeValueCell(sheet, rowStart, 2, ValueUtil.getStringByObject(dataAsset.get("code_asset")), null);
+            HashMap<String, Object> dataAsset =  objectMapper.readValue(asset.getValue() == null ? "{}" : asset.getValue(), new TypeReference<>() {});
+            writeValueCell(sheet,rowStart, 1, asset.getNameAssetCategory() == null ? "": asset.getNameAssetCategory(), null);
+            writeValueCell(sheet,rowStart, 2, asset.getNumberCodePattern()== null ? "": asset.getNumberCodePattern(), null);
+//            writeValueCell(sheet, rowStart, 1, ValueUtil.getStringByObject(dataAsset.get("name_asset")), null);
+//            writeValueCell(sheet, rowStart, 2, ValueUtil.getStringByObject(dataAsset.get("code_asset")), null);
             writeValueCell(sheet, rowStart, 3, ValueUtil.getStringByObject(dataAsset.get("year_use")), null);
             writeValueCell(sheet, rowStart, 4, ValueUtil.getStringByObject(dataAsset.get("unit")), null);
             writeValueCell(sheet, rowStart, 5,ValueUtil.getStringByObject(dataAsset.get("quantity")), null);
@@ -469,11 +478,16 @@ public class FileUploadService implements FilesStorageService {
             writeValueCell(sheet, rowStart, 13,ValueUtil.getStringByObject(dataAsset.get("rest_value")), null);
             writeValueCell(sheet, rowStart, 14,ValueUtil.getStringByObject(dataAsset.get("recorded_accounting")), null);
             writeValueCell(sheet, rowStart, 15,ValueUtil.getStringByObject(dataAsset.get("not_recorded_accounting")), null);
-            writeValueCell(sheet, rowStart, (ValueUtil.getStringByObject(dataAsset.get("status_use")).equals("1") ||
-                            ValueUtil.getStringByObject(dataAsset.get("status_use")).isEmpty() ||
-                            ValueUtil.getStringByObject(dataAsset.get("status_use")) == null) ? 16 : 17, "1", null
+            writeValueCell(sheet, rowStart,
+                    (Objects.equals(ValueUtil.getStringByObject(dataAsset.get("status_use")), "1") ||
+                            ValueUtil.getStringByObject(dataAsset.get("status_use")) == null ||
+                            ValueUtil.getStringByObject(dataAsset.get("status_use")).isEmpty()) ? 16 : 17,
+                    "1",
+                    null
             );
             addBoldBorderToRows(sheet, rowStart ,  1, 0 ,17, true);
+            ++rowStart;
+
         }
     }
     public static void formatCell(Sheet sheet, int rowIndex, int colIndex, boolean isBold) {
@@ -496,28 +510,6 @@ public class FileUploadService implements FilesStorageService {
         }
         cell.setCellStyle(cellStyle);
     }
-    private int setRowstart(Sheet sheet, String numberCodePattern) {
-        int rowStart = -1;
-        for (Row row : sheet) {
-            Cell cell = row.getCell(2);
-            if (cell != null) {
-                String cellValue = "";
-                if (cell.getCellType() == CellType.STRING) {
-                    cellValue = cell.getStringCellValue();
-                }
-                else if (cell.getCellType() == CellType.NUMERIC) {
-                    cellValue = String.valueOf(cell.getNumericCellValue());
-                }
-                if (cellValue.equals(numberCodePattern)) {
-                    rowStart = row.getRowNum() + 1;
-                    sheet.shiftRows(rowStart , sheet.getPhysicalNumberOfRows(), 1,  true, true);
-                    break;
-                }
-            }
-        }
-        return rowStart;
-    }
-
 
     private void addBoldBorderToRows(Sheet sheet, int rowStart, int rowNeeded, int colStart, int colEnd, boolean addBorder) {
         CellStyle cellStyle = sheet.getWorkbook().createCellStyle();

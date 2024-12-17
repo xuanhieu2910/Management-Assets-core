@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.report;
 
 import com.example.csvccdshustbe.entity.Report;
+import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
@@ -20,7 +21,7 @@ public interface ReportService {
 
     String ReportUsingAsset08a() throws IOException;
 
-    String downloadFileInventoryReportByCodeDocument(String codeDocument) throws IOException;
+    String downloadFileInventoryReportByCodeDocument(FindAllAssetProcessRequest request) throws IOException;
 
     String downloadFileRevaluationReport(Integer idAssetProcess) throws IOException;
 

@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
+import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
@@ -95,9 +96,9 @@ public class ReportsController {
     }
 
     @GetMapping("/download-report-inventory")
-    public ResponseEntity<?> downloadReportInventory(@RequestParam("code-document") String codeDocument){
+    public ResponseEntity<?> downloadReportInventory(FindAllAssetProcessRequest request){
         try {
-            return ApiResponseDto.createdWithState(reportService.downloadFileInventoryReportByCodeDocument(codeDocument),
+            return ApiResponseDto.createdWithState(reportService.downloadFileInventoryReportByCodeDocument(request),
                     "Download inventory report success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
