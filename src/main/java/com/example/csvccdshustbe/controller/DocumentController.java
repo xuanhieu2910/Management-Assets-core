@@ -349,10 +349,8 @@ public class DocumentController {
             documentService.updateInventoryFinish(request);
             return ApiResponseDto.createdWithMessage("Update inventory finish success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
