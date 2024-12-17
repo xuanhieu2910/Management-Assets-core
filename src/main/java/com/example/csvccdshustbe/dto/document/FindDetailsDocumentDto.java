@@ -25,5 +25,6 @@ public class FindDetailsDocumentDto {
     private String nameDepartment;
     private List<BluePrintStateDto> bluePrintStateDto;
     private Integer statusDocument;
+    private Integer idProcess;
 
 }

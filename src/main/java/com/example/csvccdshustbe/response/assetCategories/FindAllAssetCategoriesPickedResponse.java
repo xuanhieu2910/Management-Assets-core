@@ -21,4 +21,8 @@ public class FindAllAssetCategoriesPickedResponse {
     private Integer idAssetCategory;
     @JsonProperty("id_parent")
     private Integer idParent;
+    @JsonProperty("type_target")
+    private Integer typeTarget;
+    @JsonProperty("number_code_pattern")
+    private String numberCodePattern;
 }
