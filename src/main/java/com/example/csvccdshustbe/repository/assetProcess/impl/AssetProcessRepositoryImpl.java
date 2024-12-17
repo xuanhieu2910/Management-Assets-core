@@ -614,6 +614,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "from asset_process where id_process = :idProcess " +
                 "and asset_process.status in (:statusFluctuationSituation) ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
         query.setParameter("statusFluctuationSituation", Arrays.asList(
                 Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE,
                 Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE,
@@ -630,8 +631,8 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                     situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE);
                 } else if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE)) {
                     situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
-                } else if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE)) {
-                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
+                } else if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE)) {
+                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE);
                 }
                 fluctuatingSituationAssetDtos.add(situationAssetDto);
             }
