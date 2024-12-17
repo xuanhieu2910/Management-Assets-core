@@ -314,6 +314,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         FindAllAssetChildrenToUpdateInventoryResponse leaf = new FindAllAssetChildrenToUpdateInventoryResponse();
         leaf.setIdAsset(assetLeaf.getIdAsset());
         leaf.setSalt(assetLeaf.getSalt());
+        leaf.setNameAsset(assetLeaf.getNameAsset());
         return leaf;
     }
 
@@ -379,6 +380,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             response.setSalt(dto.getSalt());
             response.setValue(dto.getValue());
             response.setIdAssetProcess(dto.getIdAssetProcess());
+            response.setStatus(dto.getStatusAssetProcess());
             responses.add(response);
         }
         return responses;

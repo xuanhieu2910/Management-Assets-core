@@ -66,7 +66,6 @@ public class AssetProcessController {
             return ApiResponseDto.createdWithState(assetProcessService.findAllAssetProcessLotUpdateInventoryProcess(request),
                     "Find all data asset process lot to update inventory success!", HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

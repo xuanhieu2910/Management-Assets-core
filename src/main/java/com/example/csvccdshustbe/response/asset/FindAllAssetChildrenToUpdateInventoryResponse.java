@@ -15,4 +15,6 @@ public class FindAllAssetChildrenToUpdateInventoryResponse {
     private String value;
     @JsonProperty("status")
     private Integer status;
+    @JsonProperty("name_asset")
+    private String nameAsset;
 }
