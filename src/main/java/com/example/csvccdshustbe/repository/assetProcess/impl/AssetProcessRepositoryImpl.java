@@ -419,7 +419,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "          order by cte.path),  " +
                 "     ROOT_ASSET_PROCESS as (  " +
                 "         select asset.id_asset idAsset, assetCategories.id_asset_category idAssetCategory,  " +
-                "                assetProcess.value, asset.salt, assetProcess.id_asset_process, asset_process.status  " +
+                "                assetProcess.value, asset.salt, assetProcess.id_asset_process, assetProcess.status  " +
                 "         from asset asset  " +
                 "                  left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
                 "                  left join process process on assetProcess.id_process = process.id_process  " +
