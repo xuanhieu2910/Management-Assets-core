@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.document.impl;
 
 import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
 import com.example.csvccdshustbe.dto.document.FindDetailsDocumentDto;
+import com.example.csvccdshustbe.dto.fluctuatingSituationAsset.AssetsFluctuatingSituationAssetDto;
 import com.example.csvccdshustbe.dto.process.*;
 import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
 import com.example.csvccdshustbe.entity.*;
@@ -32,6 +33,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
@@ -328,26 +330,33 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void updateInventoryFinish(UpdateInventoryDraftRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
+        documentRepository.save(updateInformationDocument(document));
+        if (!CollectionUtils.isEmpty(request.getAssetProcess().getAssets())) {
+            assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
+        }
+        createFluctuatingSituation(document.getIdProcess());
+    }
+
+    private Document updateInformationDocument(Document document) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         document.setTimeModified(String.valueOf(new Date().getTime()));
         document.setIdUserModified(csvcUser.getIdUser());
         document.setStatus(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE);
-        request.getAssetProcess().setIdProcess(document.getIdProcess());
-        documentRepository.save(document);
-        assetProcessService.updateFinishListAssetProcessByIdProcess(request.getAssetProcess());
-        createFluctuatingSituation(request);
+        return document;
     }
 
-    private void createFluctuatingSituation(UpdateInventoryDraftRequest request) {
-        FluctuatingSituation fluctuatingSituation = constructionFluctuatingSituation(request.getAssetProcess().getIdProcess());
+    private void createFluctuatingSituation(Integer idProcess) {
+        List<AssetsFluctuatingSituationAssetDto> fluctuatingSituationAssetDtos =
+                assetProcessService.findAssetsToFluctuatingSituationByIdProcess(idProcess);
+        FluctuatingSituation fluctuatingSituation = constructionFluctuatingSituation(idProcess);
         List<FluctuatingSituationAsset> fluctuatingSituationAssetList =
-                constructionFluctuatingSituationAssetList(fluctuatingSituation, request.getAssetProcess());
+                constructionFluctuatingSituationAssetList(fluctuatingSituation, fluctuatingSituationAssetDtos);
     }
 
     private List<FluctuatingSituationAsset> constructionFluctuatingSituationAssetList(FluctuatingSituation fluctuatingSituation,
-                                                                                  UpdateAllAssetProcessRequest assetProcess) {
+                                                                                      List<AssetsFluctuatingSituationAssetDto> fluctuatingSituationAssetDtos) {
         List<FluctuatingSituationAsset>  fluctuatingSituationAssets = new ArrayList<>();
-        for (AssetProcessRequest assetProcessRequest : assetProcess.getFluctuatingSituationAsset()) {
+        for (AssetsFluctuatingSituationAssetDto assetProcessRequest : fluctuatingSituationAssetDtos) {
             fluctuatingSituationAssets.add(constructionFluctuatingSituationAsset(fluctuatingSituation,
                     assetProcessRequest));
 
@@ -356,14 +365,14 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private FluctuatingSituationAsset constructionFluctuatingSituationAsset(FluctuatingSituation fluctuatingSituation,
-                                                                            AssetProcessRequest assetProcessRequest) {
+                                                                            AssetsFluctuatingSituationAssetDto assetsFluctuatingSituationAssetDto) {
         String timeCurrent = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         FluctuatingSituationAsset fluctuatingSituationAsset = new FluctuatingSituationAsset();
-        fluctuatingSituationAsset.setIdAsset(fluctuatingSituationAsset.getIdAsset());
-        fluctuatingSituationAsset.setIdProcess(fluctuatingSituationAsset.getIdProcess());
+        fluctuatingSituationAsset.setIdAsset(assetsFluctuatingSituationAssetDto.getIdAsset());
+        fluctuatingSituationAsset.setIdProcess(fluctuatingSituation.getIdProcess());
         fluctuatingSituationAsset.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_ASSET_NOT_FINISH);
-        fluctuatingSituationAsset.setType(assetProcessRequest.getTypeFluctuatingSituationAsset());
+        fluctuatingSituationAsset.setType(assetsFluctuatingSituationAssetDto.getTypeFluctuatingSituationAsset());
         fluctuatingSituationAsset.setTimeCreated(timeCurrent);
         fluctuatingSituationAsset.setTimeModified(timeCurrent);
         fluctuatingSituationAsset.setIdUserModified(csvcUser.getIdUser());

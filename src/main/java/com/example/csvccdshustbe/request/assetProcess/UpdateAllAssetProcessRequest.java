@@ -10,6 +10,5 @@ import java.util.List;
 public class UpdateAllAssetProcessRequest {
 
     private List<AssetProcessRequest> assets;
-    private List<AssetProcessRequest> fluctuatingSituationAsset;
     private Integer idProcess;
 }
