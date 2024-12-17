@@ -40,7 +40,7 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
                 "    inner join process pr on fs.id_process = pr.id_process " +
                 "    inner join document do on pr.id_process = do.id_process " +
                 "    inner join csvc_user cu on do.id_user_created = cu.id_user " +
-                "    inner join department de on do.id_document = de.id_department " +
+                "    inner join department de on do.id_department = de.id_department " +
                 "where do.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllFluctuationSituation(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -114,7 +114,7 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
                 "    inner join process pr on fs.id_process = pr.id_process " +
                 "    inner join document do on pr.id_process = do.id_process " +
                 "    inner join csvc_user cu on do.id_user_created = cu.id_user " +
-                "    inner join department de on do.id_document = de.id_department " +
+                "    inner join department de on do.id_department = de.id_department " +
                 "where do.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllFluctuationSituation(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
