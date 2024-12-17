@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.dto.report.inventory.FindAllAssetForInventoryRe
 import com.example.csvccdshustbe.dto.report.FindAllReportDto;
 import com.example.csvccdshustbe.dto.report.IncreaseDecreaseReport08bDto;
 import com.example.csvccdshustbe.entity.Report;
+import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
@@ -22,8 +23,8 @@ public interface ReportRepositoryCustom {
     Optional<Report> findReportByCodeAndStatus(String codeReport, Integer status);
     Optional<List<Object[]>> findInfoAssetForRevaluationReport(Integer idAssetProcess, Integer status);
     Optional<List<Object[]>> findInfoStakeHolderForRevaluationReport(Integer idAssetProcess);
-    List<FindAllAssetForInventoryReportDto> findInfoAssetForInventoryReportByCodeDocument(String codeDocument);
-    BlueprintInventoryReportDto findBlueprintInventoryReportDtoByCodeDocument(String code);
+    List<FindAllAssetForInventoryReportDto> findInfoAssetForInventoryReportByCodeDocument(FindAllAssetProcessRequest request);
+    BlueprintInventoryReportDto findBlueprintInventoryReportDtoByCodeDocument(FindAllAssetProcessRequest request);
 
     Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetGroundInReport(List<Integer> idsDepartment);
 

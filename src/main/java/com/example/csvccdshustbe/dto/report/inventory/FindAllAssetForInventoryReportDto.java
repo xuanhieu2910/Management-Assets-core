@@ -1,22 +1,25 @@
 package com.example.csvccdshustbe.dto.report.inventory;
 
+import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToUpdateInventoryDto;
+import com.example.csvccdshustbe.utility.ValueUtil;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 public class FindAllAssetForInventoryReportDto {
 
-    private Integer idAsset;
-    private Integer idProcess;
-    private Integer idAssetProcess;
-    private String value;
-    private String codeDocument;
-    private String name;
-    private String codeAsset;
-    private String yearUse;
-    private String units;
-    private Integer isIncrease;
-    private Integer statusUse;
+    private Integer idAssetCategory;
+    private String nameAssetCategory;
+    private Integer depth;
+    private Integer idParentAssetCategory;
+    private String codeAssetCategory;
+    private String path;
     private String numberCodePattern;
+    private Integer isLeaf;
+    private Integer typeTarget;
+    private String value;
 }

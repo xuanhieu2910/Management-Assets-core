@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Report;
 import com.example.csvccdshustbe.repository.assetCurrentUsage.AssetCurrentUsageRepository;
 import com.example.csvccdshustbe.repository.report.ReportRepository;
+import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
@@ -227,8 +228,8 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public String downloadFileInventoryReportByCodeDocument(String codeDocument) throws IOException {
-        return filesStorageService.downloadInventoryReportByCodeDocument(codeDocument.trim());
+    public String downloadFileInventoryReportByCodeDocument(FindAllAssetProcessRequest request) throws IOException {
+        return filesStorageService.downloadInventoryReportByCodeDocument(request);
     }
 
     @Override
