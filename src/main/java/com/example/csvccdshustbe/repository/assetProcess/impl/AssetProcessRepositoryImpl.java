@@ -2,10 +2,8 @@ package com.example.csvccdshustbe.repository.assetProcess.impl;
 
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToInventoryDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToUpdateInventoryDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetParentToUpdateInventoryDto;
+import com.example.csvccdshustbe.dto.fluctuatingSituationAsset.AssetsFluctuatingSituationAssetDto;
+import com.example.csvccdshustbe.dto.process.*;
 import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.repository.assetProcess.AssetProcessRepositoryCustom;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
@@ -25,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -314,7 +313,8 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,      " +
                 "        lo.id_location idLocation, lo.name nameLocation,      " +
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,      " +
-                "        asset.quantity, assetProcess.value, assetProcess.id_asset_process  " +
+                "        asset.quantity, assetProcess.value, assetProcess.id_asset_process, assetProcess.status,   " +
+                "        asset.is_increase " +
                 "from asset asset  " +
                 "         left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
                 "         left join process process on assetProcess.id_process = process.id_process  " +
@@ -355,6 +355,8 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 findAllAssetDto.setQuantity(ValueUtil.getIntegerByObject(obj[15]));
                 findAllAssetDto.setValue(ValueUtil.getStringByObject(obj[16]));
                 findAllAssetDto.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[17]));
+                findAllAssetDto.setStatusAssetProcess(ValueUtil.getIntegerByObject(obj[18]));
+                findAllAssetDto.setIsIncrease(ValueUtil.getIntegerByObject(obj[19]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -419,7 +421,8 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "          order by cte.path),  " +
                 "     ROOT_ASSET_PROCESS as (  " +
                 "         select asset.id_asset idAsset, assetCategories.id_asset_category idAssetCategory,  " +
-                "                assetProcess.value, asset.salt, assetProcess.id_asset_process  " +
+                "                assetProcess.value, asset.salt, assetProcess.id_asset_process, assetProcess.status,  " +
+                "                asset.is_increase " +
                 "         from asset asset  " +
                 "                  left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
                 "                  left join process process on assetProcess.id_process = process.id_process  " +
@@ -466,7 +469,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
     }
 
     @Override
-    public Page<FindAllAssetParentToUpdateInventoryDto>
+    public Page<FindAllAssetLotParentToUpdateInventoryDto>
     findALlAssetProcessLotToUpdateInventory(FindAllAssetProcessRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" WITH ROOT_ASSET_CATEGORIES as  " +
@@ -523,7 +526,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "          order by cte.path),  " +
                 "     ROOT_ASSET_PROCESS as (  " +
                 "         select assetParent.id_asset idAsset,assetCategories.id_asset_category idAssetCategory,  " +
-                "                assetParent.salt  " +
+                "                assetParent.salt, assetParent.name  " +
                 "         from asset asset  " +
                 "                  left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
                 "                  left join process process on assetProcess.id_process = process.id_process  " +
@@ -541,7 +544,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
         setParameterFindAllAssetProcessLotToUpdateInventory(query, request);
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
-        ListOrderedMap<Integer, FindAllAssetParentToUpdateInventoryDto> assetMap = new ListOrderedMap<>();
+        ListOrderedMap<Integer, FindAllAssetLotParentToUpdateInventoryDto> assetMap = new ListOrderedMap<>();
         Integer idAssetCategory, idAsset;
         int index = 0;
         if (!CollectionUtils.isEmpty(result)) {
@@ -550,18 +553,18 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 idAsset = obj[9] == null ? null : ValueUtil.getIntegerByObject(obj[9]);
                 if (idAsset != null) {
                     if (!assetMap.containsKey(idAssetCategory)) {
-                        FindAllAssetParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetParentToUpdateInventoryDto(obj);
+                        FindAllAssetLotParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetLotParentToUpdateInventoryDto(obj);
                         assetMap.put(index,idAssetCategory,parentToInventoryDto);
                         ++index;
                     }
                     if (assetMap.containsKey(idAssetCategory)){
                         assetMap.computeIfPresent(idAssetCategory, (k, v) -> {
-                            v.getAssetLeaves().add(new FindAllAssetChildrenToUpdateInventoryDto(obj));
+                            v.getAssetLeaves().add(new FindAllAssetLotChildrenToUpdateInventoryDto(obj));
                             return v;
                         });
                     }
                 } else {
-                    FindAllAssetParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetParentToUpdateInventoryDto(obj);
+                    FindAllAssetLotParentToUpdateInventoryDto parentToInventoryDto = new FindAllAssetLotParentToUpdateInventoryDto(obj);
                     assetMap.put(index,idAssetCategory,parentToInventoryDto);
                     ++index;
                 }
@@ -605,6 +608,39 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<AssetsFluctuatingSituationAssetDto> findAssetsToFluctuatingSituationByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_asset, value, status " +
+                "from asset_process where id_process = :idProcess " +
+                "and asset_process.status in (:statusFluctuationSituation) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        query.setParameter("statusFluctuationSituation", Arrays.asList(
+                Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE,
+                Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE,
+                Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE));
+        List<AssetsFluctuatingSituationAssetDto> fluctuatingSituationAssetDtos = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result) {
+                AssetsFluctuatingSituationAssetDto situationAssetDto = new AssetsFluctuatingSituationAssetDto();
+                situationAssetDto.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
+                situationAssetDto.setValue(ValueUtil.getStringByObject(obj[1]));
+                situationAssetDto.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE)) {
+                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE);
+                } else if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE)) {
+                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
+                } else if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE)) {
+                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE);
+                }
+                fluctuatingSituationAssetDtos.add(situationAssetDto);
+            }
+        }
+        return fluctuatingSituationAssetDtos;
     }
 
     private long countFindAllAssetProcessLotToUpdateInventory(FindAllAssetProcessRequest request) {
@@ -729,7 +765,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
             sb.append(" and de.id_department = :idDepartment ");
         }
         sb.append(" group by assetParent.id_asset, assetCategories.id_asset_category,   " +
-                "                  assetParent.salt   " +
+                "                  assetParent.salt, assetParent.name   " +
                 "     )   " +
                 "select rootAssetCategories.id_asset_category   as idAssetCategory,   " +
                 "       rootAssetCategories.name                as nameAssetCategory,   " +
@@ -741,7 +777,8 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       rootAssetCategories.is_leaf             as isLeaf,   " +
                 "       rootAssetCategories.type_target         as targetType,   " +
                 "       rootAssetProcess.idAsset                as idAsset,   " +
-                "       rootAssetProcess.salt                   as salt   " +
+                "       rootAssetProcess.salt                   as salt,   " +
+                "       rootAssetProcess.name                   as nameAssetParent " +
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories   " +
                 "         left join ROOT_ASSET_PROCESS rootAssetProcess on rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory   " +
                 "order by rootAssetCategories.path ");
@@ -803,7 +840,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "          order by cte.path),  " +
                 "     ROOT_ASSET_PROCESS as (  " +
                 "         select asset.id_asset idAsset, assetCategories.id_asset_category idAssetCategory,  " +
-                "                assetProcess.value, asset.salt, assetProcess.id_asset_process  " +
+                "                assetProcess.value, asset.salt, assetProcess.id_asset_process, assetProcess.status  " +
                 "         from asset asset  " +
                 "                  left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
                 "                  left join process process on assetProcess.id_process = process.id_process  " +
@@ -860,7 +897,9 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       rootAssetProcess.idAsset                as idAsset,  " +
                 "       rootAssetProcess.salt                   as salt,  " +
                 "       rootAssetProcess.value                  as valueAssetProcess,  " +
-                "       rootAssetProcess.id_asset_process       as idAssetProcess " +
+                "       rootAssetProcess.id_asset_process       as idAssetProcess, " +
+                "       rootAssetProcess.status                 as status, " +
+                "       rootAssetProcess.is_increase            as isIncrease " +
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
                 "         left join ROOT_ASSET_PROCESS rootAssetProcess on rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory  " +
                 "order by rootAssetCategories.path ");

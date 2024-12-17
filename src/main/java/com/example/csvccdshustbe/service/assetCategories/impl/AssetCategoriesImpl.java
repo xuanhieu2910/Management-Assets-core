@@ -355,6 +355,8 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             res.setPathImage(pickedDto.getPathImage());
             res.setIdAssetCategory(pickedDto.getIdAssetCategory());
             res.setIdParent(pickedDto.getIdParent());
+            res.setNumberCodePattern(pickedDto.getNumberCodePattern());
+            res.setTypeTarget(pickedDto.getTypeTarget());
             responses.add(res);
         }
         return responses;

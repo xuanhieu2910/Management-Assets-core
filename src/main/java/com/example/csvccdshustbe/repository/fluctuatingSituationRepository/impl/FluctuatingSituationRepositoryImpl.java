@@ -40,7 +40,7 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
                 "    inner join process pr on fs.id_process = pr.id_process " +
                 "    inner join document do on pr.id_process = do.id_process " +
                 "    inner join csvc_user cu on do.id_user_created = cu.id_user " +
-                "    inner join department de on do.id_document = de.id_department " +
+                "    inner join department de on do.id_department = de.id_department " +
                 "where do.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllFluctuationSituation(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -48,7 +48,7 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
         setParameterFindAllFluctuationSituation(query, request);
         List<FindAllFluctuationSituationResponse> responses = new ArrayList<>();
         List<Object[]> result = query.getResultList();
-        if (!CollectionUtils.isEmpty(responses)) {
+        if (!CollectionUtils.isEmpty(result)) {
             for (Object[] obj : result){
                 FindAllFluctuationSituationResponse response = new FindAllFluctuationSituationResponse();
                 response.setIdFluctuatingSituation(ValueUtil.getIntegerByObject(obj[0]));
@@ -90,18 +90,41 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
     }
 
     @Override
-    public StatisticFluctuatingSituation getStatisticFluctuatingSituationNotFinish() {
+    public StatisticFluctuatingSituation getStatisticFluctuatingSituation(Integer idFluctuatingSituation) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select count(0) " +
-                "from fluctuating_situation  " +
-                "where fluctuating_situation.status = :status ");
+        sb.append(" select sum(totalDeclare) as totalDeclare,  " +
+                "       sum(totalIncrease) as totalIncrease,  " +
+                "       sum(totalDecrease) as totalDecrease  " +
+                "from (select count(0) totalDeclare, 0 totalIncrease, 0 totalDecrease  " +
+                "from fluctuating_situation_asset  " +
+                "where fluctuating_situation_asset.id_fluctuating_situation = :idFluctuatingSituation  " +
+                "  and fluctuating_situation_asset.type = :typeDeclare  " +
+                "  and fluctuating_situation_asset.status = :statusNotYetFinish  " +
+                "union all  " +
+                "select 0 totalDeclare, count(0) totalIncrease, 0 totalDecrease  " +
+                "from fluctuating_situation_asset  " +
+                "where fluctuating_situation_asset.id_fluctuating_situation = :idFluctuatingSituation  " +
+                "    and fluctuating_situation_asset.type = :typeIncrease  " +
+                "    and fluctuating_situation_asset.status = :statusNotYetFinish  " +
+                "union all  " +
+                "select 0 totalDeclare, 0 totalIncrease, count(0) totalDecrease  " +
+                "from fluctuating_situation_asset  " +
+                "where fluctuating_situation_asset.id_fluctuating_situation = :idFluctuatingSituation  " +
+                "  and fluctuating_situation_asset.type = :typeDecrease  " +
+                "  and fluctuating_situation_asset.status = :statusNotYetFinish) result ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("status", Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
+        query.setParameter("statusNotYetFinish", Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
+        query.setParameter("idFluctuatingSituation", idFluctuatingSituation);
+        query.setParameter("typeDeclare", Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE);
+        query.setParameter("typeIncrease", Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
+        query.setParameter("typeDecrease", Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE);
         StatisticFluctuatingSituation situation = new StatisticFluctuatingSituation();
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
-                situation.setTotalNotYetFinish(ValueUtil.getIntegerByObject(obj[0]));
+                situation.setTotalDeclare(ValueUtil.getIntegerByObject(obj[0]));
+                situation.setTotalIncrease(ValueUtil.getIntegerByObject(obj[1]));
+                situation.setTotalDecrease(ValueUtil.getIntegerByObject(obj[2]));
             }
         }
         return situation;
@@ -114,7 +137,7 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
                 "    inner join process pr on fs.id_process = pr.id_process " +
                 "    inner join document do on pr.id_process = do.id_process " +
                 "    inner join csvc_user cu on do.id_user_created = cu.id_user " +
-                "    inner join department de on do.id_document = de.id_department " +
+                "    inner join department de on do.id_department = de.id_department " +
                 "where do.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllFluctuationSituation(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());

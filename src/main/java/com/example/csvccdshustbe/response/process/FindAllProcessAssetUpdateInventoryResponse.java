@@ -30,5 +30,6 @@ public class FindAllProcessAssetUpdateInventoryResponse {
     private String timeDocument;
     @JsonProperty("time_inventory")
     private String timeInventory;
-
+    @JsonProperty("id_process")
+    private Integer idProcess;
 }

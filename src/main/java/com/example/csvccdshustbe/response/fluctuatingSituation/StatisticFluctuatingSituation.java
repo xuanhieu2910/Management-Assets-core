@@ -7,5 +7,7 @@ import lombok.Setter;
 @Setter
 public class StatisticFluctuatingSituation {
 
-    private Integer totalNotYetFinish = 0;
+    private Integer totalDeclare = 0;
+    private Integer totalIncrease = 0;
+    private Integer totalDecrease = 0;
 }

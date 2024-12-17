@@ -38,7 +38,8 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "                              assetCategories.visible, assetCategories.time_created, assetCategories.time_modified,        " +
                 "                              assetCategories.path_image,assetCategories.is_pick ,        " +
                 "                              assetCategories.id_asset_category as idParent ," +
-                "                              assetCategories.number_code_pattern" +
+                "                              assetCategories.number_code_pattern, " +
+                "                              assetCategories.type_target " +
                 "                       from asset_categories   assetCategories        " +
                 "                       where assetCategories.parent is null  " +
                 "                       union all            " +
@@ -50,12 +51,14 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "                              assetCategories.time_modified, assetCategories.path_image,        " +
                 "                              assetCategories.is_pick,        " +
                 "                              cte.id_asset_category as idParent  ," +
-                "                              assetCategories.number_code_pattern " +
+                "                              assetCategories.number_code_pattern, " +
+                "                              assetCategories.type_target " +
                 "                       from asset_categories assetCategories  " +
                 "                                INNER JOIN cte_asset_category cte ON assetCategories.parent = cte.id_asset_category  " +
                 "                                    )            " +
                 "                select cte.id_asset_category, cte.name, cte.short_name,  " +
-                "                        cte.code_name, cte.path_image,  cte.idParent  ,cte.number_code_pattern " +
+                "                        cte.code_name, cte.path_image,  cte.idParent  ,cte.number_code_pattern, " +
+                "                        cte.type_target " +
                 "                from cte_asset_category cte  " +
                 "                      where cte.is_pick = :isPicked  " +
                 "                      and cte.visible = :isVisible " +
@@ -74,6 +77,8 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 pickedDto.setCodeName(ValueUtil.getStringByObject(obj[3]));
                 pickedDto.setPathImage(ValueUtil.getStringByObject(obj[4]));
                 pickedDto.setIdParent(ValueUtil.getIntegerByObject(obj[5]));
+                pickedDto.setNumberCodePattern(ValueUtil.getStringByObject(obj[6]));
+                pickedDto.setTypeTarget(ValueUtil.getIntegerByObject(obj[7]));
                 assetCategories.add(pickedDto);
             }
         }

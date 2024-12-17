@@ -47,7 +47,7 @@ public class FluctuatingSituationAssetRepositoryImpl implements FluctuatingSitua
         setParameterFindFluctuatingSituationAsset(query, request);
         PageUtils.buildQuery(pageable, query);
         List<FindAllFluctuatingSituationAssetResponses> responses = new ArrayList<>();
-        List<Object[]> result = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
                 FindAllFluctuatingSituationAssetResponses response = new FindAllFluctuatingSituationAssetResponses();

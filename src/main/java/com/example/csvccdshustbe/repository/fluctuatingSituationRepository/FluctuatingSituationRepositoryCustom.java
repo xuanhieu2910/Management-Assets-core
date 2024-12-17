@@ -11,5 +11,5 @@ public interface FluctuatingSituationRepositoryCustom {
                                                                                   FindAllFluctuatingSituationRequest request);
     void calculatorStatusFluctuatingSituationById(Integer idFluctuatingSituation);
 
-    StatisticFluctuatingSituation getStatisticFluctuatingSituationNotFinish();
+    StatisticFluctuatingSituation getStatisticFluctuatingSituation(Integer idFluctuatingSituation);
 }
