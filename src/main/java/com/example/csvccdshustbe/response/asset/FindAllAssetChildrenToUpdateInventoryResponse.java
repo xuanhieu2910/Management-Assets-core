@@ -13,4 +13,6 @@ public class FindAllAssetChildrenToUpdateInventoryResponse {
     private String salt;
     @JsonProperty("value")
     private String value;
+    @JsonProperty("status")
+    private Integer status;
 }

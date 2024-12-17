@@ -277,6 +277,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         leaf.setIdAsset(assetLeaf.getIdAsset());
         leaf.setSalt(assetLeaf.getSalt());
         leaf.setValue(assetLeaf.getValue());
+        leaf.setStatus(assetLeaf.getStatus());
         return leaf;
     }
 
