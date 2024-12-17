@@ -278,6 +278,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         leaf.setSalt(assetLeaf.getSalt());
         leaf.setValue(assetLeaf.getValue());
         leaf.setStatus(assetLeaf.getStatus());
+        leaf.setIsIncrease(assetLeaf.getIsCrease());
         return leaf;
     }
 
@@ -381,6 +382,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             response.setValue(dto.getValue());
             response.setIdAssetProcess(dto.getIdAssetProcess());
             response.setStatus(dto.getStatusAssetProcess());
+            response.setIsIncrease(dto.getIsIncrease());
             responses.add(response);
         }
         return responses;

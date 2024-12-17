@@ -14,12 +14,14 @@ public class FindAllAssetChildrenToUpdateInventoryDto {
     private String value;
     private Integer idAssetProcess;
     private Integer status;
+    private Integer isCrease;
     public FindAllAssetChildrenToUpdateInventoryDto(Object[] obj){
         this.idAsset = ValueUtil.getIntegerByObject(obj[9]);
         this.salt = ValueUtil.getStringByObject(obj[10]);
         this.value = ValueUtil.getStringByObject(obj[11]);
         this.idAssetProcess = ValueUtil.getIntegerByObject(obj[12]);
         this.status = ValueUtil.getIntegerByObject(obj[13]);
+        this.isCrease = ValueUtil.getIntegerByObject(obj[14]);
     }
 
 }

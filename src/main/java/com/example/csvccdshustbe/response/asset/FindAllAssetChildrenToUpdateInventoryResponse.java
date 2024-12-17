@@ -17,4 +17,6 @@ public class FindAllAssetChildrenToUpdateInventoryResponse {
     private Integer status;
     @JsonProperty("name_asset")
     private String nameAsset;
+    @JsonProperty("is_increase")
+    private Integer isIncrease;
 }

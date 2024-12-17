@@ -42,4 +42,6 @@ public class FindAllAssetProcessResponse {
     private Integer idAssetProcess;
     @JsonProperty("status")
     private Integer status;
+    @JsonProperty("is_increase")
+    private Integer isIncrease;
 }
