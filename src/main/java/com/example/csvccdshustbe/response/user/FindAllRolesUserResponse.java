@@ -16,4 +16,8 @@ public class FindAllRolesUserResponse {
     private String role;
     @JsonProperty("picked")
     private Integer picked;
+    @JsonProperty("id_department")
+    private Integer idDepartment;
+    @JsonProperty("name_department")
+    private String nameDepartment;
 }
