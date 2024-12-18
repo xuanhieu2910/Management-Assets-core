@@ -341,9 +341,9 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public String downLoadFileImportAsset() throws IOException {
-//        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static") + SEPARATOR
-//                + "Sample_Excel_Import_Asset.xlsx";
-        String fileExcel = "D:\\CompanyBk\\Sample_Excel_Import_Asset.xlsx";
+        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static") + SEPARATOR
+                + "Sample_Excel_Import_Asset.xlsx";
+//        String fileExcel = "D:\\CompanyBk\\Sample_Excel_Import_Asset.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
 
         Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory =
@@ -392,20 +392,20 @@ public class FileUploadService implements FilesStorageService {
         createDataMedicineGroup(workbook, dataMedicineGroup);
         createDataGoalsUseGround(workbook, dataGoalsUseGround);
         createDataOriginalOfFormation(workbook, dataOriginalOfFormation);
-//        String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
-//        String folder = root + SEPARATOR + FOLDER_SAMPLE_EXCEL_IMPORT + SEPARATOR + FileUtil.getFolderInfo();
-//        FileUtil.createFolder(folder);
-//        String fileFinal = folder + SEPARATOR + "Sample_Excel_Import_Asset_" + new Date().getTime() + ".xlsx";
-        String fileFinal = "D:\\CompanyBk\\Sample_Excel_Import_Asset_final_5.xlsx";
+        String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
+        String folder = root + SEPARATOR + FOLDER_SAMPLE_EXCEL_IMPORT + SEPARATOR + FileUtil.getFolderInfo();
+        FileUtil.createFolder(folder);
+        String fileFinal = folder + SEPARATOR + "Sample_Excel_Import_Asset_" + new Date().getTime() + ".xlsx";
+//        String fileFinal = "D:\\CompanyBk\\Sample_Excel_Import_Asset_final_5.xlsx";
         log.info("File final:" + fileFinal);
-//        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
-//        String fileReturn = fileFinal.replace(root, PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
-//        log.info("File return: " + fileReturn);
+        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
+        String fileReturn = fileFinal.replace(root, PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
+        log.info("File return: " + fileReturn);
         try (FileOutputStream fileOut = new FileOutputStream(fileFinal)) {
             workbook.write(fileOut);
             workbook.close();
-            return fileFinal;
-//            return fileReturn;
+//            return fileFinal;
+            return fileReturn;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
