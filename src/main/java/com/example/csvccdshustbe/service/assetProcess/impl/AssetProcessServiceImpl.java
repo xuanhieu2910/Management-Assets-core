@@ -224,6 +224,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         asset.setStatusUse(ValueUtil.getIntegerByObject(informationAsset.get("status_use")));
         asset.setYearUse(ValueUtil.getStringByObject(informationAsset.get("year_use")));
         asset.setIdUnit(ValueUtil.getIntegerByObject(informationAsset.get("id_unit")));
+        asset.setSalt(String.valueOf(UUID.randomUUID()));
         return assetService.storeAsset(asset);
     }
 
@@ -278,6 +279,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         leaf.setSalt(assetLeaf.getSalt());
         leaf.setValue(assetLeaf.getValue());
         leaf.setStatus(assetLeaf.getStatus());
+        leaf.setIsIncrease(assetLeaf.getIsCrease());
         return leaf;
     }
 
@@ -314,6 +316,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         FindAllAssetChildrenToUpdateInventoryResponse leaf = new FindAllAssetChildrenToUpdateInventoryResponse();
         leaf.setIdAsset(assetLeaf.getIdAsset());
         leaf.setSalt(assetLeaf.getSalt());
+        leaf.setNameAsset(assetLeaf.getNameAsset());
         return leaf;
     }
 
@@ -379,6 +382,8 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             response.setSalt(dto.getSalt());
             response.setValue(dto.getValue());
             response.setIdAssetProcess(dto.getIdAssetProcess());
+            response.setStatus(dto.getStatusAssetProcess());
+            response.setIsIncrease(dto.getIsIncrease());
             responses.add(response);
         }
         return responses;

@@ -313,7 +313,8 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,      " +
                 "        lo.id_location idLocation, lo.name nameLocation,      " +
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,      " +
-                "        asset.quantity, assetProcess.value, assetProcess.id_asset_process, assetProcess.status  " +
+                "        asset.quantity, assetProcess.value, assetProcess.id_asset_process, assetProcess.status,   " +
+                "        asset.is_increase " +
                 "from asset asset  " +
                 "         left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
                 "         left join process process on assetProcess.id_process = process.id_process  " +
@@ -355,6 +356,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 findAllAssetDto.setValue(ValueUtil.getStringByObject(obj[16]));
                 findAllAssetDto.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[17]));
                 findAllAssetDto.setStatusAssetProcess(ValueUtil.getIntegerByObject(obj[18]));
+                findAllAssetDto.setIsIncrease(ValueUtil.getIntegerByObject(obj[19]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -419,7 +421,8 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "          order by cte.path),  " +
                 "     ROOT_ASSET_PROCESS as (  " +
                 "         select asset.id_asset idAsset, assetCategories.id_asset_category idAssetCategory,  " +
-                "                assetProcess.value, asset.salt, assetProcess.id_asset_process, assetProcess.status  " +
+                "                assetProcess.value, asset.salt, assetProcess.id_asset_process, assetProcess.status,  " +
+                "                asset.is_increase " +
                 "         from asset asset  " +
                 "                  left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
                 "                  left join process process on assetProcess.id_process = process.id_process  " +
@@ -523,7 +526,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "          order by cte.path),  " +
                 "     ROOT_ASSET_PROCESS as (  " +
                 "         select assetParent.id_asset idAsset,assetCategories.id_asset_category idAssetCategory,  " +
-                "                assetParent.salt  " +
+                "                assetParent.salt, assetParent.name  " +
                 "         from asset asset  " +
                 "                  left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset  " +
                 "                  left join process process on assetProcess.id_process = process.id_process  " +
@@ -762,7 +765,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
             sb.append(" and de.id_department = :idDepartment ");
         }
         sb.append(" group by assetParent.id_asset, assetCategories.id_asset_category,   " +
-                "                  assetParent.salt   " +
+                "                  assetParent.salt, assetParent.name   " +
                 "     )   " +
                 "select rootAssetCategories.id_asset_category   as idAssetCategory,   " +
                 "       rootAssetCategories.name                as nameAssetCategory,   " +
@@ -774,7 +777,8 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       rootAssetCategories.is_leaf             as isLeaf,   " +
                 "       rootAssetCategories.type_target         as targetType,   " +
                 "       rootAssetProcess.idAsset                as idAsset,   " +
-                "       rootAssetProcess.salt                   as salt   " +
+                "       rootAssetProcess.salt                   as salt,   " +
+                "       rootAssetProcess.name                   as nameAssetParent " +
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories   " +
                 "         left join ROOT_ASSET_PROCESS rootAssetProcess on rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory   " +
                 "order by rootAssetCategories.path ");
@@ -894,7 +898,8 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       rootAssetProcess.salt                   as salt,  " +
                 "       rootAssetProcess.value                  as valueAssetProcess,  " +
                 "       rootAssetProcess.id_asset_process       as idAssetProcess, " +
-                "       rootAssetProcess.status                 as status " +
+                "       rootAssetProcess.status                 as status, " +
+                "       rootAssetProcess.is_increase            as isIncrease " +
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
                 "         left join ROOT_ASSET_PROCESS rootAssetProcess on rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory  " +
                 "order by rootAssetCategories.path ");
