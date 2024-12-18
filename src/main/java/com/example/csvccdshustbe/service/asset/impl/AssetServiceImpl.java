@@ -2671,9 +2671,7 @@ public class AssetServiceImpl implements AssetService {
         }
 
         String location = (String) ExcelUtil.convertValue(row.getCell(4), CellType.STRING);
-        if (location == null) {
-            errorList.add("Thiếu dữ liệu cho trường Địa điểm sử dụng");
-        }
+
 
         String unit = (String) ExcelUtil.convertValue(row.getCell(5), CellType.STRING);
         if (unit == null) {
@@ -2758,7 +2756,13 @@ public class AssetServiceImpl implements AssetService {
             }
         }
         String yearUse = (String) ExcelUtil.convertValue(row.getCell(12), CellType.STRING);
+        if (yearUse == null) {
+            errorList.add("Thiếu dữ liệu Năm sử dụng");
+        }
         String statusUse = (String) ExcelUtil.convertValue(row.getCell(13), CellType.STRING);
+        if (statusUse == null) {
+            errorList.add("Thiếu dữ liệu tình trạng của tài sản");
+        }
         Double acreage = convertStringToDouble(ExcelUtil.convertValue(row.getCell(121), CellType.STRING));
         if (statusUse != null && statusUse.equals("Còn sử dụng được")) {
             commonData.put("statusUse",Constants.STATUS_USE);
