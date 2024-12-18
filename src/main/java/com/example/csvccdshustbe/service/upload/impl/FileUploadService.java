@@ -417,25 +417,25 @@ public class FileUploadService implements FilesStorageService {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
         request.getIdsDepartmentOriginal().add(Constants.DEFAULT_ASSET_CATEGORY);
-        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static")
-                + SEPARATOR
-                + FileUtil.FOLDER_NAME_REPORT
-                + SEPARATOR
-                + Constants.NAME_REPORTS[36];
-//        String fileExcel = "E:\\csvc\\src\\main\\resources\\static\\reports\\Biểu mẫu 01-TSCĐ cơ quan, tổ chức, đơn vị.xlsx";
+//        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static")
+//                + SEPARATOR
+//                + FileUtil.FOLDER_NAME_REPORT
+//                + SEPARATOR
+//                + Constants.NAME_REPORTS[36];
+        String fileExcel = "E:\\csvc\\src\\main\\resources\\static\\reports\\Biểu mẫu 01-TSCĐ cơ quan, tổ chức, đơn vị.xlsx";
         List<FindAllAssetForInventoryReportDto> assetReport =
                 reportRepository.findInfoAssetForInventoryReportByCodeDocument(request);
         BlueprintInventoryReportDto council = reportRepository.findBlueprintInventoryReportDtoByCodeDocument(request);
         FileInputStream file = new FileInputStream(new File(fileExcel));
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
-        writeDataBlueprintInventoryReport(sheet, council);
-        writeDataAssetInventoryReport(sheet, assetReport, council.getCouncilInventoryReportDtos().size());
+//        writeDataBlueprintInventoryReport(sheet, council);
+        writeDataAssetInventoryReport(sheet, assetReport, 3);//council.getCouncilInventoryReportDtos().size()
         String fileFinal = createFileExportInventoryReport();
-        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
+//        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
         String fileReturn = fileFinal.replace(PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe")
                 , PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
-//        String filePathOutput = "C:\\Users\\ADMIN\\Downloads\\exportExcel\\modified_output4.xlsx";
+        String filePathOutput = "C:\\Users\\ADMIN\\Downloads\\exportExcel\\modified_output4.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
             workbook.close();
@@ -462,7 +462,7 @@ public class FileUploadService implements FilesStorageService {
             rowNeeded = sizeIncrease - 3;
             rowStart = rowStart + rowNeeded;
         }
-        sheet.shiftRows(rowStart , sheet.getPhysicalNumberOfRows(), Math.max(assetReport.size() - 117, 1),  true, true);
+        sheet.shiftRows(rowStart , sheet.getPhysicalNumberOfRows(), Math.max(assetReport.size() - 118, 1),  true, true);
         ObjectMapper objectMapper = new ObjectMapper();
         int index = 0;
         for (FindAllAssetForInventoryReportDto asset : assetReport){
@@ -470,6 +470,8 @@ public class FileUploadService implements FilesStorageService {
                 index++;
                 continue;
             }
+            writeValueCell(sheet, rowStart, 0, ValueUtil.getStringByObject(index), null);
+            index++;
             writeValueCell(sheet, rowStart, 1, asset.getNameAssetCategory() == null ? "" : asset.getNameAssetCategory(), null);
             writeValueCell(sheet, rowStart, 2, asset.getNumberCodePattern() == null ? "" : asset.getNumberCodePattern(), null);
             HashMap<String, Object> dataAsset = objectMapper.readValue(asset.getValue() == null ? "{}" : asset.getValue(), new TypeReference<>() {});
@@ -493,7 +495,7 @@ public class FileUploadService implements FilesStorageService {
                                 ValueUtil.getStringByObject(dataAsset.get("status_use")) == null ||
                                 ValueUtil.getStringByObject(dataAsset.get("status_use")).isEmpty()) ? 16 : 17, "1", null);
             }
-            setStt(sheet, rowStart, asset.getDepth(), Objects.equals(asset.getNumberCodePattern(), "null") || asset.getNumberCodePattern() == null ? "0" : asset.getNumberCodePattern());
+//            setStt(sheet, rowStart, asset.getDepth(), Objects.equals(asset.getNumberCodePattern(), "null") || asset.getNumberCodePattern() == null ? "0" : asset.getNumberCodePattern());
             addBoldBorderToRows(sheet, rowStart, 1, 0, 17, true);
             setTypeRow(sheet, rowStart, asset.getDepth());
             ++rowStart;
