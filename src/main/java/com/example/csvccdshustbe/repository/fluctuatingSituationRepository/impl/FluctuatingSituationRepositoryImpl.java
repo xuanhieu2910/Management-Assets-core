@@ -1,9 +1,11 @@
 package com.example.csvccdshustbe.repository.fluctuatingSituationRepository.impl;
 
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.repository.fluctuatingSituationRepository.FluctuatingSituationRepositoryCustom;
 import com.example.csvccdshustbe.request.fluctuatingSituation.FindAllFluctuatingSituationRequest;
 import com.example.csvccdshustbe.response.fluctuatingSituation.FindAllFluctuationSituationResponse;
 import com.example.csvccdshustbe.response.fluctuatingSituation.StatisticFluctuatingSituation;
+import com.example.csvccdshustbe.response.fluctuatingSituationAsset.StatisticFluctuatingSituationAsset;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -90,7 +93,7 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
     }
 
     @Override
-    public StatisticFluctuatingSituation getStatisticFluctuatingSituation(Integer idFluctuatingSituation) {
+    public StatisticFluctuatingSituationAsset getStatisticFluctuatingSituationAsset(Integer idFluctuatingSituation) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select sum(totalDeclare) as totalDeclare,  " +
                 "       sum(totalIncrease) as totalIncrease,  " +
@@ -118,13 +121,36 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
         query.setParameter("typeDeclare", Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE);
         query.setParameter("typeIncrease", Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
         query.setParameter("typeDecrease", Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE);
-        StatisticFluctuatingSituation situation = new StatisticFluctuatingSituation();
+        StatisticFluctuatingSituationAsset situation = new StatisticFluctuatingSituationAsset();
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
                 situation.setTotalDeclare(ValueUtil.getIntegerByObject(obj[0]));
                 situation.setTotalIncrease(ValueUtil.getIntegerByObject(obj[1]));
                 situation.setTotalDecrease(ValueUtil.getIntegerByObject(obj[2]));
+            }
+        }
+        return situation;
+    }
+
+    @Override
+    public StatisticFluctuatingSituation getStatisticFluctuatingSituation() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) countNoyYetFinished  " +
+                "from fluctuating_situation fs  " +
+                "    inner join process pr on fs.id_process = pr.id_process  " +
+                "    inner join document dc on pr.id_process = dc.id_process  " +
+                "where dc.id_department_original in (:idsDepartmentOriginal)  " +
+                "and fs.status = :statusNotYetFinished ");
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
+        query.setParameter("statusNotYetFinished", Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
+        List<Object[]> result = query.getResultList();
+        StatisticFluctuatingSituation situation = new StatisticFluctuatingSituation();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                situation.setTotalNotYetFinish(ValueUtil.getIntegerByObject(obj[0]));
             }
         }
         return situation;
