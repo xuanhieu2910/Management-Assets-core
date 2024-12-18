@@ -2328,7 +2328,7 @@ public class AssetServiceImpl implements AssetService {
     }
     private List<Map<String, Object>> handleUploadFileAsset(MultipartFile file) {
         List<Map<String, Object>> assetRequests = new ArrayList<>();
-        int constantMaximumRow = 2000;
+        int constantMaximumRow = 2004;
         int indexSheet = 0;
         int indexRowStartToReadData = 3;
         try {
@@ -2681,14 +2681,14 @@ public class AssetServiceImpl implements AssetService {
         }
 
         String documentAttack = (String) ExcelUtil.convertValue(row.getCell(6), CellType.STRING);
-        if (documentAttack == null) {
-            errorList.add("Thiếu dữ liệu Số quyết định trang cấp");
-        }
+//        if (documentAttack == null) {
+//            errorList.add("Thiếu dữ liệu Số quyết định trang cấp");
+//        }
 
         String project = (String) ExcelUtil.convertValue(row.getCell(7), CellType.STRING);
-        if (project == null) {
-            errorList.add("Thiếu dữ liệu Dự án của tài sản");
-        }
+//        if (project == null) {
+//            errorList.add("Thiếu dữ liệu Dự án của tài sản");
+//        }
         String description = (String) ExcelUtil.convertValue(row.getCell(8), CellType.STRING);
         String purpose = (String) ExcelUtil.convertValue(row.getCell(9), CellType.STRING);
         String departmentDefault = (String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING);
@@ -2759,7 +2759,7 @@ public class AssetServiceImpl implements AssetService {
         }
         String yearUse = (String) ExcelUtil.convertValue(row.getCell(12), CellType.STRING);
         String statusUse = (String) ExcelUtil.convertValue(row.getCell(13), CellType.STRING);
-        Double acreage = (Double) ExcelUtil.convertValue(row.getCell(121), CellType.STRING);
+        Double acreage = convertStringToDouble(ExcelUtil.convertValue(row.getCell(121), CellType.STRING));
         if (statusUse != null && statusUse.equals("Còn sử dụng được")) {
             commonData.put("statusUse",Constants.STATUS_USE);
         } else if (statusUse != null && statusUse.equals("Hỏng không sử dụng được")) {
