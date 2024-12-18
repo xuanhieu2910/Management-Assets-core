@@ -283,12 +283,27 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     }
 
     private void switchToAnotherRole(List<UserRole> userRoles, SwitchUserRequest request) {
+        validateSwitchToAnotherRole(userRoles, request);
         for (UserRole userRole: userRoles){
-            if (userRole.getIdRole().equals(request.getIdRoleSwitch())){
+            if (userRole.getIdRole().equals(request.getIdRoleSwitch()) &&
+                    userRole.getIdDepartment().equals(request.getIdDepartment())){
                 userRole.setPicked(Constants.ROLE_USER_PICKED);
             } else {
                 userRole.setPicked(Constants.ROLE_USER_UN_PICKED);
             }
+        }
+    }
+
+    private void validateSwitchToAnotherRole(List<UserRole> userRoles, SwitchUserRequest request) {
+        boolean isCheckExits = false;
+        for (UserRole userRole : userRoles){
+            if (userRole.getIdRole().equals(request.getIdRoleSwitch())
+                    && userRole.getIdDepartment().equals(request.getIdDepartment())){
+                isCheckExits = true;
+            }
+        }
+        if (!isCheckExits) {
+            throw new NotFoundException("Don't exits id role and id department!");
         }
     }
 

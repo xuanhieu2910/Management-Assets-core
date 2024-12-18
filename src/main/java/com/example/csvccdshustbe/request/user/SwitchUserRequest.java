@@ -8,4 +8,5 @@ import lombok.Setter;
 public class SwitchUserRequest {
 
     private Integer idRoleSwitch;
+    private Integer idDepartment;
 }

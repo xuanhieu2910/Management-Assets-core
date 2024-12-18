@@ -24,11 +24,11 @@ public class UserRoleRepositoryImpl implements UserRoleRepositoryCustom {
     @Override
     public List<FindAllRolesUserResponse> findAllRolesUserByCodeUser(String codeUser) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select role.id_role, role.short_name, userRole.picked " +
-                "from csvc_user csvcUser " +
-                "    inner join user_role userRole on csvcUser.id_user = userRole.id_user " +
-                "    inner join role role on userRole.id_role = role.id_role " +
-                "where csvcUser.code_user = :codeUser ");
+        sb.append("select role.id_role, role.short_name, userRole.picked, userRole.id_department  " +
+                "from csvc_user csvcUser  " +
+                "         inner join user_role userRole on csvcUser.id_user = userRole.id_user  " +
+                "         inner join role role on userRole.id_role = role.id_role  " +
+                "where csvcUser.code_user = :codeUser  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("codeUser", codeUser);
         List<Object[]> result = query.getResultList();
@@ -39,6 +39,7 @@ public class UserRoleRepositoryImpl implements UserRoleRepositoryCustom {
                 response.setIdRole(ValueUtil.getIntegerByObject(obj[0]));
                 response.setRole(ValueUtil.getStringByObject(obj[1]));
                 response.setPicked(ValueUtil.getIntegerByObject(obj[2]));
+                response.setIdDepartment(ValueUtil.getIntegerByObject(obj[3]));
                 responses.add(response);
             }
         }
