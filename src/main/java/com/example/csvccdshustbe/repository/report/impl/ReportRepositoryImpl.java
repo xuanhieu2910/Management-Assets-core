@@ -147,126 +147,94 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
 
     public List<FindAllAssetForInventoryReportDto> findInfoAssetForInventoryReportByCodeDocument(FindAllAssetProcessRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" WITH ROOT_ASSET_CATEGORIES AS ( " +
-                "    WITH RECURSIVE cte_asset_categories AS ( " +
-                "        SELECT " +
-                "            assetCategires.id_asset_category, " +
-                "            assetCategires.name, " +
-                "            assetCategires.code_name, " +
-                "            1 AS depth, " +
-                "            CAST(assetCategires.id_asset_category AS NCHAR) AS path, " +
-                "            assetCategires.number_code_pattern, " +
-                "            assetCategires.id_department_original, " +
-                "            assetCategires.type_target, " +
-                "            assetCategires.parent " +
-                "        FROM " +
-                "            asset_categories assetCategires " +
-                "        WHERE " +
-                "            assetCategires.parent IS NULL " +
-                "          AND assetCategires.visible = :visible " +
-                " " +
-                "        UNION ALL " +
-                " " +
-                "        SELECT " +
-                "            assetCategires.id_asset_category, " +
-                "            assetCategires.name, " +
-                "            assetCategires.code_name, " +
-                "            cte.depth + 1 AS depth, " +
-                "            CONCAT_WS('/', cte.path, CAST(assetCategires.id_asset_category AS NCHAR)) AS path, " +
-                "            assetCategires.number_code_pattern, " +
-                "            assetCategires.id_department_original, " +
-                "            assetCategires.type_target, " +
-                "            assetCategires.parent " +
-                "        FROM " +
-                "            asset_categories assetCategires " +
-                "                INNER JOIN " +
-                "            cte_asset_categories cte ON assetCategires.parent = cte.id_asset_category " +
-                "    ) " +
-                "    SELECT " +
-                "        cte.id_asset_category, " +
-                "        cte.name, " +
-                "        cte.code_name, " +
-                "        cte.depth, " +
-                "        cte.path, " +
-                "        cte.number_code_pattern, " +
-                "        GROUP_CONCAT(un.name SEPARATOR '/') AS unitMeasure, " +
-                "        cte.parent, " +
-                "        CASE " +
-                "            WHEN EXISTS ( " +
-                "                SELECT 1 " +
-                "                FROM asset_categories ac " +
-                "                WHERE ac.parent = cte.id_asset_category " +
-                "            ) THEN 0 " +
-                "            ELSE 1 " +
-                "            END AS is_leaf, " +
-                "        cte.type_target " +
-                "    FROM " +
-                "        cte_asset_categories cte " +
-                "            LEFT JOIN ( " +
-                "            SELECT " +
-                "                un.id_asset_category, " +
-                "                un.id_unit, " +
-                "                un.name " +
-                "            FROM " +
-                "                units un " +
-                "            WHERE " +
-                "                    un.is_display = :isDisplay " +
-                "        ) un ON cte.id_asset_category = un.id_asset_category " +
-                "    WHERE " +
-                "            cte.id_department_original IN (:idsDepartmentOriginal) " +
-                "    GROUP BY " +
-                "        cte.id_asset_category, cte.name, cte.code_name, cte.depth, cte.path, cte.number_code_pattern, is_leaf, cte.type_target " +
-                "    ORDER BY " +
-                "        cte.path " +
-                "), " +
-                "     ROOT_ASSET_PROCESS AS ( " +
-                "         SELECT " +
-                "             assetParent.id_asset AS idAsset, " +
-                "             assetCategories.id_asset_category AS idAssetCategory, " +
-                "             assetParent.salt, " +
-                "             assetProcess.value AS value " +
-                "         FROM " +
-                "             asset asset " +
-                "                 LEFT JOIN " +
-                "             asset_process assetProcess ON asset.id_asset = assetProcess.id_asset " +
-                "                 LEFT JOIN " +
-                "             process process ON assetProcess.id_process = process.id_process " +
-                "                 LEFT JOIN " +
-                "             asset_categories assetCategories ON asset.id_asset_category = assetCategories.id_asset_category " +
-                "                 LEFT JOIN " +
-                "             department de ON asset.id_department = de.id_department " +
-                "                 LEFT JOIN " +
-                "             location lo ON asset.id_location = lo.id_location " +
-                "                 LEFT JOIN " +
-                "             document do ON process.id_process = do.id_process " +
-                "                 INNER JOIN " +
-                "             asset assetParent ON asset.parent = assetParent.id_asset " +
-                "         WHERE  " +
-                "                 asset.id_department_origin IN (:idsDepartmentOriginal) " +
-                "           AND do.code = :codeDocument " +
-                "         GROUP BY " +
-                "             assetParent.id_asset, assetCategories.id_asset_category, assetParent.salt, assetProcess.value " +
-                "     ) " +
-                "SELECT " +
-                "    rootAssetCategories.id_asset_category AS idAssetCategory, " +
-                "    rootAssetCategories.name AS nameAssetCategory, " +
-                "    rootAssetCategories.parent AS idParentAssetCategory, " +
-                "    rootAssetCategories.code_name AS codeAssetCategory, " +
-                "    rootAssetCategories.depth AS depth, " +
-                "    rootAssetCategories.path AS path, " +
-                "    rootAssetCategories.number_code_pattern AS numberCodePattern, " +
-                "    rootAssetCategories.is_leaf AS isLeaf, " +
-                "    rootAssetCategories.type_target AS targetType, " +
-                "    rootAssetProcess.idAsset AS idAsset, " +
-                "    rootAssetProcess.salt AS salt, " +
-                "    rootAssetProcess.value AS value " +
-                "FROM " +
-                "    ROOT_ASSET_CATEGORIES rootAssetCategories " +
-                "        LEFT JOIN " +
-                "    ROOT_ASSET_PROCESS rootAssetProcess " +
-                "    ON rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory " +
-                "ORDER BY " +
-                "    rootAssetCategories.path; ");
+        sb.append(" WITH ROOT_ASSET_CATEGORIES AS (WITH RECURSIVE cte_asset_categories AS (SELECT assetCategires.id_asset_category, " +
+                "                                                                              assetCategires.name, " +
+                "                                                                              assetCategires.code_name, " +
+                "                                                                              1                                               AS depth, " +
+                "                                                                              CAST(assetCategires.id_asset_category AS NCHAR) AS path, " +
+                "                                                                              assetCategires.number_code_pattern, " +
+                "                                                                              assetCategires.id_department_original, " +
+                "                                                                              assetCategires.type_target, " +
+                "                                                                              assetCategires.parent " +
+                "                                                                       FROM asset_categories assetCategires " +
+                "                                                                       WHERE assetCategires.parent IS NULL " +
+                "                                                                         AND assetCategires.visible = :visible " +
+                "                                                                       UNION ALL " +
+                "                                                                       SELECT assetCategires.id_asset_category, " +
+                "                                                                              assetCategires.name, " +
+                "                                                                              assetCategires.code_name, " +
+                "                                                                              cte.depth + 1                                              AS depth, " +
+                "                                                                              CONCAT_WS('/', cte.path, " +
+                "                                                                                        CAST(assetCategires.id_asset_category AS NCHAR)) AS path, " +
+                "                                                                              assetCategires.number_code_pattern, " +
+                "                                                                              assetCategires.id_department_original, " +
+                "                                                                              assetCategires.type_target, " +
+                "                                                                              assetCategires.parent " +
+                "                                                                       FROM asset_categories assetCategires " +
+                "                                                                                INNER JOIN " +
+                "                                                                            cte_asset_categories cte " +
+                "                                                                            ON assetCategires.parent = cte.id_asset_category) " +
+                "                               SELECT cte.id_asset_category, " +
+                "                                      cte.name, " +
+                "                                      cte.code_name, " +
+                "                                      cte.depth, " +
+                "                                      cte.path, " +
+                "                                      cte.number_code_pattern, " +
+                "                                      GROUP_CONCAT(un.name SEPARATOR '/') AS unitMeasure, " +
+                "                                      cte.parent, " +
+                "                                      CASE " +
+                "                                          WHEN EXISTS (SELECT 1 " +
+                "                                                       FROM asset_categories ac " +
+                "                                                       WHERE ac.parent = cte.id_asset_category) THEN 0 " +
+                "                                          ELSE 1 " +
+                "                                          END                             AS is_leaf, " +
+                "                                      cte.type_target " +
+                "                               FROM cte_asset_categories cte " +
+                "                                        LEFT JOIN (SELECT un.id_asset_category, " +
+                "                                                          un.id_unit, " +
+                "                                                          un.name " +
+                "                                                   FROM units un " +
+                "                                                   WHERE un.is_display = :isDisplay) un " +
+                "                                                  ON cte.id_asset_category = un.id_asset_category " +
+                "                               WHERE cte.id_department_original IN (:idsDepartmentOriginal) " +
+                "                               GROUP BY cte.id_asset_category, cte.name, cte.code_name, cte.depth, cte.path, " +
+                "                                        cte.number_code_pattern, is_leaf, cte.type_target " +
+                "                               ORDER BY cte.number_code_pattern), " +
+                "     ROOT_ASSET_PROCESS AS (SELECT asset.id_asset                    AS idAsset, " +
+                "                                   assetCategories.id_asset_category AS idAssetCategory, " +
+                "                                   asset.salt, " +
+                "                                   assetProcess.value                AS value " +
+                "                            FROM asset asset " +
+                "                                     INNER JOIN " +
+                "                                 asset_process assetProcess ON asset.id_asset = assetProcess.id_asset " +
+                "                                     LEFT JOIN " +
+                "                                 process process ON assetProcess.id_process = process.id_process " +
+                "                                     LEFT JOIN " +
+                "                                 document do ON process.id_process = do.id_process " +
+                "                                     LEFT JOIN " +
+                "                                 asset_categories assetCategories " +
+                "                                 ON asset.id_asset_category = assetCategories.id_asset_category " +
+                "                                     LEFT JOIN " +
+                "                                 department de ON asset.id_department = de.id_department " +
+                "                            WHERE asset.id_department_origin IN (:idsDepartmentOriginal) " +
+                "                              AND do.code = :codeDocument ) " +
+                "SELECT rootAssetCategories.id_asset_category   AS idAssetCategory, " +
+                "       rootAssetCategories.name                AS nameAssetCategory, " +
+                "       rootAssetCategories.parent              AS idParentAssetCategory, " +
+                "       rootAssetCategories.code_name           AS codeAssetCategory, " +
+                "       rootAssetCategories.depth               AS depth, " +
+                "       rootAssetCategories.path                AS path, " +
+                "       rootAssetCategories.number_code_pattern AS numberCodePattern, " +
+                "       rootAssetCategories.is_leaf             AS isLeaf, " +
+                "       rootAssetCategories.type_target         AS targetType, " +
+                "       rootAssetProcess.idAsset                AS idAsset, " +
+                "       rootAssetProcess.salt                   AS salt, " +
+                "       rootAssetProcess.value                  AS value " +
+                "FROM ROOT_ASSET_CATEGORIES rootAssetCategories " +
+                "         LEFT JOIN " +
+                "     ROOT_ASSET_PROCESS rootAssetProcess " +
+                "     ON rootAssetCategories.id_asset_category = rootAssetProcess.idAssetCategory " +
+                "ORDER BY rootAssetCategories.number_code_pattern ");
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindInfoAssetForInventoryReportByCodeDocument(query, request);
         List<FindAllAssetForInventoryReportDto> responses = new ArrayList<>();
