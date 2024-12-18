@@ -417,7 +417,7 @@ public class FileUploadService implements FilesStorageService {
                 + FileUtil.FOLDER_NAME_REPORT
                 + SEPARATOR
                 + Constants.NAME_REPORTS[36];
-//        String fileExcel = "C:\\Users\\ADMIN\\Downloads\\1_01-tscd-co-quan-to-chuc-don-vi-1.8.xlsx";
+//        String fileExcel = "E:\\csvc\\src\\main\\resources\\static\\reports\\Biểu mẫu 01-TSCĐ cơ quan, tổ chức, đơn vị.xlsx";
         List<FindAllAssetForInventoryReportDto> assetReport =
                 reportRepository.findInfoAssetForInventoryReportByCodeDocument(request);
         BlueprintInventoryReportDto council = reportRepository.findBlueprintInventoryReportDtoByCodeDocument(request);
@@ -457,25 +457,30 @@ public class FileUploadService implements FilesStorageService {
             rowNeeded = sizeIncrease - 3;
             rowStart = rowStart + rowNeeded;
         }
-        sheet.shiftRows(rowStart , sheet.getPhysicalNumberOfRows(), assetReport.size() - 117,  true, true);
+        sheet.shiftRows(rowStart , sheet.getPhysicalNumberOfRows(), Math.max(assetReport.size() - 117, 1),  true, true);
         ObjectMapper objectMapper = new ObjectMapper();
+        int index = 0;
         for (FindAllAssetForInventoryReportDto asset : assetReport){
+            if (index == 0) {
+                index++;
+                continue;
+            }
             writeValueCell(sheet, rowStart, 1, asset.getNameAssetCategory() == null ? "" : asset.getNameAssetCategory(), null);
             writeValueCell(sheet, rowStart, 2, asset.getNumberCodePattern() == null ? "" : asset.getNumberCodePattern(), null);
-                HashMap<String, Object> dataAsset = objectMapper.readValue(asset.getValue() == null ? "{}" : asset.getValue(), new TypeReference<>() {});
-                writeValueCell(sheet, rowStart, 3, ValueUtil.getStringByObject(dataAsset.get("year_use")), null);
-                writeValueCell(sheet, rowStart, 4, ValueUtil.getStringByObject(dataAsset.get("unit")), null);
-                writeValueCell(sheet, rowStart, 5, ValueUtil.getStringByObject(dataAsset.get("quantity")), null);
-                writeValueCell(sheet, rowStart, 6, ValueUtil.getStringByObject(dataAsset.get("quantity_inventory")), null);
-                writeValueCell(sheet, rowStart, 7, ValueUtil.getStringByObject(dataAsset.get("quantity_difference")), null);
-                writeValueCell(sheet, rowStart, 8, Objects.equals(ValueUtil.getStringByObject(dataAsset.get("type_target")), "3") ? "m2" : " ", null);
-                writeValueCell(sheet, rowStart, 9, Objects.equals(ValueUtil.getStringByObject(dataAsset.get("acreage")), "") ? "" : ValueUtil.getStringByObject(dataAsset.get("acreage")),null);
-                writeValueCell(sheet, rowStart, 10, ValueUtil.getStringByObject(dataAsset.get("acreage_inventory")), null);
-                writeValueCell(sheet, rowStart, 11, ValueUtil.getStringByObject(dataAsset.get("acreage_difference")), null);
-                writeValueCell(sheet, rowStart, 12, ValueUtil.getStringByObject(dataAsset.get("original_of_formation")), null);
-                writeValueCell(sheet, rowStart, 13, ValueUtil.getStringByObject(dataAsset.get("rest_value")), null);
-                writeValueCell(sheet, rowStart, 14, ValueUtil.getStringByObject(dataAsset.get("recorded_accounting")), null);
-                if(asset.getValue() != null){
+            HashMap<String, Object> dataAsset = objectMapper.readValue(asset.getValue() == null ? "{}" : asset.getValue(), new TypeReference<>() {});
+            writeValueCell(sheet, rowStart, 3, ValueUtil.getStringByObject(dataAsset.get("year_use")), null);
+            writeValueCell(sheet, rowStart, 4, ValueUtil.getStringByObject(dataAsset.get("unit")), null);
+            writeValueCell(sheet, rowStart, 5, ValueUtil.getStringByObject(dataAsset.get("quantity")), null);
+            writeValueCell(sheet, rowStart, 6, ValueUtil.getStringByObject(dataAsset.get("quantity_inventory")), null);
+            writeValueCell(sheet, rowStart, 7, ValueUtil.getStringByObject(dataAsset.get("quantity_difference")), null);
+            writeValueCell(sheet, rowStart, 8, Objects.equals(ValueUtil.getStringByObject(dataAsset.get("type_target")), "3") ? "m2" : " ", null);
+            writeValueCell(sheet, rowStart, 9, Objects.equals(ValueUtil.getStringByObject(dataAsset.get("acreage")), "") ? "" : ValueUtil.getStringByObject(dataAsset.get("acreage")),null);
+            writeValueCell(sheet, rowStart, 10,Objects.equals(ValueUtil.getStringByObject(dataAsset.get("acreage_inventory")), "") ? "" : ValueUtil.getStringByObject(dataAsset.get("acreage_inventory")), null);
+            writeValueCell(sheet, rowStart, 11, ValueUtil.getStringByObject(dataAsset.get("acreage_difference")), null);
+            writeValueCell(sheet, rowStart, 12, ValueUtil.getStringByObject(dataAsset.get("original_of_formation")), null);
+            writeValueCell(sheet, rowStart, 13, ValueUtil.getStringByObject(dataAsset.get("rest_value")), null);
+            writeValueCell(sheet, rowStart, 14, ValueUtil.getStringByObject(dataAsset.get("recorded_accounting")), null);
+            if(asset.getValue() != null){
                 writeValueCell(sheet, rowStart, (Objects.equals(ValueUtil.getStringByObject(dataAsset.get("is_increase")), "1") ||
                         ValueUtil.getStringByObject(dataAsset.get("is_increase")) == null ||
                         ValueUtil.getStringByObject(dataAsset.get("is_increase")).isEmpty()) ? 14 : 15, "1", null);
@@ -499,6 +504,8 @@ public class FileUploadService implements FilesStorageService {
 
         CellStyle styleBC = workbook.createCellStyle();
         Font fontBC = workbook.createFont();
+        fontBC.setFontName("Times New Roman");
+        fontBC.setFontHeightInPoints((short) 13);
         styleBC.setVerticalAlignment(VerticalAlignment.CENTER);
         styleBC.setAlignment(HorizontalAlignment.LEFT);
         styleBC.setBorderTop(BorderStyle.THIN);
@@ -552,7 +559,6 @@ public class FileUploadService implements FilesStorageService {
     }
 
     private String convertToHierarchy(String input) {
-        // Bỏ các số 0 ở đầu
         if (input == null || input.length() < 3) {
             return "";
         }
@@ -560,7 +566,6 @@ public class FileUploadService implements FilesStorageService {
         if (input.length() >= 3) {
             result.append(input.charAt(2));
         }
-
         for (int i = 3; i < input.length(); i += 2) {
             int end = Math.min(i + 2, input.length());
             String group = input.substring(i, end);
@@ -670,9 +675,7 @@ public class FileUploadService implements FilesStorageService {
     }
 
     private void setInformationDepartmentInventoryReport(Sheet sheet, BlueprintInventoryReportDto council) {
-        writeValueCell(sheet, 1, 1, "Tên đơn vị kiểm kê: " + (council.getNameDepartment() != null ? council.getNameDepartment() : "...") + "(*)", true);
-        formatCell(sheet, 1,1, true);
-        writeValueCell(sheet,2,1, "Mã đơn vị kiểm kê:" +(council.getCodeDepartment() != null ? council.getCodeDepartment():"...") +" (**)",true);
+        writeValueCell(sheet, 2, 1, "Tên đơn vị kiểm kê: " + (council.getNameDepartment() != null ? council.getNameDepartment() : "...") + "(*)", true);
         formatCell(sheet, 2,1, true);
         writeValueCell(sheet, 13, 0, "Đã tiến hành kiểm kê tài sản công là tài sản cố định tại cơ quan, tổ chức, đơn vị do "
                 + (council.getNameDepartment() != null ? council.getNameDepartment() : "...") + "(*)  quản lý/tạm quản lý, kết quả như sau:", false);
