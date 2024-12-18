@@ -42,10 +42,21 @@ public class FluctuatingSituationController {
     }
 
 
-    @GetMapping("/statistic-fluctuating-situation")
-    public ResponseEntity<?> getStatisticFluctuatingSituation(@RequestParam("id") Integer idFluctuatingSituation){
+    @GetMapping("/statistic-fluctuating-situation-asset")
+    public ResponseEntity<?> getStatisticFluctuatingSituationAsset(@RequestParam("id") Integer idFluctuatingSituation){
         try {
-            return ApiResponseDto.createdWithState(fluctuatingSituationService.getStatisticFluctuatingSituation(idFluctuatingSituation),
+            return ApiResponseDto.createdWithState(
+                    fluctuatingSituationService.getStatisticFluctuatingSituationAsset(idFluctuatingSituation),
+                    "Get statistic fluctuating situation", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/statistic-fluctuating-situation")
+    public ResponseEntity<?> getStatisticFluctuatingSituation(){
+        try {
+            return ApiResponseDto.createdWithState(fluctuatingSituationService.getStatisticFluctuatingSituation(),
                     "Get statistic fluctuating situation", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
