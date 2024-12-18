@@ -342,8 +342,8 @@ public class FileUploadService implements FilesStorageService {
     @Override
     public String downLoadFileImportAsset() throws IOException {
         String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static") + SEPARATOR
-                + "Sample_Excel_Import_Asset.xlsx";
-//        String fileExcel = "D:\\CompanyBk\\Sample_Excel_Import_Asset.xlsx";
+                + "Sample_Excel_Import_Asset_root.xlsx";
+//        String fileExcel = "D:\\CompanyBk\\Sample_Excel_Import_Asset_root.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
 
         Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory =
