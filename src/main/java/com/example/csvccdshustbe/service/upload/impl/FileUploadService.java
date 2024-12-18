@@ -511,6 +511,7 @@ public class FileUploadService implements FilesStorageService {
         Font fontBC = workbook.createFont();
         fontBC.setFontName("Times New Roman");
         fontBC.setFontHeightInPoints((short) 13);
+        styleBC.setWrapText(true);
         styleBC.setVerticalAlignment(VerticalAlignment.CENTER);
         styleBC.setAlignment(HorizontalAlignment.LEFT);
         styleBC.setBorderTop(BorderStyle.THIN);
