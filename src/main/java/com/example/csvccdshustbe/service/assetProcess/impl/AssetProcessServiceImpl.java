@@ -224,6 +224,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         asset.setStatusUse(ValueUtil.getIntegerByObject(informationAsset.get("status_use")));
         asset.setYearUse(ValueUtil.getStringByObject(informationAsset.get("year_use")));
         asset.setIdUnit(ValueUtil.getIntegerByObject(informationAsset.get("id_unit")));
+        asset.setSalt(String.valueOf(UUID.randomUUID()));
         return assetService.storeAsset(asset);
     }
 
