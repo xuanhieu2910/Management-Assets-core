@@ -22,6 +22,7 @@ import com.example.csvccdshustbe.dto.unit.FindAllUnitsDto;
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.dto.wards.WardsDto;
 import com.example.csvccdshustbe.entity.CountryProducer;
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
@@ -62,6 +63,7 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -412,6 +414,9 @@ public class FileUploadService implements FilesStorageService {
 
     @Override
     public String downloadInventoryReportByCodeDocument(FindAllAssetProcessRequest request) throws IOException {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        request.getIdsDepartmentOriginal().add(Constants.DEFAULT_ASSET_CATEGORY);
         String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static")
                 + SEPARATOR
                 + FileUtil.FOLDER_NAME_REPORT
