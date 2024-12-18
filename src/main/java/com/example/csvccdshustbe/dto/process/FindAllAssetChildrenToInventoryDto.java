@@ -36,6 +36,7 @@ public class FindAllAssetChildrenToInventoryDto {
     private String yearUse;
     private String unit;
     private Double acreage;
+    private Integer typeTarget;
 
     public FindAllAssetChildrenToInventoryDto(Object[] obj){
         this.idAsset = ValueUtil.getIntegerByObject(obj[7]);
@@ -56,6 +57,7 @@ public class FindAllAssetChildrenToInventoryDto {
         this.yearUse = ValueUtil.getStringByObject(obj[23]);
         this.unit = ValueUtil.getStringByObject(obj[26]);
         this.acreage = ValueUtil.getDoubleByObject(obj[27]);
+        this.typeTarget = ValueUtil.getIntegerByObject(obj[25]);
     }
 
 }
