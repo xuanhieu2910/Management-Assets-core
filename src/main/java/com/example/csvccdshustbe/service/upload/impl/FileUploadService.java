@@ -450,7 +450,7 @@ public class FileUploadService implements FilesStorageService {
         String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
         String folder = root + SEPARATOR + FileUtil.FOLDER_NAME_REPORT + SEPARATOR + FileUtil.getFolderInfo();
         FileUtil.createFolder(folder);
-        return folder + SEPARATOR + "Inventory_Report_" + new Date().getTime() + ExcelUtil.FILE_EXCEL[1];
+        return folder + SEPARATOR + "Inventory_Report_" + new Date().getTime() + "." + ExcelUtil.FILE_EXCEL[1];
     }
 
     private void writeDataAssetInventoryReport(Sheet sheet,
