@@ -464,7 +464,7 @@ public class Constants {
     "34_C50 - HD_Bien ban giao nhan TSCD.xlsx",
     "35_C51HD_Bien ban thanh ly TSCD.xlsx",
     "36_C52 -HD_Bien ban danh gia lai TSCD.xlsx",
-    "37_C53 - HD_Bien ban kiem ke TSCD.xlsx",
+    "Biểu mẫu 01-TSCĐ cơ quan, tổ chức, đơn vị.xlsx",
     "38_C54 - HD_Bien ban giao nhan TSCD sua chua lon hoan thanh.xlsx",
     "39_C55a-HD_Bang tinh hao mon TSCD.xlsx",
     "40_C55b - HD_Bang tinh va phan bo khau hao TSCD.xlsx"};
