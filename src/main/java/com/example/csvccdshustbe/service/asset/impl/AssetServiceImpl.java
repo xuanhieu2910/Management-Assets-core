@@ -1634,7 +1634,7 @@ public class AssetServiceImpl implements AssetService {
         assetInstance.setTimeCreated(dateNow);
         assetInstance.setTimeModified(dateNow);
         assetInstance.setValue(assetRequestsJson);
-        assetInstance.setError(assetErrorRequestsJson);
+        assetInstance.setError(ObjectUtils.isEmpty(assetErrorRequestsJson) ? null : assetErrorRequestsJson);
         assetInstanceRepository.save(assetInstance);
     }
 
