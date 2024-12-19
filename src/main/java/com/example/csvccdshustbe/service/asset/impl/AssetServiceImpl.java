@@ -1193,16 +1193,16 @@ public class AssetServiceImpl implements AssetService {
         Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_COMMON);
         Integer idDepartment = ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment"));
         departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
-        Integer idLocation = ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation"));
-        locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
+//        Integer idLocation = ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation"));
+//        locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
         Integer idAssetCategory = ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory"));
         assetCategoriesService.findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, Constants.ASSET_CATEGORY_IS_VISIBLE);
         Integer idUnit = ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit"));
         unitsService.findUnitsByIdUnitAndStatus(idUnit, Constants.UNITS_IS_ACTIVE);
-        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
-        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
-        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
-        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
+//        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
+//        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
+//        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
+//        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
     }
 
     private void validateDataCommonCreateAssetLot(Map<String, Object> createAssetRequest) {
@@ -1215,26 +1215,26 @@ public class AssetServiceImpl implements AssetService {
         assetCategoriesService.findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, Constants.ASSET_CATEGORY_IS_VISIBLE);
         Integer idUnit = ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit"));
         unitsService.findUnitsByIdUnitAndStatus(idUnit, Constants.UNITS_IS_ACTIVE);
-        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
-        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
-        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
-        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
+//        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
+//        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
+//        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
+//        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
     }
 
     private void validateDataCommonUpdateAsset(Map<String, Object> createAssetRequest) {
         Map<String,Object> commonDataAsset = (Map<String, Object>) createAssetRequest.get(Constants.KEY_COMMON);
         Integer idDepartment = ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment"));
         departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
-        Integer idLocation = ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation"));
-        locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
+//        Integer idLocation = ValueUtil.getIntegerByObject(commonDataAsset.get("idLocation"));
+//        locationService.findLocationByIdLocationAndIdDepartmentAndVisible(idLocation, idDepartment, Constants.LOCATION_ACTIVE_STATUS);
         Integer idAssetCategory = ValueUtil.getIntegerByObject(commonDataAsset.get("idAssetCategory"));
         assetCategoriesService.findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, Constants.ASSET_CATEGORY_IS_VISIBLE);
         Integer idUnit = ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit"));
         unitsService.findUnitsByIdUnitAndStatus(idUnit, Constants.UNITS_IS_ACTIVE);
-        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
-        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
-        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
-        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
+//        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
+//        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
+//        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
+//        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
     }
 
     private void validateDataCommonUpdateAssetLot(Map<String, Object> createAssetRequest) {
@@ -1247,10 +1247,10 @@ public class AssetServiceImpl implements AssetService {
         assetCategoriesService.findAssetCategoriesByVisibleAndIdAssetCategory(idAssetCategory, Constants.ASSET_CATEGORY_IS_VISIBLE);
         Integer idUnit = ValueUtil.getIntegerByObject(commonDataAsset.get("idUnit"));
         unitsService.findUnitsByIdUnitAndStatus(idUnit, Constants.UNITS_IS_ACTIVE);
-        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
-        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
-        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
-        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
+//        Integer idDocumentsAttack = ValueUtil.getIntegerByObject(commonDataAsset.get("idDocumentAttack"));
+//        documentAttackService.findDocumentAttackByIdDocumentAndStatus(idDocumentsAttack, Constants.DOCUMENT_ATTACK_ACTIVE_STATUS);
+//        Integer idProject = ValueUtil.getIntegerByObject(commonDataAsset.get("idProjects"));
+//        projectsService.findProjectsByIdProjectAndStatus(idProject, Constants.PROJECTS_IS_VISIBLE);
     }
 
     private void storeNewAsset(Map<String, Object> createAssetRequest) throws ValidateFiledException {
