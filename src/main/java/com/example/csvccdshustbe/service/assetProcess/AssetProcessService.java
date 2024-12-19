@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.service.assetProcess;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.dto.fluctuatingSituationAsset.AssetsFluctuatingSituationAssetDto;
 import com.example.csvccdshustbe.entity.AssetProcess;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.assetProcess.*;
 import com.example.csvccdshustbe.response.asset.FindAllAssetResponseUpdateInventory;
 import com.example.csvccdshustbe.response.assetProcess.FindAllAssetProcessResponse;
@@ -24,8 +25,8 @@ public interface AssetProcessService {
     Page<FindAllAssetProcessResponse> findAllAssetChildrenProcess(FindAllAssetProcessRequest request);
     Page<FindAllAssetResponseUpdateInventory> findAllAssetUpdateInventoryProcess(FindAllAssetProcessRequest request);
     Page<FindAllAssetResponseUpdateInventory> findAllAssetProcessLotUpdateInventoryProcess(FindAllAssetProcessRequest request);
-    List<AssetProcess> createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request) throws JsonProcessingException;
-    AssetProcess updateAssetProcessInventory(UpdateAssetProcessRequest request) throws JsonProcessingException;
+    List<AssetProcess> createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request) throws JsonProcessingException, ValidateFiledException;
+    AssetProcess updateAssetProcessInventory(UpdateAssetProcessRequest request) throws JsonProcessingException, ValidateFiledException, IllegalAccessException;
     AssetProcess findAssetProcessByIdAssetProcess(Integer idAssetProcess);
     List<AssetsFluctuatingSituationAssetDto> findAssetsToFluctuatingSituationByIdProcess(Integer idProcess);
 }
