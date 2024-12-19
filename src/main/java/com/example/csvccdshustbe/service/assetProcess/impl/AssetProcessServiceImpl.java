@@ -23,8 +23,11 @@ import com.example.csvccdshustbe.response.assetProcess.FindAllAssetProcessRespon
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetDepreciation.AssetDepreciationService;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
+import com.example.csvccdshustbe.service.declare.DeclareService;
 import com.example.csvccdshustbe.service.declare.DeclareServiceFactory;
+import com.example.csvccdshustbe.service.modules.ModulesService;
 import com.example.csvccdshustbe.service.modules.ModulesServiceFactory;
+import com.example.csvccdshustbe.service.original.OriginalService;
 import com.example.csvccdshustbe.service.original.OriginalServiceFactory;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
@@ -76,6 +79,12 @@ public class AssetProcessServiceImpl implements AssetProcessService {
     DeclareServiceFactory declareServiceFactory;
     @Autowired
     OriginalServiceFactory originalServiceFactory;
+    @Autowired
+    ModulesService modulesService;
+    @Autowired
+    OriginalService originalService;
+    @Autowired
+    DeclareService declareService;
     @Override
     public List<AssetProcess> saveListAssetProcess(List<AssetProcess> assetProcessList) {
         return assetProcessRepository.saveAll(assetProcessList);
@@ -446,6 +455,8 @@ public class AssetProcessServiceImpl implements AssetProcessService {
             moduleDataAsset.put("idAsset", asset.getIdAsset());
             ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
                     proxyInitModuleDataAsset(ValueUtil.getStringByObject(moduleDataAsset.get(Constants.KEY_TYPE_MODULE)));
+            Modules modules = modulesService.findModulesByTypeModules(ValueUtil.getStringByObject(moduleDataAsset.get(Constants.KEY_TYPE_MODULE)));
+            moduleDataAsset.put("idModule", modules.getIdModule());
             IModules iModules = moduleFactory.createModule(moduleDataAsset);
             modulesServiceFactory.save(iModules, moduleDataAsset);
 
@@ -456,6 +467,9 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         OriginalFactory originalFactory = (OriginalFactory) ProxyInitDataAssetUtil.
                 proxyInitOriginalDataAsset(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)));
         IOriginal iOriginal = originalFactory.createOriginal(originalDataAsset);
+        String keyTypeOriginal = ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET));
+        Original original = originalService.findOriginalByHardCodeAndStatus(keyTypeOriginal, Constants.ORIGINALS_VISIBLE);
+        originalDataAsset.put("idOriginal", original.getIdOriginal());
         originalServiceFactory.save(iOriginal, originalDataAsset);
     }
     private void storeDeclareFluctuatingSituationAsset(AssetProcessNotDeclareInventoryRequest assetProcess,Asset asset) throws JsonProcessingException, ValidateFiledException {
@@ -464,6 +478,9 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         DeclareFactory declareFactory = (DeclareFactory) ProxyInitDataAssetUtil.
                 proxyInitDeclareDataAsset(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)));
         IDeclare iDeclare = declareFactory.createDeclare(declareDataAsset);
+        String typeDeclare = ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE));
+        Declare declare = declareService.findDeclareByHardCodeAndVisible(typeDeclare, Constants.DECLARE_VISIBLE);
+        declareDataAsset.put("idDeclare", declare.getIdDeclare());
         declareServiceFactory.save(iDeclare,declareDataAsset);
     }
 
