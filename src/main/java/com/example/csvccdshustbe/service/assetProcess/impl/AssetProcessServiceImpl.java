@@ -179,6 +179,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
         asset.setQuantity(Constants.QUANTITY_DEFAULT);
         asset.setTimeModified(String.valueOf(new Date().getTime()));
+        asset.setIdInstance(ValueUtil.getIntegerByObject(informationAsset.get("id_instance")));
         asset.setIdUserModified(csvcUser.getIdUser());
         asset.setStatusUse(ValueUtil.getIntegerByObject(informationAsset.get("status_use")));
         asset.setYearUse(ValueUtil.getStringByObject(informationAsset.get("year_use")));
