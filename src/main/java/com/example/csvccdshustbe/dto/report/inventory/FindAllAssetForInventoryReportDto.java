@@ -21,5 +21,10 @@ public class FindAllAssetForInventoryReportDto {
     private String numberCodePattern;
     private Integer isLeaf;
     private Integer typeTarget;
+    private Integer idAsset;
+    private String salt;
     private String value;
+    private Integer idAssetProcess;
+    private Integer status;
+    private Integer isIncrease;
 }
