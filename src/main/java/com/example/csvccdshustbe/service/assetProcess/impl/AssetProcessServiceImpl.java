@@ -4,11 +4,16 @@ import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.dto.fluctuatingSituationAsset.AssetsFluctuatingSituationAssetDto;
 import com.example.csvccdshustbe.dto.process.*;
-import com.example.csvccdshustbe.entity.Asset;
-import com.example.csvccdshustbe.entity.AssetProcess;
-import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.entity.Process;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.factory.declare.DeclareFactory;
+import com.example.csvccdshustbe.factory.module.ModuleFactory;
+import com.example.csvccdshustbe.factory.original.OriginalFactory;
 import com.example.csvccdshustbe.repository.assetProcess.AssetProcessRepository;
+import com.example.csvccdshustbe.repository.declare.DeclareRepository;
+import com.example.csvccdshustbe.repository.modules.ModulesRepository;
+import com.example.csvccdshustbe.repository.original.OriginalRepository;
 import com.example.csvccdshustbe.request.assetProcess.*;
 import com.example.csvccdshustbe.response.asset.FindAllAssetChildrenToInventoryResponse;
 import com.example.csvccdshustbe.response.asset.FindAllAssetChildrenToUpdateInventoryResponse;
@@ -16,12 +21,17 @@ import com.example.csvccdshustbe.response.asset.FindAllAssetResponseToInventory;
 import com.example.csvccdshustbe.response.asset.FindAllAssetResponseUpdateInventory;
 import com.example.csvccdshustbe.response.assetProcess.FindAllAssetProcessResponse;
 import com.example.csvccdshustbe.service.asset.AssetService;
+import com.example.csvccdshustbe.service.assetDepreciation.AssetDepreciationService;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
+import com.example.csvccdshustbe.service.declare.DeclareService;
+import com.example.csvccdshustbe.service.declare.DeclareServiceFactory;
+import com.example.csvccdshustbe.service.modules.ModulesService;
+import com.example.csvccdshustbe.service.modules.ModulesServiceFactory;
+import com.example.csvccdshustbe.service.original.OriginalService;
+import com.example.csvccdshustbe.service.original.OriginalServiceFactory;
 import com.example.csvccdshustbe.service.process.ProcessService;
-import com.example.csvccdshustbe.utility.Constants;
-import com.example.csvccdshustbe.utility.DateUtil;
-import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.ValueUtil;
+import com.example.csvccdshustbe.service.user.CsvcUserService;
+import com.example.csvccdshustbe.utility.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +44,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
@@ -52,8 +63,28 @@ public class AssetProcessServiceImpl implements AssetProcessService {
     @Lazy
     @Autowired
     AssetService assetService;
-
-
+    @Autowired
+    AssetDepreciationService assetDepreciationService;
+    @Autowired
+    DeclareRepository declareRepository;
+    @Autowired
+    OriginalRepository originalRepository;
+    @Autowired
+    ModulesRepository modulesRepository;
+    @Autowired
+    ModulesServiceFactory modulesServiceFactory;
+    @Autowired
+    CsvcUserService csvcUserService;
+    @Autowired
+    DeclareServiceFactory declareServiceFactory;
+    @Autowired
+    OriginalServiceFactory originalServiceFactory;
+    @Autowired
+    ModulesService modulesService;
+    @Autowired
+    OriginalService originalService;
+    @Autowired
+    DeclareService declareService;
     @Override
     public List<AssetProcess> saveListAssetProcess(List<AssetProcess> assetProcessList) {
         return assetProcessRepository.saveAll(assetProcessList);
@@ -153,39 +184,45 @@ public class AssetProcessServiceImpl implements AssetProcessService {
 
     @Transactional
     @Override
-    public List<AssetProcess> createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request) throws JsonProcessingException {
+    public List<AssetProcess> createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request) throws JsonProcessingException, ValidateFiledException {
         Process process = processService.findProcessByIdProcess(request.getIdProcess());
         List<AssetProcess> assetProcessList = new ArrayList<>();
         for (AssetProcessNotDeclareInventoryRequest assetProcess: request.getListAssetDeclare()){
             Asset asset = constructionAssetNotDeclareWhenInventory(assetProcess);
+            storeDepreciationFluctuatingSituationAsset(asset);
+            storeModuleFluctuatingSituationAsset(assetProcess,asset);
+            storeOriginalFluctuatingSituationAsset(assetProcess,asset);
+            storeDeclareFluctuatingSituationAsset(assetProcess,asset);
             assetProcessList.add(constructionAssetProcessDeclareWhenInventory(process,asset,assetProcess));
         }
         return assetProcessRepository.saveAll(assetProcessList);
     }
 
     @Override
-    public AssetProcess updateAssetProcessInventory(UpdateAssetProcessRequest request) throws JsonProcessingException {
+    public AssetProcess updateAssetProcessInventory(UpdateAssetProcessRequest request) throws JsonProcessingException, ValidateFiledException, IllegalAccessException {
         AssetProcess assetProcess = findAssetProcessByIdAssetProcess(request.getIdAssetProcess());
-        updateInformationAsset(request.getValue(), assetProcess.getIdAsset());
+//        updateInformationAsset(request.getValue(), assetProcess.getIdAsset());
+        HashMap<String, Object> informationAsset = (new ObjectMapper()).readValue(request.getValue(), new TypeReference<>() {});
+        assetService.updateAsset(informationAsset);
         return updateInformationAssetProcess(request, assetProcess);
     }
 
-    private void updateInformationAsset(String value, Integer idAsset) throws JsonProcessingException {
-        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Asset asset = assetService.findAssetByIdAsset(idAsset);
-        HashMap<String, Object> informationAsset = (new ObjectMapper()).readValue(value, new TypeReference<>() {});
-        asset.setName(ValueUtil.getStringByObject(informationAsset.get("name_asset")));
-        asset.setIdAssetCategory(ValueUtil.getIntegerByObject(informationAsset.get("id_asset_category")));
-        asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
-        asset.setQuantity(Constants.QUANTITY_DEFAULT);
-        asset.setIdInstance(ValueUtil.getIntegerByObject(informationAsset.get("id_instance")));
-        asset.setTimeModified(String.valueOf(new Date().getTime()));
-        asset.setIdUserModified(csvcUser.getIdUser());
-        asset.setStatusUse(ValueUtil.getIntegerByObject(informationAsset.get("status_use")));
-        asset.setYearUse(ValueUtil.getStringByObject(informationAsset.get("year_use")));
-        asset.setIdUnit(ValueUtil.getIntegerByObject(informationAsset.get("id_unit")));
-        assetService.storeAsset(asset);
-    }
+//    private void updateInformationAsset(String value, Integer idAsset) throws JsonProcessingException {
+//        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        Asset asset = assetService.findAssetByIdAsset(idAsset);
+//        HashMap<String, Object> informationAsset = (new ObjectMapper()).readValue(value, new TypeReference<>() {});
+//        asset.setName(ValueUtil.getStringByObject(informationAsset.get("name_asset")));
+//        asset.setIdAssetCategory(ValueUtil.getIntegerByObject(informationAsset.get("id_asset_category")));
+//        asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
+//        asset.setQuantity(Constants.QUANTITY_DEFAULT);
+//        asset.setTimeModified(String.valueOf(new Date().getTime()));
+//        asset.setIdInstance(ValueUtil.getIntegerByObject(informationAsset.get("id_instance")));
+//        asset.setIdUserModified(csvcUser.getIdUser());
+//        asset.setStatusUse(ValueUtil.getIntegerByObject(informationAsset.get("status_use")));
+//        asset.setYearUse(ValueUtil.getStringByObject(informationAsset.get("year_use")));
+//        asset.setIdUnit(ValueUtil.getIntegerByObject(informationAsset.get("id_unit")));
+//        assetService.storeAsset(asset);
+//    }
 
     private AssetProcess updateInformationAssetProcess(UpdateAssetProcessRequest request, AssetProcess assetProcess) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -393,6 +430,60 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         }
         return responses;
     }
+    private void storeDepreciationFluctuatingSituationAsset(Asset asset) {
+        AssetDepreciation depreciation = new AssetDepreciation();
+        depreciation.setIdAsset(asset.getIdAsset());
+        String timeCurrent = String.valueOf(new Date().getTime());
+        depreciation.setTimeCreated(timeCurrent);
+        depreciation.setTimeModified(timeCurrent);
+        assetDepreciationService.save(depreciation);
+
+    }
+
+    private void storeModuleFluctuatingSituationAsset(AssetProcessNotDeclareInventoryRequest assetProcess,Asset asset) throws JsonProcessingException, ValidateFiledException {
+        HashMap<String, Object> moduleDataAsset = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
+        if (StringUtils.isNotBlank(ValueUtil.getStringByObject(moduleDataAsset.get("codeUser")))){
+            Optional<CsvcUser> user = csvcUserService.findByCodeUser(ValueUtil.getStringByObject(moduleDataAsset.get("codeUser")));
+            if (user.isEmpty()) {
+                throw new UsernameNotFoundException("User not found!");
+            }
+            if (!user.get().isAccountNonLocked()){
+                throw new UsernameNotFoundException("User is locked!");
+            }
+            moduleDataAsset.put("idUser", user.get().getIdUser());
+        }
+            moduleDataAsset.put("idAsset", asset.getIdAsset());
+            ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
+                    proxyInitModuleDataAsset(ValueUtil.getStringByObject(moduleDataAsset.get(Constants.KEY_TYPE_MODULE)));
+            Modules modules = modulesService.findModulesByTypeModules(ValueUtil.getStringByObject(moduleDataAsset.get(Constants.KEY_TYPE_MODULE)));
+            moduleDataAsset.put("idModule", modules.getIdModule());
+            IModules iModules = moduleFactory.createModule(moduleDataAsset);
+            modulesServiceFactory.save(iModules, moduleDataAsset);
+
+    }
+    private void storeOriginalFluctuatingSituationAsset(AssetProcessNotDeclareInventoryRequest assetProcess,Asset asset) throws JsonProcessingException, ValidateFiledException {
+        HashMap<String, Object> originalDataAsset = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
+        originalDataAsset.put("idAsset", asset.getIdAsset());
+        OriginalFactory originalFactory = (OriginalFactory) ProxyInitDataAssetUtil.
+                proxyInitOriginalDataAsset(ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET)));
+        IOriginal iOriginal = originalFactory.createOriginal(originalDataAsset);
+        String keyTypeOriginal = ValueUtil.getStringByObject(originalDataAsset.get(Constants.KEY_TYPE_ORIGINAL_ASSET));
+        Original original = originalService.findOriginalByHardCodeAndStatus(keyTypeOriginal, Constants.ORIGINALS_VISIBLE);
+        originalDataAsset.put("idOriginal", original.getIdOriginal());
+        originalServiceFactory.save(iOriginal, originalDataAsset);
+    }
+    private void storeDeclareFluctuatingSituationAsset(AssetProcessNotDeclareInventoryRequest assetProcess,Asset asset) throws JsonProcessingException, ValidateFiledException {
+        HashMap<String, Object> declareDataAsset = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
+        declareDataAsset.put("idAsset", asset.getIdAsset());
+        DeclareFactory declareFactory = (DeclareFactory) ProxyInitDataAssetUtil.
+                proxyInitDeclareDataAsset(ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE)));
+        IDeclare iDeclare = declareFactory.createDeclare(declareDataAsset);
+        String typeDeclare = ValueUtil.getStringByObject(declareDataAsset.get(Constants.KEY_TYPE_DECLARE));
+        Declare declare = declareService.findDeclareByHardCodeAndVisible(typeDeclare, Constants.DECLARE_VISIBLE);
+        declareDataAsset.put("idDeclare", declare.getIdDeclare());
+        declareServiceFactory.save(iDeclare,declareDataAsset);
+    }
+
 
 
 }

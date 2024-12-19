@@ -41,7 +41,6 @@ public class FluctuatingSituationController {
         }
     }
 
-
     @GetMapping("/statistic-fluctuating-situation-asset")
     public ResponseEntity<?> getStatisticFluctuatingSituationAsset(@RequestParam("id") Integer idFluctuatingSituation){
         try {

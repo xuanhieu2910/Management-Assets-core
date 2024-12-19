@@ -146,12 +146,10 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
         query.setParameter("statusNotYetFinished", Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
-        List<Object[]> result = query.getResultList();
+        Object result = query.getSingleResult();
         StatisticFluctuatingSituation situation = new StatisticFluctuatingSituation();
-        if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj : result){
-                situation.setTotalNotYetFinish(ValueUtil.getIntegerByObject(obj[0]));
-            }
+        if (result != null) {
+            situation.setTotalNotYetFinish(ValueUtil.getIntegerByObject(result));
         }
         return situation;
     }
