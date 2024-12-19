@@ -442,12 +442,13 @@ public class AssetProcessServiceImpl implements AssetProcessService {
                 throw new UsernameNotFoundException("User is locked!");
             }
             moduleDataAsset.put("idUser", user.get().getIdUser());
+        }
             moduleDataAsset.put("idAsset", asset.getIdAsset());
             ModuleFactory moduleFactory = (ModuleFactory) ProxyInitDataAssetUtil.
                     proxyInitModuleDataAsset(ValueUtil.getStringByObject(moduleDataAsset.get(Constants.KEY_TYPE_MODULE)));
             IModules iModules = moduleFactory.createModule(moduleDataAsset);
             modulesServiceFactory.save(iModules, moduleDataAsset);
-        }
+
     }
     private void storeOriginalFluctuatingSituationAsset(AssetProcessNotDeclareInventoryRequest assetProcess,Asset asset) throws JsonProcessingException, ValidateFiledException {
         HashMap<String, Object> originalDataAsset = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
