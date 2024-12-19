@@ -491,7 +491,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "         cte.minimum_time_depreciation, cte.maximum_time_depreciation,  " +
                 "         cte.nameParent, cte.id_department_original, cte.number_code_pattern," +
                 "         cte.type_target, is_leaf ");
-        sb.append(" ORDER BY path ");
+        sb.append(" ORDER BY number_code_pattern ");
     }
 
     private void setConditionCountFindAllAssetCategories(FindAllDocumentAssetCategoriesRequest request, StringBuilder sb) {
@@ -501,7 +501,7 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
         if (ObjectUtils.isNotEmpty(request.getStatus())){
             sb.append(" and cte.visible = :visible ");
         }
-        sb.append(" ORDER BY path ");
+        sb.append(" ORDER BY number_code_pattern ");
     }
 
     @Override

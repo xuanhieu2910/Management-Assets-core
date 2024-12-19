@@ -41,6 +41,8 @@ public class FindAllAssetCategoriesResponse {
     private Integer isDefault;
     @JsonProperty("number_code_pattern")
     private String numberCodePattern;
+    @JsonProperty("type_target")
+    private Integer typeTarget;
     @JsonProperty("value_unit_display")
     private String valueUnitDisplay;
 }

@@ -341,6 +341,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
                 response.setIsDefault(Constants.NOT_IS_DEFAULT);
             }
             response.setNumberCodePattern(categorie.getNumberCodePattern());
+            response.setTypeTarget(categorie.getTypeTarget());
             response.setValueUnitDisplay(categorie.getNameUnit());
             responses.add(response);
         }
