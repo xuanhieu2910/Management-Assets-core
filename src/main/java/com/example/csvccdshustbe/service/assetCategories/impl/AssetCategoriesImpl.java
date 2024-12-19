@@ -310,6 +310,7 @@ public class AssetCategoriesImpl implements AssetCategoriesService {
             response.setYearUsedWearTear(categorie.getYearUsedWearTear());
             response.setMinimumTimeDepreciation(categorie.getMinimumTimeDepreciation());
             response.setMaximumTimeDepreciation(categorie.getMaximumTimeDepreciation());
+            response.setIsLeaf(categorie.getIsLeaf());
             responses.add(response);
         }
         return responses;
