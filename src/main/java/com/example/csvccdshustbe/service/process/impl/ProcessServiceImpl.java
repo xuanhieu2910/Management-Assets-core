@@ -929,7 +929,7 @@ public class ProcessServiceImpl implements ProcessService {
         Request request = new Request();
         request.setIdProcess(process.getIdProcess());
         request.setIdState(idState);
-        request.setName(Constants.NAME_INCREASE_REQUEST);
+        request.setName(process.getName());
         request.setDescription(null);
         request.setStatus(Constants.STATUS_REQUEST_PENDING);
         String timeCurrent = String.valueOf(new Date().getTime());

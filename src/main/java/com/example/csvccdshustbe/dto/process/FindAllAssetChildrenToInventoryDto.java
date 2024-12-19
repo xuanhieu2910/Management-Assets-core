@@ -55,9 +55,11 @@ public class FindAllAssetChildrenToInventoryDto {
         this.originalOfFormation = ValueUtil.getStringByObject(obj[21]);
         this.statusUse = ValueUtil.getIntegerByObject(obj[22]);
         this.yearUse = ValueUtil.getStringByObject(obj[23]);
+        this.typeTarget = ValueUtil.getIntegerByObject(obj[25]);
         this.unit = ValueUtil.getStringByObject(obj[26]);
         this.acreage = ValueUtil.getDoubleByObject(obj[27]);
-        this.typeTarget = ValueUtil.getIntegerByObject(obj[25]);
+        this.isIncrease = ValueUtil.getIntegerByObject(obj[28]);
+
     }
 
 }

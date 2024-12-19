@@ -877,7 +877,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                           asset.status_use,  " +
                 "                           asset.year_use," +
                 "                           asset.acreage,  " +
-                "                           units.name as nameUnit " +
+                "                           units.name as nameUnit," +
+                "                           asset.is_increase " +
                 "                    from asset asset  " +
                 "                             inner join asset_categories assetCategories  " +
                 "                                        on asset.id_asset_category = assetCategories.id_asset_category  " +
@@ -2111,7 +2112,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                           asset.quantity,  " +
                 "                           group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,  " +
                 "                           asset.status_use,  " +
-                "                           asset.year_use , asset.acreage " +
+                "                           asset.year_use , asset.acreage,asset.is_increase " +
                 "                    from asset asset  " +
                 "                             inner join asset_categories assetCategories  " +
                 "                                        on asset.id_asset_category = assetCategories.id_asset_category  " +
@@ -2492,7 +2493,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                             assetCategories.code_name, de.id_department,  " +
                 "                             de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
                 "                             asset.time_modified, asset.parent, asset.salt, assetDepreciation.rest_value,  " +
-                "                             asset.quantity, asset.status_use, asset.year_use,asset.acreage , units.name )  " +
+                "                             asset.quantity, asset.status_use, asset.year_use,asset.acreage , units.name,asset.is_increase )  " +
                 "select rootAssetCategories.id_asset_category   as idAssetCategory,  " +
                 "       rootAssetCategories.name                as nameAssetCategory,  " +
                 "       rootAssetCategories.parent              as idParentAssetCategory,  " +
@@ -2521,7 +2522,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       rootAssetCategories.type_target,  " +
 
                 "       rootAsset.nameUnit,  " +
-                "       rootAsset.acreage " +
+                "       rootAsset.acreage," +
+                "       rootAsset.is_increase  " +
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
                 "         left join ROOT_ASSET rootAsset on rootAssetCategories.id_asset_category = rootAsset.idAssetCategory  " +
                 "order by rootAssetCategories.path ");
@@ -2624,7 +2626,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                             assetCategories.code_name, de.id_department,  " +
                 "                             de.code, de.name, lo.id_location, lo.name, asset.time_created,  " +
                 "                             asset.time_modified, asset.parent, asset.salt, assetDepreciation.rest_value,  " +
-                "                             asset.quantity, asset.status_use, asset.year_use,asset.acreage)  " +
+                "                             asset.quantity, asset.status_use, asset.year_use,asset.acreage, asset.is_increase )  " +
                 "select count(0)  " +
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
                 "         left join ROOT_ASSET rootAsset on rootAssetCategories.id_asset_category = rootAsset.idAssetCategory  " +
