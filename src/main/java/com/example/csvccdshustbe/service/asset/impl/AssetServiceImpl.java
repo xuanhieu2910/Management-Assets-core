@@ -1018,13 +1018,7 @@ public class AssetServiceImpl implements AssetService {
             response.setQuantity(dto.getQuantity());
             response.setIsIncrease(dto.getIsIncrease());
             response.setIsDecrease(dto.getIsDecrease());
-            response.setTotalOriginalOfFormationOriginal(String.valueOf(
-                    Optional.ofNullable(dto.getOriginalOfFormation())
-                            .map(original -> Arrays.stream(original.split("-"))
-                                    .mapToLong(Long::parseLong)
-                                    .sum()* dto.getQuantity())
-                            .orElse(0L)
-            ));
+            response.setTotalOriginalOfFormationOriginal(dto.getOriginalOfFormation());
             response.setCumulative(String.valueOf(
                     Optional.ofNullable(dto.getCumulative())
                             .map(Double::parseDouble)
@@ -1060,13 +1054,7 @@ public class AssetServiceImpl implements AssetService {
             response.setQuantity(dto.getQuantity());
             response.setTimeCreated(DateUtil.formatToPattern(new Date(dto.getTimeCreated()), DateUtil.DATE_FORMAT));
             response.setTimeModified(DateUtil.formatToPattern(new Date(dto.getTimeModified()), DateUtil.DATE_FORMAT));
-            response.setTotalOriginalOfFormation(String.valueOf(
-                    Optional.ofNullable(dto.getOriginalOfFormation())
-                            .map(original -> Arrays.stream(original.split("-"))
-                                    .mapToLong(Long::parseLong)
-                                    .sum()* dto.getQuantity())
-                            .orElse(0L)
-            ));
+            response.setTotalOriginalOfFormation(dto.getOriginalOfFormation());
             response.setCumulative(String.valueOf(
                     Optional.ofNullable(dto.getCumulative())
                             .map(Double::parseDouble)
@@ -1122,13 +1110,7 @@ public class AssetServiceImpl implements AssetService {
             revaluation.setSalt(dto.getSalt());
             revaluation.setQuantityOriginal(dto.getQuantity());
             revaluation.setRestValueOriginal(dto.getRestValue());
-            revaluation.setTotalOriginalOfFormationOriginal(String.valueOf(
-                    Optional.ofNullable(dto.getOriginalOfFormation())
-                            .map(original -> Arrays.stream(original.split("-"))
-                                    .mapToLong(Long::parseLong)
-                                    .sum())
-                            .orElse(0L)
-            ));
+            revaluation.setTotalOriginalOfFormationOriginal(dto.getOriginalOfFormation());
             revaluation.setQuantityInventory(dto.getQuantity());
             revaluation.setTotalOriginalOfFormationRevaluation(revaluation.getTotalOriginalOfFormationOriginal());
             revaluation.setRestValueRevaluation(dto.getRestValue());
@@ -1733,13 +1715,7 @@ public class AssetServiceImpl implements AssetService {
         leaf.setIsIncrease(assetLeaf.getIsIncrease());
         leaf.setAcreage(assetLeaf.getAcreage());
         leaf.setTypeTarget(assetLeaf.getTypeTarget());
-        leaf.setOriginalOfFormation(String.valueOf(
-                Optional.ofNullable(assetLeaf.getOriginalOfFormation())
-                        .map(original -> Arrays.stream(original.split("-"))
-                                .mapToLong(Long::parseLong)
-                                .sum())
-                        .orElse(0L)
-        ));
+        leaf.setOriginalOfFormation(assetLeaf.getOriginalOfFormation());
         return leaf;
     }
 
@@ -1766,13 +1742,7 @@ public class AssetServiceImpl implements AssetService {
             leaf.setIsIncrease(dto.getIsIncrease());
             leaf.setAcreage(dto.getAcreage());
             leaf.setTypeTarget(dto.getTypeTarget());
-            leaf.setOriginalOfFormation(String.valueOf(
-                    Optional.ofNullable(dto.getOriginalOfFormation())
-                            .map(original -> Arrays.stream(original.split("-"))
-                                    .mapToLong(Long::parseLong)
-                                    .sum())
-                            .orElse(0L)
-            ));
+            leaf.setOriginalOfFormation(dto.getOriginalOfFormation());
             response.add(leaf);
         }
         return response;
@@ -1794,13 +1764,7 @@ public class AssetServiceImpl implements AssetService {
             revaluation.setSalt(dto.getSalt());
             revaluation.setQuantityOriginal(dto.getQuantity());
             revaluation.setRestValueOriginal(dto.getRestValue());
-            revaluation.setTotalOriginalOfFormationOriginal(String.valueOf(
-                    Optional.ofNullable(dto.getOriginalOfFormation())
-                            .map(original -> Arrays.stream(original.split("-"))
-                                    .mapToLong(Long::parseLong)
-                                    .sum())
-                            .orElse(0L)
-            ));
+            revaluation.setTotalOriginalOfFormationOriginal(dto.getOriginalOfFormation());
             revaluation.setQuantityInventory(dto.getQuantity());
             revaluation.setTotalOriginalOfFormationRevaluation(revaluation.getTotalOriginalOfFormationOriginal());
             revaluation.setRestValueRevaluation(dto.getRestValue());
@@ -1825,13 +1789,7 @@ public class AssetServiceImpl implements AssetService {
             decrease.setSalt(dto.getSalt());
             decrease.setQuantity(dto.getQuantity());
             decrease.setRestValue(dto.getRestValue());
-            decrease.setTotalOriginalOfFormation(String.valueOf(
-                    Optional.ofNullable(dto.getOriginalOfFormation())
-                            .map(original -> Arrays.stream(original.split("-"))
-                                    .mapToLong(Long::parseLong)
-                                    .sum())
-                            .orElse(0L)
-            ));
+            decrease.setTotalOriginalOfFormation(dto.getOriginalOfFormation());
             decrease.setCumulative(dto.getCumulative());
             response.add(decrease);
         }
@@ -1854,13 +1812,7 @@ public class AssetServiceImpl implements AssetService {
             decrease.setSalt(dto.getSalt());
             decrease.setQuantity(dto.getQuantity());
             decrease.setRestValue(dto.getRestValue());
-            decrease.setTotalOriginalOfFormation(String.valueOf(
-                    Optional.ofNullable(dto.getOriginalOfFormation())
-                            .map(original -> Arrays.stream(original.split("-"))
-                                    .mapToLong(Long::parseLong)
-                                    .sum())
-                            .orElse(0L)
-            ));
+            decrease.setTotalOriginalOfFormation(dto.getOriginalOfFormation());
             decrease.setCumulative(dto.getCumulative());
             decrease.setParent(dto.getParent());
             response.add(decrease);
