@@ -79,4 +79,6 @@ public class Asset {
     private String yearUse;
     @Column(name = "acreage")
     private Double acreage;
+    @Column(name = "sum_original_of_formation")
+    private String sumOriginalOfFormation;
 }
