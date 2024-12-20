@@ -17,5 +17,5 @@ public interface FluctuatingSituationAssetService {
 
     Page<FindAllFluctuatingSituationAssetResponses> findAllFluctuatingSituationAsset(FindAllFluctuatingSituationAssetRequest request);
     void updateDeclareAssetFluctuatingSituation(FluctuatingSituationAssetRequest updateAssetRequest);
-    FluctuatingSituationAsset findFluctuatingSituationAssetById(Integer idFluctuatingSituation);
+    List<FluctuatingSituationAsset> findFluctuatingSituationAssetByIds(List<Integer> idsFluctuatingSituation);
 }
