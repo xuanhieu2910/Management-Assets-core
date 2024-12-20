@@ -733,6 +733,7 @@ public class AssetServiceImpl implements AssetService {
         childAsset.setStatusUse(assetParent.getStatusUse());
         childAsset.setYearUse(assetParent.getYearUse());
         childAsset.setAcreage(assetParent.getAcreage());
+        childAsset.setSumOriginalOfFormation(assetParent.getSumOriginalOfFormation());
         assetRepository.save(childAsset);
     }
 
@@ -868,6 +869,7 @@ public class AssetServiceImpl implements AssetService {
             asset.setIsDecrease(Constants.IS_NOT_DECREASED);
         }
         asset.setAcreage(ValueUtil.getDoubleByObject(commonDataAsset.get("acreage")));
+        asset.setSumOriginalOfFormation(ValueUtil.getStringByObject(commonDataAsset.get("sumOriginalOfFormation")));
         assetRepository.save(asset);
     }
 
@@ -901,6 +903,7 @@ public class AssetServiceImpl implements AssetService {
         assetParent.get().setStatusUse(ValueUtil.getIntegerByObject(commonDataAsset.get("statusUse")));
         assetParent.get().setYearUse(ValueUtil.getStringByObject(commonDataAsset.get("yearUse")));
         assetParent.get().setAcreage(ValueUtil.getDoubleByObject(commonDataAsset.get("acreage")));
+        assetParent.get().setSumOriginalOfFormation(ValueUtil.getStringByObject(commonDataAsset.get("sumOriginalOfFormation")));
         return assetRepository.save(assetParent.get());
     }
 
@@ -1493,6 +1496,7 @@ public class AssetServiceImpl implements AssetService {
         childAsset.setStatusUse(parentAsset.getStatusUse());
         childAsset.setYearUse(parentAsset.getYearUse());
         childAsset.setAcreage(parentAsset.getAcreage());
+        childAsset.setSumOriginalOfFormation(parentAsset.getSumOriginalOfFormation());
         assetRepository.save(childAsset);
 
         return childAsset;
@@ -1530,6 +1534,7 @@ public class AssetServiceImpl implements AssetService {
         assetParent.setStatusUse(ValueUtil.getIntegerByObject(dataAssetParent.get("statusUse")));
         assetParent.setYearUse(ValueUtil.getStringByObject(dataAssetParent.get("yearUse")));
         assetParent.setAcreage(ValueUtil.getDoubleByObject(dataAssetParent.get("acreage")));
+        assetParent.setSumOriginalOfFormation(ValueUtil.getStringByObject(dataAssetParent.get("sumOriginalOfFormation")));
         return assetRepository.save(assetParent);
     }
 
@@ -1577,6 +1582,7 @@ public class AssetServiceImpl implements AssetService {
         asset.setStatusUse(ValueUtil.getIntegerByObject(dataAsset.get("statusUse")));
         asset.setYearUse(ValueUtil.getStringByObject(dataAsset.get("yearUse")));
         asset.setAcreage(ValueUtil.getDoubleByObject(dataAsset.get("acreage")));
+        asset.setSumOriginalOfFormation(ValueUtil.getStringByObject(dataAsset.get("sumOriginalOfFormation")));
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());
@@ -2651,6 +2657,13 @@ public class AssetServiceImpl implements AssetService {
         String yearUsedWearTear = (String) ExcelUtil.convertValue(row.getCell(139), CellType.STRING);
         Optional<Department> departmentOptional = departmentRepository.findDepartmentById(extractIdSTTFromExcel(department));
         List<Map<String, Object>> originOfFormationList = new ArrayList<>();
+        double sumOriginalOfFormation = 0;
+        if (originalOfFormationValues != null && !originalOfFormationValues.isEmpty()) {
+            String[] valueDepreciationArray = originalOfFormationValues.split(";");
+            for (String value : valueDepreciationArray) {
+                sumOriginalOfFormation += Double.parseDouble(value.trim());
+            }
+        }
         if (originalOfFormationName == null && originalOfFormationValues== null){
             Map<String, Object> originOfFormation = new HashMap<>();
             originOfFormation.put("idOriginOfFormation", null);
@@ -2663,6 +2676,7 @@ public class AssetServiceImpl implements AssetService {
                 originOfFormation.put("idOriginOfFormation", null);
                 originOfFormation.put("nameOriginOfFormation", null);
                 originOfFormation.put("value", originOfFormationValuesArray[i]);
+
             }
         }
         else if(originalOfFormationName != null && originalOfFormationValues == null){
@@ -2761,6 +2775,7 @@ public class AssetServiceImpl implements AssetService {
         commonData.put("yearUsedWearTear", yearUsedWearTear);
         commonData.put("yearUse", yearUse);
         commonData.put("acreage", acreage);
+        commonData.put("sumOriginalOfFormation", String.valueOf(sumOriginalOfFormation)); //giá trị tổng original
         // Các lỗi liên quan validate các trường
 
         return commonData;
