@@ -40,7 +40,7 @@ public class FluctuatingSituationAssetRepositoryImpl implements FluctuatingSitua
                 "         inner join fluctuating_situation fs on fsa.id_fluctuating_situation = fs.id_fluctuating_situation  " +
                 "         inner join process pr on fsa.id_process = pr.id_process  " +
                 "         inner join asset ast on fsa.id_asset = ast.id_asset  " +
-                "         inner join asset_process ap on ast.id_asset = ap.id_asset  " +
+                "         inner join asset_process ap on ast.id_asset = ap.id_asset and fs.id_process = ap.id_process " +
                 "where fs.id_fluctuating_situation = :idFluctuatingSituation ");
         setConditionFindFluctuatingSituationAsset(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -65,7 +65,7 @@ public class FluctuatingSituationAssetRepositoryImpl implements FluctuatingSitua
     }
 
     @Override
-    public Optional<FluctuatingSituationAsset> findFluctuatingSituationAssetById(Integer idFluctuatingSituationAsset) {
+    public List<FluctuatingSituationAsset> findFluctuatingSituationAssetByIds(List<Integer> idsFluctuatingSituationAsset) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select id_fluctuating_situation_asset, " +
                 "       id_asset, " +
@@ -77,9 +77,10 @@ public class FluctuatingSituationAssetRepositoryImpl implements FluctuatingSitua
                 "       id_user_modified, " +
                 "       id_fluctuating_situation " +
                 "from fluctuating_situation_asset " +
-                "where id_fluctuating_situation_asset = :id ");
+                "where id_fluctuating_situation_asset in (:ids) ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("id", idFluctuatingSituationAsset);
+        query.setParameter("ids", idsFluctuatingSituationAsset);
+        List<FluctuatingSituationAsset> response = new ArrayList<>();
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj: result){
@@ -93,10 +94,10 @@ public class FluctuatingSituationAssetRepositoryImpl implements FluctuatingSitua
                 fluctuatingSituationAsset.setTimeModified(ValueUtil.getStringByObject(obj[6]));
                 fluctuatingSituationAsset.setIdUserModified(ValueUtil.getIntegerByObject(obj[7]));
                 fluctuatingSituationAsset.setIdFluctuatingSituation(ValueUtil.getIntegerByObject(obj[8]));
-                return Optional.of(fluctuatingSituationAsset);
+                response.add(fluctuatingSituationAsset);
             }
         }
-        return Optional.empty();
+        return response;
     }
 
     private long countFindFluctuatingSituationAsset(FindAllFluctuatingSituationAssetRequest request) {

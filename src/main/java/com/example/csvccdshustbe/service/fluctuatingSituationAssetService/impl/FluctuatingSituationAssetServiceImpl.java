@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
 
 import java.util.*;
@@ -54,19 +55,21 @@ public class FluctuatingSituationAssetServiceImpl implements FluctuatingSituatio
     @Transactional
     @Override
     public void updateDeclareAssetFluctuatingSituation(FluctuatingSituationAssetRequest updateAssetRequest) {
-        FluctuatingSituationAsset fluctuatingSituationAsset =
-                findFluctuatingSituationAssetById(updateAssetRequest.getIdFluctuatingSituationAsset());
+        List<FluctuatingSituationAsset> fluctuatingSituationAssets =
+                findFluctuatingSituationAssetByIds(updateAssetRequest.getIdsFluctuatingSituationAsset());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        fluctuatingSituationAsset.setTimeModified(String.valueOf(new Date().getTime()));
-        fluctuatingSituationAsset.setIdUserModified(csvcUser.getIdUser());
-        if (updateAssetRequest.getTypeCurrent().equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE)) {
-            fluctuatingSituationAsset.setType(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
-            fluctuatingSituationAsset.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_ASSET_NOT_FINISH);
-        } else {
-            fluctuatingSituationAsset.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_ASSET_FINISH);
+        for (FluctuatingSituationAsset fluctuatingSituationAsset : fluctuatingSituationAssets) {
+            fluctuatingSituationAsset.setTimeModified(String.valueOf(new Date().getTime()));
+            fluctuatingSituationAsset.setIdUserModified(csvcUser.getIdUser());
+            if (updateAssetRequest.getTypeCurrent().equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE)) {
+                fluctuatingSituationAsset.setType(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
+                fluctuatingSituationAsset.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_ASSET_NOT_FINISH);
+            } else {
+                fluctuatingSituationAsset.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_ASSET_FINISH);
+            }
         }
-        fluctuatingSituationAssetRepository.save(fluctuatingSituationAsset);
-        updateStatusFluctuatingSituation(fluctuatingSituationAsset.getIdFluctuatingSituation());
+        fluctuatingSituationAssetRepository.saveAll(fluctuatingSituationAssets);
+        updateStatusFluctuatingSituation(fluctuatingSituationAssets.get(0).getIdFluctuatingSituation());
     }
 
     private void updateStatusFluctuatingSituation(Integer idFluctuatingSituation) {
@@ -74,12 +77,12 @@ public class FluctuatingSituationAssetServiceImpl implements FluctuatingSituatio
     }
 
     @Override
-    public FluctuatingSituationAsset findFluctuatingSituationAssetById(Integer idFluctuatingSituation) {
-        Optional<FluctuatingSituationAsset> fluctuatingSituationAsset =
-                fluctuatingSituationAssetRepository.findFluctuatingSituationAssetById(idFluctuatingSituation);
-        if (fluctuatingSituationAsset.isEmpty()){
+    public List<FluctuatingSituationAsset> findFluctuatingSituationAssetByIds(List<Integer> idsFluctuatingSituation) {
+        List<FluctuatingSituationAsset> fluctuatingSituationAssets =
+                fluctuatingSituationAssetRepository.findFluctuatingSituationAssetByIds(idsFluctuatingSituation);
+        if (CollectionUtils.isEmpty(fluctuatingSituationAssets)){
             throw new NotFoundException("Don't exits fluctuating situation asset by id!");
         }
-        return fluctuatingSituationAsset.get();
+        return fluctuatingSituationAssets;
     }
 }

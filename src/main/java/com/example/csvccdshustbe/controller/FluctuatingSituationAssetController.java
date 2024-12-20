@@ -42,16 +42,14 @@ public class FluctuatingSituationAssetController {
         }
     }
 
-    @PostMapping("/update-declare-asset")
+    @PostMapping("/update-status-asset")
     public ResponseEntity<?> updateDeclareAsset(@RequestBody FluctuatingSituationAssetRequest request) {
         try {
             fluctuatingSituationAssetService.updateDeclareAssetFluctuatingSituation(request);
             return ApiResponseDto.createdWithMessage("Update declare asset success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
