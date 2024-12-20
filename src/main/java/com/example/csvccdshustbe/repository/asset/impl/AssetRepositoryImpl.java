@@ -1254,6 +1254,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         setConditionFindAllAssetDtoToDecrease(decreaseRequest, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetDtoToDecrease(decreaseRequest, query);
+        PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
         List<FindAllAssetDto> responses = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
