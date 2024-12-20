@@ -81,7 +81,7 @@ public class FluctuatingSituationAssetRepositoryImpl implements FluctuatingSitua
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("id", idFluctuatingSituationAsset);
         List<Object[]> result = query.getResultList();
-        if (CollectionUtils.isEmpty(result)){
+        if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj: result){
                 FluctuatingSituationAsset fluctuatingSituationAsset = new FluctuatingSituationAsset();
                 fluctuatingSituationAsset.setIdFluctuatingSituationAsset(ValueUtil.getIntegerByObject(obj[0]));

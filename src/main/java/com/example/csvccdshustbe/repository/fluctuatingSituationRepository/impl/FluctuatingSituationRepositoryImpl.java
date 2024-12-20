@@ -89,6 +89,7 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
                 "where 1 = 1   ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idFsa", idFluctuatingSituation);
+        query.setParameter("notYetFinish", Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
         query.executeUpdate();
     }
 
