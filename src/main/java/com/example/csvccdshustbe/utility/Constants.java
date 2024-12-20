@@ -585,4 +585,10 @@ public class Constants {
     public final static Integer TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE = 11;
     public final static Integer TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE = 12;
     /*----------------------------------------------------*/
+
+    /* Constant DEPTH DEFAULT in Categories
+     * */
+
+    public final static Integer DEPTH_DEFAULT = 1;
+    /*----------------------------------------------------*/
 }
