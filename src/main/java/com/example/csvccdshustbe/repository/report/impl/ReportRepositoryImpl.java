@@ -1,9 +1,7 @@
 package com.example.csvccdshustbe.repository.report.impl;
 
-import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToInventoryDto;
+
 import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToInventoryInReportDto;
-import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
 import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryInReportDto;
 import com.example.csvccdshustbe.dto.report.CurrentUsageReport08aDto;
 import com.example.csvccdshustbe.dto.report.inventory.BlueprintInventoryReportDto;

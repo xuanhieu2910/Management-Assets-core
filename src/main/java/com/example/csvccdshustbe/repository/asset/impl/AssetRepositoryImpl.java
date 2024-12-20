@@ -62,7 +62,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.parent, asset.salt, asset.quantity ,  " +
                 "        asset.is_increase,asset.is_decrease,        " +
                 "        group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue, " +
-                "        assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase, " +
+                "        assetDepreciation.cumulative,assetDepreciation.rest_value, " +
                 "        asset.status_process_current, asset.status_use, asset.year_use,asset.acreage " +
                 "from asset asset " +
                 "         left join asset_categories assetCategories " +
@@ -73,9 +73,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                   on asset.id_asset = assetOriginalOfFormation.id_asset " +
                 "         left join asset_depreciation assetDepreciation " +
                 "                   on asset.id_asset = assetDepreciation.id_asset " +
-                "         left join asset_process on asset.id_asset = asset_process.id_asset " +
-                "         left join type_process on asset_process.id_type_process = type_process.id_type_process " +
-                "         left join document on asset_process.id_process = document.id_process " +
                 "where 1 = 1 " +
                 "  and asset.parent is null " +
                 "  and asset.id_department_origin in (:idsDepartmentOriginal) ");
@@ -109,11 +106,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[18]));
                 findAllAssetDto.setCumulative(ValueUtil.getStringByObject(obj[19]));
                 findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[20]));
-                findAllAssetDto.setTimeIncrease(ValueUtil.getStringByObject(obj[21]));
-                findAllAssetDto.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[22]));
-                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[23]));
-                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[24]));
-                findAllAssetDto.setAcreage(ValueUtil.getDoubleByObject(obj[25]));
+                findAllAssetDto.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[21]));
+                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[22]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[23]));
+                findAllAssetDto.setAcreage(ValueUtil.getDoubleByObject(obj[24]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -2870,7 +2866,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                      asset.parent, asset.salt, asset.quantity ,     " +
                 "                      asset.is_increase,asset.is_decrease,     " +
                 "                      group_concat(assetOriginalOfFormation.value SEPARATOR '-') assetOriginalOfFormationValue,   " +
-                "                      assetDepreciation.cumulative,assetDepreciation.rest_value,document.time_increase," +
+                "                      assetDepreciation.cumulative,assetDepreciation.rest_value, " +
                 "                      asset.status_use, asset.year_use " +
                 "       from asset asset " +
                 "                left join asset_categories assetCategories " +
@@ -2881,9 +2877,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        on asset.id_asset = assetOriginalOfFormation.id_asset " +
                 "                left join asset_depreciation assetDepreciation " +
                 "        on asset.id_asset = assetDepreciation.id_asset " +
-                "                left join asset_process on asset.id_asset = asset_process.id_asset " +
-                "                left join type_process on asset_process.id_type_process = type_process.id_type_process " +
-                "                left join document on asset_process.id_process = document.id_process " +
                 "       where 1 = 1 " +
                 "         and asset.parent is null " +
                 "    and asset.id_department_origin in (:idsDepartmentOriginal)  ");
