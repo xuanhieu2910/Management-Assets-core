@@ -422,7 +422,7 @@ public class FileUploadService implements FilesStorageService {
                 + FileUtil.FOLDER_NAME_REPORT
                 + SEPARATOR
                 + Constants.NAME_REPORTS[36];
-//        String fileExcel = "E:\\csvc\\src\\main\\resources\\static\\reports\\Biểu mẫu 01-TSCĐ cơ quan, tổ chức, đơn vị.xlsx";
+//        String fileExcel = "D:\\CompanyBK\\csvc-hust\\src\\main\\resources\\static\\reports\\Biểu mẫu 01-TSCĐ cơ quan, tổ chức, đơn vị.xlsx";
         List<FindAllAssetForInventoryReportDto> assetReport =
                 reportRepository.findInfoAssetForInventoryReportByCodeDocument(request);
         BlueprintInventoryReportDto council = reportRepository.findBlueprintInventoryReportDtoByCodeDocument(request);
@@ -435,7 +435,7 @@ public class FileUploadService implements FilesStorageService {
         File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
         String fileReturn = fileFinal.replace(PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe")
                 , PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
-//        String filePathOutput = "C:\\Users\\ADMIN\\Downloads\\exportExcel\\modified_output4.xlsx";
+//        String filePathOutput = "D:\\CompanyBK\\Biểu mẫu 01-TSCĐ cơ quan, tổ chức, đơn vị.xlsx";
         try (FileOutputStream fileOut = new FileOutputStream(filePathOutput)) {
             workbook.write(fileOut);
             workbook.close();
@@ -444,6 +444,7 @@ public class FileUploadService implements FilesStorageService {
             throw new RuntimeException(e);
         }
         return fileReturn;
+//        return filePathOutput;
     }
 
     private String createFileExportInventoryReport() {

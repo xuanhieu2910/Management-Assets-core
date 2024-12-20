@@ -2523,7 +2523,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
                 "       rootAsset.nameUnit,  " +
                 "       rootAsset.acreage," +
-                "       rootAsset.is_increase  " +
+                "       rootAsset.is_increase " +
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
                 "         left join ROOT_ASSET rootAsset on rootAssetCategories.id_asset_category = rootAsset.idAssetCategory  " +
                 "order by rootAssetCategories.path ");

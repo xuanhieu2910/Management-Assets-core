@@ -1,6 +1,10 @@
 package com.example.csvccdshustbe.repository.report.impl;
 
 import com.example.csvccdshustbe.dto.assetCategories.FindAllAssetCategoriesPickedDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToInventoryDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetChildrenToInventoryInReportDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryInReportDto;
 import com.example.csvccdshustbe.dto.report.CurrentUsageReport08aDto;
 import com.example.csvccdshustbe.dto.report.inventory.BlueprintInventoryReportDto;
 import com.example.csvccdshustbe.dto.report.inventory.CouncilInventoryReportDto;
@@ -13,12 +17,14 @@ import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
+import com.example.csvccdshustbe.response.asset.FindAllAssetChildrenToInventoryResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.collections4.map.ListOrderedMap;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -200,7 +206,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 "                               GROUP BY cte.id_asset_category, cte.name, cte.code_name, cte.depth, cte.path, " +
                 "                                        cte.number_code_pattern, is_leaf, cte.type_target " +
                 "                               ORDER BY cte.number_code_pattern), " +
-                "     ROOT_ASSET_PROCESS AS (SELECT asset.id_asset                    AS idAsset, " +
+                "     ROOT_ASSET_PROCESS AS (SELECT asset.name as nameAsset, asset.code_asset as codeAsset, asset.id_asset                    AS idAsset, " +
                 "                                   assetCategories.id_asset_category AS idAssetCategory, " +
                 "                                   asset.salt, " +
                 "                                   assetProcess.value                AS value " +
@@ -229,7 +235,9 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
                 "       rootAssetCategories.type_target         AS targetType, " +
                 "       rootAssetProcess.idAsset                AS idAsset, " +
                 "       rootAssetProcess.salt                   AS salt, " +
-                "       rootAssetProcess.value                  AS value " +
+                "       rootAssetProcess.value                  AS value," +
+                        " rootAssetProcess.nameAsset               as nameAsset, " +
+                " rootAssetProcess.codeAsset               as codeAsset " +
                 "FROM ROOT_ASSET_CATEGORIES rootAssetCategories " +
                 "         LEFT JOIN " +
                 "     ROOT_ASSET_PROCESS rootAssetProcess " +
@@ -239,22 +247,78 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom {
         setParameterFindInfoAssetForInventoryReportByCodeDocument(query, request);
         List<FindAllAssetForInventoryReportDto> responses = new ArrayList<>();
         List<Object[]> result = query.getResultList();
-        if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj : result){
-                FindAllAssetForInventoryReportDto response = new FindAllAssetForInventoryReportDto();
-                response.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[0]));
-                response.setNameAssetCategory(ValueUtil.getStringByObject(obj[1]));
-                response.setIdParentAssetCategory(ValueUtil.getIntegerByObject(obj[2]));
-                response.setCodeAssetCategory(ValueUtil.getStringByObject(obj[3]));
-                response.setDepth(ValueUtil.getIntegerByObject(obj[4]));
-                response.setPath(ValueUtil.getStringByObject(obj[5]));
-                response.setNumberCodePattern(ValueUtil.getStringByObject(obj[6]));
-                response.setIsLeaf(ValueUtil.getIntegerByObject(obj[7]));
-                response.setTypeTarget(ValueUtil.getIntegerByObject(obj[8]));
-                response.setValue(ValueUtil.getStringByObject(obj[11]));
-                responses.add(response);
+//        if (!CollectionUtils.isEmpty(result)){
+//            for (Object[] obj : result){
+//                FindAllAssetForInventoryReportDto response = new FindAllAssetForInventoryReportDto();
+//                response.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[0]));
+//                response.setNameAssetCategory(ValueUtil.getStringByObject(obj[1]));
+//                response.setIdParentAssetCategory(ValueUtil.getIntegerByObject(obj[2]));
+//                response.setCodeAssetCategory(ValueUtil.getStringByObject(obj[3]));
+//                response.setDepth(ValueUtil.getIntegerByObject(obj[4]));
+//                response.setPath(ValueUtil.getStringByObject(obj[5]));
+//                response.setNumberCodePattern(ValueUtil.getStringByObject(obj[6]));
+//                response.setIsLeaf(ValueUtil.getIntegerByObject(obj[7]));
+//                response.setTypeTarget(ValueUtil.getIntegerByObject(obj[8]));
+//                response.setValue(ValueUtil.getStringByObject(obj[11]));
+//                responses.add(response);
+//            }
+//        }
+//        return responses;
+        ListOrderedMap<Integer, FindAllAssetParentToInventoryInReportDto> assetMap = new ListOrderedMap<>();
+        Integer idAssetCategory, idAsset, isLeaf;
+        int index = 0;
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                idAssetCategory = ValueUtil.getIntegerByObject(obj[0]);
+                idAsset = obj[7] == null ? null : ValueUtil.getIntegerByObject(obj[9]);
+                isLeaf = ValueUtil.getIntegerByObject(obj[7]);
+                if (idAsset != null) {
+                    if (!assetMap.containsKey(idAssetCategory)) {
+                        FindAllAssetParentToInventoryInReportDto parentToInventoryDto = new FindAllAssetParentToInventoryInReportDto(obj);
+                        assetMap.put(index,idAssetCategory,parentToInventoryDto);
+                        ++index;
+                    }
+                    if (assetMap.containsKey(idAssetCategory)){
+                        assetMap.computeIfPresent(idAssetCategory, (k, v) -> {
+                            v.getAssetLeaves().add(new FindAllAssetChildrenToInventoryInReportDto(obj));
+                            return v;
+                        });
+                    }
+                } else {
+                    FindAllAssetParentToInventoryInReportDto parentToInventoryDto = new FindAllAssetParentToInventoryInReportDto(obj);
+                    assetMap.put(index,idAssetCategory,parentToInventoryDto);
+                    ++index;
+                }
             }
         }
+        if (!CollectionUtils.isEmpty(assetMap)){
+            for (FindAllAssetParentToInventoryInReportDto obj : assetMap.valueList()){
+                FindAllAssetForInventoryReportDto response = new FindAllAssetForInventoryReportDto();
+                response.setIdAssetCategory(obj.getIdAssetCategory());
+                response.setNameAssetCategory(obj.getNameAssetCategory());
+                response.setIdParentAssetCategory(obj.getIdParentAssetCategory());
+                response.setCodeAssetCategory(obj.getCodeAssetCategory());
+                response.setDepth(obj.getDepth());
+                response.setPath(obj.getPath());
+                response.setNumberCodePattern(obj.getNumberCodePattern());
+                response.setIsLeaf(obj.getIsLeaf());
+                response.setTypeTarget(obj.getTypeTarget());
+                responses.add(response);
+                if (!CollectionUtils.isEmpty(obj.getAssetLeaves())) {
+                    for (FindAllAssetChildrenToInventoryInReportDto assetLeaf : obj.getAssetLeaves()) {
+                         FindAllAssetForInventoryReportDto responseChild = new FindAllAssetForInventoryReportDto();
+                         responseChild.setIdAsset(assetLeaf.getIdAsset());
+                         responseChild.setNameAssetCategory(assetLeaf.getNameAsset());
+                         responseChild.setNumberCodePattern(assetLeaf.getCodeAsset());
+                         responseChild.setTypeTarget(assetLeaf.getTypeTarget());
+                         responseChild.setValue(assetLeaf.getValue());
+                         responseChild.setDepth(assetLeaf.getDepth());
+                         responses.add(responseChild);
+                    }
+                }
+            }
+        }
+//        return responses;
         return responses;
     }
     private void setParameterFindInfoAssetForInventoryReportByCodeDocument(Query query, FindAllAssetProcessRequest request) {
