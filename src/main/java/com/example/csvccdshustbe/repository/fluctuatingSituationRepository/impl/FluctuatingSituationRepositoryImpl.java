@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.response.fluctuatingSituation.FindAllFluctuatio
 import com.example.csvccdshustbe.response.fluctuatingSituation.StatisticFluctuatingSituation;
 import com.example.csvccdshustbe.response.fluctuatingSituationAsset.StatisticFluctuatingSituationAsset;
 import com.example.csvccdshustbe.utility.Constants;
+import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -23,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationRepositoryCustom {
@@ -57,8 +59,8 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
                 response.setIdFluctuatingSituation(ValueUtil.getIntegerByObject(obj[0]));
                 response.setIdProcess(ValueUtil.getIntegerByObject(obj[1]));
                 response.setStatus(ValueUtil.getIntegerByObject(obj[2]));
-                response.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
-                response.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                response.setTimeCreated(DateUtil.formatToPattern(new Date(Long.parseLong(ValueUtil.getStringByObject(obj[3]))),DateUtil.DATE_FORMAT));
+                response.setTimeModified(DateUtil.formatToPattern(new Date(Long.parseLong(ValueUtil.getStringByObject(obj[4]))),DateUtil.DATE_FORMAT));
                 response.setCodeDocument(ValueUtil.getStringByObject(obj[5]));
                 response.setIdDocument(ValueUtil.getIntegerByObject(obj[6]));
                 response.setUserName(ValueUtil.getStringByObject(obj[7]));
