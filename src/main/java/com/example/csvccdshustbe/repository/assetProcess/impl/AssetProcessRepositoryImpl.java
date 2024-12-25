@@ -995,7 +995,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "         assetCategories.name, assetCategories.code_name, " +
                 "         de.id_department, de.code, de.name, " +
                 "         lo.id_location, lo.name, assetParent.time_created, " +
-                "         assetParent.time_modified, assetParent.salt, assetProcess.value ");
+                "         assetParent.time_modified, assetParent.salt ");
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
@@ -1024,7 +1024,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "         assetCategories.name, assetCategories.code_name, " +
                 "         de.id_department, de.code, de.name, " +
                 "         lo.id_location, lo.name, assetParent.time_created, " +
-                "         assetParent.time_modified, assetParent.salt, assetProcess.value ");
+                "         assetParent.time_modified, assetParent.salt ");
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
