@@ -429,7 +429,7 @@ public class FileUploadService implements FilesStorageService {
         FileInputStream file = new FileInputStream(new File(fileExcel));
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
-//        writeDataBlueprintInventoryReport(sheet, council);
+        writeDataBlueprintInventoryReport(sheet, council);
         writeDataAssetInventoryReport(sheet, assetReport, 3);//council.getCouncilInventoryReportDtos().size()
         String fileFinal = createFileExportInventoryReport();
         File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
