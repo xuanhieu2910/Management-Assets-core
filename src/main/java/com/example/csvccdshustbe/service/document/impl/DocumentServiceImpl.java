@@ -89,7 +89,7 @@ public class DocumentServiceImpl implements DocumentService {
         }
         Document document = findDocumentByIdDepartment(idDepartment);
         if (document == null) {
-            return prefix + String.format("%0" + minLength + "d", codeValueCurrent) + "-";
+            return prefix + String.format("%0" + minLength + "d", codeValueCurrent) + "-" + String.valueOf(new Date().getTime());
         }
         String codeDocument = document.getCode().split("-")[0];
         codeValueCurrent = Integer.parseInt(codeDocument.replaceAll(ValueUtil.PATTERN_NON_NUMBER, ""));

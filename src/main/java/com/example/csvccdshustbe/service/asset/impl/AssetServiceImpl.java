@@ -1838,7 +1838,7 @@ public class AssetServiceImpl implements AssetService {
         }
         Optional<Asset> asset = assetRepository.findAssetByIdDepartmentOrigin(idDepartment);
         if (asset.isEmpty()) {
-            return prefix + String.format("%0"+ minLength +"d", codeValueCurrent) + "-";
+            return prefix + String.format("%0"+ minLength +"d", codeValueCurrent) + "-" + String.valueOf(new Date().getTime());
         }
         codeValueCurrent = Integer.parseInt(asset.get().getCodeAsset().replace(prefix,"").replace(Constants.PREFIX_ASSET_LOT,"").replace(Constants.PREFIX_ASSET_KK,"").split("-")[0]);
         if (String.valueOf(codeValueCurrent).length() > minLength) {
@@ -1858,7 +1858,7 @@ public class AssetServiceImpl implements AssetService {
         }
         Optional<Asset> asset = assetRepository.findAssetLotByIdDepartmentOrigin(idDepartment);
         if (asset.isEmpty()) {
-            return prefix + String.format("%0" + minLength +"d", codeValueCurrent) + "-";
+            return prefix + String.format("%0" + minLength +"d", codeValueCurrent) + "-" + String.valueOf(new Date().getTime());
         }
         String codeDocument = asset.get().getCodeAsset().split("-")[0];
         codeValueCurrent = Integer.parseInt(codeDocument.replaceAll(ValueUtil.PATTERN_NON_NUMBER, ""));
