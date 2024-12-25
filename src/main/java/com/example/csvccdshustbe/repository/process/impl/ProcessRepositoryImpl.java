@@ -98,7 +98,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 response.setTimeCreatedDocument(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[10])), DateUtil.DATE_FORMAT));
                 response.setTimeModifiedDocument(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[11])), DateUtil.DATE_FORMAT));
                 response.setTimeIncrease(ValueUtil.getStringByObject(obj[12]));
-                response.setTimeModifiedDocument(ValueUtil.getStringByObject(obj[13]));
+                response.setTimeDocument(ValueUtil.getStringByObject(obj[13]));
                 response.setIdState(ValueUtil.getIntegerByObject(obj[14]));
                 response.setIdTypeState(ValueUtil.getIntegerByObject(obj[15]));
                 response.setCodeTypeState(ValueUtil.getStringByObject(obj[16]));
@@ -537,6 +537,21 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         if (StringUtils.isNotBlank(request.getCodeTypeProcess())) {
             query.setParameter("typeProcess", request.getCodeTypeProcess());
         }
+        if (StringUtils.isNotBlank(request.getTimeCreated())) {
+            query.setParameter("timeCreate", request.getTimeCreated());
+        }
+        if (StringUtils.isNotBlank(request.getTimeIncrease())) {
+            query.setParameter("timeIncrease", request.getTimeIncrease());
+        }
+        if (StringUtils.isNotBlank(request.getTimeDocument())) {
+            query.setParameter("timeDocument", request.getTimeDocument());
+        }
+        if (StringUtils.isNotBlank(request.getNameUserCreate())) {
+            query.setParameter("nameUserCreate", request.getNameUserCreate());
+        }
+        if (StringUtils.isNotBlank(request.getDescription())) {
+            query.setParameter("description", request.getDescription());
+        }
         if (StringUtils.isNotBlank(request.getCodeDocument())) {
             query.setParameter("codeDocument", request.getCodeDocument());
         }
@@ -546,8 +561,23 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         if (StringUtils.isNotBlank(request.getCodeTypeProcess())){
             sb.append(" and tp.code = :typeProcess  ");
         }
+        if (StringUtils.isNotBlank(request.getNameUserCreate())){
+            sb.append(" and (csvcUserCreate.full_name REGEXP :nameUserCreate ) ");
+        }
+        if (StringUtils.isNotBlank(request.getTimeCreated())){
+            sb.append(" and (dc.time_created REGEXP :timeCreate ) ");
+        }
+        if (StringUtils.isNotBlank(request.getTimeDocument())){
+            sb.append(" and (dc.time_document REGEXP :timeDocument) ");
+        }
+        if (StringUtils.isNotBlank(request.getTimeIncrease())){
+            sb.append(" and (dc.time_increase REGEXP :timeIncrease) ");
+        }
+        if (StringUtils.isNotBlank(request.getDescription())){
+            sb.append(" and (dc.description REGEXP :description) ");
+        }
         if (StringUtils.isNotBlank(request.getCodeDocument())) {
-            sb.append(" and (dc.code REGEXP :codeDocument )  ");
+                sb.append(" and (dc.code REGEXP :codeDocument )  ");
         }
         sb.append(" order by rsh.time_created DESC  ");
     }

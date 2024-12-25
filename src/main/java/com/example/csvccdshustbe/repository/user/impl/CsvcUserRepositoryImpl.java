@@ -512,7 +512,7 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
 
     private void setConditionFindAllUserUsedDto(FindAllUserUsedRequest request, StringBuilder sb) {
         if (StringUtils.isNotBlank(request.getKeyword())){
-            sb.append("  and (csvcUser.user_name REGEXP :keyword ) ");
+            sb.append("  and (csvcUser.full_name REGEXP :keyword ) ");
         }
     }
 

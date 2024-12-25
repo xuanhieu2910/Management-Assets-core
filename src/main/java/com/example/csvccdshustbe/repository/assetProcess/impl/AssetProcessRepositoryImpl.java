@@ -946,20 +946,21 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
 
     private long countFindAllAssetLotProcess(FindAllAssetProcessRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select count(0) " +
-                " from asset asset " +
-                "     left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset " +
-                "     left join process process on assetProcess.id_process = process.id_process " +
-                "     left join asset_categories assetCategories " +
-                "             on asset.id_asset_category = assetCategories.id_asset_category " +
-                "     left join department de on asset.id_department = de.id_department " +
-                "     left join location lo on asset.id_location = lo.id_location " +
-                "     left join document do on process.id_process = do.id_process " +
-                "     inner join asset assetParent on asset.parent = assetParent.id_asset " +
-                " where 1 = 1          " +
-                " and asset.id_department_origin in (:idsDepartmentOriginal)          " +
-                " and do.code = :codeDocument ");
-        setConditionFindAllAssetLotProcess(sb, request);
+        sb.append(" select count(0) from  " +
+                " (select count(0)  " +
+                " from asset asset   " +
+                "    left join asset_process assetProcess on asset.id_asset = assetProcess.id_asset   " +
+                "    left join process process on assetProcess.id_process = process.id_process   " +
+                "    left join asset_categories assetCategories   " +
+                "            on asset.id_asset_category = assetCategories.id_asset_category   " +
+                "    left join department de on asset.id_department = de.id_department   " +
+                "    left join location lo on asset.id_location = lo.id_location   " +
+                "    left join document do on process.id_process = do.id_process   " +
+                "    inner join asset assetParent on asset.parent = assetParent.id_asset   " +
+                "where 1 = 1  " +
+                "  and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                "  and do.code = :codeDocument ");
+        setConditionCountFindAllAssetLotProcess(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetLotProcess(query, request);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
@@ -1008,6 +1009,36 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
             sb.append(" ORDER BY assetParent.id_asset desc ");
         }
     }
+    private void setConditionCountFindAllAssetLotProcess(StringBuilder sb, FindAllAssetProcessRequest request) {
+        if (StringUtils.isNotBlank(request.getNameAsset())){
+            sb.append(" and (assetParent.name REGEXP :nameAsset)  ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
+            sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        sb.append(" group by assetParent.id_asset, assetParent.code_asset, " +
+                "         assetParent.name, assetCategories.id_asset_category, " +
+                "         assetCategories.name, assetCategories.code_name, " +
+                "         de.id_department, de.code, de.name, " +
+                "         lo.id_location, lo.name, assetParent.time_created, " +
+                "         assetParent.time_modified, assetParent.salt, assetProcess.value ");
+        if (StringUtils.isNotBlank(request.getSortBy())){
+            sb.append("ORDER BY ");
+            if (request.getSortBy().equals("nameAsset")) {
+                sb.append(" asset.name ");
+            }
+            if (request.getSortBy().equals("nameDepartment")) {
+                sb.append(" de.name ");
+            }
+            sb.append(" ").append(request.getSortOrder());
+        } else {
+            sb.append(" ORDER BY assetParent.id_asset desc ");
+        }
+        sb.append(" ) as result ");
+    }
 
 
     private long countFindAllAssetProcess(FindAllAssetProcessRequest request) {
@@ -1023,7 +1054,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       left join document do on process.id_process = do.id_process   " +
                 "where 1 = 1   " +
                 "and asset.id_department_origin in (:idsDepartmentOriginal)   " +
-                "and do.code = :codeDocument ");
+                "and do.code = :codeDocument  and asset.parent is null ");
         setConditionFindAllAssetProcess(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetProcess(request, query);
