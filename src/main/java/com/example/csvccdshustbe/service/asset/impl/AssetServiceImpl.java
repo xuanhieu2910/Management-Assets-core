@@ -1072,6 +1072,9 @@ public class AssetServiceImpl implements AssetService {
                             .orElse(0.0)
             ));
             response.setSalt(dto.getSalt());
+
+            response.setCountChildIncrease(dto.getCountChildIncrease());
+            response.setCountChildDecrease(dto.getCountChildDecrease());
             responses.add(response);
         }
         return responses;

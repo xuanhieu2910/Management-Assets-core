@@ -453,7 +453,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       asset.time_created, asset.time_modified, asset.parent, asset.salt,asset.id_type_process_current,     " +
                 "       asset.status_process_current,asset.quantity,     " +
                 "       asset.sum_original_of_formation,     " +
-                "      ad.cumulative,ad.rest_value, asset.status_use, asset.year_use     " +
+                "      ad.cumulative,ad.rest_value, asset.status_use, asset.year_use , " +
+                "       (select count(child.id_asset)    " +
+                "        from asset child    " +
+                "        where child.parent = idAsset    " +
+                "          and child.is_increase = 1) as sum_child_increase,    " +
+                "       (select count(child.id_asset)    " +
+                "        from asset child    " +
+                "        where child.parent = idAsset    " +
+                "          and child.is_decrease = 1) as sum_child_decrease   " +
                 "from asset asset     " +
                 "        inner join asset_categories assetCategories     " +
                 "            on asset.id_asset_category = assetCategories.id_asset_category     " +
@@ -491,7 +499,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setOriginalOfFormation(ValueUtil.getStringByObject(obj[18]));
                 findAllAssetDto.setCumulative(ValueUtil.getStringByObject(obj[19]));
                 findAllAssetDto.setRestValue(ValueUtil.getStringByObject(obj[20]));
-                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[21]));
+                findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[21]));
+                findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[22]));
+                findAllAssetDto.setCountChildIncrease(ValueUtil.getIntegerByObject(obj[23]));
+                findAllAssetDto.setCountChildDecrease(ValueUtil.getIntegerByObject(obj[24]));
                 responses.add(findAllAssetDto);
             }
         }
