@@ -1023,7 +1023,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       left join document do on process.id_process = do.id_process   " +
                 "where 1 = 1   " +
                 "and asset.id_department_origin in (:idsDepartmentOriginal)   " +
-                "and do.code = :codeDocument ");
+                "and do.code = :codeDocument  and asset.parent is null ");
         setConditionFindAllAssetProcess(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetProcess(request, query);
