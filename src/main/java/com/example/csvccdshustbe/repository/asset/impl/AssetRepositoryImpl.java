@@ -866,7 +866,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                                            asset.salt,    " +
                 "                                            assetDepreciation.rest_value,    " +
                 "                                            asset.quantity,    " +
-                "                                            asset.sum_original_of_formation,    " +
+                "                                            asset.sum_original_of_formation  assetOriginalOfFormationValue,    " +
                 "                                            asset.status_use,    " +
                 "                                            asset.year_use,  " +
                 "                                            asset.acreage,    " +
