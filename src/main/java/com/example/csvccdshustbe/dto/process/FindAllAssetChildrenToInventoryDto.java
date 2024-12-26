@@ -37,6 +37,8 @@ public class FindAllAssetChildrenToInventoryDto {
     private String unit;
     private Double acreage;
     private Integer typeTarget;
+    private Integer countChildIncrease;
+    private Integer countChildDecrease;
 
     public FindAllAssetChildrenToInventoryDto(Object[] obj){
         this.idAsset = ValueUtil.getIntegerByObject(obj[7]);
@@ -59,6 +61,8 @@ public class FindAllAssetChildrenToInventoryDto {
         this.unit = ValueUtil.getStringByObject(obj[26]);
         this.acreage = ValueUtil.getDoubleByObject(obj[27]);
         this.isIncrease = ValueUtil.getIntegerByObject(obj[28]);
+        this.countChildIncrease = ValueUtil.getIntegerByObject(obj[29]);
+        this.countChildDecrease = ValueUtil.getIntegerByObject(obj[30]);
 
     }
 

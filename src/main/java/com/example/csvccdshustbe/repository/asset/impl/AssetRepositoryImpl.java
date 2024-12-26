@@ -457,11 +457,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       (select count(child.id_asset)    " +
                 "        from asset child    " +
                 "        where child.parent = idAsset    " +
-                "          and child.is_increase = 1) as sum_child_increase,    " +
+                "          and child.is_increase = :increaseChild) as sum_child_increase,    " +
                 "       (select count(child.id_asset)    " +
                 "        from asset child    " +
                 "        where child.parent = idAsset    " +
-                "          and child.is_decrease = 1) as sum_child_decrease   " +
+                "          and child.is_decrease = :decreaseChild) as sum_child_decrease   " +
                 "from asset asset     " +
                 "        inner join asset_categories assetCategories     " +
                 "            on asset.id_asset_category = assetCategories.id_asset_category     " +
@@ -473,6 +473,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null) ");
         setConditionFindAllAssetDtoToIncrease(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("increaseChild",Constants.IS_INCREASED);
+        query.setParameter("decreaseChild", Constants.IS_DECREASED);
         setParameterFindAllAssetDtoToIncrease(request, query);
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
@@ -882,7 +884,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                                            asset.year_use,  " +
                 "                                            asset.acreage,    " +
                 "                                            units.name as nameUnit,  " +
-                "                                            asset.is_increase   " +
+                "                                            asset.is_increase," +
+                "                       (select count(child.id_asset) " +
+                "                       from asset child    " +
+                "                       where child.parent = idAsset    " +
+                "                         and child.is_increase = :increaseChild) as sum_child_increase,    " +
+                "                      (select count(child.id_asset)    " +
+                "                       from asset child    " +
+                "                       where child.parent = idAsset    " +
+                "                         and child.is_decrease = :decreaseChild) as sum_child_decrease   " +
                 "                                     from asset asset    " +
                 "                                              inner join asset_categories assetCategories    " +
                 "                                                         on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -896,6 +906,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                                         and (asset.status_process_current != :statusProcess or asset.status_process_current is null) ") ;
         setConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("increaseChild",Constants.IS_INCREASED);
+        query.setParameter("decreaseChild", Constants.IS_DECREASED);
         setParameterFindAllAssetDtoToInventory(request, query);
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
@@ -1251,7 +1263,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "        asset.time_created, asset.time_modified, asset.parent, asset.salt,  " +
                 "        assetDepreciation.rest_value,asset.quantity,  " +
                 "        asset.sum_original_of_formation assetOriginalOfFormationValue,  " +
-                "        assetDepreciation.cumulative, asset.status_use, asset.year_use  " +
+                "        assetDepreciation.cumulative, asset.status_use, asset.year_use ," +
+                "       (select count(child.id_asset)    " +
+                "        from asset child    " +
+                "        where child.parent = idAsset    " +
+                "          and child.is_increase = :increaseChild) as sum_child_increase,    " +
+                "       (select count(child.id_asset)    " +
+                "        from asset child    " +
+                "        where child.parent = idAsset    " +
+                "          and child.is_decrease = :decreaseChild) as sum_child_decrease   " +
                 "from asset asset  " +
                 "         inner join asset_categories assetCategories  " +
                 "   on asset.id_asset_category = assetCategories.id_asset_category  " +
@@ -1264,6 +1284,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "  and (asset.status_process_current != :statusProcessCurrent or asset.status_process_current is null)   ");
         setConditionFindAllAssetDtoToDecrease(decreaseRequest, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("increaseChild",Constants.IS_INCREASED);
+        query.setParameter("decreaseChild", Constants.IS_DECREASED);
         setParameterFindAllAssetDtoToDecrease(decreaseRequest, query);
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
@@ -1292,6 +1314,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 findAllAssetDto.setCumulative(ValueUtil.getStringByObject(obj[18]));
                 findAllAssetDto.setStatusUse(ValueUtil.getIntegerByObject(obj[19]));
                 findAllAssetDto.setYearUse(ValueUtil.getStringByObject(obj[20]));
+                findAllAssetDto.setCountChildIncrease(ValueUtil.getIntegerByObject(obj[21]));
+                findAllAssetDto.setCountChildDecrease(ValueUtil.getIntegerByObject(obj[22]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -2371,7 +2395,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       rootAssetCategories.type_target,  " +
                 "       rootAsset.nameUnit,  " +
                 "       rootAsset.acreage," +
-                "       rootAsset.is_increase " +
+                "       rootAsset.is_increase," +
+                "       rootAsset.sum_child_increase            as sumChildIncrease,  " +
+                "       rootAsset.sum_child_decrease            as sumChildDecrease   " +
+
                 "from ROOT_ASSET_CATEGORIES rootAssetCategories  " +
                 "         left join ROOT_ASSET rootAsset on rootAssetCategories.id_asset_category = rootAsset.idAssetCategory  " +
                 "order by rootAssetCategories.path ");

@@ -48,7 +48,10 @@ public class FindAllAssetChildrenToInventoryResponse {
     private Double acreage;
     @JsonProperty("type_target")
     private Integer typeTarget;
-
+    @JsonProperty("count_child_increase")
+    private Integer countChildIncrease;
+    @JsonProperty("count_child_decrease")
+    private Integer countChildDecrease;
 
 
 
