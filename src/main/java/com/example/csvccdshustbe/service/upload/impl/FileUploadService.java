@@ -665,9 +665,9 @@ public class FileUploadService implements FilesStorageService {
         int stt = 1;
         for (CouncilInventoryReportDto councilDto: councilDtos) {
             writeValueCell(sheet, indexRowStart, indexColStart, stt +
-                    ". Ông /Bà....." + (councilDto.getFullName() != null ? councilDto.getFullName() : "...") + "........."
+                    ". Ông/Bà....." + (councilDto.getFullName() != null ? councilDto.getFullName() : "...") + "........."
                             + "Chức vụ:....." + (councilDto.getPosition() != null ? councilDto.getPosition() : "...") + "........."
-                            +  "Đại diện:....." + (councilDto.getInstancePosition() != null ? councilDto.getInstancePosition() : "...") + ".........", null);
+                            +  "Vai trò:....." + (councilDto.getInstancePosition() != null ? councilDto.getInstancePosition() : "...") + ".........", null);
             formatCell(sheet, indexRowStart, 0, false);
             ++indexRowStart;
             ++stt;
