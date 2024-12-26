@@ -40,4 +40,6 @@ public class FindAllAssetDto {
     private Double acreage;
     private String unit;
     private Integer statusAssetProcess;
+    private Integer countChildIncrease;
+    private Integer countChildDecrease;
 }

@@ -38,4 +38,8 @@ public class FindAllAssetResponseToDecrease {
     private String cumulative;
     @JsonProperty("total_original_of_formation")
     private String totalOriginalOfFormation;
+    @JsonProperty("count_child_increase")
+    private Integer countChildIncrease;
+    @JsonProperty("count_child_decrease")
+    private Integer countChildDecrease;
 }

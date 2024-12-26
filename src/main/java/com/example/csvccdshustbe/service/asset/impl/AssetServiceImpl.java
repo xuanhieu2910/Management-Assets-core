@@ -1072,6 +1072,9 @@ public class AssetServiceImpl implements AssetService {
                             .orElse(0.0)
             ));
             response.setSalt(dto.getSalt());
+
+            response.setCountChildIncrease(dto.getCountChildIncrease());
+            response.setCountChildDecrease(dto.getCountChildDecrease());
             responses.add(response);
         }
         return responses;
@@ -1722,6 +1725,8 @@ public class AssetServiceImpl implements AssetService {
         leaf.setAcreage(assetLeaf.getAcreage());
         leaf.setTypeTarget(assetLeaf.getTypeTarget());
         leaf.setOriginalOfFormation(assetLeaf.getOriginalOfFormation());
+        leaf.setCountChildIncrease(assetLeaf.getCountChildIncrease());
+        leaf.setCountChildDecrease(assetLeaf.getCountChildDecrease());
         return leaf;
     }
 
@@ -1797,6 +1802,8 @@ public class AssetServiceImpl implements AssetService {
             decrease.setRestValue(dto.getRestValue());
             decrease.setTotalOriginalOfFormation(dto.getOriginalOfFormation());
             decrease.setCumulative(dto.getCumulative());
+            decrease.setCountChildIncrease(dto.getCountChildIncrease());
+            decrease.setCountChildDecrease(dto.getCountChildDecrease());
             response.add(decrease);
         }
         return response;

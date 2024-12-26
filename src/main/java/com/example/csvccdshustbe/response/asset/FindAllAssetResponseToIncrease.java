@@ -37,4 +37,8 @@ public class FindAllAssetResponseToIncrease {
     private String cumulative;
     @JsonProperty("rest_value")
     private String restValue;
+    @JsonProperty("count_child_increase")
+    private Integer countChildIncrease;
+    @JsonProperty("count_child_decrease")
+    private Integer countChildDecrease;
 }
