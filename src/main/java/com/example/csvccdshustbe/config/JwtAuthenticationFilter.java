@@ -71,10 +71,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void setContextHolder() {
         OidcUser oidcUser = (OidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CsvcUser csvcUser = oidcUser.getUserInfo().getClaim(WebSecurityConfig.INFORMATION_USER);
+        UserDetails userDetails = this.csvcUserService.loadUserByUsername(csvcUser.getUsername());
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                csvcUser,
+                userDetails,
                 null,
-                csvcUser.getAuthorities());
+                userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 
