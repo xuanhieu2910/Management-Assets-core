@@ -457,11 +457,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       (select count(child.id_asset)    " +
                 "        from asset child    " +
                 "        where child.parent = idAsset    " +
-                "          and child.is_increase = :increaseChild) as sum_child_increase,    " +
+                "          and child.is_increase = :increaseChild and child.status_process_current != :statusProcessCurrent ) as sum_child_increase,    " +
                 "       (select count(child.id_asset)    " +
                 "        from asset child    " +
                 "        where child.parent = idAsset    " +
-                "          and child.is_decrease = :decreaseChild) as sum_child_decrease   " +
+                "          and child.is_decrease = :decreaseChild and child.status_process_current != :statusProcessCurrent ) as sum_child_decrease   " +
                 "from asset asset     " +
                 "        inner join asset_categories assetCategories     " +
                 "            on asset.id_asset_category = assetCategories.id_asset_category     " +
@@ -888,11 +888,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                       (select count(child.id_asset) " +
                 "                       from asset child    " +
                 "                       where child.parent = idAsset    " +
-                "                         and child.is_increase = :increaseChild) as sum_child_increase,    " +
+                "                         and child.is_increase = :increaseChild and child.status_process_current != :statusProcess ) as sum_child_increase,    " +
                 "                      (select count(child.id_asset)    " +
                 "                       from asset child    " +
                 "                       where child.parent = idAsset    " +
-                "                         and child.is_decrease = :decreaseChild) as sum_child_decrease   " +
+                "                         and child.is_decrease = :decreaseChild and child.status_process_current != :statusProcess ) as sum_child_decrease   " +
                 "                                     from asset asset    " +
                 "                                              inner join asset_categories assetCategories    " +
                 "                                                         on asset.id_asset_category = assetCategories.id_asset_category " +
@@ -1267,11 +1267,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "       (select count(child.id_asset)    " +
                 "        from asset child    " +
                 "        where child.parent = idAsset    " +
-                "          and child.is_increase = :increaseChild) as sum_child_increase,    " +
+                "          and child.is_increase = :increaseChild and child.status_process_current != :statusProcessCurrent ) as sum_child_increase,    " +
                 "       (select count(child.id_asset)    " +
                 "        from asset child    " +
                 "        where child.parent = idAsset    " +
-                "          and child.is_decrease = :decreaseChild) as sum_child_decrease   " +
+                "          and child.is_decrease = :decreaseChild and child.status_process_current != :statusProcessCurrent ) as sum_child_decrease   " +
                 "from asset asset  " +
                 "         inner join asset_categories assetCategories  " +
                 "   on asset.id_asset_category = assetCategories.id_asset_category  " +

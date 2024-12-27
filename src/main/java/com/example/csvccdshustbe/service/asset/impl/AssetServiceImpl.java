@@ -2690,7 +2690,12 @@ public class AssetServiceImpl implements AssetService {
             String[] originOfFormationNameArray = originalOfFormationValues.split(";");
             for (int i = 0; i < originOfFormationNameArray.length; i++) {
                 Map<String, Object> originOfFormation = new HashMap<>();
-                originOfFormation.put("idOriginOfFormation", originalOfFormationMap.get(originOfFormationNameArray[i]).getIdOriginalOfFormation());
+                if (!originalOfFormationMap.containsKey(originOfFormationNameArray[i])) {
+                    errorList.add("Tên nguồn hình thành không tồn tại: " + originOfFormationNameArray[i]);
+                } else {
+                    originOfFormation.put("idOriginOfFormation",
+                            originalOfFormationMap.get(originOfFormationNameArray[i]).getIdOriginalOfFormation());
+                }
                 originOfFormation.put("nameOriginOfFormation", originOfFormationNameArray[i]);
                 originOfFormation.put("value", null);
             }
@@ -2716,7 +2721,12 @@ public class AssetServiceImpl implements AssetService {
                     originOfFormation.put("idOriginOfFormation", null);
                     originOfFormation.put("nameOriginOfFormation", null);
                 } else {
-                    originOfFormation.put("idOriginOfFormation", originalOfFormationMap.get(originOfFormationNameArray[i]).getIdOriginalOfFormation());
+                    if (!originalOfFormationMap.containsKey(originOfFormationNameArray[i])) {
+                        errorList.add("Tên nguồn hình thành không tồn tại: " + originOfFormationNameArray[i]);
+                    } else {
+                        originOfFormation.put("idOriginOfFormation",
+                                originalOfFormationMap.get(originOfFormationNameArray[i]).getIdOriginalOfFormation());
+                    }
                     originOfFormation.put("nameOriginOfFormation", originOfFormationNameArray[i]);
                 }
                 if (originOfFormationValuesArray.length - 1 < i) {
