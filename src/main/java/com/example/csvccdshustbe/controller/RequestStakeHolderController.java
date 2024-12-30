@@ -27,11 +27,12 @@ public class RequestStakeHolderController {
     @Autowired
     RequestStakeHolderService requestStakeHolderService;
 
-    @PostMapping("/approved")
-    public ResponseEntity<?> approvedRequestStakeHolder(@RequestBody ApprovedRequestStakeHolderRequest request){
+
+    @PostMapping("/approved-increase")
+    public ResponseEntity<?> approvedRequestStakeHolderIncrease(@RequestBody ApprovedRequestStakeHolderRequest request){
         try {
             requestStakeHolderService.approvedRequestStakeHolder(request);
-            return ApiResponseDto.createdWithMessage("Approved request stake holder success!", HttpStatus.OK);
+            return ApiResponseDto.createdWithMessage("Approved request stake holder increase success!", HttpStatus.OK);
         } catch (NotFoundException e){
             log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -41,7 +42,71 @@ public class RequestStakeHolderController {
         }
     }
 
-
+    @PostMapping("/approved-change")
+    public ResponseEntity<?> approvedRequestStakeHolderChange(@RequestBody ApprovedRequestStakeHolderRequest request){
+        try {
+            requestStakeHolderService.approvedRequestStakeHolder(request);
+            return ApiResponseDto.createdWithMessage("Approved request stake holder change success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            log.error(e.getMessage());
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+    @PostMapping("/approved-revaluation")
+    public ResponseEntity<?> approvedRequestStakeHolderRevaluation(@RequestBody ApprovedRequestStakeHolderRequest request){
+        try {
+            requestStakeHolderService.approvedRequestStakeHolder(request);
+            return ApiResponseDto.createdWithMessage("Approved request stake holder revaluation success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            log.error(e.getMessage());
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+    @PostMapping("/approved-decrease")
+    public ResponseEntity<?> approvedRequestStakeHolderRevaluationDecrease(@RequestBody ApprovedRequestStakeHolderRequest request){
+        try {
+            requestStakeHolderService.approvedRequestStakeHolder(request);
+            return ApiResponseDto.createdWithMessage("Approved request stake holder decrease success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            log.error(e.getMessage());
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+    @PostMapping("/approved-revaluation-document-inventory")
+    public ResponseEntity<?> approvedRequestStakeHolderRevaluationDocumentInventory(@RequestBody ApprovedRequestStakeHolderRequest request){
+        try {
+            requestStakeHolderService.approvedRequestStakeHolder(request);
+            return ApiResponseDto.createdWithMessage("Approved request stake holder document inventory success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            log.error(e.getMessage());
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+    @PostMapping("/approved-revaluation-inventory")
+    public ResponseEntity<?> approvedRequestStakeHolderRevaluationInventory(@RequestBody ApprovedRequestStakeHolderRequest request){
+        try {
+            requestStakeHolderService.approvedRequestStakeHolder(request);
+            return ApiResponseDto.createdWithMessage("Approved request stake holder inventory success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            log.error(e.getMessage());
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 //    @PostMapping("/approved-document-inventory")
 //    public  ResponseEntity<?> approvedDocumentInventory(@RequestBody ApprovedDocumentProcessInventoryRequest request){
 //        try {
@@ -54,3 +119,4 @@ public class RequestStakeHolderController {
 //        }
 //    }
 }
+
