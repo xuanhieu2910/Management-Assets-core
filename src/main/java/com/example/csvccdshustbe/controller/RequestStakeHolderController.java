@@ -94,7 +94,7 @@ public class RequestStakeHolderController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-    @PostMapping("/approved-inventory")
+    @PostMapping("/approved-update-inventory")
     public ResponseEntity<?> approvedRequestStakeHolderRevaluationInventory(@RequestBody ApprovedRequestStakeHolderRequest request){
         try {
             requestStakeHolderService.approvedRequestStakeHolder(request);
