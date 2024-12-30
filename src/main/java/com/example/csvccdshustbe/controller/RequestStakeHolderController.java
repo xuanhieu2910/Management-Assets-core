@@ -81,7 +81,7 @@ public class RequestStakeHolderController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-    @PostMapping("/approved-revaluation-document-inventory")
+    @PostMapping("/approved-document-inventory")
     public ResponseEntity<?> approvedRequestStakeHolderRevaluationDocumentInventory(@RequestBody ApprovedRequestStakeHolderRequest request){
         try {
             requestStakeHolderService.approvedRequestStakeHolder(request);
@@ -94,7 +94,7 @@ public class RequestStakeHolderController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-    @PostMapping("/approved-revaluation-inventory")
+    @PostMapping("/approved-inventory")
     public ResponseEntity<?> approvedRequestStakeHolderRevaluationInventory(@RequestBody ApprovedRequestStakeHolderRequest request){
         try {
             requestStakeHolderService.approvedRequestStakeHolder(request);
