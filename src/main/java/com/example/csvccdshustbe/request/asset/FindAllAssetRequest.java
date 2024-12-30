@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class FindAllAssetRequest  extends RequestPageBase {
 
+    private String codeAsset;
     private String nameAsset;
     private Integer idAssetCategory;
     private Integer idDepartment;
