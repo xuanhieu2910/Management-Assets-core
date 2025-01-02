@@ -2742,6 +2742,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAsset(FindAllAssetRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        if (StringUtils.isNotBlank(request.getCodeAsset())){
+            query.setParameter("codeAsset", request.getCodeAsset());
+        }
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }
@@ -2767,6 +2770,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setConditionFindAllAsset(FindAllAssetRequest request, StringBuilder sb) {
 
+        if (StringUtils.isNotBlank(request.getCodeAsset())){
+            sb.append(" and (asset.code_asset REGEXP :codeAsset ) ");
+        }
         if (StringUtils.isNotBlank(request.getNameAsset())){
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
         }
@@ -2807,6 +2813,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setConditionCountFindAllAsset(FindAllAssetRequest request, StringBuilder sb) {
 
+        if (StringUtils.isNotBlank(request.getCodeAsset())){
+            sb.append(" and (asset.code_asset REGEXP :codeAsset ) ");
+        }
         if (StringUtils.isNotBlank(request.getNameAsset())){
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
         }
