@@ -15,10 +15,7 @@ import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.role.RoleService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
-import com.example.csvccdshustbe.utility.CodeUserUtil;
-import com.example.csvccdshustbe.utility.Constants;
-import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.RoleUtils;
+import com.example.csvccdshustbe.utility.*;
 import jakarta.servlet.ServletException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -46,6 +44,8 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     RoleService roleService;
     @Autowired
     DepartmentService departmentService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -329,6 +329,7 @@ public class CsvcUserServiceImpl implements CsvcUserService {
         csvcUser.setTimeModified(timeCurrently);
         csvcUser.setIsActived(Constants.ACCOUNT_IS_UN_LOCK);
         csvcUser.setAuth(OAuth2Factory.azure.name());
+        csvcUser.setPassword(passwordEncoder.encode(PropertiesUtil.getProperty("it.hust.csvc.not.use")));
         csvcUser.setCodeUser(CodeUserUtil.autoGenerateSecureRandomUser(userName));
         csvcUser.setFullName(fullName);
         return csvcUser;
