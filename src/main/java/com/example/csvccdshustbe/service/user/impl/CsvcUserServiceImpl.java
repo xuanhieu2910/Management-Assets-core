@@ -18,6 +18,7 @@ import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.*;
 import jakarta.servlet.ServletException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -44,6 +45,7 @@ public class CsvcUserServiceImpl implements CsvcUserService {
     RoleService roleService;
     @Autowired
     DepartmentService departmentService;
+    @Lazy
     @Autowired
     PasswordEncoder passwordEncoder;
 
