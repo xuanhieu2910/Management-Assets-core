@@ -142,7 +142,7 @@ public class LocationServiceImpl implements LocationService {
             location.setIdDepartment(request.getIdDepartment());
         }
         if (ObjectUtils.isNotEmpty(request.getDescription())) {
-            location.setDescriprtion(request.getDescription());
+            location.setDescription(request.getDescription());
         }
         String timeCurrent = String.valueOf(new Date().getTime());
         location.setTimeCreated(timeCurrent);
@@ -193,7 +193,7 @@ public class LocationServiceImpl implements LocationService {
         location.setParent(request.getParentId());
         location.setIdDepartment(request.getIdDepartment());
         location.setVisible(request.getVisible());
-        location.setDescriprtion(request.getDescription());
+        location.setDescription(request.getDescription());
         String timeModified = String.valueOf(new Date().getTime());
         location.setTimeModified(timeModified);
         return location;

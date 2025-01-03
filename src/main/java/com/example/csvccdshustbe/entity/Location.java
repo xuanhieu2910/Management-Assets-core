@@ -29,6 +29,6 @@ public class Location {
     private Integer visible;
     @Column(name = "id_department")
     private Integer idDepartment;
-    @Column(name = "descriprtion")
-    private String descriprtion;
+    @Column(name = "description")
+    private String description;
 }
