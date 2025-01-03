@@ -37,7 +37,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 "             location.parent, location.visible,  " +
                 "             location.time_created, location.time_modified,  " +
                 "             1 as depth,     " +
-                "             CAST(location.id_location as NCHAR ) as path  " +
+                "             CAST(location.id_location as NCHAR ) as path,location.description  " +
                 "      from location  " +
                 "      where location.parent is null  " +
                 "      union all     " +
@@ -46,7 +46,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 "             location.parent, location.visible,  " +
                 "             location.time_created, location.time_modified,  " +
                 "             cte.depth + 1 as depth,     " +
-                "             concat_ws('/',cte.path,CAST(location.id_location as NCHAR)) as path  " +
+                "             concat_ws('/',cte.path,CAST(location.id_location as NCHAR)) as path,location.description  " +
                 "      from location  " +
                 "               INNER JOIN cte_location cte ON location.parent = cte.id_location  " +
                 "      )     " +
@@ -54,7 +54,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 "         cte.short_name, cte.id_department, cte.parent,  " +
                 "         cte.visible,   " +
                 "         cte.time_created, cte.time_modified,  " +
-                "         cte.depth, cte.path  " +
+                "         cte.depth, cte.path,cte.description  " +
                 "  from cte_location cte " +
                 "    inner join department de on cte.id_department = de.id_department " +
                 "  where 1 = 1  " +
@@ -79,6 +79,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 dto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
                 dto.setDepth(ValueUtil.getIntegerByObject(obj[8]));
                 dto.setPath(ValueUtil.getStringByObject(obj[9]));
+                dto.setDescription(ValueUtil.getStringByObject(obj[10]));
                 findAllLocationDtos.add(dto);
             }
         }
@@ -95,7 +96,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 "               location.time_created, location.time_modified,        " +
                 "               1 as depth,           " +
                 "               CAST(location.id_location as NCHAR ) as path ,   " +
-                "               case when location.parent is not null then location.name end nameParent   " +
+                "               case when location.parent is not null then location.name end nameParent,location.description  " +
                 "        from location        " +
                 "        where location.parent is null        " +
                 "        union all           " +
@@ -105,7 +106,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 "               location.time_created, location.time_modified,        " +
                 "               cte.depth + 1 as depth,           " +
                 "               concat_ws('/',cte.path,CAST(location.id_location as NCHAR)) as path,   " +
-                "               cte.name nameParent   " +
+                "               cte.name nameParent ,location.description  " +
                 "        from location        " +
                 "                 INNER JOIN cte_location cte ON location.parent = cte.id_location        " +
                 "        )           " +
@@ -114,10 +115,10 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 "           cte.visible,         " +
                 "           cte.time_created, cte.time_modified,        " +
                 "           cte.depth, cte.path, cte.nameParent, " +
-                "           de.name nameDepartment  " +
+                "           de.name nameDepartment, cte.description " +
                 "from cte_location cte   " +
                 "      left join department de on cte.id_department = de.id_department       " +
-                "where 1 = 1 ");
+                "where 1 = 1 and de.id_department in (:idsDepartment) ");
         setConditionFindAllLocation(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllLocation(request, query);
@@ -139,6 +140,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 dto.setPath(ValueUtil.getStringByObject(obj[9]));
                 dto.setNameParent(ValueUtil.getStringByObject(obj[10]));
                 dto.setNameDepartment(ValueUtil.getStringByObject(obj[11]));
+                dto.setDescription(ValueUtil.getStringByObject(obj[12]));
                 findAllLocationDtos.add(dto);
             }
         }
@@ -155,6 +157,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
     }
 
     private void setParameterFindAllLocation(FindAllLocationRequest request, Query query) {
+        query.setParameter("idsDepartment", request.getIdsDepartment());
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
         }
@@ -188,7 +191,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 "             location.parent, location.visible,   " +
                 "             location.time_created, location.time_modified,   " +
                 "             1 as depth,      " +
-                "             CAST(location.id_location as NCHAR ) as path   " +
+                "             CAST(location.id_location as NCHAR ) as path ,location.description  " +
                 "      from location   " +
                 "      where location.parent is null   " +
                 "      union all      " +
@@ -197,7 +200,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 "             location.parent, location.visible,   " +
                 "             location.time_created, location.time_modified,   " +
                 "             cte.depth + 1 as depth,      " +
-                "             concat_ws('/',cte.path,CAST(location.id_location as NCHAR)) as path   " +
+                "             concat_ws('/',cte.path,CAST(location.id_location as NCHAR)) as path,location.description   " +
                 "      from location   " +
                 "               INNER JOIN cte_location cte ON location.parent = cte.id_location   " +
                 "      )      " +
@@ -222,7 +225,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 "               location.time_created, location.time_modified,        " +
                 "               1 as depth,           " +
                 "               CAST(location.id_location as NCHAR ) as path ,   " +
-                "               case when location.parent is not null then location.name end nameParent   " +
+                "               case when location.parent is not null then location.name end nameParent,location.description   " +
                 "        from location        " +
                 "        where location.parent is null        " +
                 "        union all           " +
@@ -232,14 +235,14 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 "               location.time_created, location.time_modified,        " +
                 "               cte.depth + 1 as depth,           " +
                 "               concat_ws('/',cte.path,CAST(location.id_location as NCHAR)) as path,   " +
-                "               cte.name nameParent   " +
+                "               cte.name nameParent,location.description   " +
                 "        from location        " +
                 "                 INNER JOIN cte_location cte ON location.parent = cte.id_location        " +
                 "        )           " +
                 "    select count(0) count   " +
                 "from cte_location cte   " +
                 "      inner join department de on cte.id_department = de.id_department       " +
-                "where 1 = 1  ");
+                "where 1 = 1 and de.id_department in (:idsDepartment) ");
         setConditionFindAllLocation(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllLocation(request, query);

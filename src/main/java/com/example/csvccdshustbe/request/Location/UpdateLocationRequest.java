@@ -17,5 +17,5 @@ public class UpdateLocationRequest {
     private String shortName;
     private Integer visible;
     private Integer idDepartment;
-
+    private String description;
 }

@@ -23,5 +23,7 @@ public class FindAllLocationVisibleResponse {
     private Integer depth;
     @JsonProperty("path")
     private String path;
+    @JsonProperty("description")
+    private String description;
 
 }

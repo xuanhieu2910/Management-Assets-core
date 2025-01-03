@@ -20,4 +20,5 @@ public class FindAllLocationDto {
     private String path;
     private String nameParent;
     private String nameDepartment;
+    private String description;
 }

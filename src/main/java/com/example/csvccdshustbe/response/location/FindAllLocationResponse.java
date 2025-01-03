@@ -29,4 +29,6 @@ public class FindAllLocationResponse {
     private Integer visible;
     @JsonProperty("name_department")
     private String nameDepartment;
+    @JsonProperty("description")
+    private String description;
 }

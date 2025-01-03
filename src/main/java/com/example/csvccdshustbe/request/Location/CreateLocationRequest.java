@@ -16,4 +16,5 @@ public class CreateLocationRequest {
     private String shortName;
     private Integer visible;
     private Integer idDepartment;
+    private String description;
 }

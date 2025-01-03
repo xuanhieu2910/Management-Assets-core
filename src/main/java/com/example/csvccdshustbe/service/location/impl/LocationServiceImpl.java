@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.location.impl;
 
 import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Location;
 import com.example.csvccdshustbe.entity.Projects;
@@ -12,6 +13,7 @@ import com.example.csvccdshustbe.request.Location.*;
 import com.example.csvccdshustbe.response.location.FindAllLocationResponse;
 import com.example.csvccdshustbe.response.location.FindAllLocationVisibleResponse;
 import com.example.csvccdshustbe.service.location.LocationService;
+import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -37,7 +40,8 @@ public class LocationServiceImpl implements LocationService {
 
     @Autowired
     DepartmentRepository departmentRepository;
-
+    @Autowired
+    UserRoleService userRoleService;
     @Override
     public Page<FindAllLocationVisibleResponse> findAllLocationVisibleResponse(FindAllLocationVisibleRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
@@ -49,6 +53,8 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Page<FindAllLocationResponse> findAllLocationResponse(FindAllLocationRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartment(csvcUser.getIdsDepartmentCurrent());
         Page<FindAllLocationDto> dtos = locationRepository.findAllLocation(pageable, request);
         return new PageImpl<>(convertToFindAllLocationsResponse(dtos.get().collect(Collectors.toList())),
                 pageable, dtos.getTotalElements());
@@ -65,6 +71,7 @@ public class LocationServiceImpl implements LocationService {
             res.setDepth(allLocationDto.getDepth());
             res.setPath(allLocationDto.getPath());
             res.setIdDepartment(allLocationDto.getIdDepartment());
+            res.setDescription(allLocationDto.getDescription());
             responses.add(res);
         }
         return responses;
@@ -84,6 +91,7 @@ public class LocationServiceImpl implements LocationService {
             res.setNameParent(allLocationDto.getNameParent());
             res.setVisible(allLocationDto.getVisible());
             res.setNameDepartment(allLocationDto.getNameDepartment());
+            res.setDescription(allLocationDto.getDescription());
             responses.add(res);
         }
         return responses;
@@ -132,6 +140,9 @@ public class LocationServiceImpl implements LocationService {
         }
         if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
             location.setIdDepartment(request.getIdDepartment());
+        }
+        if (ObjectUtils.isNotEmpty(request.getDescription())) {
+            location.setDescriprtion(request.getDescription());
         }
         String timeCurrent = String.valueOf(new Date().getTime());
         location.setTimeCreated(timeCurrent);
@@ -182,6 +193,7 @@ public class LocationServiceImpl implements LocationService {
         location.setParent(request.getParentId());
         location.setIdDepartment(request.getIdDepartment());
         location.setVisible(request.getVisible());
+        location.setDescriprtion(request.getDescription());
         String timeModified = String.valueOf(new Date().getTime());
         location.setTimeModified(timeModified);
         return location;

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -12,4 +14,5 @@ import lombok.Setter;
 public class FindAllLocationRequest extends RequestPageBase {
 
     private Integer status;
+    private List<Integer> idsDepartment;
 }
