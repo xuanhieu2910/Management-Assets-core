@@ -254,7 +254,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" select location.id_location, location.name, " +
                 "       location.short_name, location.parent, location.id_department, " +
-                "       location.time_created, location.time_modified, location.visible " +
+                "       location.time_created, location.time_modified, location.visible,location.description " +
                 "from location " +
                 "where location.name = :name ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -271,6 +271,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 location.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
                 location.setTimeModified(ValueUtil.getStringByObject(obj[6]));
                 location.setVisible(ValueUtil.getIntegerByObject(obj[7]));
+                location.setDescription(ValueUtil.getStringByObject(obj[8]));
                 return Optional.of(location);
             }
         }
@@ -282,7 +283,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" select location.id_location, location.name, " +
                 "       location.short_name, location.parent, location.id_department, " +
-                "       location.time_created, location.time_modified, location.visible " +
+                "       location.time_created, location.time_modified, location.visible,location.description " +
                 "from location " +
                 "where location.id_location = :idParent ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -299,6 +300,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 location.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
                 location.setTimeModified(ValueUtil.getStringByObject(obj[6]));
                 location.setVisible(ValueUtil.getIntegerByObject(obj[7]));
+                location.setDescription(ValueUtil.getStringByObject(obj[8]));
                 return Optional.of(location);
             }
         }
@@ -310,7 +312,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" select location.id_location, location.name, " +
                 "       location.short_name, location.parent, location.id_department, " +
-                "       location.time_created, location.time_modified, location.visible " +
+                "       location.time_created, location.time_modified, location.visible ,location.description " +
                 "from location " +
                 "where location.id_location = :idLocation ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -327,6 +329,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 location.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
                 location.setTimeModified(ValueUtil.getStringByObject(obj[6]));
                 location.setVisible(ValueUtil.getIntegerByObject(obj[7]));
+                location.setDescription(ValueUtil.getStringByObject(obj[8]));
                 return Optional.of(location);
             }
         }
@@ -363,7 +366,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" select lo.id_location, lo.name, lo.short_name, " +
                 "       lo.parent, lo.time_created, lo.time_modified, " +
-                "       lo.visible, lo.id_department " +
+                "       lo.visible, lo.id_department,lo.description " +
                 "from location lo " +
                 "    inner join department de on lo.id_department = de.id_department " +
                 "and lo.id_location = :idLocation " +
@@ -385,6 +388,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 location.setTimeModified(ValueUtil.getStringByObject(obj[5]));
                 location.setVisible(ValueUtil.getIntegerByObject(obj[6]));
                 location.setIdDepartment(ValueUtil.getIntegerByObject(obj[7]));
+                location.setDescription(ValueUtil.getStringByObject(obj[8]));
                 return Optional.of(location);
             }
         }
@@ -409,7 +413,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" select location.id_location, location.name, " +
                 "       location.short_name, location.parent, location.id_department, " +
-                "       location.time_created, location.time_modified, location.visible " +
+                "       location.time_created, location.time_modified, location.visible,location.description " +
                 "from location " +
                 "where location.id_location in :idLocation ");
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -427,6 +431,7 @@ public class LocationRepositoryImpl implements LocationRepositoryCustom {
                 location.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
                 location.setTimeModified(ValueUtil.getStringByObject(obj[6]));
                 location.setVisible(ValueUtil.getIntegerByObject(obj[7]));
+                location.setDescription(ValueUtil.getStringByObject(obj[8]));
                 locationList.add(location);
             }
         }
