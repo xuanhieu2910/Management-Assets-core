@@ -23,8 +23,6 @@ public class UnitsTool {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
-    @Column(name = "id_tool_category")
-    private Integer idToolCategory;
     @Column(name = "status")
     private Integer status;
 
