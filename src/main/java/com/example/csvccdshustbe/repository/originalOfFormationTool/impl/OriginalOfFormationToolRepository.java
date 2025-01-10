@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.originalOfFormationTool.impl;
+
+import com.example.csvccdshustbe.repository.originalOfFormationTool.OriginalOfFormationToolRepositoryCustom;
+
+public class OriginalOfFormationToolRepository implements OriginalOfFormationToolRepositoryCustom {
+}
