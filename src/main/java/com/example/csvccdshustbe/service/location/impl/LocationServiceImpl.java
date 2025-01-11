@@ -1,11 +1,9 @@
 package com.example.csvccdshustbe.service.location.impl;
 
 import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
-import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.entity.Location;
-import com.example.csvccdshustbe.entity.Projects;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.department.DepartmentRepository;
 import com.example.csvccdshustbe.repository.location.LocationRepository;
@@ -16,7 +14,6 @@ import com.example.csvccdshustbe.service.location.LocationService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

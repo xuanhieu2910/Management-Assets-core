@@ -388,6 +388,7 @@ public class Constants {
     public static String PREFIX_ASSET = "TS";
     public static String PREFIX_ASSET_LOT = "LO";
     public static String PREFIX_ASSET_KK = "KK";
+    public static String PREFIX_ASSET_CCDC = "CCDC";
     /*----------------------------------------------------*/
     /**
      * Constant Status Request data
@@ -590,5 +591,19 @@ public class Constants {
      * */
 
     public final static Integer DEPTH_DEFAULT = 1;
+    /*----------------------------------------------------*/
+    /**
+     * Constant visible tool categories
+     * */
+    public static  Integer TOOL_CATEGORY_IS_VISIBLE = 1;
+    public static  Integer TOOL_CATEGORY_NOT_IS_VISIBLE = -1;
+    /*----------------------------------------------------*/
+
+    /**
+     * Constant tool
+     * */
+    public static  Integer TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT = 0;
+    public static  Integer TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT = 0;
+
     /*----------------------------------------------------*/
 }

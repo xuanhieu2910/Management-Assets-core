@@ -1,29 +1,47 @@
 package com.example.csvccdshustbe.service.tool.impl;
 
 import com.example.csvccdshustbe.dto.tool.ToolDto;
+import com.example.csvccdshustbe.entity.Asset;
 import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.entity.Department;
+import com.example.csvccdshustbe.entity.Tool;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.tool.ToolRepository;
-import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
+import com.example.csvccdshustbe.request.tool.*;
 import com.example.csvccdshustbe.response.tool.FindAllToolResponse;
+import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.tool.ToolService;
+import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
+import com.example.csvccdshustbe.service.user.CsvcUserService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
+import com.example.csvccdshustbe.utility.ValueUtil;
+import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ToolServiceImpl implements ToolService {
 
     @Autowired
     ToolRepository toolRepository;
-
+    @Autowired
+    DepartmentService departmentService;
+    @Autowired
+    ToolCategoriesService toolCategoriesService;
+    @Autowired
+    CsvcUserService csvcUserService;
     @Override
     public Page<FindAllToolResponse> findAllToolResponse(FindAllToolRequest request) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -31,6 +49,203 @@ public class ToolServiceImpl implements ToolService {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<ToolDto> toolDtos = toolRepository.findAllToolDto(request, pageable);
         return new PageImpl<>(convertToFindAllToolResponse(toolDtos), pageable, toolDtos.getTotalElements());
+    }
+
+    @Override
+    public String generateCodeTool() {
+        int minLength = 4;
+        String prefix = Constants.PREFIX_ASSET_CCDC;
+        Integer idDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdDepartmentCurrent();
+        Department department =
+                departmentService.findDepartmentByIdDepartmentAndStatus(idDepartment, Constants.DEPARTMENT_ACTIVE_STATUS);
+        int codeValueCurrent = 1;
+        if (StringUtils.isNotBlank(department.getCode())){
+            prefix = department.getCode() + Constants.PREFIX_ASSET_CCDC;
+        }
+        Optional<Tool> tool = toolRepository.findLastToolByIdDepartmentOriginal(idDepartment);
+        if (tool.isEmpty()) {
+            return prefix + String.format("%0" + minLength +"d", codeValueCurrent) + "-" + String.valueOf(new Date().getTime());
+        }
+        String codeDocument = tool.get().getCodeTool().split("-")[0];
+        codeValueCurrent = Integer.parseInt(codeDocument.replaceAll(ValueUtil.PATTERN_NON_NUMBER, ""));
+        if (String.valueOf(codeValueCurrent).length() > minLength) {
+            minLength = minLength + 2;
+        }
+        return prefix + String.format("%0" + minLength + "d",(codeValueCurrent + 1)) + "-" + String.valueOf(new Date().getTime());
+    }
+
+    @Transactional
+    @Override
+    public void createNewTool(CreateNewToolRequest createNewToolRequest) throws ValidateFiledException {
+        validateFieldCreateNewTool(createNewToolRequest);
+        storeNewTool(createNewToolRequest);
+    }
+
+    @Override
+    public void updateTool(UpdateToolRequest updateToolRequest) throws ValidateFiledException {
+        validateFiledUpdateTool(updateToolRequest);
+        Tool tool = findToolBySaltTool(updateToolRequest.getSalt());
+        updateFieldTool(tool, updateToolRequest);
+        updateFiledChildrenTool(tool, updateToolRequest.getAllocateToolRequestList());
+    }
+
+    private void updateFiledChildrenTool(Tool tool, List<UpdateListAllocateToolRequest> allocateToolRequestList) {
+        List<Tool> tools = findAllChildrenToolByIdToolParent(tool.getIdTool());
+        for (UpdateListAllocateToolRequest allocateToolRequest : allocateToolRequestList){
+            Optional<CsvcUser> user = csvcUserService.findByUserName(allocateToolRequest.getUserName());
+            if (user.isEmpty()) {
+                throw new NotFoundException("Don't exits user by user name");
+            }
+            tools.stream()
+                    .filter(x->x.getSalt().equals(allocateToolRequest.getSalt()))
+                    .findFirst().ifPresent(x -> {
+                x.setName(tool.getName());
+                x.setYearUse(tool.getYearUse());
+                x.setIdDepartment(allocateToolRequest.getIdDepartment());
+                x.setIdLocation(allocateToolRequest.getIdLocation());
+                x.setStatusUse(allocateToolRequest.getStatusUse());
+                x.setQuantity(allocateToolRequest.getQuantity());
+                x.setIdUserUse(user.get().getIdUser());
+                x.setTimeModified(String.valueOf(new Date().getTime()));
+                x.setIdUserModified(tool.getIdUserModified());
+            });
+        }
+        toolRepository.saveAll(tools);
+    }
+
+    private void updateFieldTool(Tool tool, UpdateToolRequest updateToolRequest) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        tool.setName(updateToolRequest.getNameTool());
+        tool.setIdToolCategory(updateToolRequest.getIdToolCategory());
+        tool.setValue(updateToolRequest.getValue());
+        tool.setQuantity(updateToolRequest.getQuantity());
+        tool.setYearUse(updateToolRequest.getYearUse());
+        tool.setTimeModified(String.valueOf(new Date().getTime()));
+        tool.setIdUserModified(csvcUser.getIdUser());
+        toolRepository.save(tool);
+    }
+
+    @Override
+    public Tool findToolBySaltTool(String salt) {
+        Optional<Tool> tool = toolRepository.findToolBySaltTool(salt);
+        if (tool.isEmpty()){
+            throw new NotFoundException("Don't exits tool by salt");
+        }
+        return tool.get();
+    }
+
+    @Override
+    public List<Tool> findAllChildrenToolByIdToolParent(Integer idToolParent) {
+        return toolRepository.findAllChildrenToolByIdToolParent(idToolParent);
+    }
+
+    private void validateFiledUpdateTool(UpdateToolRequest updateToolRequest) throws ValidateFiledException {
+        if (StringUtils.isBlank(updateToolRequest.getSalt()) ||
+        StringUtils.isBlank(updateToolRequest.getNameTool()) ||
+        StringUtils.isBlank(updateToolRequest.getValue()) ||
+        StringUtils.isBlank(updateToolRequest.getYearUse()) ||
+        ObjectUtils.isEmpty(updateToolRequest.getIdToolCategory()) ||
+        ObjectUtils.isEmpty(updateToolRequest.getQuantity()) ||
+        CollectionUtils.isEmpty(updateToolRequest.getAllocateToolRequestList())) {
+            throw new ValidateFiledException("Valid data");
+        }
+        toolCategoriesService.findToolCategoryByIdToolCategoryAndVisible(updateToolRequest.getIdToolCategory(),
+                Constants.TOOL_CATEGORY_IS_VISIBLE);
+        if (!CollectionUtils.isEmpty(updateToolRequest.getAllocateToolRequestList())){
+            Integer totalQuantityChild = 0;
+            for (UpdateListAllocateToolRequest allocateToolRequest : updateToolRequest.getAllocateToolRequestList()){
+                totalQuantityChild += allocateToolRequest.getQuantity();
+            }
+            if (!totalQuantityChild.equals(updateToolRequest.getQuantity())) {
+                throw new ValidateFiledException("Valid data");
+            }
+        }
+    }
+
+    private void storeNewTool(CreateNewToolRequest createNewToolRequest) {
+        Tool tool = toolRepository.save(constructionCreateNewTool(createNewToolRequest));
+        storeChildrenTool(tool, createNewToolRequest.getAllocateToolRequestList());
+    }
+
+    private void storeChildrenTool(Tool toolParent, List<ListAllocateToolRequest> allocateToolRequestList) {
+        List<Tool> childrenTool = new ArrayList<>();
+        for (ListAllocateToolRequest allocateToolRequest : allocateToolRequestList) {
+            childrenTool.add(constructionChildTool(toolParent, allocateToolRequest));
+        }
+        toolRepository.saveAll(childrenTool);
+    }
+
+    private Tool constructionChildTool(Tool toolParent, ListAllocateToolRequest allocateToolRequest) {
+        Optional<CsvcUser> user = csvcUserService.findByUserName(allocateToolRequest.getUserName());
+        if (user.isEmpty()){
+            throw new NotFoundException("Don't exits user by user name");
+        }
+        String currentTime = String.valueOf(new Date().getTime());
+        Tool childTool = new Tool();
+        childTool.setName(toolParent.getName());
+        childTool.setCodeTool(String.valueOf(UUID.randomUUID()));
+        childTool.setSalt(String.valueOf(UUID.randomUUID()));
+        childTool.setIdToolCategory(toolParent.getIdToolCategory());
+        childTool.setTimeCreated(currentTime);
+        childTool.setTimeModified(currentTime);
+        childTool.setIdUserCreated(childTool.getIdUserCreated());
+        childTool.setIdUserModified(childTool.getIdUserCreated());
+        childTool.setQuantity(allocateToolRequest.getQuantity());
+        childTool.setIsIncrease(Constants.IS_NOT_INCREASED);
+        childTool.setIsDecrease(Constants.IS_NOT_DECREASED);
+        childTool.setQuantityIncreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT);
+        childTool.setQuantityDecreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT);
+        childTool.setStatusUse(allocateToolRequest.getStatusUse());
+        childTool.setParent(toolParent.getIdTool());
+        childTool.setIdDepartment(allocateToolRequest.getIdDepartment());
+        childTool.setIdLocation(allocateToolRequest.getIdLocation());
+        childTool.setIdUserUse(user.get().getIdUser());
+        childTool.setYearUse(toolParent.getYearUse());
+        return childTool;
+    }
+
+    private Tool constructionCreateNewTool(CreateNewToolRequest createNewToolRequest) {
+        String currentTime = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Tool tool = new Tool();
+        tool.setName(createNewToolRequest.getNameTool());
+        tool.setCodeTool(createNewToolRequest.getCodeTool());
+        tool.setSalt(String.valueOf(UUID.randomUUID()));
+        tool.setIdToolCategory(createNewToolRequest.getIdToolCategory());
+        tool.setTimeCreated(currentTime);
+        tool.setTimeModified(currentTime);
+        tool.setIdUserCreated(csvcUser.getIdUser());
+        tool.setIdUserModified(csvcUser.getIdUser());
+        tool.setValue(createNewToolRequest.getValue());
+        tool.setQuantity(createNewToolRequest.getQuantity());
+        tool.setIsIncrease(Constants.IS_NOT_INCREASED);
+        tool.setIsDecrease(Constants.IS_NOT_DECREASED);
+        tool.setQuantityIncreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT);
+        tool.setQuantityDecreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT);
+        tool.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());
+        tool.setYearUse(createNewToolRequest.getYearUse());
+        return tool;
+    }
+
+    private void validateFieldCreateNewTool(CreateNewToolRequest createNewToolRequest) throws ValidateFiledException {
+        if (StringUtils.isBlank(createNewToolRequest.getNameTool()) ||
+            StringUtils.isBlank(createNewToolRequest.getCodeTool()) ||
+            StringUtils.isBlank(createNewToolRequest.getValue()) ||
+            ObjectUtils.isEmpty(createNewToolRequest.getIdToolCategory()) ||
+            ObjectUtils.isEmpty(createNewToolRequest.getYearUse())){
+            throw new ValidateFiledException("Valid data");
+        }
+        toolCategoriesService.findToolCategoryByIdToolCategoryAndVisible(createNewToolRequest.getIdToolCategory(),
+                Constants.TOOL_CATEGORY_IS_VISIBLE);
+        if (!CollectionUtils.isEmpty(createNewToolRequest.getAllocateToolRequestList())){
+            Integer totalQuantityChild = 0;
+            for (ListAllocateToolRequest allocateToolRequest : createNewToolRequest.getAllocateToolRequestList()){
+                totalQuantityChild += allocateToolRequest.getQuantity();
+            }
+            if (!totalQuantityChild.equals(createNewToolRequest.getQuantity())) {
+                throw new ValidateFiledException("Valid data");
+            }
+        }
     }
 
     private List<FindAllToolResponse> convertToFindAllToolResponse(Page<ToolDto> toolDtos) {

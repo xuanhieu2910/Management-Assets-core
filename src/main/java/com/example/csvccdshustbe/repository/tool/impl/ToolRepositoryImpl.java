@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.repository.tool.impl;
 
 import com.example.csvccdshustbe.dto.tool.ToolDto;
+import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.repository.tool.ToolRepositoryCustom;
 import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -17,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ToolRepositoryImpl implements ToolRepositoryCustom {
 
@@ -53,6 +55,167 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
             }
         }
         return new PageImpl<>(toolDtos, pageable, countFindAllToolDtos(request));
+    }
+
+    @Override
+    public Optional<Tool> findLastToolByIdDepartmentOriginal(Integer idDepartment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_tool, name, code_tool, salt,  " +
+                "       id_tool_category, time_created,  " +
+                "       time_modified, id_user_created,  " +
+                "       id_user_modified, value, quantity,  " +
+                "       is_increase, is_decrease, quantity_increase_current,  " +
+                "       quantity_decrease_current, id_process_current,  " +
+                "       status_process_current, id_type_process_current,  " +
+                "       id_department_original, status_use, parent,  " +
+                "       id_department, id_location, id_user_use, year_use " +
+                "from tool  " +
+                "where id_department_original = :idDepartmentOriginal " +
+                "order by tool.id_tool desc limit 1  ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idDepartmentOriginal", idDepartment);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                Tool tool = new Tool();
+                tool.setIdTool(ValueUtil.getIntegerByObject(obj[0]));
+                tool.setName(ValueUtil.getStringByObject(obj[1]));
+                tool.setCodeTool(ValueUtil.getStringByObject(obj[2]));
+                tool.setSalt(ValueUtil.getStringByObject(obj[3]));
+                tool.setIdToolCategory(ValueUtil.getIntegerByObject(obj[4]));
+                tool.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+                tool.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                tool.setIdUserCreated(ValueUtil.getIntegerByObject(obj[7]));
+                tool.setIdUserModified(ValueUtil.getIntegerByObject(obj[8]));
+                tool.setValue(ValueUtil.getStringByObject(obj[9]));
+                tool.setQuantity(ValueUtil.getIntegerByObject(obj[10]));
+                tool.setIsIncrease(ValueUtil.getIntegerByObject(obj[11]));
+                tool.setIsDecrease(ValueUtil.getIntegerByObject(obj[12]));
+                tool.setQuantityIncreaseCurrent(ValueUtil.getIntegerByObject(obj[13]));
+                tool.setQuantityDecreaseCurrent(ValueUtil.getIntegerByObject(obj[14]));
+                tool.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[15]));
+                tool.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[16]));
+                tool.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[17]));
+                tool.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[18]));
+                tool.setStatusUse(ValueUtil.getIntegerByObject(obj[19]));
+                tool.setParent(ValueUtil.getIntegerByObject(obj[20]));
+                tool.setIdDepartment(ValueUtil.getIntegerByObject(obj[21]));
+                tool.setIdLocation(ValueUtil.getIntegerByObject(obj[22]));
+                tool.setIdUserUse(ValueUtil.getIntegerByObject(obj[23]));
+                tool.setYearUse(ValueUtil.getStringByObject(obj[24]));
+                return Optional.of(tool);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Tool> findToolBySaltTool(String salt) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_tool, name, code_tool, salt,   " +
+                "       id_tool_category, time_created,   " +
+                "       time_modified, id_user_created,   " +
+                "       id_user_modified, value, quantity,   " +
+                "       is_increase, is_decrease, quantity_increase_current,  " +
+                "       quantity_decrease_current, id_process_current,   " +
+                "       status_process_current, id_type_process_current,   " +
+                "       id_department_original, status_use, parent,   " +
+                "       id_department, id_location, id_user_use, year_use  " +
+                "from tool where tool.salt = :salt ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("salt", salt);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                return Optional.of(writeDataToolBySaltTool(obj));
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Tool writeDataToolBySaltTool(Object[] obj) {
+        Tool tool = new Tool();
+        tool.setIdTool(ValueUtil.getIntegerByObject(obj[0]));
+        tool.setName(ValueUtil.getStringByObject(obj[1]));
+        tool.setCodeTool(ValueUtil.getStringByObject(obj[2]));
+        tool.setSalt(ValueUtil.getStringByObject(obj[3]));
+        tool.setIdToolCategory(ValueUtil.getIntegerByObject(obj[4]));
+        tool.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+        tool.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+        tool.setIdUserCreated(ValueUtil.getIntegerByObject(obj[7]));
+        tool.setIdUserModified(ValueUtil.getIntegerByObject(obj[8]));
+        tool.setValue(ValueUtil.getStringByObject(obj[9]));
+        tool.setQuantity(ValueUtil.getIntegerByObject(obj[10]));
+        tool.setIsIncrease(ValueUtil.getIntegerByObject(obj[11]));
+        tool.setIsDecrease(ValueUtil.getIntegerByObject(obj[12]));
+        tool.setQuantityIncreaseCurrent(ValueUtil.getIntegerByObject(obj[13]));
+        tool.setQuantityDecreaseCurrent(ValueUtil.getIntegerByObject(obj[14]));
+        tool.setIdProcessCurrent(ValueUtil.getIntegerByObject(obj[15]));
+        tool.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[16]));
+        tool.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[17]));
+        tool.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[18]));
+        tool.setStatusUse(ValueUtil.getIntegerByObject(obj[19]));
+        tool.setParent(ValueUtil.getIntegerByObject(obj[20]));
+        tool.setIdDepartment(ValueUtil.getIntegerByObject(obj[21]));
+        tool.setIdLocation(ValueUtil.getIntegerByObject(obj[22]));
+        tool.setIdUserUse(ValueUtil.getIntegerByObject(obj[23]));
+        tool.setYearUse(ValueUtil.getStringByObject(obj[24]));
+        return tool;
+    }
+
+    @Override
+    public List<Tool> findAllChildrenToolByIdToolParent(Integer idToolParent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_tool, name, code_tool, salt,   " +
+                "       id_tool_category, time_created,   " +
+                "       time_modified, id_user_created,   " +
+                "       id_user_modified, value, quantity,   " +
+                "       is_increase, is_decrease, quantity_increase_current,   " +
+                "       quantity_decrease_current, id_process_current,   " +
+                "       status_process_current, id_type_process_current,   " +
+                "       id_department_original, status_use, parent,   " +
+                "       id_department, id_location, id_user_use, year_use   " +
+                "from tool where tool.parent = :idToolParent ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idToolParent", idToolParent);
+        List<Object[]> result = query.getResultList();
+        List<Tool> tools = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                tools.add(writeDataToolByIdToolParent(obj));
+            }
+        }
+        return tools;
+    }
+
+    private Tool writeDataToolByIdToolParent(Object[] obj) {
+        Tool tool = new Tool();
+        tool.setIdTool(ValueUtil.getIntegerByObject(obj[0]));
+        tool.setName(ValueUtil.getStringByObject(obj[1]));
+        tool.setCodeTool(ValueUtil.getStringByObject(obj[2]));
+        tool.setSalt(ValueUtil.getStringByObject(obj[3]));
+        tool.setIdToolCategory(ValueUtil.getIntegerByObject(obj[4]));
+        tool.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+        tool.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+        tool.setIdUserCreated(ValueUtil.getIntegerByObject(obj[7]));
+        tool.setIdUserModified(ValueUtil.getIntegerByObject(obj[8]));
+        tool.setValue(ValueUtil.getStringByObject(obj[9]));
+        tool.setQuantity(ValueUtil.getIntegerByObject(obj[10]));
+        tool.setIsIncrease(ValueUtil.getIntegerByObject(obj[11]));
+        tool.setIsDecrease(ValueUtil.getIntegerByObject(obj[12]));
+        tool.setQuantityIncreaseCurrent(ValueUtil.getIntegerByObject(obj[13]));
+        tool.setQuantityDecreaseCurrent(ValueUtil.getIntegerByObject(obj[14]));
+        tool.setIdProcessCurrent(ValueUtil.getIntegerByObject(obj[15]));
+        tool.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[16]));
+        tool.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[17]));
+        tool.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[18]));
+        tool.setStatusUse(ValueUtil.getIntegerByObject(obj[19]));
+        tool.setParent(ValueUtil.getIntegerByObject(obj[20]));
+        tool.setIdDepartment(ValueUtil.getIntegerByObject(obj[21]));
+        tool.setIdLocation(ValueUtil.getIntegerByObject(obj[22]));
+        tool.setIdUserUse(ValueUtil.getIntegerByObject(obj[23]));
+        tool.setYearUse(ValueUtil.getStringByObject(obj[24]));
+        return tool;
     }
 
     private long countFindAllToolDtos(FindAllToolRequest request) {
