@@ -42,6 +42,8 @@ public class ToolCategoriesServiceImpl implements ToolCategoriesService {
 
     @Autowired
     ToolCategoriesRepository toolCategoriesRepository;
+    @Autowired
+    CsvcUserService csvcUserService;
 
     @Override
     public ToolCategories findToolCategoryByIdToolCategoryAndVisible(Integer idToolCategory, Integer visible) {
@@ -52,10 +54,6 @@ public class ToolCategoriesServiceImpl implements ToolCategoriesService {
         }
         return toolCategory.get();
     }
-    @Autowired
-    ToolCategoriesRepository toolCategoriesRepository;
-    @Autowired
-    CsvcUserService csvcUserService;
 
 
     @Override
@@ -100,10 +98,10 @@ public class ToolCategoriesServiceImpl implements ToolCategoriesService {
 
     public void createToolCategory(CreateToolCategoryRequest request) throws ValidateFiledException {
         validateCreateToolCategory(request);
-        toolCategoriesRepository.save(CreateToolCategory(request));
+        toolCategoriesRepository.save(constructionCreateToolCategory(request));
     }
 
-    private ToolCategories CreateToolCategory(CreateToolCategoryRequest request) {
+    private ToolCategories constructionCreateToolCategory(CreateToolCategoryRequest request) {
         ToolCategories categories = new ToolCategories();
         categories.setName(request.getName());
         categories.setShortName(request.getShortName());
