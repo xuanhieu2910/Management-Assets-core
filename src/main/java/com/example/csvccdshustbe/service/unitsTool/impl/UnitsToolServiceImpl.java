@@ -1,8 +1,97 @@
 package com.example.csvccdshustbe.service.unitsTool.impl;
 
+import com.example.csvccdshustbe.entity.Units;
+import com.example.csvccdshustbe.entity.UnitsTool;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.repository.unitsTool.UnitsToolRepository;
+import com.example.csvccdshustbe.request.unitsTool.CreateUnitsToolRequest;
+import com.example.csvccdshustbe.request.unitsTool.UpdateUnitsToolRequest;
 import com.example.csvccdshustbe.service.unitsTool.UnitsToolService;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UnitsToolServiceImpl implements UnitsToolService {
+    @Autowired
+    UnitsToolRepository unitsToolRepository;
+
+    @Override
+    public List<UnitsTool> findAllUnitsTool() {
+        return unitsToolRepository.findAllUnitsTool();
+    }
+    @Override
+    public void createUnitsTool(CreateUnitsToolRequest request) throws ValidateFiledException {
+        validateDataCreateUnitTool(request);
+        unitsToolRepository.save(constructUnitTool(request));
+    }
+
+    @Override
+    public void updateUnitsTool(UpdateUnitsToolRequest request) throws ValidateFiledException {
+        UnitsTool unitsTool = validateDataUpdateUnitTool(request);
+        unitsToolRepository.save(editUnitTool(unitsTool, request));
+    }
+
+    private UnitsTool editUnitTool(UnitsTool unitsTool, UpdateUnitsToolRequest request) {
+        unitsTool.setName(request.getName());
+        unitsTool.setStatus(request.getStatus());
+        String timeModified = String.valueOf(new Date().getTime());
+        unitsTool.setTimeModified(timeModified);
+        return unitsTool;
+    }
+
+    private UnitsTool validateDataUpdateUnitTool(UpdateUnitsToolRequest request) throws ValidateFiledException {
+        Optional<UnitsTool> unitsOptional = unitsToolRepository.findUnitToolByIdUnitTool(request.getIdUnitTool());
+        if (unitsOptional.isEmpty()) {
+            throw new NotFoundException("Don't exits Unit by id!");
+        }
+        if (StringUtils.isBlank(request.getName())) {
+            throw new ValidateFiledException("Validate data request!");
+        }
+        return unitsOptional.get();
+    }
+
+    @Override
+    public void deleteUnitsToolByIdUnitsTool(Integer idUnitTool) {
+        Optional<UnitsTool> unitsTool = unitsToolRepository.findUnitToolByIdUnitTool(idUnitTool);
+        if (unitsTool.isEmpty()){
+            throw new NotFoundException("Don't exits unit tool by id !");
+        }
+        unitsToolRepository.delete(unitsTool.get());
+    }
+
+    @Override
+    public UnitsTool findUnitsByIdUnitToolAndStatus(Integer idUnitTool, Integer status) {
+        Optional<UnitsTool> unitsTool = unitsToolRepository.findUnitByIdUnitToolAndStatus(idUnitTool,  status);
+        if (unitsTool.isEmpty()){
+            throw new NotFoundException("Don't exits units tool!");
+        }
+        return unitsTool.get();
+    }
+
+    private UnitsTool constructUnitTool(CreateUnitsToolRequest request) {
+        UnitsTool unitsTool = new UnitsTool();
+        unitsTool.setName(request.getName().trim());
+        unitsTool.setStatus(request.getStatus());
+        String timeCurrent = String.valueOf(new Date().getTime());
+        unitsTool.setTimeCreated(timeCurrent);
+        unitsTool.setTimeModified(timeCurrent);
+        return unitsTool;
+    }
+
+    private void validateDataCreateUnitTool(CreateUnitsToolRequest request) throws ValidateFiledException {
+        if (StringUtils.isBlank(request.getName())) {
+            throw new ValidateFiledException("Validate data request!");
+        }
+        Optional<UnitsTool> unitsTool = unitsToolRepository.findUnitToolByName(request.getName());
+        if (unitsTool.isPresent()){
+            throw new ValidateFiledException("Exits Unit tool by name !");
+        }
+    }
 }
