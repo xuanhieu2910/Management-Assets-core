@@ -126,7 +126,7 @@ public class UnitsRepositoryImpl implements UnitsRepositoryCustom {
                 units.setName(ValueUtil.getStringByObject(obj[1]));
                 units.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
                 units.setTimeModified(ValueUtil.getStringByObject(obj[3]));
-                units.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                units.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[4]));
                 units.setStatus(ValueUtil.getIntegerByObject(obj[5]));
                 return Optional.of(units);
             }
