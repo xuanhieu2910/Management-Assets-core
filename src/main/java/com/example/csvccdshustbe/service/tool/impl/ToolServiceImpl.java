@@ -1,10 +1,7 @@
 package com.example.csvccdshustbe.service.tool.impl;
 
 import com.example.csvccdshustbe.dto.tool.ToolDto;
-import com.example.csvccdshustbe.entity.Asset;
-import com.example.csvccdshustbe.entity.CsvcUser;
-import com.example.csvccdshustbe.entity.Department;
-import com.example.csvccdshustbe.entity.Tool;
+import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.tool.ToolRepository;
 import com.example.csvccdshustbe.request.tool.*;
@@ -12,6 +9,7 @@ import com.example.csvccdshustbe.response.tool.FindAllToolResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.tool.ToolService;
 import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
+import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
@@ -42,13 +40,23 @@ public class ToolServiceImpl implements ToolService {
     ToolCategoriesService toolCategoriesService;
     @Autowired
     CsvcUserService csvcUserService;
+
+
+
     @Override
-    public Page<FindAllToolResponse> findAllToolResponse(FindAllToolRequest request) {
+    public Page<FindAllToolResponse> findAllToolParentResponse(FindAllToolRequest request) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-        Page<ToolDto> toolDtos = toolRepository.findAllToolDto(request, pageable);
-        return new PageImpl<>(convertToFindAllToolResponse(toolDtos), pageable, toolDtos.getTotalElements());
+        Page<ToolDto> toolParentDtos = toolRepository.findAllToolParentDto(request, pageable);
+        return new PageImpl<>(convertToFindAllToolResponse(toolParentDtos), pageable, toolParentDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllToolResponse> findAllToolChildrenResponse(FindAllToolRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<ToolDto> toolChildrenDtos = toolRepository.findAllChildrenToolDto(request, pageable);
+        return new PageImpl<>(convertToFindAllToolResponse(toolChildrenDtos), pageable, toolChildrenDtos.getTotalElements());
     }
 
     @Override
@@ -84,36 +92,47 @@ public class ToolServiceImpl implements ToolService {
     @Override
     public void updateTool(UpdateToolRequest updateToolRequest) throws ValidateFiledException {
         validateFiledUpdateTool(updateToolRequest);
-        Tool tool = findToolBySaltTool(updateToolRequest.getSalt());
-        updateFieldTool(tool, updateToolRequest);
-        updateFiledChildrenTool(tool, updateToolRequest.getAllocateToolRequestList());
+        Tool toolParent = findToolBySaltTool(updateToolRequest.getSalt());
+        updateFieldToolParent(toolParent, updateToolRequest);
+        updateFiledChildrenTool(toolParent, updateToolRequest.getAllocateToolRequestList());
     }
 
     private void updateFiledChildrenTool(Tool tool, List<UpdateListAllocateToolRequest> allocateToolRequestList) {
         List<Tool> tools = findAllChildrenToolByIdToolParent(tool.getIdTool());
+        int sumQuantity = 0;
         for (UpdateListAllocateToolRequest allocateToolRequest : allocateToolRequestList){
             Optional<CsvcUser> user = csvcUserService.findByUserName(allocateToolRequest.getUserName());
             if (user.isEmpty()) {
                 throw new NotFoundException("Don't exits user by user name");
             }
-            tools.stream()
-                    .filter(x->x.getSalt().equals(allocateToolRequest.getSalt()))
-                    .findFirst().ifPresent(x -> {
-                x.setName(tool.getName());
-                x.setYearUse(tool.getYearUse());
-                x.setIdDepartment(allocateToolRequest.getIdDepartment());
-                x.setIdLocation(allocateToolRequest.getIdLocation());
-                x.setStatusUse(allocateToolRequest.getStatusUse());
-                x.setQuantity(allocateToolRequest.getQuantity());
-                x.setIdUserUse(user.get().getIdUser());
-                x.setTimeModified(String.valueOf(new Date().getTime()));
-                x.setIdUserModified(tool.getIdUserModified());
-            });
+            if (StringUtils.isNotBlank(allocateToolRequest.getSalt())) {
+                tools.stream()
+                        .filter(x -> x.getSalt().equals(allocateToolRequest.getSalt()))
+                        .findFirst().ifPresent(x -> {
+                            x.setName(tool.getName());
+                            x.setYearUse(tool.getYearUse());
+                            x.setIdDepartment(allocateToolRequest.getIdDepartment());
+                            x.setIdLocation(allocateToolRequest.getIdLocation());
+                            x.setStatusUse(allocateToolRequest.getStatusUse());
+                            x.setQuantity(allocateToolRequest.getQuantity());
+                            x.setIdUserUse(user.get().getIdUser());
+                            x.setTimeModified(String.valueOf(new Date().getTime()));
+                            x.setIdUserModified(tool.getIdUserModified());
+                        });
+            } else {
+                sumQuantity += allocateToolRequest.getQuantity();
+                createNewChildrenTool(tool, allocateToolRequest);
+            }
         }
         toolRepository.saveAll(tools);
+        if (sumQuantity > 0) {
+            sumQuantity += tool.getQuantity();
+            tool.setQuantity(sumQuantity);
+            toolRepository.save(tool);
+        }
     }
 
-    private void updateFieldTool(Tool tool, UpdateToolRequest updateToolRequest) {
+    private void updateFieldToolParent(Tool tool, UpdateToolRequest updateToolRequest) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         tool.setName(updateToolRequest.getNameTool());
         tool.setIdToolCategory(updateToolRequest.getIdToolCategory());
@@ -135,9 +154,50 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
+    public Tool findToolByIdTool(Integer idTool) {
+        Optional<Tool> tool = toolRepository.findToolById(idTool);
+        if (tool.isEmpty()){
+            throw new NotFoundException("Don't exits tool by id tool");
+        }
+        return tool.get();
+    }
+
+    @Override
     public List<Tool> findAllChildrenToolByIdToolParent(Integer idToolParent) {
         return toolRepository.findAllChildrenToolByIdToolParent(idToolParent);
     }
+
+    @Transactional
+    @Override
+    public void deleteToolBySalt(String saltTool) {
+        Tool tool = findToolBySaltTool(saltTool);
+        if (tool.getParent() == null) {
+            handleDeleteToolParent(tool);
+        } else {
+            handleDeleteToolChild(tool);
+        }
+    }
+
+    private void handleDeleteToolChild(Tool tool) {
+        toolRepository.delete(tool);
+        updateQuantityAndIncreaseAndDecreaseToolParent(tool.getParent());
+    }
+
+    private void updateQuantityAndIncreaseAndDecreaseToolParent(Integer idParent) {
+        toolRepository.updateQuantityAndIncreaseAndDecreaseTool(idParent);
+    }
+
+    private void handleDeleteToolParent(Tool toolParent) {
+        toolRepository.delete(toolParent);
+        toolRepository.deleteAll(findAllChildrenToolByIdToolParent(toolParent.getIdTool()));
+    }
+
+    @Override
+    public List<Tool> findAllToolBySaltsAndIsIncrease(List<String> listSalts, Integer isIncrease) {
+        return toolRepository.findAllToolBySaltsAndIsIncrease(listSalts, isIncrease);
+    }
+
+
 
     private void validateFiledUpdateTool(UpdateToolRequest updateToolRequest) throws ValidateFiledException {
         if (StringUtils.isBlank(updateToolRequest.getSalt()) ||
@@ -163,8 +223,8 @@ public class ToolServiceImpl implements ToolService {
     }
 
     private void storeNewTool(CreateNewToolRequest createNewToolRequest) {
-        Tool tool = toolRepository.save(constructionCreateNewTool(createNewToolRequest));
-        storeChildrenTool(tool, createNewToolRequest.getAllocateToolRequestList());
+        Tool toolParent = toolRepository.save(constructionCreateNewToolParent(createNewToolRequest));
+        storeChildrenTool(toolParent, createNewToolRequest.getAllocateToolRequestList());
     }
 
     private void storeChildrenTool(Tool toolParent, List<ListAllocateToolRequest> allocateToolRequestList) {
@@ -173,6 +233,16 @@ public class ToolServiceImpl implements ToolService {
             childrenTool.add(constructionChildTool(toolParent, allocateToolRequest));
         }
         toolRepository.saveAll(childrenTool);
+    }
+
+    private void createNewChildrenTool(Tool toolParent, UpdateListAllocateToolRequest updateAllocateToolRequestList) {
+        ListAllocateToolRequest allocateToolRequest = new ListAllocateToolRequest();
+        allocateToolRequest.setIdDepartment(updateAllocateToolRequestList.getIdDepartment());
+        allocateToolRequest.setIdLocation(updateAllocateToolRequestList.getIdLocation());
+        allocateToolRequest.setUserName(updateAllocateToolRequestList.getUserName());
+        allocateToolRequest.setStatusUse(updateAllocateToolRequestList.getStatusUse());
+        allocateToolRequest.setQuantity(updateAllocateToolRequestList.getQuantity());
+        toolRepository.save(constructionChildTool(toolParent, allocateToolRequest));
     }
 
     private Tool constructionChildTool(Tool toolParent, ListAllocateToolRequest allocateToolRequest) {
@@ -204,7 +274,7 @@ public class ToolServiceImpl implements ToolService {
         return childTool;
     }
 
-    private Tool constructionCreateNewTool(CreateNewToolRequest createNewToolRequest) {
+    private Tool constructionCreateNewToolParent(CreateNewToolRequest createNewToolRequest) {
         String currentTime = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Tool tool = new Tool();
@@ -218,8 +288,8 @@ public class ToolServiceImpl implements ToolService {
         tool.setIdUserModified(csvcUser.getIdUser());
         tool.setValue(createNewToolRequest.getValue());
         tool.setQuantity(createNewToolRequest.getQuantity());
-        tool.setIsIncrease(Constants.IS_NOT_INCREASED);
-        tool.setIsDecrease(Constants.IS_NOT_DECREASED);
+        tool.setIsIncrease(Constants.TOOL_PARENT_NOT_IS_INCREASE_WHOLE);
+        tool.setIsDecrease(Constants.TOOL_PARENT_NOT_IS_DECREASE_WHOLE);
         tool.setQuantityIncreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT);
         tool.setQuantityDecreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT);
         tool.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());

@@ -3,7 +3,6 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.asset.FindAllAssetRequest;
 import com.example.csvccdshustbe.request.tool.CreateNewToolRequest;
 import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
 import com.example.csvccdshustbe.request.tool.UpdateToolRequest;
@@ -17,8 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
-
-import javax.xml.bind.ValidationException;
 
 @Tag(name = "Tool Controller", description = "The Tool APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
@@ -35,7 +32,7 @@ public class ToolController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllToolRequest findAllToolRequest){
         try {
-            return ApiResponseDto.createdWithState(toolService.findAllToolResponse(findAllToolRequest),
+            return ApiResponseDto.createdWithState(toolService.findAllToolParentResponse(findAllToolRequest),
                     "Find all tool success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -43,6 +40,23 @@ public class ToolController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @GetMapping("/find-all-children")
+    public ResponseEntity<?> findAllToolChildren(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllToolRequest findAllToolRequest){
+        try {
+            return ApiResponseDto.createdWithState(toolService.findAllToolChildrenResponse(findAllToolRequest),
+                    "Find all tool children success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 
     @GetMapping("/generate-code")
     public ResponseEntity<?> generateCodeTools(){
@@ -78,4 +92,15 @@ public class ToolController {
         }
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteTools(@RequestParam("salt") String saltTool){
+        try {
+            toolService.deleteToolBySalt(saltTool);
+            return ApiResponseDto.createdWithMessage("Delete tools success!", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

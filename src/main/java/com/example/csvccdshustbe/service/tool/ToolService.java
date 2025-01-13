@@ -12,10 +12,14 @@ import java.util.List;
 
 public interface ToolService {
 
-    Page<FindAllToolResponse> findAllToolResponse(FindAllToolRequest request);
+    Page<FindAllToolResponse> findAllToolParentResponse(FindAllToolRequest request);
     String generateCodeTool();
     void createNewTool(CreateNewToolRequest createNewToolRequest) throws ValidateFiledException;
     void updateTool(UpdateToolRequest updateToolRequest) throws ValidateFiledException;
     Tool findToolBySaltTool(String salt);
+    Tool findToolByIdTool(Integer idTool);
     List<Tool> findAllChildrenToolByIdToolParent(Integer idToolParent);
+    void deleteToolBySalt(String saltTool);
+    List<Tool> findAllToolBySaltsAndIsIncrease(List<String> listSalts, Integer isIncrease);
+    Page<FindAllToolResponse> findAllToolChildrenResponse(FindAllToolRequest findAllToolRequest);
 }

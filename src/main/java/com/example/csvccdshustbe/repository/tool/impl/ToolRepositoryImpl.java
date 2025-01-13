@@ -4,16 +4,19 @@ import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.repository.tool.ToolRepositoryCustom;
 import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -26,7 +29,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public Page<ToolDto> findAllToolDto(FindAllToolRequest request, Pageable pageable) {
+    public Page<ToolDto> findAllToolParentDto(FindAllToolRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select tol.id_tool, tol.name, tol.code_tool, tol.salt, " +
                 "       tol.id_tool_category, tol.time_created, tol.time_modified, " +
@@ -55,6 +58,153 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
             }
         }
         return new PageImpl<>(toolDtos, pageable, countFindAllToolDtos(request));
+    }
+
+    @Override
+    public Page<ToolDto> findAllChildrenToolDto(FindAllToolRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select tol.id_tool, tol.name, tol.code_tool, tol.salt,    " +
+                "        tol.id_tool_category, tol.time_created, tol.time_modified,    " +
+                "        tol.id_user_created, tol.id_user_modified, tol.value,    " +
+                "        tol.quantity, tol.is_increase, tol.is_decrease, tol.quantity_increase_current,    " +
+                "        tol.quantity_decrease_current, tol.id_process_current, tol.status_process_current,    " +
+                "        tol.id_type_process_current, tol.id_department_original, tol.status_use,    " +
+                "        tol.parent, tol.id_department, tol.id_location,    " +
+                "        tol.id_user_use, tol.year_use,    " +
+                "        de.code, de.name, lo.name    " +
+                " from tool tol    " +
+                "     left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category    " +
+                "     left join department de on tol.id_department = de.id_department    " +
+                "     left join location lo on de.id_department = lo.id_department  " +
+                "     inner join (select id_tool from tool where salt = :salt) tolParent  " +
+                "         on tol.parent = tolParent.id_tool  " +
+                " where 1 = 1 ");
+        setConditionFindAllChildrenToolDto(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllChildrenToolDto(query, request);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<ToolDto> toolDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                toolDtos.add(writeDataToolDtos(obj));
+            }
+        }
+        return new PageImpl<>(toolDtos, pageable, countFindAllChildrenToolDtos(request));
+    }
+
+    @Override
+    public Optional<Tool> findToolById(Integer idTool) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_tool, name, code_tool, salt,   " +
+                "          id_tool_category, time_created,   " +
+                "          time_modified, id_user_created,   " +
+                "          id_user_modified, value, quantity,   " +
+                "          is_increase, is_decrease, quantity_increase_current,   " +
+                "          quantity_decrease_current, id_process_current,   " +
+                "          status_process_current, id_type_process_current,   " +
+                "          id_department_original, status_use, parent,   " +
+                "          id_department, id_location, id_user_use, year_use   " +
+                "from tool where tool.id_tool = :idTool ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idTool", idTool);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                return Optional.of(writeDataTool(obj));
+            }
+        }
+        return Optional.empty();
+    }
+
+
+    @Transactional
+    @Modifying
+    @Override
+    public void updateQuantityAndIncreaseAndDecreaseTool(Integer idParent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update tool   " +
+                "    inner join (select result.id_tool,   " +
+                "                       case when result.countToolChildren = result.countIsIncrease then 1 else -1 end isIncrease,   " +
+                "                       case when result.countToolChildren = result.countIsDecrease then 1 else -1 end isDecrease,   " +
+                "                       quantity,   " +
+                "                       sumIncrease, sumDecrease   " +
+                "                from (select toolParent.id_tool, count(toolChildren.id_tool) countToolChildren,   " +
+                "                             sum(case when toolChildren.is_increase = :isIncrease then 1 else 0 end) countIsIncrease,   " +
+                "                             sum(case when toolChildren.is_decrease = :isDecrease then 1 else 0 end) countIsDecrease,   " +
+                "                             sum(toolChildren.quantity) quantity,   " +
+                "                             sum(case when toolChildren.is_increase = :isIncrease then toolChildren.quantity else 0 end) sumIncrease,   " +
+                "                             sum(case when toolChildren.is_decrease = :isDecrease then toolChildren.quantity else 0 end) sumDecrease   " +
+                "                      from tool toolParent   " +
+                "                               inner join tool toolChildren on toolParent.id_tool = toolChildren.parent   " +
+                "                      where toolParent.id_tool = :idTool   " +
+                "                      group by toolParent.id_tool) result ) result   " +
+                "    on tool.id_tool = result.id_tool   " +
+                "    set tool.is_increase = (case when result.isIncrease = 1 then 2 else tool.is_increase end),   " +
+                "        tool.is_decrease = (case when result.isDecrease = 1 then 2 else tool.is_decrease end),   " +
+                "        tool.quantity = result.quantity,   " +
+                "        tool.quantity_increase_current = sumIncrease,   " +
+                "        tool.quantity_decrease_current = sumDecrease   " +
+                "where 1=1 ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idTool", idParent);
+        query.setParameter("isIncrease", Constants.IS_INCREASED);
+        query.setParameter("isDecrease", Constants.IS_DECREASED);
+        query.executeUpdate();
+    }
+
+
+    private long countFindAllChildrenToolDtos(FindAllToolRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0)   " +
+                " from tool tol     " +
+                "     left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category     " +
+                "     left join department de on tol.id_department = de.id_department     " +
+                "     left join location lo on de.id_department = lo.id_department   " +
+                "     inner join (select id_tool from tool where salt = :salt) tolParent   " +
+                "         on tol.parent = tolParent.id_tool   " +
+                " where 1 = 1 ");
+        setConditionFindAllChildrenToolDto(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllChildrenToolDto(query, request);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindAllChildrenToolDto(Query query, FindAllToolRequest request) {
+        query.setParameter("salt", request.getSalt());
+        if (StringUtils.isNotBlank(request.getCodeTool())){
+            query.setParameter("codeTool", request.getCodeTool());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIsDecrease())) {
+            query.setParameter("isDecrease", request.getIsDecrease());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIsIncrease())) {
+            query.setParameter("isIncrease", request.getIsIncrease());
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            query.setParameter("statusUse", request.getStatusUse());
+        }
+    }
+
+    private void setConditionFindAllChildrenToolDto(StringBuilder sb, FindAllToolRequest request) {
+        if (StringUtils.isNotBlank(request.getCodeTool())){
+            sb.append(" and (tol.code_tool REGEXP :codeTool ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
+            sb.append("  and de.id_department = :idDepartment ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIsDecrease())) {
+            sb.append("  and tol.is_decrease = :isDecrease ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIsIncrease())) {
+            sb.append("  and tol.is_increase = :isIncrease ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
+            sb.append("  and tol.status_use = :statusUse ");
+        }
     }
 
     @Override
@@ -182,13 +332,42 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         List<Tool> tools = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
             for (Object[] obj : result) {
-                tools.add(writeDataToolByIdToolParent(obj));
+                tools.add(writeDataTool(obj));
             }
         }
         return tools;
     }
 
-    private Tool writeDataToolByIdToolParent(Object[] obj) {
+    @Override
+    public List<Tool> findAllToolBySaltsAndIsIncrease(List<String> listSalts, Integer isIncrease) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_tool, name, code_tool, salt,  " +
+                "       id_tool_category, time_created,  " +
+                "       time_modified, id_user_created,  " +
+                "       id_user_modified, value, quantity,  " +
+                "       is_increase, is_decrease, quantity_increase_current,  " +
+                "       quantity_decrease_current, id_process_current,  " +
+                "       status_process_current, id_type_process_current,  " +
+                "       id_department_original, status_use,  " +
+                "       parent, id_department, id_location,  " +
+                "       id_user_use, year_use " +
+                "from tool " +
+                "where tool.salt in (:salts) " +
+                "and tool.is_increase = :isIncrease ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("salts", listSalts);
+        query.setParameter("isIncrease", isIncrease);
+        List<Object[]> result = query.getResultList();
+        List<Tool> tools = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                tools.add(writeDataTool(obj));
+            }
+        }
+        return tools;
+    }
+
+    private Tool writeDataTool(Object[] obj) {
         Tool tool = new Tool();
         tool.setIdTool(ValueUtil.getIntegerByObject(obj[0]));
         tool.setName(ValueUtil.getStringByObject(obj[1]));

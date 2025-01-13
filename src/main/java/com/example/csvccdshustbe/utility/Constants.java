@@ -602,8 +602,14 @@ public class Constants {
     /**
      * Constant tool
      * */
-    public static  Integer TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT = 0;
-    public static  Integer TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT = 0;
+    public static Integer TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT = 0;
+    public static Integer TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT = 0;
+    public static Integer TOOL_PARENT_NOT_IS_INCREASE_WHOLE = -1;
+    public static Integer TOOL_PARENT_IS_INCREASING= 1;
+    public static Integer TOOL_PARENT_IS_INCREASED_WHOLE = 2;
+    public static Integer TOOL_PARENT_NOT_IS_DECREASE_WHOLE = -1;
+    public static Integer TOOL_PARENT_IS_DECREASING= 1;
+    public static Integer TOOL_PARENT_IS_DECREASED_WHOLE = 2;
 
     /*----------------------------------------------------*/
 }

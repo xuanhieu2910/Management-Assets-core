@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 public class FindAllToolRequest extends RequestPageBase {
 
+    private String salt;
     private String codeTool;
     private String nameTool;
     private Integer idToolCategory;

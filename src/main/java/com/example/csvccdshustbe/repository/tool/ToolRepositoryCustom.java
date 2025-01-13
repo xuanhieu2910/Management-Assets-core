@@ -11,8 +11,12 @@ import java.util.Optional;
 
 public interface ToolRepositoryCustom {
 
-    Page<ToolDto> findAllToolDto(FindAllToolRequest request, Pageable pageable);
+    Page<ToolDto> findAllToolParentDto(FindAllToolRequest request, Pageable pageable);
     Optional<Tool> findLastToolByIdDepartmentOriginal(Integer idDepartment);
     Optional<Tool> findToolBySaltTool(String salt);
     List<Tool> findAllChildrenToolByIdToolParent(Integer idToolParent);
+    List<Tool> findAllToolBySaltsAndIsIncrease(List<String> listSalts, Integer isIncrease);
+    Page<ToolDto> findAllChildrenToolDto(FindAllToolRequest request, Pageable pageable);
+    Optional<Tool> findToolById(Integer idTool);
+    void updateQuantityAndIncreaseAndDecreaseTool(Integer idParent);
 }
