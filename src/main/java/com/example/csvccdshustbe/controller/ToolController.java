@@ -103,4 +103,14 @@ public class ToolController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @GetMapping("/statistic")
+    public ResponseEntity<?> getStatistic(){
+        try {
+            return ApiResponseDto.createdWithState(toolService.getStatisticTool(),
+                    "Get statistic success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

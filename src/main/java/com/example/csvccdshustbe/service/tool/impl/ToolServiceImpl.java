@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.tool.ToolRepository;
 import com.example.csvccdshustbe.request.tool.*;
 import com.example.csvccdshustbe.response.tool.FindAllToolResponse;
+import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.tool.ToolService;
 import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
@@ -57,6 +58,11 @@ public class ToolServiceImpl implements ToolService {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<ToolDto> toolChildrenDtos = toolRepository.findAllChildrenToolDto(request, pageable);
         return new PageImpl<>(convertToFindAllToolResponse(toolChildrenDtos), pageable, toolChildrenDtos.getTotalElements());
+    }
+
+    @Override
+    public StatisticToolsResponse getStatisticTool() {
+        return toolRepository.getStatisticTool();
     }
 
     @Override

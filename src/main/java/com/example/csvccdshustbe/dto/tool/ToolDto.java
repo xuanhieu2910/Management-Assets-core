@@ -39,5 +39,5 @@ public class ToolDto {
     private Integer idUserUse;
     private String userName;
     private String yearUse;
-
+    private String price;
 }

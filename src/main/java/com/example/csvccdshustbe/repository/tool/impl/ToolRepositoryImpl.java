@@ -1,9 +1,11 @@
 package com.example.csvccdshustbe.repository.tool.impl;
 
 import com.example.csvccdshustbe.dto.tool.ToolDto;
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.repository.tool.ToolRepositoryCustom;
 import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
+import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -39,7 +42,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       tol.id_type_process_current, tol.id_department_original, tol.status_use, " +
                 "       tol.parent, tol.id_department, tol.id_location, " +
                 "       tol.id_user_use, tol.year_use, " +
-                "       de.code, de.name, lo.name " +
+                "       de.code, de.name, lo.name, tol.price " +
                 "from tool tol " +
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
                 "    left join department de on tol.id_department = de.id_department " +
@@ -71,7 +74,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "        tol.id_type_process_current, tol.id_department_original, tol.status_use,    " +
                 "        tol.parent, tol.id_department, tol.id_location,    " +
                 "        tol.id_user_use, tol.year_use,    " +
-                "        de.code, de.name, lo.name    " +
+                "        de.code, de.name, lo.name, tol.price    " +
                 " from tool tol    " +
                 "     left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category    " +
                 "     left join department de on tol.id_department = de.id_department    " +
@@ -104,7 +107,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "          quantity_decrease_current, id_process_current,   " +
                 "          status_process_current, id_type_process_current,   " +
                 "          id_department_original, status_use, parent,   " +
-                "          id_department, id_location, id_user_use, year_use   " +
+                "          id_department, id_location, id_user_use, year_use, price   " +
                 "from tool where tool.id_tool = :idTool ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idTool", idTool);
@@ -127,14 +130,14 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "    inner join (select result.id_tool,   " +
                 "                       case when result.countToolChildren = result.countIsIncrease then 1 else -1 end isIncrease,   " +
                 "                       case when result.countToolChildren = result.countIsDecrease then 1 else -1 end isDecrease,   " +
-                "                       quantity,   " +
-                "                       sumIncrease, sumDecrease   " +
+                "                       quantity, sumIncrease, sumDecrease, sumPrice   " +
                 "                from (select toolParent.id_tool, count(toolChildren.id_tool) countToolChildren,   " +
                 "                             sum(case when toolChildren.is_increase = :isIncrease then 1 else 0 end) countIsIncrease,   " +
                 "                             sum(case when toolChildren.is_decrease = :isDecrease then 1 else 0 end) countIsDecrease,   " +
                 "                             sum(toolChildren.quantity) quantity,   " +
                 "                             sum(case when toolChildren.is_increase = :isIncrease then toolChildren.quantity else 0 end) sumIncrease,   " +
-                "                             sum(case when toolChildren.is_decrease = :isDecrease then toolChildren.quantity else 0 end) sumDecrease   " +
+                "                             sum(case when toolChildren.is_decrease = :isDecrease then toolChildren.quantity else 0 end) sumDecrease,   " +
+                "                             CONVERT(varchar(255), CAST(toolChildren.price as INT))sumPrice   " +
                 "                      from tool toolParent   " +
                 "                               inner join tool toolChildren on toolParent.id_tool = toolChildren.parent   " +
                 "                      where toolParent.id_tool = :idTool   " +
@@ -144,13 +147,35 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "        tool.is_decrease = (case when result.isDecrease = 1 then 2 else tool.is_decrease end),   " +
                 "        tool.quantity = result.quantity,   " +
                 "        tool.quantity_increase_current = sumIncrease,   " +
-                "        tool.quantity_decrease_current = sumDecrease   " +
-                "where 1=1 ");
+                "        tool.quantity_decrease_current = sumDecrease,   " +
+                "        tool.price = sumPrice   " +
+                "where 1=1    ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idTool", idParent);
         query.setParameter("isIncrease", Constants.IS_INCREASED);
         query.setParameter("isDecrease", Constants.IS_DECREASED);
         query.executeUpdate();
+    }
+
+    @Override
+    public StatisticToolsResponse getStatisticTool() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select sum(tool.quantity) as sumQuantity,   " +
+                "       CAST(sum(cast(tool.price as INTEGER)) as NCHAR) as sumPrice   " +
+                "from tool   " +
+                "where id_department_original in (:idsDepartmentOriginal) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
+        List<Object[]> result = query.getResultList();
+        StatisticToolsResponse response = new StatisticToolsResponse();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                response.setSumQuantityTools(ValueUtil.getIntegerByObject(obj[0]));
+                response.setSumPrice(ValueUtil.getStringByObject(obj[1]));
+            }
+        }
+        return response;
     }
 
 
@@ -218,7 +243,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       quantity_decrease_current, id_process_current,  " +
                 "       status_process_current, id_type_process_current,  " +
                 "       id_department_original, status_use, parent,  " +
-                "       id_department, id_location, id_user_use, year_use " +
+                "       id_department, id_location, id_user_use, year_use, price " +
                 "from tool  " +
                 "where id_department_original = :idDepartmentOriginal " +
                 "order by tool.id_tool desc limit 1  ");
@@ -253,6 +278,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 tool.setIdLocation(ValueUtil.getIntegerByObject(obj[22]));
                 tool.setIdUserUse(ValueUtil.getIntegerByObject(obj[23]));
                 tool.setYearUse(ValueUtil.getStringByObject(obj[24]));
+                tool.setPrice(ValueUtil.getStringByObject(obj[25]));
                 return Optional.of(tool);
             }
         }
@@ -270,7 +296,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       quantity_decrease_current, id_process_current,   " +
                 "       status_process_current, id_type_process_current,   " +
                 "       id_department_original, status_use, parent,   " +
-                "       id_department, id_location, id_user_use, year_use  " +
+                "       id_department, id_location, id_user_use, year_use, price  " +
                 "from tool where tool.salt = :salt ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("salt", salt);
@@ -310,6 +336,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         tool.setIdLocation(ValueUtil.getIntegerByObject(obj[22]));
         tool.setIdUserUse(ValueUtil.getIntegerByObject(obj[23]));
         tool.setYearUse(ValueUtil.getStringByObject(obj[24]));
+        tool.setPrice(ValueUtil.getStringByObject(obj[25]));
         return tool;
     }
 
@@ -324,7 +351,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       quantity_decrease_current, id_process_current,   " +
                 "       status_process_current, id_type_process_current,   " +
                 "       id_department_original, status_use, parent,   " +
-                "       id_department, id_location, id_user_use, year_use   " +
+                "       id_department, id_location, id_user_use, year_use, price   " +
                 "from tool where tool.parent = :idToolParent ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idToolParent", idToolParent);
@@ -350,7 +377,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       status_process_current, id_type_process_current,  " +
                 "       id_department_original, status_use,  " +
                 "       parent, id_department, id_location,  " +
-                "       id_user_use, year_use " +
+                "       id_user_use, year_use, price " +
                 "from tool " +
                 "where tool.salt in (:salts) " +
                 "and tool.is_increase = :isIncrease ");
@@ -394,6 +421,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         tool.setIdLocation(ValueUtil.getIntegerByObject(obj[22]));
         tool.setIdUserUse(ValueUtil.getIntegerByObject(obj[23]));
         tool.setYearUse(ValueUtil.getStringByObject(obj[24]));
+        tool.setPrice(ValueUtil.getStringByObject(obj[25]));
         return tool;
     }
 
@@ -442,6 +470,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         toolDto.setCodeDepartment(ValueUtil.getStringByObject(obj[25]));
         toolDto.setNameDepartment(ValueUtil.getStringByObject(obj[26]));
         toolDto.setNameLocation(ValueUtil.getStringByObject(obj[27]));
+        toolDto.setPrice(ValueUtil.getStringByObject(obj[28]));
         return toolDto;
     }
 

@@ -66,5 +66,7 @@ public class Tool {
     private Integer idUserUse;
     @Column(name = "year_use")
     private String yearUse;
+    @Column(name = "price")
+    private String price;
 
 }

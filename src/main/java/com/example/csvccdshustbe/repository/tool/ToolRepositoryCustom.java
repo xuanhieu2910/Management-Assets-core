@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.repository.tool;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
+import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,4 +20,5 @@ public interface ToolRepositoryCustom {
     Page<ToolDto> findAllChildrenToolDto(FindAllToolRequest request, Pageable pageable);
     Optional<Tool> findToolById(Integer idTool);
     void updateQuantityAndIncreaseAndDecreaseTool(Integer idParent);
+    StatisticToolsResponse getStatisticTool();
 }
