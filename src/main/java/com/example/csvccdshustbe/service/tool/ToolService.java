@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.request.tool.CreateNewToolRequest;
 import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
 import com.example.csvccdshustbe.request.tool.UpdateToolRequest;
 import com.example.csvccdshustbe.response.tool.FindAllToolResponse;
+import com.example.csvccdshustbe.response.tool.FindDetailsToolResponse;
 import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
 import org.springframework.data.domain.Page;
 
@@ -23,6 +24,7 @@ public interface ToolService {
     void deleteToolBySalt(String saltTool);
     List<Tool> findAllToolBySaltsAndIsIncrease(List<String> listSalts, Integer isIncrease);
     Page<FindAllToolResponse> findAllToolChildrenResponse(FindAllToolRequest findAllToolRequest);
+    FindDetailsToolResponse findDetailsToolBySaltTool(String saltTool) throws ValidateFiledException, IllegalAccessException;
     StatisticToolsResponse getStatisticTool();
     Integer countToolIncreasedNotDecreasedOrNotPending(List<Integer> idsTool);
 }
