@@ -4,11 +4,14 @@ import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.tool.CreateNewToolRequest;
 import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
+import com.example.csvccdshustbe.request.tool.FindAllToolToInCreaseRequest;
 import com.example.csvccdshustbe.request.tool.UpdateToolRequest;
 import com.example.csvccdshustbe.response.tool.FindAllToolResponse;
+import com.example.csvccdshustbe.response.tool.FindAllToolResponseToIncrease;
 import com.example.csvccdshustbe.response.tool.FindDetailsToolResponse;
 import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -26,4 +29,5 @@ public interface ToolService {
     Page<FindAllToolResponse> findAllToolChildrenResponse(FindAllToolRequest findAllToolRequest);
     FindDetailsToolResponse findDetailsToolBySaltTool(String saltTool) throws ValidateFiledException, IllegalAccessException;
     StatisticToolsResponse getStatisticTool();
+    Page<FindAllToolResponseToIncrease> findAllToolToIncrease(FindAllToolToInCreaseRequest request);
 }

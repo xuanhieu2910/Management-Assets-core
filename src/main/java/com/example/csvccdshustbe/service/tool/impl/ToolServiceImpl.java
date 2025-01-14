@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.tool.impl;
 
+import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.*;
@@ -7,6 +8,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.tool.ToolRepository;
 import com.example.csvccdshustbe.request.tool.*;
 import com.example.csvccdshustbe.response.tool.FindAllToolResponse;
+import com.example.csvccdshustbe.response.tool.FindAllToolResponseToIncrease;
 import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
 import com.example.csvccdshustbe.response.tool.FindDetailsToolResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
@@ -96,6 +98,36 @@ public class ToolServiceImpl implements ToolService {
     @Override
     public StatisticToolsResponse getStatisticTool() {
         return toolRepository.getStatisticTool();
+    }
+
+    @Override
+    public Page<FindAllToolResponseToIncrease> findAllToolToIncrease(FindAllToolToInCreaseRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<ToolDto> findAllToolDtos = toolRepository.findAllToolDtoToIncrease(request, pageable);
+        return new PageImpl<>(converttoFindAllToolToIncreaseResponse(findAllToolDtos.getContent()),pageable,findAllToolDtos.getTotalElements());
+    }
+
+    private List<FindAllToolResponseToIncrease> converttoFindAllToolToIncreaseResponse(List<ToolDto> content) {
+        List<FindAllToolResponseToIncrease> responseToIncreases=new ArrayList<>();
+        for (ToolDto toolDto : content) {
+            FindAllToolResponseToIncrease responseToIncrease=new FindAllToolResponseToIncrease();
+            responseToIncrease.setCodeTool(toolDto.getCodeTool());
+            responseToIncrease.setNameTool(toolDto.getName());
+            responseToIncrease.setCodeToolCategory(toolDto.getCodeToolCategory());
+            responseToIncrease.setNameToolCategory(toolDto.getNameToolCategory());
+            responseToIncrease.setCodeDepartment(toolDto.getCodeDepartment());
+            responseToIncrease.setNameDepartment(toolDto.getNameDepartment());
+            responseToIncrease.setTimeCreated(toolDto.getTimeCreated());
+            responseToIncrease.setTimeModified(toolDto.getTimeModified());
+            responseToIncrease.setIdTool(toolDto.getIdTool());
+            responseToIncrease.setSalt(toolDto.getSalt());
+            responseToIncrease.setQuantity(toolDto.getQuantity());
+            responseToIncrease.setValue(toolDto.getValue());
+            responseToIncreases.add(responseToIncrease);
+        }
+        return responseToIncreases;
     }
 
     @Override
