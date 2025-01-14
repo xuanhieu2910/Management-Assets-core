@@ -80,7 +80,6 @@ public class AssetProcessController {
             return ApiResponseDto.createdWithState(assetProcessService.findAllAssetLotProcess(request),
                     "Find all data asset lot document success!", HttpStatus.OK);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

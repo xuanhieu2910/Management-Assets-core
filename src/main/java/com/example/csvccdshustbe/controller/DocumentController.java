@@ -32,7 +32,7 @@ public class DocumentController {
     @Autowired
     ProcessService processService;
     @GetMapping("/generate-code-document")
-    public ResponseEntity<?> generateAutoCodeDocument(@RequestParam("tg") String typeGenerate){
+    public ResponseEntity<?> generateAutoCodeDocumentAsset(@RequestParam("tg") String typeGenerate){
         try {
             return ApiResponseDto.createdWithState(documentService.generateCodeDocument(typeGenerate),
                     "Generate code document success!", HttpStatus.OK);
@@ -44,8 +44,8 @@ public class DocumentController {
     }
 
 
-    @GetMapping("/details")
-    public ResponseEntity<?> findDocumentDetailsByCodeDocument(@RequestParam("code") String code){
+    @GetMapping("/asset-details")
+    public ResponseEntity<?> findDocumentDetailsByCodeDocumentAsset(@RequestParam("code") String code){
         try {
             return ApiResponseDto.createdWithState(documentService.findDetailsDocumentByCodeDocument(code),
                     "Find details document success!", HttpStatus.OK);
@@ -57,7 +57,7 @@ public class DocumentController {
     }
 
 
-    @GetMapping("/find-all")
+    @GetMapping("/asset-find-all")
     public ResponseEntity<?> findAllProcessAsset(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
@@ -73,7 +73,7 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/find-all-increase")
+    @GetMapping("/asset-find-all-increase")
     public ResponseEntity<?> findAllProcessAssetIncrease(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
@@ -89,7 +89,7 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/find-all-document-inventory")
+    @GetMapping("/asset-find-all-document-inventory")
     public ResponseEntity<?> findAllProcessAssetInventory(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
@@ -106,8 +106,8 @@ public class DocumentController {
     }
 
 
-    @GetMapping("/find-all-update-inventory")
-    public ResponseEntity<?> findAllUpdateInventory(@And({
+    @GetMapping("/asset-find-all-update-inventory")
+    public ResponseEntity<?> findAllUpdateInventoryAsset(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
@@ -122,7 +122,7 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/find-all-decrease")
+    @GetMapping("/asset-find-all-decrease")
     public ResponseEntity<?> findAllProcessAssetInventory(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
@@ -137,7 +137,7 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-    @GetMapping("/find-all-change")
+    @GetMapping("/asset-find-all-change")
     public ResponseEntity<?> findAllProcessAssetInventory(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
@@ -153,7 +153,7 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-    @GetMapping("/find-all-revaluation")
+    @GetMapping("/asset-find-all-revaluation")
     public ResponseEntity<?> findAllProcessAssetInventory(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
@@ -169,7 +169,7 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-    @PostMapping("/increase")
+    @PostMapping("/asset-increase")
     public ResponseEntity<?> increaseAsset(@RequestBody CreateIncreaseAssetRequest request){
         try {
             processService.createIncreaseAsset(request);
@@ -180,8 +180,8 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-    @PostMapping("/document-inventory")
-    public ResponseEntity<?> createDocumentInventory(@RequestBody CreateInventoryAssetRequest request){
+    @PostMapping("/asset-document-inventory")
+    public ResponseEntity<?> createDocumentInventoryAsset(@RequestBody CreateInventoryAssetRequest request){
         try {
             processService.createDocumentInventoryAsset(request);
             return ApiResponseDto.createdWithMessage("Create inventory asset success!", HttpStatus.OK);
@@ -194,7 +194,7 @@ public class DocumentController {
         }
     }
 
-    @PostMapping("/decrease")
+    @PostMapping("/asset-decrease")
     public ResponseEntity<?> decreaseAsset(@RequestBody CreateDecreaseAssetRequest request){
         try {
             processService.createDecreaseAsset(request);
@@ -207,7 +207,7 @@ public class DocumentController {
     }
 
 
-    @PostMapping("/change")
+    @PostMapping("/asset-change")
     public ResponseEntity<?> changeAsset(@RequestBody CreateChangeAssetRequest request){
         try {
             processService.createChangeAsset(request);
@@ -220,7 +220,7 @@ public class DocumentController {
     }
 
 
-    @PostMapping("/revaluation")
+    @PostMapping("/asset-revaluation")
     public ResponseEntity<?> revaluationAsset(@RequestBody CreateRevaluationAssetRequest request){
         try {
             processService.createRevaluationAsset(request);
@@ -233,8 +233,8 @@ public class DocumentController {
     }
 
 
-    @GetMapping("/be-assigned")
-    public ResponseEntity<?> findAllProcessBeAssigned(@And({
+    @GetMapping("/asset-be-assigned")
+    public ResponseEntity<?> findAllProcessBeAssignedAsset(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
@@ -247,8 +247,8 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/be-assigned-document-inventory")
-    public ResponseEntity<?> findAllProcessBeAssignedInventory(@And({
+    @GetMapping("/asset-be-assigned-document-inventory")
+    public ResponseEntity<?> findAllProcessBeAssignedInventoryAsset(@And({
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
@@ -261,8 +261,8 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/statistic-increase")
-    public ResponseEntity<?> getStatisticIncrease(){
+    @GetMapping("/asset-statistic-increase")
+    public ResponseEntity<?> getStatisticIncreaseAsset(){
         try {
             return ApiResponseDto.createdWithState(processService.getStatisticIncrease(),
                     "Get statistic increase success!", HttpStatus.OK);
@@ -271,8 +271,8 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/statistic-update-inventory")
-    public ResponseEntity<?> getStatisticUpdateInventory(){
+    @GetMapping("/asset-statistic-update-inventory")
+    public ResponseEntity<?> getStatisticUpdateInventoryAsset(){
         try {
             return ApiResponseDto.createdWithState(processService.getStatisticUpdateInventory(),
                     "Get statistic update inventory success!", HttpStatus.OK);
@@ -281,8 +281,8 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/statistic-document-inventory")
-    public ResponseEntity<?> getStatisticDocumentInventory(){
+    @GetMapping("/asset-statistic-document-inventory")
+    public ResponseEntity<?> getStatisticDocumentInventoryAsset(){
         try {
             return ApiResponseDto.createdWithState(processService.getStatisticDocumentInventory(),
                     "Get statistic inventory success!", HttpStatus.OK);
@@ -291,8 +291,8 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/statistic-document-be-inventory")
-    public ResponseEntity<?> getStatisticDocumentBeInventory(){
+    @GetMapping("/asset-statistic-document-be-inventory")
+    public ResponseEntity<?> getStatisticDocumentBeInventoryAsset(){
         try {
             return ApiResponseDto.createdWithState(processService.getStatisticDocumentBeInventory(),
                     "Get statistic be inventory success!", HttpStatus.OK);
@@ -301,8 +301,8 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/statistic-decrease")
-    public ResponseEntity<?> getStatisticDecrease(){
+    @GetMapping("/asset-statistic-decrease")
+    public ResponseEntity<?> getStatisticDecreaseAsset(){
         try {
             return ApiResponseDto.createdWithState(processService.getStatisticDecrease(),
                     "Get statistic decrease success!", HttpStatus.OK);
@@ -311,8 +311,8 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/statistic-change")
-    public ResponseEntity<?> getStatisticChange(){
+    @GetMapping("/asset-statistic-change")
+    public ResponseEntity<?> getStatisticChangeAsset(){
         try {
             return ApiResponseDto.createdWithState(processService.getStatisticChange(),
                     "Get statistic change success!", HttpStatus.OK);
@@ -321,8 +321,8 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/statistic-revaluation")
-    public ResponseEntity<?> getStatisticRevaluation(){
+    @GetMapping("/asset-statistic-revaluation")
+    public ResponseEntity<?> getStatisticRevaluationAsset(){
         try {
             return ApiResponseDto.createdWithState(processService.getStatisticRevaluation(),
                     "Get statistic revaluation success!", HttpStatus.OK);
@@ -331,8 +331,8 @@ public class DocumentController {
         }
     }
 
-    @PostMapping("/update-inventory-draft")
-    public ResponseEntity<?> updateInventoryDraft(@RequestBody UpdateInventoryDraftRequest request){
+    @PostMapping("/asset-update-inventory-draft")
+    public ResponseEntity<?> updateInventoryDraftAsset(@RequestBody UpdateInventoryDraftRequest request){
         try {
             documentService.updateInventoryDraft(request);
             return ApiResponseDto.createdWithMessage("Update inventory draft success!", HttpStatus.OK);
@@ -343,8 +343,8 @@ public class DocumentController {
         }
     }
 
-    @PostMapping("/update-inventory-finish")
-    public ResponseEntity<?> finishInventoryDraft(@RequestBody UpdateInventoryDraftRequest request){
+    @PostMapping("/asset-update-inventory-finish")
+    public ResponseEntity<?> finishInventoryDraftAsset(@RequestBody UpdateInventoryDraftRequest request){
         try {
             documentService.updateInventoryFinish(request);
             return ApiResponseDto.createdWithMessage("Update inventory finish success!", HttpStatus.OK);
@@ -354,5 +354,6 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
 
 }
