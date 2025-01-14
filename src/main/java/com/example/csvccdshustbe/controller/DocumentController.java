@@ -4,7 +4,9 @@ import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
+import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
 import com.example.csvccdshustbe.request.process.*;
+import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -356,4 +358,55 @@ public class DocumentController {
     }
 
 
+    @GetMapping("/tool-find-all-increase")
+    public ResponseEntity<?> findAllDocumentIncreaseTool(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllDocumentToolRequest findAllProcessAssetRequest) {
+        try {
+            return ApiResponseDto.createdWithState(documentService.findAllDocumentToolIncrease(findAllProcessAssetRequest),
+                    "Find all document tool increase!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/tool-statistic-increase")
+    public ResponseEntity<?> getStatisticIncreaseTool(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticToolIncrease(),
+                    "Get statistic tool increase success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/tool-be-assigned")
+    public ResponseEntity<?> findAllProcessBeAssignedTool(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllProcessBeAssignedRequest request){
+        try {
+            return ApiResponseDto.createdWithState(processService.findAllProcessBeAssignedResponse(request),
+                    "Find all process be assigned success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/tool-increase")
+    public ResponseEntity<?> increaseTool(@RequestBody CreateIncreaseToolRequest request){
+        try {
+            processService.createIncreaseTool(request);
+            return ApiResponseDto.createdWithMessage("Create increase tool success!", HttpStatus.OK);
+        } catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

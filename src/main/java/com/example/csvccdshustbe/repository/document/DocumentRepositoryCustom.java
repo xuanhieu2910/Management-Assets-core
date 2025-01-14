@@ -2,9 +2,11 @@ package com.example.csvccdshustbe.repository.document;
 
 import com.example.csvccdshustbe.dto.document.FindAllDocumentAssetDto;
 import com.example.csvccdshustbe.dto.document.FindDetailsDocumentDto;
+import com.example.csvccdshustbe.dto.document.tool.FindAllDocumentToolDto;
 import com.example.csvccdshustbe.dto.process.*;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
+import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
 import com.example.csvccdshustbe.request.process.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,4 +42,6 @@ public interface DocumentRepositoryCustom {
 
     Optional<Document> findDocumentByIdProcess(Integer idProcess);
     Optional<Document> findDocumentByCodeDocumentAndStatus(String codeDocument, Integer status);
+
+    Page<FindAllDocumentToolDto> findAllDocumentToolDtoByIdsDepartment(FindAllDocumentToolRequest request, Pageable pageable);
 }

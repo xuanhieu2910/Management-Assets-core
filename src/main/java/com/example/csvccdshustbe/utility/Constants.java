@@ -279,6 +279,10 @@ public class Constants {
     public static final String CODE_TYPE_PROCESS_REVALUATION = "revaluation";
     public static final String CODE_TYPE_PROCESS_DOCUMENT_INVENTORY = "document_inventory";
     public static final String CODE_TYPE_PROCESS_UPDATE_INVENTORY = "update_inventory";
+    public static final String CODE_TYPE_PROCESS_INCREASE_TOOL = "increase_tool";
+    public static final String CODE_TYPE_PROCESS_DECREASE_TOOL = "decrease_tool";
+    public static final String CODE_TYPE_PROCESS_DELIVERY_TOOL = "delivery_tool";
+    public static final String CODE_TYPE_PROCESS_REVALUATION_TOOL = "revaluation_tool";
     /*----------------------------------------------------*/
     /**
      * Constant PREFIX_DOCUMENT

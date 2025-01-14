@@ -101,6 +101,11 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
+    public Integer countToolIncreasedNotDecreasedOrNotPending(List<Integer> idsTool) {
+        return null;
+    }
+
+    @Override
     public Page<FindAllToolResponseToIncrease> findAllToolToIncrease(FindAllToolToInCreaseRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();

@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.service.process;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.process.*;
+import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
 import com.example.csvccdshustbe.response.process.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ public interface ProcessService {
 
     Process saveProcess(Process process);
     void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException;
+    void createIncreaseTool(CreateIncreaseToolRequest request) throws ValidateFiledException;
     void createDocumentInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException;
     void createDecreaseAsset(CreateDecreaseAssetRequest request) throws ValidateFiledException;
     void createChangeAsset(CreateChangeAssetRequest request) throws ValidateFiledException, JsonProcessingException, IllegalAccessException;
@@ -26,5 +28,5 @@ public interface ProcessService {
     ProcessStatisticsDecreaseResponse getStatisticDecrease();
     ProcessStatisticsChangeResponse getStatisticChange();
     ProcessStatisticsRevaluationResponse getStatisticRevaluation();
-
+    ProcessStatisticsToolIncreaseResponse getStatisticToolIncrease();
 }

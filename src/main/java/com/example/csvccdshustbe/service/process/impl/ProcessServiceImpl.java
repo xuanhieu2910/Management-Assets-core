@@ -16,6 +16,7 @@ import com.example.csvccdshustbe.request.process.asset.AssetDetailInventoryReque
 import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilDecreaseRequest;
 import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilInventoryRequest;
 import com.example.csvccdshustbe.request.process.document.*;
+import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
 import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
@@ -26,6 +27,8 @@ import com.example.csvccdshustbe.service.requestData.RequestDataService;
 import com.example.csvccdshustbe.service.requestStakeHolder.RequestStakeHolderService;
 import com.example.csvccdshustbe.service.state.StateService;
 import com.example.csvccdshustbe.service.taskSendMail.TaskSendMailService;
+import com.example.csvccdshustbe.service.tool.ToolService;
+import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
 import com.example.csvccdshustbe.service.transition.TransitionService;
 import com.example.csvccdshustbe.service.typeProcessService.TypeProcessService;
 import com.example.csvccdshustbe.service.typeState.TypeStateService;
@@ -78,9 +81,13 @@ public class ProcessServiceImpl implements ProcessService {
     @Autowired
     AssetProcessService assetProcessService;
     @Autowired
+    ToolProcessService toolProcessService;
+    @Autowired
     AssetService assetService;
     @Autowired
-    private AssetRepository assetRepository;
+    ToolService toolService;
+    @Autowired
+    AssetRepository assetRepository;
 
 
     @Override
@@ -114,6 +121,32 @@ public class ProcessServiceImpl implements ProcessService {
         createTaskSendMailIncrease(userRoles, document, process);
     }
 
+    @Override
+    public void createIncreaseTool(CreateIncreaseToolRequest request) throws ValidateFiledException {
+//        List<Integer> idsTool = new ArrayList<>();
+//        request.getAssetDetail().forEach(x->idsTool.add(x.getIdAsset()));
+//        validateAssetProcessTool(idsTool);
+//        TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
+//        Process process = processRepository.save(constructionProcess(typeProcess));
+//        Document document = documentService.saveDocument(contructionDocumentIncrease(request.getDocument(), process));
+//        toolProcessService.saveListAssetProcess(contructionAssetProcessIncrease(request.getAssetDetail(), process));
+//        updateInformationProcessCurrentAsset(idsAsset, process);
+//        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
+//                Arrays.asList(Constants.CODE_TYPE_STATE_INIT,
+//                        Constants.CODE_TYPE_STATE_TEST_APPROVED,
+//                        Constants.CODE_TYPE_STATE_COMPLETED));
+//        List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
+//        transitionService.saveTransition(constructionTransition(process, states));
+//        Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
+//                states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
+//        Integer idDepartment = process.getIdDepartment();
+//        List<UserRoleDto> userRoles = userRoleService.findUserRoleByNameRoleAndIdDepartment(RolePattern.ManagerDepartment.name(),
+//                idDepartment);
+//        requestDataService.createNewRequestData(constructionRequestData(processRequest));
+//        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
+//        createTaskSendMailIncrease(userRoles, document, process);
+    }
+
     private void updateInformationProcessCurrentAsset(List<Integer> idsAsset, Process process) {
         assetService.updateInformationProcessCurrentAsset(idsAsset, process);
     }
@@ -122,6 +155,13 @@ public class ProcessServiceImpl implements ProcessService {
         Integer count = assetService.countAssetIncreasedNotDecreasedOrNotPending(idsAsset);
         if (count != null && count > 0){
             throw new ValidateFiledException("Validate data to increase asset!");
+        }
+    }
+
+    private void validateAssetProcessTool(List<Integer> idsTool) throws ValidateFiledException {
+        Integer count = toolService.countToolIncreasedNotDecreasedOrNotPending(idsTool);
+        if (count != null && count > 0){
+            throw new ValidateFiledException("Validate data to increase tool!");
         }
     }
 
@@ -888,7 +928,12 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public ProcessStatisticsRevaluationResponse getStatisticRevaluation() {
-        return  processRepository.getStatisticsRevaluation();
+        return processRepository.getStatisticsRevaluation();
+    }
+
+    @Override
+    public ProcessStatisticsToolIncreaseResponse getStatisticToolIncrease() {
+        return processRepository.getStatisticsToolIncrease();
     }
 
     /***
