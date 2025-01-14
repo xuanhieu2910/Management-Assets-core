@@ -22,5 +22,5 @@ public interface ProcessRepositoryCustom {
     ProcessStatisticsUpdateInventoryResponse getStatisticsUpdateInventory();
     Page<FindAllProcessBeAssignedResponse>
     findAllProcessBeAssignedDocumentInventory(FindAllProcessBeAssignedDocumentInventoryRequest request, Pageable pageable);
-
+    ProcessStatisticsToolIncreaseResponse getStatisticsToolIncrease();
 }

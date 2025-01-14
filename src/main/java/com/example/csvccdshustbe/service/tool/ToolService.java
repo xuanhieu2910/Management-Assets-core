@@ -24,4 +24,5 @@ public interface ToolService {
     List<Tool> findAllToolBySaltsAndIsIncrease(List<String> listSalts, Integer isIncrease);
     Page<FindAllToolResponse> findAllToolChildrenResponse(FindAllToolRequest findAllToolRequest);
     StatisticToolsResponse getStatisticTool();
+    Integer countToolIncreasedNotDecreasedOrNotPending(List<Integer> idsTool);
 }

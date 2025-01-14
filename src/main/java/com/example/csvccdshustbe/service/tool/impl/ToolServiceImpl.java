@@ -66,6 +66,11 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
+    public Integer countToolIncreasedNotDecreasedOrNotPending(List<Integer> idsTool) {
+        return null;
+    }
+
+    @Override
     public String generateCodeTool() {
         int minLength = 4;
         String prefix = Constants.PREFIX_ASSET_CCDC;
