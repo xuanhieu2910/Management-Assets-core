@@ -113,4 +113,15 @@ public class ToolController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+    @GetMapping()
+    public ResponseEntity<?> getTools(@RequestParam("salt") String saltTool){
+        try {
+            return ApiResponseDto.createdWithState(toolService.findDetailsToolBySaltTool(saltTool),
+                    "Find tools details success!", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

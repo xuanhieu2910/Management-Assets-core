@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.tool.impl;
 
+import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -7,6 +8,7 @@ import com.example.csvccdshustbe.repository.tool.ToolRepository;
 import com.example.csvccdshustbe.request.tool.*;
 import com.example.csvccdshustbe.response.tool.FindAllToolResponse;
 import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
+import com.example.csvccdshustbe.response.tool.FindDetailsToolResponse;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.tool.ToolService;
 import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
@@ -58,6 +60,37 @@ public class ToolServiceImpl implements ToolService {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<ToolDto> toolChildrenDtos = toolRepository.findAllChildrenToolDto(request, pageable);
         return new PageImpl<>(convertToFindAllToolResponse(toolChildrenDtos), pageable, toolChildrenDtos.getTotalElements());
+    }
+
+    @Override
+    public FindDetailsToolResponse findDetailsToolBySaltTool(String saltTool) throws ValidateFiledException, IllegalAccessException {
+        Optional<FindDetailsToolDto> findDetailsToolDto=toolRepository.findDetailToolBySalt(saltTool);
+        if (findDetailsToolDto.isEmpty()){
+            throw new NotFoundException("Don't exist Tool by salt!");
+        }
+        return convertToFindDetailsToolResponse(findDetailsToolDto.get());
+    }
+
+    private FindDetailsToolResponse convertToFindDetailsToolResponse(FindDetailsToolDto findDetailsToolDto) {
+        FindDetailsToolResponse findDetailsToolResponse = new FindDetailsToolResponse();
+        findDetailsToolResponse.setName(findDetailsToolDto.getName());
+        findDetailsToolResponse.setCodeTool(findDetailsToolDto.getCodeTool());
+        findDetailsToolResponse.setCodeToolCategory(findDetailsToolDto.getCodeToolCategory());
+        findDetailsToolResponse.setIdToolCategory(findDetailsToolDto.getIdToolCategory());
+        findDetailsToolResponse.setNameToolCategory(findDetailsToolDto.getNameToolCategory());
+        findDetailsToolResponse.setIdParent(findDetailsToolDto.getIdParent());
+        findDetailsToolResponse.setQuantity(findDetailsToolDto.getQuantity());
+        findDetailsToolResponse.setValue(findDetailsToolDto.getValue());
+        findDetailsToolResponse.setIdDepartment(findDetailsToolDto.getIdDepartment());
+        findDetailsToolResponse.setNameDepartment(findDetailsToolDto.getNameDepartment());
+        findDetailsToolResponse.setIdLocation(findDetailsToolDto.getIdLocation());
+        findDetailsToolResponse.setNameLocation(findDetailsToolDto.getNameLocation());
+        findDetailsToolResponse.setIsIncrease(findDetailsToolDto.getIsIncrease());
+        findDetailsToolResponse.setIsDecrease(findDetailsToolDto.getIsDecrease());
+        findDetailsToolResponse.setStatusUse(findDetailsToolDto.getStatusUse());
+        findDetailsToolResponse.setIdUserUse(findDetailsToolDto.getIdUserUse());
+        findDetailsToolResponse.setNameUserUse(findDetailsToolDto.getNameUserUse());
+        return findDetailsToolResponse;
     }
 
     @Override

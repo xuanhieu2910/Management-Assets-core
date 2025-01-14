@@ -1,5 +1,7 @@
 package com.example.csvccdshustbe.repository.tool.impl;
 
+import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
+import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Tool;
@@ -176,6 +178,49 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
             }
         }
         return response;
+    }
+
+    @Override
+    public Optional<FindDetailsToolDto> findDetailToolBySalt(String saltTool) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select tool.name,tool.code_tool,tool.id_tool_category, " +
+                "       tool_categories.code_tool,tool_categories.name, " +
+                "       tool.parent,tool.quantity,tool.value, " +
+                "       tool.id_department,department.name,tool.id_location, " +
+                "       location.name,tool.is_increase,tool.is_decrease, " +
+                "       tool.status_use,tool.id_user_use,csvc_user.full_name " +
+                "from tool left join tool_categories on tool.id_tool_category=tool_categories.id_tool_category " +
+                "left join department on tool.id_department=department.id_department " +
+                "left join location on tool.id_location=location.id_location " +
+                "left join csvc_user on tool.id_user_use = csvc_user.id_user where  tool.salt =:saltTool ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("saltTool", saltTool);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FindDetailsToolDto findDetailsToolDto = new FindDetailsToolDto();
+                findDetailsToolDto.setName(ValueUtil.getStringByObject(obj[0]));
+                findDetailsToolDto.setCodeTool(ValueUtil.getStringByObject(obj[1]));
+                findDetailsToolDto.setIdToolCategory(ValueUtil.getIntegerByObject(obj[2]));
+                findDetailsToolDto.setCodeToolCategory(ValueUtil.getStringByObject(obj[3]));
+                findDetailsToolDto.setNameToolCategory(ValueUtil.getStringByObject(obj[4]));
+                findDetailsToolDto.setIdParent(ValueUtil.getIntegerByObject(obj[5]));
+                findDetailsToolDto.setQuantity(ValueUtil.getIntegerByObject(obj[6]));
+                findDetailsToolDto.setValue(ValueUtil.getStringByObject(obj[7]));
+                findDetailsToolDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[8]));
+                findDetailsToolDto.setNameDepartment(ValueUtil.getStringByObject(obj[9]));
+                findDetailsToolDto.setIdLocation(ValueUtil.getIntegerByObject(obj[10]));
+                findDetailsToolDto.setNameLocation(ValueUtil.getStringByObject(obj[11]));
+                findDetailsToolDto.setIsIncrease(ValueUtil.getIntegerByObject(obj[12]));
+                findDetailsToolDto.setIsDecrease(ValueUtil.getIntegerByObject(obj[13]));
+                findDetailsToolDto.setStatusUse(ValueUtil.getIntegerByObject(obj[14]));
+                findDetailsToolDto.setIdUserUse(ValueUtil.getIntegerByObject(obj[15]));
+                findDetailsToolDto.setNameUserUse(ValueUtil.getStringByObject(obj[16]));
+                return Optional.of(findDetailsToolDto);
+
+            }
+        }
+        return Optional.empty();
     }
 
 

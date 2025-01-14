@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.tool;
 
+import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
@@ -21,4 +22,5 @@ public interface ToolRepositoryCustom {
     Optional<Tool> findToolById(Integer idTool);
     void updateQuantityAndIncreaseAndDecreaseTool(Integer idParent);
     StatisticToolsResponse getStatisticTool();
+    Optional<FindDetailsToolDto>findDetailToolBySalt(String saltTool);
 }
