@@ -727,6 +727,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     }
 
     private void setParameterFindAllToolDto(Query query, FindAllToolRequest request) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         if (StringUtils.isNotBlank(request.getCodeTool())){
             query.setParameter("codeTool", request.getCodeTool());
         }
