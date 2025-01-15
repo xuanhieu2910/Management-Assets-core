@@ -29,4 +29,6 @@ public class FindAllToolCategoriesResponse {
     private Integer visible;
     @JsonProperty("is_default")
     private Integer isDefault;
+    @JsonProperty("is_leaf")
+    private Integer isLeaf;
 }

@@ -78,6 +78,7 @@ public class ToolCategoriesServiceImpl implements ToolCategoriesService {
             response.setVisible(toolCategoryDto.getVisible());
             response.setParent(toolCategoryDto.getParent());
             response.setNameParent(toolCategoryDto.getNameParent());
+            response.setIsLeaf(toolCategoryDto.getIsLeaf());
             if (toolCategoryDto.getIdDepartmentOriginal().equals(Constants.DEFAULT_ASSET_CATEGORY)){
                 response.setIsDefault(Constants.IS_DEFAULT);
             } else {
