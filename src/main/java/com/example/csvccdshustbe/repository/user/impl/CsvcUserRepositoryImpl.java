@@ -509,13 +509,13 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
             query.setParameter("keyword", request.getKeyword());
         }
         if (StringUtils.isNotBlank(request.getFullName())){
-            query.setParameter("fullName", request.getKeyword());
+            query.setParameter("fullName", request.getFullName());
         }
         if (Objects.nonNull(request.getIdDepartment())){
-            query.setParameter("idDepartment", request.getKeyword());
+            query.setParameter("idDepartment", request.getIdDepartment());
         }
         if (StringUtils.isNotBlank(request.getNameRole())){
-            query.setParameter("shortNameRole", request.getKeyword());
+            query.setParameter("shortNameRole", request.getNameRole());
         }
 
     }
