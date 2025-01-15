@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllToolToInCreaseRequest extends RequestPageBase {
+public class FindAllToolToDecreaseRequest extends RequestPageBase {
     private String nameTool;
     private Integer idToolCategory;
     private Integer idDepartment;

@@ -2,16 +2,9 @@ package com.example.csvccdshustbe.service.tool;
 
 import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.tool.CreateNewToolRequest;
-import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
-import com.example.csvccdshustbe.request.tool.FindAllToolToInCreaseRequest;
-import com.example.csvccdshustbe.request.tool.UpdateToolRequest;
-import com.example.csvccdshustbe.response.tool.FindAllToolResponse;
-import com.example.csvccdshustbe.response.tool.FindAllToolResponseToIncrease;
-import com.example.csvccdshustbe.response.tool.FindDetailsToolResponse;
-import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
+import com.example.csvccdshustbe.request.tool.*;
+import com.example.csvccdshustbe.response.tool.*;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -30,5 +23,6 @@ public interface ToolService {
     FindDetailsToolResponse findDetailsToolBySaltTool(String saltTool) throws ValidateFiledException, IllegalAccessException;
     StatisticToolsResponse getStatisticTool();
     Integer countToolIncreasedNotDecreasedOrNotPending(List<Integer> idsTool);
-    Page<FindAllToolResponseToIncrease> findAllToolToIncrease(FindAllToolToInCreaseRequest request);
+    Page<FindAllToolResponseToIncrease> findAllToolToIncrease(FindAllToolToIncreaseRequest request);
+    Page<FindAllToolResponseToDecrease> findAllToolToDecrease(FindAllToolToDecreaseRequest request);
 }

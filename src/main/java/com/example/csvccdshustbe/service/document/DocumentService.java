@@ -8,6 +8,7 @@ import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolReques
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
+import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDecreaseResponse;
 import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolIncreaseResponse;
 import com.example.csvccdshustbe.response.process.*;
 import org.springframework.data.domain.Page;
@@ -35,4 +36,6 @@ public interface DocumentService {
     findAllDataProcessAssetUpdateInventory(FindAllProcessAssetUpdateInventoryRequest findAllProcessAssetRequest);
 
     Page<FindAllDocumentToolIncreaseResponse> findAllDocumentToolIncrease(FindAllDocumentToolRequest findAllProcessAssetRequest);
+    Page<FindAllDocumentToolDecreaseResponse> findAllDocumentToolDecrease(FindAllDocumentToolRequest findAllProcessAssetRequest);
+
 }

@@ -3,10 +3,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.request.tool.CreateNewToolRequest;
-import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
-import com.example.csvccdshustbe.request.tool.FindAllToolToInCreaseRequest;
-import com.example.csvccdshustbe.request.tool.UpdateToolRequest;
+import com.example.csvccdshustbe.request.tool.*;
 import com.example.csvccdshustbe.service.tool.ToolService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -130,10 +127,25 @@ public class ToolController {
             @Spec(path = "page", params = "page", spec = Like.class),
             @Spec(path = "size", params = "size", spec = Like.class),
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
-    }) FindAllToolToInCreaseRequest findAllToolRequest){
+    }) FindAllToolToIncreaseRequest findAllToolRequest){
         try {
             return ApiResponseDto.createdWithState(toolService.findAllToolToIncrease(findAllToolRequest),
                     "Find all tool to increase success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+    @GetMapping("/find-all-to-decrease")
+    public ResponseEntity<?> findAllToolsToIncrease(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllToolToDecreaseRequest findAllToolRequest){
+        try {
+            return ApiResponseDto.createdWithState(toolService.findAllToolToDecrease(findAllToolRequest),
+                    "Find all tool to decrease success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){

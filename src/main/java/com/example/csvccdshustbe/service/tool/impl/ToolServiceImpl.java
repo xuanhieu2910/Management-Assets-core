@@ -1,20 +1,15 @@
 package com.example.csvccdshustbe.service.tool.impl;
 
-import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.tool.ToolRepository;
 import com.example.csvccdshustbe.request.tool.*;
-import com.example.csvccdshustbe.response.tool.FindAllToolResponse;
-import com.example.csvccdshustbe.response.tool.FindAllToolResponseToIncrease;
-import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
-import com.example.csvccdshustbe.response.tool.FindDetailsToolResponse;
+import com.example.csvccdshustbe.response.tool.*;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.tool.ToolService;
 import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
-import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
@@ -106,12 +101,42 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
-    public Page<FindAllToolResponseToIncrease> findAllToolToIncrease(FindAllToolToInCreaseRequest request) {
+    public Page<FindAllToolResponseToIncrease> findAllToolToIncrease(FindAllToolToIncreaseRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
         request.setIdsDepartmentOriginal(idsDepartment);
         Page<ToolDto> findAllToolDtos = toolRepository.findAllToolDtoToIncrease(request, pageable);
         return new PageImpl<>(converttoFindAllToolToIncreaseResponse(findAllToolDtos.getContent()),pageable,findAllToolDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllToolResponseToDecrease> findAllToolToDecrease(FindAllToolToDecreaseRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<ToolDto> findAllToolToDecreaseDtos = toolRepository.findAllToolDtoToDecrease(request, pageable);
+        return new PageImpl<>(convertToFindAllToolToDecreaseResponse(findAllToolToDecreaseDtos.getContent()),pageable,findAllToolToDecreaseDtos.getTotalElements());
+    }
+
+    private List<FindAllToolResponseToDecrease> convertToFindAllToolToDecreaseResponse(List<ToolDto> content) {
+        List<FindAllToolResponseToDecrease> responseToDecreaseList = new ArrayList<>();
+        for (ToolDto toolDto : content) {
+            FindAllToolResponseToDecrease findAllToolResponseToDecrease = new FindAllToolResponseToDecrease();
+            findAllToolResponseToDecrease.setCodeTool(toolDto.getCodeTool());
+            findAllToolResponseToDecrease.setNameTool(toolDto.getName());
+            findAllToolResponseToDecrease.setCodeToolCategory(toolDto.getCodeToolCategory());
+            findAllToolResponseToDecrease.setNameToolCategory(toolDto.getNameToolCategory());
+            findAllToolResponseToDecrease.setCodeDepartment(toolDto.getCodeDepartment());
+            findAllToolResponseToDecrease.setNameDepartment(toolDto.getNameDepartment());
+            findAllToolResponseToDecrease.setTimeCreated(toolDto.getTimeCreated());
+            findAllToolResponseToDecrease.setTimeModified(toolDto.getTimeModified());
+            findAllToolResponseToDecrease.setIdTool(toolDto.getIdTool());
+            findAllToolResponseToDecrease.setSalt(toolDto.getSalt());
+            findAllToolResponseToDecrease.setQuantity(toolDto.getQuantity());
+            findAllToolResponseToDecrease.setValue(toolDto.getValue());
+            responseToDecreaseList.add(findAllToolResponseToDecrease);
+        }
+        return responseToDecreaseList;
     }
 
     private List<FindAllToolResponseToIncrease> converttoFindAllToolToIncreaseResponse(List<ToolDto> content) {

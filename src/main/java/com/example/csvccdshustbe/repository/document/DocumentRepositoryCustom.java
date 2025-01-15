@@ -43,5 +43,6 @@ public interface DocumentRepositoryCustom {
     Optional<Document> findDocumentByIdProcess(Integer idProcess);
     Optional<Document> findDocumentByCodeDocumentAndStatus(String codeDocument, Integer status);
 
-    Page<FindAllDocumentToolDto> findAllDocumentToolDtoByIdsDepartment(FindAllDocumentToolRequest request, Pageable pageable);
+    Page<FindAllDocumentToolDto> findAllDocumentToolIncreaseDtoByIdsDepartment(FindAllDocumentToolRequest request, Pageable pageable);
+    Page<FindAllDocumentToolDto> findAllDocumentToolDecreaseDtoByIdsDepartment(FindAllDocumentToolRequest request, Pageable pageable);
 }
