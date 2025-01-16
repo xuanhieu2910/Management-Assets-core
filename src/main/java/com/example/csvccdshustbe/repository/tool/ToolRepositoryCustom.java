@@ -23,4 +23,6 @@ public interface ToolRepositoryCustom {
     void updateQuantityAndIncreaseAndDecreaseTool(Integer idParent);
     StatisticToolsResponse getStatisticTool();
     Optional<FindDetailsToolDto>findDetailToolBySalt(String saltTool);
+    Integer countToolIncreasedNotDecreasedByIdsTool(List<Integer> idsTool);
+    List<Tool> findAllToolByIdsTool(List<Integer> idsTool);
 }

@@ -217,10 +217,49 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 findDetailsToolDto.setIdUserUse(ValueUtil.getIntegerByObject(obj[15]));
                 findDetailsToolDto.setNameUserUse(ValueUtil.getStringByObject(obj[16]));
                 return Optional.of(findDetailsToolDto);
-
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Integer countToolIncreasedNotDecreasedByIdsTool(List<Integer> idsTool) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(tool.id_tool) count " +
+                "from tool " +
+                "where tool.id_tool in (:idsTool) " +
+                "and (is_increase = :isIncreased and is_decrease = :isNotDecreased) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsTool", idsTool);
+        query.setParameter("isIncreased", Constants.TOOL_IS_INCREASED);
+        query.setParameter("isNotDecreased", Constants.TOOL_IS_NOT_DECREASE);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+    @Override
+    public List<Tool> findAllToolByIdsTool(List<Integer> idsTool) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_tool, name, code_tool,   " +
+                "       salt, id_tool_category,   " +
+                "       time_created, time_modified,   " +
+                "       id_user_created, id_user_modified,   " +
+                "       value, quantity, is_increase,   " +
+                "       is_decrease, quantity_increase_current,   " +
+                "       quantity_decrease_current, id_process_current,  " +
+                "       status_process_current, id_type_process_current,   " +
+                "       id_department_original, status_use, parent,  " +
+                "       id_department, id_location, id_user_use, year_use, price   " +
+                "from tool where id_tool in (:idsTool) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsTool", idsTool);
+        List<Tool> tools = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                tools.add(writeDataTool(obj));
+            }
+        }
+        return tools;
     }
 
 

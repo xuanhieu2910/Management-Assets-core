@@ -99,8 +99,13 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
-    public Integer countToolIncreasedNotDecreasedOrNotPending(List<Integer> idsTool) {
-        return null;
+    public Integer countToolIncreasedNotDecreased(List<Integer> idsTool) {
+        return toolRepository.countToolIncreasedNotDecreasedByIdsTool(idsTool);
+    }
+
+    @Override
+    public List<Tool> findAllToolByIdsTool(List<Integer> idsTool) {
+        return toolRepository.findAllToolByIdsTool(idsTool);
     }
 
     @Override

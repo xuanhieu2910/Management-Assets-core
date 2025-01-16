@@ -9,6 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ToolDetailIncreaseRequest {
-    private Integer idAsset;
+
+    private Integer idTool;
     private String value;
+    private Integer quantityIncrease;
+
 }

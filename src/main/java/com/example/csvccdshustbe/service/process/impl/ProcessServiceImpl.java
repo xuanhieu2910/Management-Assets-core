@@ -17,6 +17,7 @@ import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilD
 import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilInventoryRequest;
 import com.example.csvccdshustbe.request.process.document.*;
 import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
+import com.example.csvccdshustbe.request.process.tool.ToolDetailIncreaseRequest;
 import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
@@ -102,7 +103,7 @@ public class ProcessServiceImpl implements ProcessService {
         validateAssetProcessIncrease(idsAsset);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
-        Document document = documentService.saveDocument(contructionDocumentIncrease(request.getDocument(), process));
+        Document document = documentService.saveDocument(constructionDocumentIncrease(request.getDocument(), process));
         assetProcessService.saveListAssetProcess(contructionAssetProcessIncrease(request.getAssetDetail(), process));
         updateInformationProcessCurrentAsset(idsAsset, process);
         List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
@@ -121,30 +122,55 @@ public class ProcessServiceImpl implements ProcessService {
         createTaskSendMailIncrease(userRoles, document, process);
     }
 
+
+    @Transactional
     @Override
     public void createIncreaseTool(CreateIncreaseToolRequest request) throws ValidateFiledException {
-//        List<Integer> idsTool = new ArrayList<>();
-//        request.getAssetDetail().forEach(x->idsTool.add(x.getIdAsset()));
-//        validateAssetProcessTool(idsTool);
-//        TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
-//        Process process = processRepository.save(constructionProcess(typeProcess));
-//        Document document = documentService.saveDocument(contructionDocumentIncrease(request.getDocument(), process));
-//        toolProcessService.saveListAssetProcess(contructionAssetProcessIncrease(request.getAssetDetail(), process));
-//        updateInformationProcessCurrentAsset(idsAsset, process);
-//        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
-//                Arrays.asList(Constants.CODE_TYPE_STATE_INIT,
-//                        Constants.CODE_TYPE_STATE_TEST_APPROVED,
-//                        Constants.CODE_TYPE_STATE_COMPLETED));
-//        List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
-//        transitionService.saveTransition(constructionTransition(process, states));
-//        Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
-//                states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
-//        Integer idDepartment = process.getIdDepartment();
-//        List<UserRoleDto> userRoles = userRoleService.findUserRoleByNameRoleAndIdDepartment(RolePattern.ManagerDepartment.name(),
-//                idDepartment);
-//        requestDataService.createNewRequestData(constructionRequestData(processRequest));
-//        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
-//        createTaskSendMailIncrease(userRoles, document, process);
+        List<Integer> idsTool = new ArrayList<>();
+        if (request.isIncreaseAll()){
+            getAllToolsDetailsToIncrease(request);
+        }
+        request.getToolsDetail().forEach(x->idsTool.add(x.getIdTool()));
+        validateAssetProcessTool(idsTool);
+        List<Tool> tools = toolService.findAllToolByIdsTool(idsTool);
+        TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
+        Process process = processRepository.save(constructionProcess(typeProcess));
+        Document document = documentService.saveDocument(constructionDocumentIncrease(request.getDocument(), process));
+        toolProcessService.saveAllToolProcess(constructionToolProcessIncrease(request.getToolsDetail(), process));
+        updateInformationIncreaseTools(tools, process, request.getToolsDetail());
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
+                Arrays.asList(Constants.CODE_TYPE_STATE_INIT,
+                        Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                        Constants.CODE_TYPE_STATE_COMPLETED));
+        List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
+        transitionService.saveTransition(constructionTransition(process, states));
+        Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
+                states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
+        Integer idDepartment = process.getIdDepartment();
+        List<UserRoleDto> userRoles = userRoleService.findUserRoleByNameRoleAndIdDepartment(RolePattern.ManagerDepartment.name(),
+                idDepartment);
+        requestDataService.createNewRequestData(constructionRequestData(processRequest));
+        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
+        createTaskSendMailIncrease(userRoles, document, process);
+    }
+
+    private void getAllToolsDetailsToIncrease(CreateIncreaseToolRequest request) {
+//        toolService.getAllToolsDetailsToIncrease
+    }
+
+    private void updateInformationIncreaseTools(List<Tool> tools, Process process, List<ToolDetailIncreaseRequest> toolsDetailIncrease) {
+        for (ToolDetailIncreaseRequest toolDetailIncreaseRequest: toolsDetailIncrease){
+            tools.stream().filter(x->x.getIdTool()
+                    .equals(toolDetailIncreaseRequest.getIdTool()))
+                    .findFirst().ifPresent(x->{
+                    x.setQuantityIncreaseCurrent(
+                            (x.getQuantityIncreaseCurrent().equals(0) ? 0 : x.getQuantityIncreaseCurrent())
+                                    + toolDetailIncreaseRequest.getQuantityIncrease());
+                    x.setIdProcessCurrent(process.getIdProcess());
+                    x.setIdTypeProcessCurrent(process.getIdTypeProcess());
+                    x.setStatusProcessCurrent(process.getStatus());
+            });
+        }
     }
 
     private void updateInformationProcessCurrentAsset(List<Integer> idsAsset, Process process) {
@@ -159,7 +185,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     private void validateAssetProcessTool(List<Integer> idsTool) throws ValidateFiledException {
-        Integer count = toolService.countToolIncreasedNotDecreasedOrNotPending(idsTool);
+        Integer count = toolService.countToolIncreasedNotDecreased(idsTool);
         if (count != null && count > 0){
             throw new ValidateFiledException("Validate data to increase tool!");
         }
@@ -183,6 +209,27 @@ public class ProcessServiceImpl implements ProcessService {
             assetProcessList.add(assetProcess);
         }
         return assetProcessList;
+    }
+
+
+    private List<ToolProcess> constructionToolProcessIncrease(List<ToolDetailIncreaseRequest> toolProcessValue, Process process) {
+        List<ToolProcess> toolProcessList = new ArrayList<>();
+        String currentTime = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        for (ToolDetailIncreaseRequest toolProcessRequest: toolProcessValue){
+            ToolProcess toolProcess = new ToolProcess();
+            toolProcess.setIdTool(toolProcessRequest.getIdTool());
+            toolProcess.setIdProcess(process.getIdProcess());
+            toolProcess.setIdTypeProcess(process.getIdTypeProcess());
+            toolProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+            toolProcess.setValue(toolProcessRequest.getValue());
+            toolProcess.setTimeCreated(currentTime);
+            toolProcess.setTimeModified(currentTime);
+            toolProcess.setIdUserCreated(csvcUser.getIdUser());
+            toolProcess.setIdUserModified(csvcUser.getIdUser());
+            toolProcessList.add(toolProcess);
+        }
+        return toolProcessList;
     }
 
     private void createTaskSendMailIncrease(List<UserRoleDto> userRoleDtos, Document document, Process process) {
@@ -715,7 +762,7 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private Document contructionDocumentIncrease(CreateDocumentRequest request, Process process) throws ValidateFiledException {
+    private Document constructionDocumentIncrease(CreateDocumentRequest request, Process process) throws ValidateFiledException {
         validateCreateNewDocumentIncrease(request);
         Document document = new Document();
         String dateNow = String.valueOf(new Date().getTime());

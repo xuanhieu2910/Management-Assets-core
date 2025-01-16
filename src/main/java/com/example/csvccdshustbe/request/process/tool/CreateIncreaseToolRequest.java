@@ -13,7 +13,7 @@ import java.util.List;
 public class CreateIncreaseToolRequest {
 
     private CreateDocumentRequest document;
-    private List<ToolDetailIncreaseRequest> assetDetail;
+    private List<ToolDetailIncreaseRequest> toolsDetail;
     private String typeProcess;
-
+    private boolean isIncreaseAll;
 }
