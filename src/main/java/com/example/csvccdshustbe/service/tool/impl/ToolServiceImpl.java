@@ -6,13 +6,10 @@ import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.tool.ToolRepository;
 import com.example.csvccdshustbe.request.tool.*;
-import com.example.csvccdshustbe.response.tool.FindAllToolResponse;
-import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
-import com.example.csvccdshustbe.response.tool.FindDetailsToolResponse;
+import com.example.csvccdshustbe.response.tool.*;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.tool.ToolService;
 import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
-import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
@@ -69,12 +66,17 @@ public class ToolServiceImpl implements ToolService {
         if (findDetailsToolDto.isEmpty()){
             throw new NotFoundException("Don't exist Tool by salt!");
         }
+        setAllocateToolDetail(findDetailsToolDto.get());
         return convertToFindDetailsToolResponse(findDetailsToolDto.get());
+    }
+
+    private void setAllocateToolDetail(FindDetailsToolDto findDetailsToolDto) {
+        findDetailsToolDto.setAllocateToolDto(toolRepository.findListAllocateToolByIdToolParent(findDetailsToolDto.getIdTool()));
     }
 
     private FindDetailsToolResponse convertToFindDetailsToolResponse(FindDetailsToolDto findDetailsToolDto) {
         FindDetailsToolResponse findDetailsToolResponse = new FindDetailsToolResponse();
-        findDetailsToolResponse.setName(findDetailsToolDto.getName());
+        findDetailsToolResponse.setName(findDetailsToolDto.getNameTool());
         findDetailsToolResponse.setCodeTool(findDetailsToolDto.getCodeTool());
         findDetailsToolResponse.setCodeToolCategory(findDetailsToolDto.getCodeToolCategory());
         findDetailsToolResponse.setIdToolCategory(findDetailsToolDto.getIdToolCategory());
@@ -82,15 +84,13 @@ public class ToolServiceImpl implements ToolService {
         findDetailsToolResponse.setIdParent(findDetailsToolDto.getIdParent());
         findDetailsToolResponse.setQuantity(findDetailsToolDto.getQuantity());
         findDetailsToolResponse.setValue(findDetailsToolDto.getValue());
-        findDetailsToolResponse.setIdDepartment(findDetailsToolDto.getIdDepartment());
-        findDetailsToolResponse.setNameDepartment(findDetailsToolDto.getNameDepartment());
-        findDetailsToolResponse.setIdLocation(findDetailsToolDto.getIdLocation());
-        findDetailsToolResponse.setNameLocation(findDetailsToolDto.getNameLocation());
         findDetailsToolResponse.setIsIncrease(findDetailsToolDto.getIsIncrease());
         findDetailsToolResponse.setIsDecrease(findDetailsToolDto.getIsDecrease());
         findDetailsToolResponse.setStatusUse(findDetailsToolDto.getStatusUse());
         findDetailsToolResponse.setIdUserUse(findDetailsToolDto.getIdUserUse());
         findDetailsToolResponse.setNameUserUse(findDetailsToolDto.getNameUserUse());
+        findDetailsToolResponse.setYearUse(findDetailsToolDto.getYearUse());
+        findDetailsToolResponse.setAllowcateToolDtoList(findDetailsToolDto.getAllocateToolDto());
         return findDetailsToolResponse;
     }
 
@@ -131,6 +131,66 @@ public class ToolServiceImpl implements ToolService {
     @Override
     public void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer status) {
         toolRepository.updateToolStatusProcessCurrentByIdProcessCurrent(idProcessCurrent, status);
+    }
+
+    @Override
+    public Page<FindAllToolResponseToIncrease> findAllToolToIncrease(FindAllToolToIncreaseRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<ToolDto> findAllToolDtos = toolRepository.findAllToolDtoToIncrease(request, pageable);
+        return new PageImpl<>(converttoFindAllToolToIncreaseResponse(findAllToolDtos.getContent()),pageable,findAllToolDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllToolResponseToDecrease> findAllToolToDecrease(FindAllToolToDecreaseRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        request.setIdsDepartmentOriginal(idsDepartment);
+        Page<ToolDto> findAllToolToDecreaseDtos = toolRepository.findAllToolDtoToDecrease(request, pageable);
+        return new PageImpl<>(convertToFindAllToolToDecreaseResponse(findAllToolToDecreaseDtos.getContent()),pageable,findAllToolToDecreaseDtos.getTotalElements());
+    }
+
+    private List<FindAllToolResponseToDecrease> convertToFindAllToolToDecreaseResponse(List<ToolDto> content) {
+        List<FindAllToolResponseToDecrease> responseToDecreaseList = new ArrayList<>();
+        for (ToolDto toolDto : content) {
+            FindAllToolResponseToDecrease findAllToolResponseToDecrease = new FindAllToolResponseToDecrease();
+            findAllToolResponseToDecrease.setCodeTool(toolDto.getCodeTool());
+            findAllToolResponseToDecrease.setNameTool(toolDto.getName());
+            findAllToolResponseToDecrease.setCodeToolCategory(toolDto.getCodeToolCategory());
+            findAllToolResponseToDecrease.setNameToolCategory(toolDto.getNameToolCategory());
+            findAllToolResponseToDecrease.setCodeDepartment(toolDto.getCodeDepartment());
+            findAllToolResponseToDecrease.setNameDepartment(toolDto.getNameDepartment());
+            findAllToolResponseToDecrease.setTimeCreated(toolDto.getTimeCreated());
+            findAllToolResponseToDecrease.setTimeModified(toolDto.getTimeModified());
+            findAllToolResponseToDecrease.setIdTool(toolDto.getIdTool());
+            findAllToolResponseToDecrease.setSalt(toolDto.getSalt());
+            findAllToolResponseToDecrease.setQuantity(toolDto.getQuantity());
+            findAllToolResponseToDecrease.setValue(toolDto.getValue());
+            responseToDecreaseList.add(findAllToolResponseToDecrease);
+        }
+        return responseToDecreaseList;
+    }
+
+    private List<FindAllToolResponseToIncrease> converttoFindAllToolToIncreaseResponse(List<ToolDto> content) {
+        List<FindAllToolResponseToIncrease> responseToIncreases=new ArrayList<>();
+        for (ToolDto toolDto : content) {
+            FindAllToolResponseToIncrease responseToIncrease=new FindAllToolResponseToIncrease();
+            responseToIncrease.setCodeTool(toolDto.getCodeTool());
+            responseToIncrease.setNameTool(toolDto.getName());
+            responseToIncrease.setCodeToolCategory(toolDto.getCodeToolCategory());
+            responseToIncrease.setNameToolCategory(toolDto.getNameToolCategory());
+            responseToIncrease.setCodeDepartment(toolDto.getCodeDepartment());
+            responseToIncrease.setNameDepartment(toolDto.getNameDepartment());
+            responseToIncrease.setTimeCreated(toolDto.getTimeCreated());
+            responseToIncrease.setTimeModified(toolDto.getTimeModified());
+            responseToIncrease.setIdTool(toolDto.getIdTool());
+            responseToIncrease.setSalt(toolDto.getSalt());
+            responseToIncrease.setQuantity(toolDto.getQuantity());
+            responseToIncrease.setValue(toolDto.getValue());
+            responseToIncreases.add(responseToIncrease);
+        }
+        return responseToIncreases;
     }
 
     @Override
@@ -327,7 +387,7 @@ public class ToolServiceImpl implements ToolService {
         String currentTime = String.valueOf(new Date().getTime());
         Tool childTool = new Tool();
         childTool.setName(toolParent.getName());
-        childTool.setCodeTool(String.valueOf(UUID.randomUUID()));
+        childTool.setCodeTool(toolParent.getCodeTool() +"-"+ UUID.randomUUID());
         childTool.setSalt(String.valueOf(UUID.randomUUID()));
         childTool.setIdToolCategory(toolParent.getIdToolCategory());
         childTool.setTimeCreated(currentTime);
@@ -345,6 +405,7 @@ public class ToolServiceImpl implements ToolService {
         childTool.setIdLocation(allocateToolRequest.getIdLocation());
         childTool.setIdUserUse(user.get().getIdUser());
         childTool.setYearUse(toolParent.getYearUse());
+        childTool.setIdDepartmentOriginal(toolParent.getIdDepartmentOriginal());
         return childTool;
     }
 

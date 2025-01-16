@@ -1,7 +1,11 @@
 package com.example.csvccdshustbe.response.tool;
+import com.example.csvccdshustbe.dto.tool.AllocateToolDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
+
 @Getter
 @Setter
 public class FindDetailsToolResponse {
@@ -36,8 +40,12 @@ public class FindDetailsToolResponse {
     private Integer isDecrease;
     @JsonProperty("status_use")
     private Integer statusUse;
+    @JsonProperty("year_use")
+    private String yearUse;
     @JsonProperty("id_user_use")
     private Integer idUserUse;
     @JsonProperty("name_user_use")
     private String nameUserUse;
+    @JsonProperty("allocate_tool_list")
+    private List<AllocateToolDto> allowcateToolDtoList;
 }

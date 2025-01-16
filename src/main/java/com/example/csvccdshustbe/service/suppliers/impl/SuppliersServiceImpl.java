@@ -3,17 +3,23 @@ package com.example.csvccdshustbe.service.suppliers.impl;
 
 import com.example.csvccdshustbe.entity.Suppliers;
 
+import com.example.csvccdshustbe.entity.UnitsTool;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.suppliers.SuppliersRepository;
 
 import com.example.csvccdshustbe.request.suppliers.CreateSuppliersRequest;
+import com.example.csvccdshustbe.request.suppliers.FindAllSuppliersRequest;
 import com.example.csvccdshustbe.request.suppliers.UpdateSuppliersRequest;
 
 import com.example.csvccdshustbe.response.suppliers.FindAllSuppliersResponse;
 import com.example.csvccdshustbe.service.suppliers.SuppliersService;
+import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -21,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SuppliersServiceImpl implements SuppliersService {
@@ -30,20 +37,25 @@ public class SuppliersServiceImpl implements SuppliersService {
 
 
     @Override
-    public List<FindAllSuppliersResponse> findAllSuppliersResponseByStatus(Integer status) {
-        return convertToFindAllSuppliers(suppliersRepository.findAllSuppliersByStatus(status));
+    public Page<FindAllSuppliersResponse> findAllSuppliersResponseByStatus(FindAllSuppliersRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<Suppliers> findAllSuppliersResponses = suppliersRepository.findAllSuppliersByStatus(request, pageable);
+        return new PageImpl<>(convertToFindAllUnitsToolsResponse(findAllSuppliersResponses.stream().collect(Collectors.toList())),pageable,findAllSuppliersResponses.getTotalElements());
     }
 
-    private List<FindAllSuppliersResponse> convertToFindAllSuppliers(List<Suppliers> allSuppliersByStatus) {
+    private List<FindAllSuppliersResponse> convertToFindAllUnitsToolsResponse(List<Suppliers> collect) {
         List<FindAllSuppliersResponse> responses = new ArrayList<>();
-        for (Suppliers suppliers : allSuppliersByStatus){
+        for (Suppliers suppliers : collect) {
             FindAllSuppliersResponse response = new FindAllSuppliersResponse();
             response.setIdSupplier(suppliers.getIdSupplier());
             response.setName(suppliers.getName());
+            response.setEmail(suppliers.getEmail());
+            response.setPhoneNumber(suppliers.getPhoneNumber());
             responses.add(response);
         }
         return responses;
     }
+
 
     @Override
     public void createSuppliers(CreateSuppliersRequest request) throws ValidateFiledException {

@@ -14,6 +14,7 @@ import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolReques
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
+import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDecreaseResponse;
 import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolIncreaseResponse;
 import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
@@ -412,9 +413,41 @@ public class DocumentServiceImpl implements DocumentService {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
         Page<FindAllDocumentToolDto> findAllDocumentToolDtos =
-                documentRepository.findAllDocumentToolDtoByIdsDepartment(request,pageable);
+                documentRepository.findAllDocumentToolIncreaseDtoByIdsDepartment(request,pageable);
         return new PageImpl<>(convertToFindAllDocumentToolIncrease(findAllDocumentToolDtos.getContent()),
                 pageable, findAllDocumentToolDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllDocumentToolDecreaseResponse> findAllDocumentToolDecrease(FindAllDocumentToolRequest request) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllDocumentToolDto> findAllDocumentToolDtos =
+                documentRepository.findAllDocumentToolDecreaseDtoByIdsDepartment(request,pageable);
+        return new PageImpl<>(convertToFindAllDocumentToolDecrease(findAllDocumentToolDtos.getContent()),
+                pageable, findAllDocumentToolDtos.getTotalElements());
+    }
+
+    private List<FindAllDocumentToolDecreaseResponse> convertToFindAllDocumentToolDecrease(List<FindAllDocumentToolDto> content) {
+        List<FindAllDocumentToolDecreaseResponse> responses = new ArrayList<>();
+        for (FindAllDocumentToolDto toolDto : content) {
+            FindAllDocumentToolDecreaseResponse response = new FindAllDocumentToolDecreaseResponse();
+            response.setCodeDocument(toolDto.getCodeDocument());
+            response.setIdUserCreate(toolDto.getIdUserCreate());
+            response.setFullNameCreate(toolDto.getFullNameUser());
+            response.setNameUserCreate(toolDto.getNameUserCreate());
+            response.setCodeDepartment(toolDto.getCodeDepartment());
+            response.setNameDepartment(toolDto.getNameDepartment());
+            response.setStatus(toolDto.getStatus());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()),DateUtil.DDMMYYYY));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()),DateUtil.DDMMYYYY));
+            response.setTimeDocument(toolDto.getTimeDocument());
+            response.setTimeIncrease(toolDto.getTimeIncrease());
+            response.setDescription(toolDto.getDescription());
+            responses.add(response);
+        }
+        return responses;
     }
 
     private List<FindAllDocumentToolIncreaseResponse> convertToFindAllDocumentToolIncrease(List<FindAllDocumentToolDto> content) {

@@ -29,4 +29,5 @@ public interface ProcessService {
     ProcessStatisticsChangeResponse getStatisticChange();
     ProcessStatisticsRevaluationResponse getStatisticRevaluation();
     ProcessStatisticsToolIncreaseResponse getStatisticToolIncrease();
+    ProcessStatisticsToolDecreaseResponse getStatisticToolDecrease();
 }

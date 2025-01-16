@@ -508,9 +508,29 @@ public class CsvcUserRepositoryImpl implements CsvcUserRepositoryCustom {
         if (StringUtils.isNotBlank(request.getKeyword())){
             query.setParameter("keyword", request.getKeyword());
         }
+        if (StringUtils.isNotBlank(request.getFullName())){
+            query.setParameter("fullName", request.getFullName());
+        }
+        if (Objects.nonNull(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (StringUtils.isNotBlank(request.getNameRole())){
+            query.setParameter("shortNameRole", request.getNameRole());
+        }
+
     }
 
     private void setConditionFindAllUserUsedDto(FindAllUserUsedRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getFullName())){
+            sb.append(" and (csvcUser.full_name REGEXP  :fullName ) ");
+        }
+        if (Objects.nonNull(request.getIdDepartment())){
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (StringUtils.isNotBlank(request.getNameRole())){
+            sb.append(" and ( role.short_name REGEXP  :shortNameRole ) ");
+        }
+
         if (StringUtils.isNotBlank(request.getKeyword())){
             sb.append("  and (csvcUser.full_name REGEXP :keyword ) ");
         }

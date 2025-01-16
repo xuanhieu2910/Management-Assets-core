@@ -1,9 +1,12 @@
 package com.example.csvccdshustbe.repository.tool;
 
+import com.example.csvccdshustbe.dto.tool.AllocateToolDto;
 import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
+import com.example.csvccdshustbe.request.tool.FindAllToolToDecreaseRequest;
+import com.example.csvccdshustbe.request.tool.FindAllToolToIncreaseRequest;
 import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +26,9 @@ public interface ToolRepositoryCustom {
     void updateQuantityAndIncreaseAndDecreaseTool(Integer idParent);
     StatisticToolsResponse getStatisticTool();
     Optional<FindDetailsToolDto>findDetailToolBySalt(String saltTool);
+    Page<ToolDto> findAllToolDtoToIncrease(FindAllToolToIncreaseRequest request, Pageable pageable);
+    Page<ToolDto> findAllToolDtoToDecrease(FindAllToolToDecreaseRequest request, Pageable pageable);
+    List<AllocateToolDto> findListAllocateToolByIdToolParent(Integer idToolParent);
     Integer countToolIncreasedNotDecreasedByIdsTool(List<Integer> idsTool);
     List<Tool> findAllToolByIdsTool(List<Integer> idsTool);
     void updateStatusProcessCurrentAndIsIncrease(Integer idProcess, Integer status);

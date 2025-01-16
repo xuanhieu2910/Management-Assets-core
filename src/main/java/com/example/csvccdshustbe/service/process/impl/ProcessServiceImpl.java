@@ -986,6 +986,11 @@ public class ProcessServiceImpl implements ProcessService {
         return processRepository.getStatisticsToolIncrease();
     }
 
+    @Override
+    public ProcessStatisticsToolDecreaseResponse getStatisticToolDecrease() {
+        return processRepository.getStatisticsToolDecrease();
+    }
+
     /***
      *
      * HIỆN TẠI ĐANG SET QUYỀN MANAGER ĐƠN VỊ SẼ ĐƯỢC PHÊ DUYỆT -> CẦN CHỈNH SỬA LẠI QUYỀN ĐỂ LẤY RA AI JOIN VỀ QUYỀN

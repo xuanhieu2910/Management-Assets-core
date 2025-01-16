@@ -23,4 +23,5 @@ public interface ProcessRepositoryCustom {
     Page<FindAllProcessBeAssignedResponse>
     findAllProcessBeAssignedDocumentInventory(FindAllProcessBeAssignedDocumentInventoryRequest request, Pageable pageable);
     ProcessStatisticsToolIncreaseResponse getStatisticsToolIncrease();
+    ProcessStatisticsToolDecreaseResponse getStatisticsToolDecrease();
 }

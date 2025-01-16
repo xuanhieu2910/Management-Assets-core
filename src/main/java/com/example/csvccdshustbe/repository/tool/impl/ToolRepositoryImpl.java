@@ -1,11 +1,14 @@
 package com.example.csvccdshustbe.repository.tool.impl;
 
+import com.example.csvccdshustbe.dto.tool.AllocateToolDto;
 import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.repository.tool.ToolRepositoryCustom;
 import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
+import com.example.csvccdshustbe.request.tool.FindAllToolToDecreaseRequest;
+import com.example.csvccdshustbe.request.tool.FindAllToolToIncreaseRequest;
 import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -32,6 +35,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     @PersistenceContext
     EntityManager entityManager;
 
+    @Transactional
     @Override
     public Page<ToolDto> findAllToolParentDto(FindAllToolRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
@@ -187,7 +191,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       tool.parent,tool.quantity,tool.value, " +
                 "       tool.id_department,department.name,tool.id_location, " +
                 "       location.name,tool.is_increase,tool.is_decrease, " +
-                "       tool.status_use,tool.id_user_use,csvc_user.full_name " +
+                "       tool.status_use,tool.id_user_use,csvc_user.full_name, tool.id_tool,tool.year_use " +
                 "from tool left join tool_categories on tool.id_tool_category=tool_categories.id_tool_category " +
                 "left join department on tool.id_department=department.id_department " +
                 "left join location on tool.id_location=location.id_location " +
@@ -198,7 +202,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
                 FindDetailsToolDto findDetailsToolDto = new FindDetailsToolDto();
-                findDetailsToolDto.setName(ValueUtil.getStringByObject(obj[0]));
+                findDetailsToolDto.setNameTool(ValueUtil.getStringByObject(obj[0]));
                 findDetailsToolDto.setCodeTool(ValueUtil.getStringByObject(obj[1]));
                 findDetailsToolDto.setIdToolCategory(ValueUtil.getIntegerByObject(obj[2]));
                 findDetailsToolDto.setCodeToolCategory(ValueUtil.getStringByObject(obj[3]));
@@ -215,6 +219,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 findDetailsToolDto.setStatusUse(ValueUtil.getIntegerByObject(obj[14]));
                 findDetailsToolDto.setIdUserUse(ValueUtil.getIntegerByObject(obj[15]));
                 findDetailsToolDto.setNameUserUse(ValueUtil.getStringByObject(obj[16]));
+                findDetailsToolDto.setIdTool(ValueUtil.getIntegerByObject(obj[17]));
+                findDetailsToolDto.setYearUse(ValueUtil.getStringByObject(obj[18]));
                 return Optional.of(findDetailsToolDto);
             }
         }
@@ -383,6 +389,206 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         query.executeUpdate();
     }
 
+    @Override
+    public Page<ToolDto> findAllToolDtoToIncrease(FindAllToolToIncreaseRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select tol.id_tool, tol.name, tol.code_tool, tol.salt, " +
+                "       tol.id_tool_category, tol.time_created, tol.time_modified, " +
+                "       tol.id_user_created, tol.id_user_modified, tol.value, " +
+                "       tol.quantity, tol.is_increase, tol.is_decrease, tol.quantity_increase_current, " +
+                "       tol.quantity_decrease_current, tol.id_process_current, tol.status_process_current, " +
+                "       tol.id_type_process_current, tol.id_department_original, tol.status_use, " +
+                "       tol.parent, tol.id_department, tol.id_location, " +
+                "       tol.id_user_use, tol.year_use, " +
+                "       de.code, de.name, lo.name, tol.price " +
+                "from tool tol " +
+                "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
+                "    left join department de on tol.id_department = de.id_department " +
+                "    left join location lo on de.id_department = lo.id_department " +
+                "where tol.id_department_original in (:idsDepartmentOriginal)  " +
+                "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null)" +
+                "  and tol.id_tool not in ( " +
+                "      select distinct parent " +
+                "      from tool " +
+                "      where parent is not null " +
+                "  ) and tol.is_increase = :isIncrease ");
+        setConditionFindAllToolToIncreaseDto(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllToolToIncreaseDto(query, request);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<ToolDto> toolDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                toolDtos.add(writeDataToolDtos(obj));
+            }
+        }
+        return new PageImpl<>(toolDtos, pageable, countFindAllToolToIncreaseDtos(request));
+    }
+
+    @Override
+    public Page<ToolDto> findAllToolDtoToDecrease(FindAllToolToDecreaseRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select tol.id_tool, tol.name, tol.code_tool, tol.salt, " +
+                "       tol.id_tool_category, tol.time_created, tol.time_modified, " +
+                "       tol.id_user_created, tol.id_user_modified, tol.value, " +
+                "       tol.quantity, tol.is_increase, tol.is_decrease, tol.quantity_increase_current, " +
+                "       tol.quantity_decrease_current, tol.id_process_current, tol.status_process_current, " +
+                "       tol.id_type_process_current, tol.id_department_original, tol.status_use, " +
+                "       tol.parent, tol.id_department, tol.id_location, " +
+                "       tol.id_user_use, tol.year_use, " +
+                "       de.code, de.name, lo.name, tol.price " +
+                "from tool tol " +
+                "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
+                "    left join department de on tol.id_department = de.id_department " +
+                "    left join location lo on de.id_department = lo.id_department " +
+                "where tol.id_department_original in (:idsDepartmentOriginal)  " +
+                "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
+                "   and tol.id_tool not in (" +
+                "      select distinct parent " +
+                "      from tool " +
+                "      where parent is not null" +
+                "  ) and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
+        setConditionFindAllToolToDecreaseDto(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllToolToDecreaseDto(query, request);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<ToolDto> toolDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                toolDtos.add(writeDataToolDtos(obj));
+            }
+        }
+        return new PageImpl<>(toolDtos, pageable, countFindAllToolToDecreaseDtos(request));
+    }
+
+    @Override
+    @Transactional
+    public List<AllocateToolDto> findListAllocateToolByIdToolParent(Integer idToolParent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select tool.id_department,department.name,tool.id_location,  " +
+                "       location.name,csvc_user.user_name,csvc_user.full_name,  " +
+                "       tool.quantity,tool.status_use  " +
+                "         from tool  " +
+                "         left join department on tool.id_department=department.id_department  " +
+                "         left join location on tool.id_location=location.id_location  " +
+                "         left join csvc_user on tool.id_user_use=csvc_user.id_user  " +
+                "         where tool.parent = :idToolParent ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idToolParent", idToolParent);
+        List<Object[]> result = query.getResultList();
+        List<AllocateToolDto> allocateToolDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(query.getResultList())){
+            for (Object[] obj : result){
+                AllocateToolDto dto = new AllocateToolDto();
+                dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setNameDepartment(ValueUtil.getStringByObject(obj[1]));
+                dto.setIdLocation(ValueUtil.getIntegerByObject(obj[2]));
+                dto.setNameLocation(ValueUtil.getStringByObject(obj[3]));
+                dto.setUserName(ValueUtil.getStringByObject(obj[4]));
+                dto.setFullName(ValueUtil.getStringByObject(obj[5]));
+                dto.setQuantity(ValueUtil.getIntegerByObject(obj[6]));
+                dto.setStatusUse(ValueUtil.getIntegerByObject(obj[7]));
+                allocateToolDtos.add(dto);
+            }
+        }
+        return allocateToolDtos;
+    }
+
+    private void setParameterFindAllToolToDecreaseDto(Query query, FindAllToolToDecreaseRequest request) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("isIncrease", Constants.IS_INCREASED);
+        query.setParameter("isDecrease", Constants.IS_DECREASED);
+        query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
+        if (StringUtils.isNotBlank(request.getNameTool())){
+            query.setParameter("nameTool", request.getNameTool());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdToolCategory())){
+            query.setParameter("idToolCategory", request.getIdToolCategory());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            query.setParameter("statusUse", request.getStatusUse());
+        }
+    }
+
+    private void setConditionFindAllToolToDecreaseDto(StringBuilder sb, FindAllToolToDecreaseRequest request) {
+
+        if (StringUtils.isNotBlank(request.getNameTool())) {
+            sb.append(" and (tol.name REGEXP :nameTool ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdToolCategory())) {
+            sb.append(" and tolca.id_tool_category = :idToolCategory ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            sb.append(" and tol.status_use = : statusUse ");
+        }
+        if (StringUtils.isNotBlank(request.getSortBy())) {
+            sb.append("ORDER BY ");
+            if (request.getSortBy().equals("nameTool")) {
+                sb.append(" tol.name ");
+            }
+            if (request.getSortBy().equals("nameDepartment")) {
+                sb.append(" de.name ");
+            }
+            sb.append(" ").append(request.getSortOrder());
+        } else {
+            sb.append(" ORDER BY tol.id_tool desc ");
+        }
+    }
+
+    private void setParameterFindAllToolToIncreaseDto(Query query, FindAllToolToIncreaseRequest request) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("isIncrease", Constants.IS_NOT_INCREASED);
+        query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
+        if (StringUtils.isNotBlank(request.getNameTool())){
+            query.setParameter("nameTool", request.getNameTool());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdToolCategory())){
+            query.setParameter("idToolCategory", request.getIdToolCategory());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            query.setParameter("statusUse", request.getStatusUse());
+        }
+    }
+
+    private void setConditionFindAllToolToIncreaseDto(StringBuilder sb, FindAllToolToIncreaseRequest request) {
+
+        if (StringUtils.isNotBlank(request.getNameTool())) {
+            sb.append(" and (tol.name REGEXP :nameTool ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdToolCategory())) {
+            sb.append(" and tolca.id_tool_category = :idToolCategory ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            sb.append(" and tol.status_use = : statusUse ");
+        }
+        if (StringUtils.isNotBlank(request.getSortBy())) {
+            sb.append("ORDER BY ");
+            if (request.getSortBy().equals("nameTool")) {
+                sb.append(" tol.name ");
+            }
+            if (request.getSortBy().equals("nameDepartment")) {
+                sb.append(" de.name ");
+            }
+            sb.append(" ").append(request.getSortOrder());
+        } else {
+            sb.append(" ORDER BY tol.id_tool desc ");
+        }
+    }
+
 
     private long countFindAllChildrenToolDtos(FindAllToolRequest request) {
         StringBuilder sb = new StringBuilder();
@@ -490,6 +696,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         return Optional.empty();
     }
 
+    @Transactional
     @Override
     public Optional<Tool> findToolBySaltTool(String salt) {
         StringBuilder sb = new StringBuilder();
@@ -644,7 +851,44 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         setParameterFindAllToolDto(query, request);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
     }
-
+    private long countFindAllToolToIncreaseDtos(FindAllToolToIncreaseRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) count  " +
+                "from tool tol  " +
+                "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category  " +
+                "    left join department de on tol.id_department = de.id_department  " +
+                "    left join location lo on de.id_department = lo.id_department  " +
+                "where tol.id_department_original in (:idsDepartmentOriginal)  " +
+                " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null)" +
+                "  and tol.id_tool not in ( " +
+                "      select distinct parent " +
+                "      from tool " +
+                "      where parent is not null " +
+                "  ) and tol.is_increase = :isIncrease ");
+        setConditionFindAllToolToIncreaseDto(sb, request);
+        Query query  = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllToolToIncreaseDto(query, request);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+    private long countFindAllToolToDecreaseDtos(FindAllToolToDecreaseRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) count  " +
+                "from tool tol  " +
+                "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category  " +
+                "    left join department de on tol.id_department = de.id_department  " +
+                "    left join location lo on de.id_department = lo.id_department  " +
+                "where tol.id_department_original in (:idsDepartmentOriginal)  " +
+                " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
+                "   and tol.id_tool not in (" +
+                "      select distinct parent " +
+                "      from tool " +
+                "      where parent is not null" +
+                "  ) and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
+        setConditionFindAllToolToDecreaseDto(sb, request);
+        Query query  = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllToolToDecreaseDto(query, request);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
     private ToolDto writeDataToolDtos(Object[] obj) {
         ToolDto toolDto = new ToolDto();
         toolDto.setIdTool(ValueUtil.getIntegerByObject(obj[0]));
@@ -680,6 +924,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     }
 
     private void setParameterFindAllToolDto(Query query, FindAllToolRequest request) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         if (StringUtils.isNotBlank(request.getCodeTool())){
             query.setParameter("codeTool", request.getCodeTool());
         }

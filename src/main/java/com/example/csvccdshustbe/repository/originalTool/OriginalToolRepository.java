@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OriginalToolRepository extends JpaRepository<OriginalTool, Integer>, OriginalToolRepositoryCustom {
+
 }

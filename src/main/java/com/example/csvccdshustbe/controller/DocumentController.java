@@ -409,5 +409,41 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-    
+
+    @GetMapping("/tool-find-all-decrease")
+    public ResponseEntity<?> findAllDocumentDecreaseTool(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllDocumentToolRequest findAllProcessAssetRequest) {
+        try {
+            return ApiResponseDto.createdWithState(documentService.findAllDocumentToolDecrease(findAllProcessAssetRequest),
+                    "Find all document tool decrease!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/tool-statistic-decrease")
+    public ResponseEntity<?> getStatisticDecreaseTool(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticToolDecrease(),
+                    "Get statistic tool decrease success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+    @GetMapping("/tool-details")
+    public ResponseEntity<?> findToolDocumentDetailsByCodeDocumentAsset(@RequestParam("code") String code){
+        try {
+            return ApiResponseDto.createdWithState(documentService.findDetailsDocumentByCodeDocument(code),
+                    "Find details document tool success!", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }
