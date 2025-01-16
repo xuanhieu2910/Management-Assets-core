@@ -88,6 +88,7 @@ public class ToolServiceImpl implements ToolService {
         findDetailsToolResponse.setStatusUse(findDetailsToolDto.getStatusUse());
         findDetailsToolResponse.setIdUserUse(findDetailsToolDto.getIdUserUse());
         findDetailsToolResponse.setNameUserUse(findDetailsToolDto.getNameUserUse());
+        findDetailsToolResponse.setYearUse(findDetailsToolDto.getYearUse());
         findDetailsToolResponse.setAllowcateToolDtoList(findDetailsToolDto.getAllocateToolDto());
         return findDetailsToolResponse;
     }

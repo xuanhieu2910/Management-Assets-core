@@ -27,5 +27,6 @@ public class FindDetailsToolDto {
     private Integer statusUse;
     private Integer idUserUse;
     private String nameUserUse;
+    private String yearUse;
     private List<AllocateToolDto> allocateToolDto;
 }

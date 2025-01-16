@@ -40,6 +40,8 @@ public class FindDetailsToolResponse {
     private Integer isDecrease;
     @JsonProperty("status_use")
     private Integer statusUse;
+    @JsonProperty("year_use")
+    private String yearUse;
     @JsonProperty("id_user_use")
     private Integer idUserUse;
     @JsonProperty("name_user_use")

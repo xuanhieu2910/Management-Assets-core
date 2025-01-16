@@ -191,7 +191,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       tool.parent,tool.quantity,tool.value, " +
                 "       tool.id_department,department.name,tool.id_location, " +
                 "       location.name,tool.is_increase,tool.is_decrease, " +
-                "       tool.status_use,tool.id_user_use,csvc_user.full_name, tool.id_tool " +
+                "       tool.status_use,tool.id_user_use,csvc_user.full_name, tool.id_tool,tool.year_use " +
                 "from tool left join tool_categories on tool.id_tool_category=tool_categories.id_tool_category " +
                 "left join department on tool.id_department=department.id_department " +
                 "left join location on tool.id_location=location.id_location " +
@@ -220,6 +220,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 findDetailsToolDto.setIdUserUse(ValueUtil.getIntegerByObject(obj[15]));
                 findDetailsToolDto.setNameUserUse(ValueUtil.getStringByObject(obj[16]));
                 findDetailsToolDto.setIdTool(ValueUtil.getIntegerByObject(obj[17]));
+                findDetailsToolDto.setYearUse(ValueUtil.getStringByObject(obj[18]));
                 return Optional.of(findDetailsToolDto);
 
             }
