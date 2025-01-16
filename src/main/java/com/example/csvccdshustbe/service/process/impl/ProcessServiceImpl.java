@@ -127,9 +127,6 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public void createIncreaseTool(CreateIncreaseToolRequest request) throws ValidateFiledException {
         List<Integer> idsTool = new ArrayList<>();
-        if (request.isIncreaseAll()){
-            getAllToolsDetailsToIncrease(request);
-        }
         request.getToolsDetail().forEach(x->idsTool.add(x.getIdTool()));
         validateAssetProcessTool(idsTool);
         List<Tool> tools = toolService.findAllToolByIdsTool(idsTool);
@@ -154,18 +151,12 @@ public class ProcessServiceImpl implements ProcessService {
         createTaskSendMailIncrease(userRoles, document, process);
     }
 
-    private void getAllToolsDetailsToIncrease(CreateIncreaseToolRequest request) {
-//        toolService.getAllToolsDetailsToIncrease
-    }
 
     private void updateInformationIncreaseTools(List<Tool> tools, Process process, List<ToolDetailIncreaseRequest> toolsDetailIncrease) {
         for (ToolDetailIncreaseRequest toolDetailIncreaseRequest: toolsDetailIncrease){
             tools.stream().filter(x->x.getIdTool()
                     .equals(toolDetailIncreaseRequest.getIdTool()))
                     .findFirst().ifPresent(x->{
-                    x.setQuantityIncreaseCurrent(
-                            (x.getQuantityIncreaseCurrent().equals(0) ? 0 : x.getQuantityIncreaseCurrent())
-                                    + toolDetailIncreaseRequest.getQuantityIncrease());
                     x.setIdProcessCurrent(process.getIdProcess());
                     x.setIdTypeProcessCurrent(process.getIdTypeProcess());
                     x.setStatusProcessCurrent(process.getStatus());
@@ -227,6 +218,7 @@ public class ProcessServiceImpl implements ProcessService {
             toolProcess.setTimeModified(currentTime);
             toolProcess.setIdUserCreated(csvcUser.getIdUser());
             toolProcess.setIdUserModified(csvcUser.getIdUser());
+            toolProcess.setQuantity(toolProcess.getQuantity());
             toolProcessList.add(toolProcess);
         }
         return toolProcessList;
@@ -919,12 +911,23 @@ public class ProcessServiceImpl implements ProcessService {
                 case Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY-> {
                         assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
                         }
+                case Constants.CODE_TYPE_PROCESS_INCREASE_TOOL,
+                        Constants.CODE_TYPE_PROCESS_DECREASE_TOOL-> {
+                        toolService.updateToolStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.getIdProcess(),
+                                status, typeProcess.getCode());
+                        toolService.updateToolParentIsIncreaseAndIsDecrease(process.getIdProcess(), typeProcess.getCode());
+                        }
                 default -> {
                     return;
                 }
             }
         } else {
-            assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+            if (typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_INCREASE_TOOL) ||
+                    typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_DECREASE_TOOL)) {
+                toolService.updateToolStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+            } else {
+                assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+            }
         }
     }
 

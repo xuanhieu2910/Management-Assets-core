@@ -25,4 +25,12 @@ public interface ToolRepositoryCustom {
     Optional<FindDetailsToolDto>findDetailToolBySalt(String saltTool);
     Integer countToolIncreasedNotDecreasedByIdsTool(List<Integer> idsTool);
     List<Tool> findAllToolByIdsTool(List<Integer> idsTool);
+    void updateStatusProcessCurrentAndIsIncrease(Integer idProcess, Integer status);
+    void updateStatusProcessCurrentAndIsDecrease(Integer idProcess, Integer status);
+    List<Integer> getAllIdsToolParentByIdProcess(Integer idProcess);
+
+    void updateIsIncreaseAndQuantityIncreaseCurrentByIdsTool(List<Integer> idsToolParent);
+
+    void updateIsDecreaseAndQuantityIncreaseCurrentByIdsTool(List<Integer> idsToolParent);
+    void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer status);
 }

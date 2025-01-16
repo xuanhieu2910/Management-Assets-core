@@ -34,10 +34,8 @@ public class RequestStakeHolderController {
             requestStakeHolderService.approvedRequestStakeHolder(request);
             return ApiResponseDto.createdWithMessage("Approved request stake holder increase success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -48,10 +46,8 @@ public class RequestStakeHolderController {
             requestStakeHolderService.approvedRequestStakeHolder(request);
             return ApiResponseDto.createdWithMessage("Approved request stake holder change success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -61,10 +57,8 @@ public class RequestStakeHolderController {
             requestStakeHolderService.approvedRequestStakeHolder(request);
             return ApiResponseDto.createdWithMessage("Approved request stake holder revaluation success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -74,10 +68,8 @@ public class RequestStakeHolderController {
             requestStakeHolderService.approvedRequestStakeHolder(request);
             return ApiResponseDto.createdWithMessage("Approved request stake holder decrease success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -87,10 +79,8 @@ public class RequestStakeHolderController {
             requestStakeHolderService.approvedRequestStakeHolder(request);
             return ApiResponseDto.createdWithMessage("Approved request stake holder document inventory success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -100,10 +90,8 @@ public class RequestStakeHolderController {
             requestStakeHolderService.approvedRequestStakeHolder(request);
             return ApiResponseDto.createdWithMessage("Approved request stake holder inventory success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            log.error(e.getMessage());
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

@@ -34,5 +34,6 @@ public class ToolProcess {
     private Integer idUserCreated;
     @Column(name = "id_user_modified")
     private Integer idUserModified;
-
+    @Column(name = "quantity")
+    private Integer quantity;
 }

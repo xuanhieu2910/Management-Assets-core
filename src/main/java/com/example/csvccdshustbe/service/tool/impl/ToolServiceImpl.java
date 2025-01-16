@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
 
+import javax.print.attribute.IntegerSyntax;
 import java.util.*;
 
 @Service
@@ -106,6 +107,30 @@ public class ToolServiceImpl implements ToolService {
     @Override
     public List<Tool> findAllToolByIdsTool(List<Integer> idsTool) {
         return toolRepository.findAllToolByIdsTool(idsTool);
+    }
+
+    @Override
+    public void updateToolStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status, String code) {
+        if (code.equals(Constants.CODE_TYPE_PROCESS_INCREASE_TOOL)) {
+            toolRepository.updateStatusProcessCurrentAndIsIncrease(idProcess, status);
+        } else if (code.equals(Constants.CODE_TYPE_PROCESS_DECREASE_TOOL)) {
+            toolRepository.updateStatusProcessCurrentAndIsDecrease(idProcess, status);
+        }
+    }
+
+    @Override
+    public void updateToolParentIsIncreaseAndIsDecrease(Integer idProcess, String code) {
+        List<Integer> idsToolParent = toolRepository.getAllIdsToolParentByIdProcess(idProcess);
+        if (code.equals(Constants.CODE_TYPE_PROCESS_INCREASE_TOOL)) {
+            toolRepository.updateIsIncreaseAndQuantityIncreaseCurrentByIdsTool(idsToolParent);
+        } else if (code.equals(Constants.CODE_TYPE_PROCESS_DECREASE_TOOL)) {
+            toolRepository.updateIsDecreaseAndQuantityIncreaseCurrentByIdsTool(idsToolParent);
+        }
+    }
+
+    @Override
+    public void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer status) {
+        toolRepository.updateToolStatusProcessCurrentByIdProcessCurrent(idProcessCurrent, status);
     }
 
     @Override

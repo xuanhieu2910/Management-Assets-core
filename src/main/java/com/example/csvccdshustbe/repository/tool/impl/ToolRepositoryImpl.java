@@ -1,6 +1,5 @@
 package com.example.csvccdshustbe.repository.tool.impl;
 
-import com.example.csvccdshustbe.dto.state.BluePrintStateDto;
 import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
@@ -260,6 +259,128 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
             }
         }
         return tools;
+    }
+
+
+    @Transactional
+    @Modifying
+    @Override
+    public void updateStatusProcessCurrentAndIsIncrease(Integer idProcess, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("update tool tl             " +
+                "   inner join tool_process tp on tl.id_tool = tp.id_tool      " +
+                "   set tl.status_process_current = :statusProcessCurrent,     " +
+                "       tl.is_increase = (case when tl.quantity_increase_current + tp.quantity = tl.quantity then 2 else 1 end), " +
+                "       tl.quantity_increase_current = tl.quantity_increase_current + tp.quantity     " +
+                "where tp.id_process = :idProcess  ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        query.setParameter("statusProcessCurrent", status);
+        query.executeUpdate();
+    }
+
+    @Override
+    public void updateStatusProcessCurrentAndIsDecrease(Integer idProcess, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update tool tl  " +
+                "   inner join tool_process tp on tl.id_tool = tp.id_tool  " +
+                "   set tl.status_process_current = :statusProcessCurrent,  " +
+                "       tl.is_decrease = (case when tl.quantity_decrease_current + tp.quantity = tl.quantity then 2 else 1 end),  " +
+                "       tl.quantity_decrease_current = tl.quantity_decrease_current + tp.quantity  " +
+                "where tp.id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        query.setParameter("statusProcessCurrent", status);
+        query.executeUpdate();
+    }
+
+    @Override
+    public List<Integer> getAllIdsToolParentByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select distinct toolChildren.parent     " +
+                "from tool toolChildren     " +
+                "         inner join tool_process tp on toolChildren.id_tool = tp.id_tool     " +
+                "         inner join process pr on tp.id_process = pr.id_process     " +
+                "where pr.id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        List<Integer> idsTool = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                idsTool.add(ValueUtil.getIntegerByObject(obj[0]));
+            }
+        }
+        return idsTool;
+    }
+
+    @Transactional
+    @Modifying
+    @Override
+    public void updateIsIncreaseAndQuantityIncreaseCurrentByIdsTool(List<Integer> idsToolParent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update tool tl     " +
+                "    inner join     " +
+                "(select result.id_tool,     " +
+                "       case when totalSubChildrenTool = sumIncreased then 2 else 1 end isIncreaseCurrent,     " +
+                "       totalQuantityIncreaseCurrent     " +
+                "from (select toolParent.id_tool,     " +
+                "       count(toolChildren.id_tool) totalSubChildrenTool,     " +
+                "       sum(case when toolChildren.is_increase = :isIncreased then 1 else 0 end) sumIncreased,     " +
+                "       sum(toolChildren.quantity_increase_current) totalQuantityIncreaseCurrent     " +
+                "from tool toolParent     " +
+                "    inner join tool toolChildren on toolParent.id_tool = toolChildren.id_tool     " +
+                "where toolParent.id_tool in (:idsTool)     " +
+                "group by toolParent.id_tool) result) result on tl.id_tool = result.id_tool     " +
+                "    set is_increase = result.isIncreaseCurrent,     " +
+                "        quantity_increase_current = totalQuantityIncreaseCurrent     " +
+                "where 1 = 1 ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsTool", idsToolParent);
+        query.setParameter("isIncreased", Constants.TOOL_IS_INCREASED);
+        query.executeUpdate();
+    }
+
+    @Transactional
+    @Modifying
+    @Override
+    public void updateIsDecreaseAndQuantityIncreaseCurrentByIdsTool(List<Integer> idsToolParent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update tool tl     " +
+                "    inner join     " +
+                "(select result.id_tool,     " +
+                "       case when totalSubChildrenTool = sumDecreased then 2 else 1 end isDecreaseCurrent,     " +
+                "       totalQuantityDecreaseCurrent     " +
+                "from (select toolParent.id_tool,     " +
+                "       count(toolChildren.id_tool) totalSubChildrenTool,     " +
+                "       sum(case when toolChildren.is_decrease = :isDecreased then 1 else 0 end) sumDecreased,     " +
+                "       sum(toolChildren.quantity_decrease_current) totalQuantityDecreaseCurrent     " +
+                "from tool toolParent     " +
+                "    inner join tool toolChildren on toolParent.id_tool = toolChildren.id_tool     " +
+                "where toolParent.id_tool in (:idsTool)     " +
+                "group by toolParent.id_tool) result) result on tl.id_tool = result.id_tool     " +
+                "    set is_decrease = result.isDecreaseCurrent,     " +
+                "        quantity_decrease_current = totalQuantityDecreaseCurrent     " +
+                "where 1 = 1 ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsTool", idsToolParent);
+        query.setParameter("isDecreased", Constants.TOOL_IS_DECREASED);
+        query.executeUpdate();
+    }
+
+
+    @Transactional
+    @Modifying
+    @Override
+    public void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update tool     " +
+                "    set tool.status_process_current = :statusProcessCurrent     " +
+                "where tool.id_process_current = :idProcessCurrent ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusProcessCurrent", status);
+        query.setParameter("idProcessCurrent", idProcessCurrent);
+        query.executeUpdate();
     }
 
 

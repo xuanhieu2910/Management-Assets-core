@@ -15,5 +15,4 @@ public class CreateIncreaseToolRequest {
     private CreateDocumentRequest document;
     private List<ToolDetailIncreaseRequest> toolsDetail;
     private String typeProcess;
-    private boolean isIncreaseAll;
 }
