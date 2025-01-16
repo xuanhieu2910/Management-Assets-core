@@ -330,9 +330,9 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
             query.setParameter("isIncrease", Constants.IS_INCREASED);
             query.setParameter("isDecrease", Constants.IS_DECREASED);
         } else {
-            query.setParameter("isIncrease", Constants.TOOL_PARENT_IS_INCREASED_WHOLE);
-            query.setParameter("isIncreasePart", Constants.TOOL_PARENT_IS_INCREASING);
-            query.setParameter("isDecrease", Constants.TOOL_PARENT_IS_DECREASED_WHOLE);
+            query.setParameter("isIncrease", Constants.TOOL_IS_INCREASED);
+            query.setParameter("isIncreasePart", Constants.TOOL_IS_INCREASING);
+            query.setParameter("isDecrease", Constants.TOOL_IS_DECREASING);
         }
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameTool())){
@@ -388,8 +388,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         if (request.getNotChildren()) {
             query.setParameter("isIncrease", Constants.IS_NOT_INCREASED);
         } else {
-            query.setParameter("isIncrease", Constants.TOOL_PARENT_NOT_IS_INCREASE_WHOLE);
-            query.setParameter("isIncreasePart", Constants.TOOL_PARENT_IS_INCREASING);
+            query.setParameter("isIncrease", Constants.TOOL_IS_NOT_INCREASE);
+            query.setParameter("isIncreasePart", Constants.TOOL_IS_INCREASING);
         }
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameTool())){
