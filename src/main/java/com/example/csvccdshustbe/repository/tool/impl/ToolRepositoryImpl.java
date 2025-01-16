@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.tool.impl;
 
+import com.example.csvccdshustbe.dto.tool.AllocateToolDto;
 import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
@@ -34,6 +35,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     @PersistenceContext
     EntityManager entityManager;
 
+    @Transactional
     @Override
     public Page<ToolDto> findAllToolParentDto(FindAllToolRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
@@ -189,7 +191,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       tool.parent,tool.quantity,tool.value, " +
                 "       tool.id_department,department.name,tool.id_location, " +
                 "       location.name,tool.is_increase,tool.is_decrease, " +
-                "       tool.status_use,tool.id_user_use,csvc_user.full_name " +
+                "       tool.status_use,tool.id_user_use,csvc_user.full_name, tool.id_tool " +
                 "from tool left join tool_categories on tool.id_tool_category=tool_categories.id_tool_category " +
                 "left join department on tool.id_department=department.id_department " +
                 "left join location on tool.id_location=location.id_location " +
@@ -200,7 +202,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
                 FindDetailsToolDto findDetailsToolDto = new FindDetailsToolDto();
-                findDetailsToolDto.setName(ValueUtil.getStringByObject(obj[0]));
+                findDetailsToolDto.setNameTool(ValueUtil.getStringByObject(obj[0]));
                 findDetailsToolDto.setCodeTool(ValueUtil.getStringByObject(obj[1]));
                 findDetailsToolDto.setIdToolCategory(ValueUtil.getIntegerByObject(obj[2]));
                 findDetailsToolDto.setCodeToolCategory(ValueUtil.getStringByObject(obj[3]));
@@ -217,6 +219,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 findDetailsToolDto.setStatusUse(ValueUtil.getIntegerByObject(obj[14]));
                 findDetailsToolDto.setIdUserUse(ValueUtil.getIntegerByObject(obj[15]));
                 findDetailsToolDto.setNameUserUse(ValueUtil.getStringByObject(obj[16]));
+                findDetailsToolDto.setIdTool(ValueUtil.getIntegerByObject(obj[17]));
                 return Optional.of(findDetailsToolDto);
 
             }
@@ -286,6 +289,39 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
             }
         }
         return new PageImpl<>(toolDtos, pageable, countFindAllToolToDecreaseDtos(request));
+    }
+
+    @Override
+    @Transactional
+    public List<AllocateToolDto> findListAllocateToolByIdToolParent(Integer idToolParent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select tool.id_department,department.name,tool.id_location,  " +
+                "       location.name,csvc_user.user_name,csvc_user.full_name,  " +
+                "       tool.quantity,tool.status_use  " +
+                "         from tool  " +
+                "         left join department on tool.id_department=department.id_department  " +
+                "         left join location on tool.id_location=location.id_location  " +
+                "         left join csvc_user on tool.id_user_use=csvc_user.id_user  " +
+                "         where tool.parent = :idToolParent ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idToolParent", idToolParent);
+        List<Object[]> result = query.getResultList();
+        List<AllocateToolDto> allocateToolDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(query.getResultList())){
+            for (Object[] obj : result){
+                AllocateToolDto dto = new AllocateToolDto();
+                dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
+                dto.setNameDepartment(ValueUtil.getStringByObject(obj[1]));
+                dto.setIdLocation(ValueUtil.getIntegerByObject(obj[2]));
+                dto.setNameLocation(ValueUtil.getStringByObject(obj[3]));
+                dto.setUserName(ValueUtil.getStringByObject(obj[4]));
+                dto.setFullName(ValueUtil.getStringByObject(obj[5]));
+                dto.setQuantity(ValueUtil.getIntegerByObject(obj[6]));
+                dto.setStatusUse(ValueUtil.getIntegerByObject(obj[7]));
+                allocateToolDtos.add(dto);
+            }
+        }
+        return allocateToolDtos;
     }
 
     private void setParameterFindAllToolToDecreaseDto(Query query, FindAllToolToDecreaseRequest request) {
@@ -510,6 +546,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         return Optional.empty();
     }
 
+    @Transactional
     @Override
     public Optional<Tool> findToolBySaltTool(String salt) {
         StringBuilder sb = new StringBuilder();

@@ -65,12 +65,17 @@ public class ToolServiceImpl implements ToolService {
         if (findDetailsToolDto.isEmpty()){
             throw new NotFoundException("Don't exist Tool by salt!");
         }
+        setAllocateToolDetail(findDetailsToolDto.get());
         return convertToFindDetailsToolResponse(findDetailsToolDto.get());
+    }
+
+    private void setAllocateToolDetail(FindDetailsToolDto findDetailsToolDto) {
+        findDetailsToolDto.setAllocateToolDto(toolRepository.findListAllocateToolByIdToolParent(findDetailsToolDto.getIdTool()));
     }
 
     private FindDetailsToolResponse convertToFindDetailsToolResponse(FindDetailsToolDto findDetailsToolDto) {
         FindDetailsToolResponse findDetailsToolResponse = new FindDetailsToolResponse();
-        findDetailsToolResponse.setName(findDetailsToolDto.getName());
+        findDetailsToolResponse.setName(findDetailsToolDto.getNameTool());
         findDetailsToolResponse.setCodeTool(findDetailsToolDto.getCodeTool());
         findDetailsToolResponse.setCodeToolCategory(findDetailsToolDto.getCodeToolCategory());
         findDetailsToolResponse.setIdToolCategory(findDetailsToolDto.getIdToolCategory());
@@ -87,6 +92,7 @@ public class ToolServiceImpl implements ToolService {
         findDetailsToolResponse.setStatusUse(findDetailsToolDto.getStatusUse());
         findDetailsToolResponse.setIdUserUse(findDetailsToolDto.getIdUserUse());
         findDetailsToolResponse.setNameUserUse(findDetailsToolDto.getNameUserUse());
+        findDetailsToolResponse.setAllowcateToolDtoList(findDetailsToolDto.getAllocateToolDto());
         return findDetailsToolResponse;
     }
 

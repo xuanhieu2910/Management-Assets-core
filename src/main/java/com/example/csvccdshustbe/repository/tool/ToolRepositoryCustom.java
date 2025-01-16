@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.repository.tool;
 
+import com.example.csvccdshustbe.dto.tool.AllocateToolDto;
 import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.Tool;
@@ -27,4 +28,5 @@ public interface ToolRepositoryCustom {
     Optional<FindDetailsToolDto>findDetailToolBySalt(String saltTool);
     Page<ToolDto> findAllToolDtoToIncrease(FindAllToolToIncreaseRequest request, Pageable pageable);
     Page<ToolDto> findAllToolDtoToDecrease(FindAllToolToDecreaseRequest request, Pageable pageable);
+    List<AllocateToolDto> findListAllocateToolByIdToolParent(Integer idToolParent);
 }

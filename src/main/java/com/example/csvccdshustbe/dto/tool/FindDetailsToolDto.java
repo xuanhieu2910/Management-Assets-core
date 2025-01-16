@@ -1,13 +1,16 @@
 package com.example.csvccdshustbe.dto.tool;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
 public class FindDetailsToolDto {
-    private String name;
+    private Integer idTool;
+    private String nameTool;
     private String codeTool;
     private String codeToolCategory;
     private Integer idToolCategory;
@@ -24,4 +27,5 @@ public class FindDetailsToolDto {
     private Integer statusUse;
     private Integer idUserUse;
     private String nameUserUse;
+    private List<AllocateToolDto> allocateToolDto;
 }
