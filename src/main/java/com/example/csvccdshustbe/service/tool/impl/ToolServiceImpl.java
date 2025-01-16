@@ -83,10 +83,6 @@ public class ToolServiceImpl implements ToolService {
         findDetailsToolResponse.setIdParent(findDetailsToolDto.getIdParent());
         findDetailsToolResponse.setQuantity(findDetailsToolDto.getQuantity());
         findDetailsToolResponse.setValue(findDetailsToolDto.getValue());
-        findDetailsToolResponse.setIdDepartment(findDetailsToolDto.getIdDepartment());
-        findDetailsToolResponse.setNameDepartment(findDetailsToolDto.getNameDepartment());
-        findDetailsToolResponse.setIdLocation(findDetailsToolDto.getIdLocation());
-        findDetailsToolResponse.setNameLocation(findDetailsToolDto.getNameLocation());
         findDetailsToolResponse.setIsIncrease(findDetailsToolDto.getIsIncrease());
         findDetailsToolResponse.setIsDecrease(findDetailsToolDto.getIsDecrease());
         findDetailsToolResponse.setStatusUse(findDetailsToolDto.getStatusUse());
