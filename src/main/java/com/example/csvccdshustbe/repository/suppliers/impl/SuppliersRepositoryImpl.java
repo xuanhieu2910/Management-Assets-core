@@ -3,10 +3,17 @@ package com.example.csvccdshustbe.repository.suppliers.impl;
 import com.example.csvccdshustbe.entity.Suppliers;
 
 import com.example.csvccdshustbe.repository.suppliers.SuppliersRepositoryCustom;
+import com.example.csvccdshustbe.request.suppliers.FindAllSuppliersRequest;
+import com.example.csvccdshustbe.response.suppliers.FindAllSuppliersResponse;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -17,15 +24,16 @@ public class SuppliersRepositoryImpl implements SuppliersRepositoryCustom {
     @PersistenceContext
     EntityManager entityManager;
     @Override
-    public List<Suppliers> findAllSuppliersByStatus(Integer status){
+    public Page<Suppliers> findAllSuppliersByStatus(FindAllSuppliersRequest request, Pageable pageable){
         StringBuilder sb = new StringBuilder();
         sb.append("select suppliers.id_supplier, suppliers.name, suppliers.phone_number, " +
                 "suppliers.email, suppliers.fax, suppliers.address, suppliers.url, " +
                 "suppliers.notes, suppliers.status, suppliers.time_created, suppliers.time_modified " +
                 "from suppliers  " +
-                "where 1=1 and suppliers.status = :status ");
+                "where 1=1 ");
+        setConditionFindAllSuppliers(request,sb);
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("status", status);
+        setParameterFindAllSuppliers(request,query);
         List<Object[]> result = query.getResultList();
         List<Suppliers>suppliers=new ArrayList<>();
         if(!CollectionUtils.isEmpty(result)){
@@ -47,7 +55,35 @@ public class SuppliersRepositoryImpl implements SuppliersRepositoryCustom {
 
             }
         }
-        return suppliers;
+        return new PageImpl<>(suppliers, pageable, countFindAllSuppliers(request));
+    }
+
+    private long countFindAllSuppliers(FindAllSuppliersRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) " +
+                "  from suppliers where 1=1 ");
+        setConditionFindAllSuppliers(request,sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllSuppliers(request, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindAllSuppliers(FindAllSuppliersRequest request, Query query) {
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            query.setParameter("keyword", request.getKeyword());
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatus())) {
+            query.setParameter("status", request.getStatus());
+        }
+    }
+
+    private void setConditionFindAllSuppliers(FindAllSuppliersRequest request, StringBuilder sb) {
+        if (ObjectUtils.isNotEmpty(request.getStatus())) {
+            sb.append(" and (suppliers.status = :status ) ");
+        }
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            sb.append(" and (suppliers.name REGEXP :keyword ) ");
+        }
     }
 
 

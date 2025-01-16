@@ -30,7 +30,7 @@ public class UnitsToolRepositoryImpl implements UnitsToolRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" select ut.id_unit_tool, ut.name, ut.time_created,  " +
                 " ut.time_modified, ut.status " +
-                " from units_tool ut ");
+                " from units_tool ut where 1=1 ");
         setConditionFindAllUnitsTool(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllUnitsTool(request, query);
@@ -53,7 +53,7 @@ public class UnitsToolRepositoryImpl implements UnitsToolRepositoryCustom {
     private long countFindAllUnitsTool(FindAllUnitsToolRequest request){
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) " +
-                "  from units_tool ut ");
+                "  from units_tool ut where 1=1 ");
         setConditionFindAllUnitsTool(request,sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllUnitsTool(request, query);

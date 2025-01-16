@@ -245,7 +245,12 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "    left join department de on tol.id_department = de.id_department " +
                 "    left join location lo on de.id_department = lo.id_department " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
-                "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) ");
+                "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null)" +
+                "  and tol.id_tool not in ( " +
+                "      select distinct parent " +
+                "      from tool " +
+                "      where parent is not null " +
+                "  ) and tol.is_increase = :isIncrease ");
         setConditionFindAllToolToIncreaseDto(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolToIncreaseDto(query, request);
@@ -277,7 +282,12 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "    left join department de on tol.id_department = de.id_department " +
                 "    left join location lo on de.id_department = lo.id_department " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
-                "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) ");
+                "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
+                "   and tol.id_tool not in (" +
+                "      select distinct parent " +
+                "      from tool " +
+                "      where parent is not null" +
+                "  ) and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
         setConditionFindAllToolToDecreaseDto(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolToDecreaseDto(query, request);
@@ -327,14 +337,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
 
     private void setParameterFindAllToolToDecreaseDto(Query query, FindAllToolToDecreaseRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        if (request.getNotChildren()) {
-            query.setParameter("isIncrease", Constants.IS_INCREASED);
-            query.setParameter("isDecrease", Constants.IS_DECREASED);
-        } else {
-            query.setParameter("isIncrease", Constants.TOOL_IS_INCREASED);
-            query.setParameter("isIncreasePart", Constants.TOOL_IS_INCREASING);
-            query.setParameter("isDecrease", Constants.TOOL_IS_DECREASING);
-        }
+        query.setParameter("isIncrease", Constants.IS_INCREASED);
+        query.setParameter("isDecrease", Constants.IS_DECREASED);
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameTool())){
             query.setParameter("nameTool", request.getNameTool());
@@ -351,13 +355,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     }
 
     private void setConditionFindAllToolToDecreaseDto(StringBuilder sb, FindAllToolToDecreaseRequest request) {
-        if (request.getNotChildren()) {
-            sb.append("  and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease");
-            sb.append("  and tol.parent is null ");
-        } else {
-            sb.append(" and (tol.is_increase = :isIncrease or tol.is_increase = :isIncreasePart) ");
-            sb.append("  and tol.is_decrease != :isDecrease ");
-        }
+
         if (StringUtils.isNotBlank(request.getNameTool())) {
             sb.append(" and (tol.name REGEXP :nameTool ) ");
         }
@@ -386,12 +384,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
 
     private void setParameterFindAllToolToIncreaseDto(Query query, FindAllToolToIncreaseRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        if (request.getNotChildren()) {
-            query.setParameter("isIncrease", Constants.IS_NOT_INCREASED);
-        } else {
-            query.setParameter("isIncrease", Constants.TOOL_IS_NOT_INCREASE);
-            query.setParameter("isIncreasePart", Constants.TOOL_IS_INCREASING);
-        }
+        query.setParameter("isIncrease", Constants.IS_NOT_INCREASED);
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameTool())){
             query.setParameter("nameTool", request.getNameTool());
@@ -408,12 +401,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     }
 
     private void setConditionFindAllToolToIncreaseDto(StringBuilder sb, FindAllToolToIncreaseRequest request) {
-        if (request.getNotChildren()) {
-            sb.append("  and tol.is_increase = :isIncrease ");
-            sb.append("  and tol.parent is null ");
-        } else {
-            sb.append(" and (tol.is_increase = :isIncrease or tol.is_increase = :isIncreasePart) ");
-        }
+
         if (StringUtils.isNotBlank(request.getNameTool())) {
             sb.append(" and (tol.name REGEXP :nameTool ) ");
         }
@@ -710,7 +698,12 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "    left join department de on tol.id_department = de.id_department  " +
                 "    left join location lo on de.id_department = lo.id_department  " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
-                " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) ");
+                " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null)" +
+                "  and tol.id_tool not in ( " +
+                "      select distinct parent " +
+                "      from tool " +
+                "      where parent is not null " +
+                "  ) and tol.is_increase = :isIncrease ");
         setConditionFindAllToolToIncreaseDto(sb, request);
         Query query  = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolToIncreaseDto(query, request);
@@ -724,7 +717,12 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "    left join department de on tol.id_department = de.id_department  " +
                 "    left join location lo on de.id_department = lo.id_department  " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
-                " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) ");
+                " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
+                "   and tol.id_tool not in (" +
+                "      select distinct parent " +
+                "      from tool " +
+                "      where parent is not null" +
+                "  ) and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
         setConditionFindAllToolToDecreaseDto(sb, request);
         Query query  = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolToDecreaseDto(query, request);

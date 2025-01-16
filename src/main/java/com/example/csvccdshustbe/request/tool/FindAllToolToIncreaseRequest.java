@@ -15,7 +15,6 @@ public class FindAllToolToIncreaseRequest extends RequestPageBase {
     private String nameTool;
     private Integer idToolCategory;
     private Integer idDepartment;
-    private Boolean notChildren = true;
     private String salt;
     private Integer statusUse;
     private List<Integer> idsDepartmentOriginal;

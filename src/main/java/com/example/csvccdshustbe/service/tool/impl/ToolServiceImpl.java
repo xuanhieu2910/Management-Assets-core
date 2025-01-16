@@ -357,7 +357,7 @@ public class ToolServiceImpl implements ToolService {
         String currentTime = String.valueOf(new Date().getTime());
         Tool childTool = new Tool();
         childTool.setName(toolParent.getName());
-        childTool.setCodeTool(String.valueOf(UUID.randomUUID()));
+        childTool.setCodeTool(toolParent.getCodeTool() +"-"+ UUID.randomUUID());
         childTool.setSalt(String.valueOf(UUID.randomUUID()));
         childTool.setIdToolCategory(toolParent.getIdToolCategory());
         childTool.setTimeCreated(currentTime);
@@ -375,6 +375,7 @@ public class ToolServiceImpl implements ToolService {
         childTool.setIdLocation(allocateToolRequest.getIdLocation());
         childTool.setIdUserUse(user.get().getIdUser());
         childTool.setYearUse(toolParent.getYearUse());
+        childTool.setIdDepartmentOriginal(toolParent.getIdDepartmentOriginal());
         return childTool;
     }
 

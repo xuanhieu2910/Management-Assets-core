@@ -13,4 +13,8 @@ public class FindAllSuppliersResponse {
     private Integer idSupplier;
     @JsonProperty("name")
     private String name;
+    @JsonProperty("email")
+    private String email;
+    @JsonProperty("phone_number")
+    private String phoneNumber;
 }
