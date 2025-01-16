@@ -157,8 +157,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "where 1=1    ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idTool", idParent);
-        query.setParameter("isIncrease", Constants.IS_INCREASED);
-        query.setParameter("isDecrease", Constants.IS_DECREASED);
+        query.setParameter("isIncrease", Constants.TOOL_IS_INCREASED);
+        query.setParameter("isDecrease", Constants.TOOL_IS_DECREASED);
         query.executeUpdate();
     }
 

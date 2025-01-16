@@ -395,8 +395,8 @@ public class ToolServiceImpl implements ToolService {
         tool.setIdUserModified(csvcUser.getIdUser());
         tool.setValue(createNewToolRequest.getValue());
         tool.setQuantity(createNewToolRequest.getQuantity());
-        tool.setIsIncrease(Constants.TOOL_PARENT_NOT_IS_INCREASE_WHOLE);
-        tool.setIsDecrease(Constants.TOOL_PARENT_NOT_IS_DECREASE_WHOLE);
+        tool.setIsIncrease(Constants.TOOL_IS_NOT_INCREASE);
+        tool.setIsDecrease(Constants.TOOL_IS_NOT_DECREASE);
         tool.setQuantityIncreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT);
         tool.setQuantityDecreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT);
         tool.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());
