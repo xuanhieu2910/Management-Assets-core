@@ -22,7 +22,6 @@ public interface ToolService {
     Page<FindAllToolResponse> findAllToolChildrenResponse(FindAllToolRequest findAllToolRequest);
     FindDetailsToolResponse findDetailsToolBySaltTool(String saltTool) throws ValidateFiledException, IllegalAccessException;
     StatisticToolsResponse getStatisticTool();
-    Integer countToolIncreasedNotDecreasedOrNotPending(List<Integer> idsTool);
     Page<FindAllToolResponseToIncrease> findAllToolToIncrease(FindAllToolToIncreaseRequest request);
     Page<FindAllToolResponseToDecrease> findAllToolToDecrease(FindAllToolToDecreaseRequest request);
     Integer countToolIncreasedNotDecreased(List<Integer> idsTool);
