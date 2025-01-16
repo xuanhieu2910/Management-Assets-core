@@ -434,4 +434,15 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+    @GetMapping("/tool-details")
+    public ResponseEntity<?> findToolDocumentDetailsByCodeDocumentAsset(@RequestParam("code") String code){
+        try {
+            return ApiResponseDto.createdWithState(documentService.findDetailsDocumentByCodeDocument(code),
+                    "Find details document tool success!", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

@@ -5,17 +5,24 @@ import com.example.csvccdshustbe.entity.UnitsTool;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.unitsTool.UnitsToolRepository;
 import com.example.csvccdshustbe.request.unitsTool.CreateUnitsToolRequest;
+import com.example.csvccdshustbe.request.unitsTool.FindAllUnitsToolRequest;
 import com.example.csvccdshustbe.request.unitsTool.UpdateUnitsToolRequest;
 import com.example.csvccdshustbe.service.unitsTool.UnitsToolService;
+import com.example.csvccdshustbe.utility.PageUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UnitsToolServiceImpl implements UnitsToolService {
@@ -23,9 +30,25 @@ public class UnitsToolServiceImpl implements UnitsToolService {
     UnitsToolRepository unitsToolRepository;
 
     @Override
-    public List<UnitsTool> findAllUnitsTool() {
-        return unitsToolRepository.findAllUnitsTool();
+    public Page<UnitsTool> findAllUnitsTool(FindAllUnitsToolRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        Page<UnitsTool> unitsTool = unitsToolRepository.findAllUnitsTool(request, pageable);
+        return new PageImpl<>(convertToFindAllUnitsToolsResponse(unitsTool.stream().collect(Collectors.toList())),
+                pageable, unitsTool.getTotalElements());
     }
+
+    private List<UnitsTool> convertToFindAllUnitsToolsResponse(List<UnitsTool> collect) {
+        List<UnitsTool> unitsTools = new ArrayList<>();
+        for (UnitsTool unitsTool : collect) {
+            UnitsTool tempUnitsTool = new UnitsTool();
+            tempUnitsTool.setIdUnitTool(unitsTool.getIdUnitTool());
+            tempUnitsTool.setName(unitsTool.getName());
+            tempUnitsTool.setStatus(unitsTool.getStatus());
+            unitsTools.add(tempUnitsTool);
+        }
+        return unitsTools;
+    }
+
     @Override
     public void createUnitsTool(CreateUnitsToolRequest request) throws ValidateFiledException {
         validateDataCreateUnitTool(request);
