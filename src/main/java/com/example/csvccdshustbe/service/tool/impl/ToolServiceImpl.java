@@ -123,13 +123,18 @@ public class ToolServiceImpl implements ToolService {
         if (code.equals(Constants.CODE_TYPE_PROCESS_INCREASE_TOOL)) {
             toolRepository.updateIsIncreaseAndQuantityIncreaseCurrentByIdsTool(idsToolParent);
         } else if (code.equals(Constants.CODE_TYPE_PROCESS_DECREASE_TOOL)) {
-            toolRepository.updateIsDecreaseAndQuantityIncreaseCurrentByIdsTool(idsToolParent);
+            toolRepository.updateIsDecreaseAndQuantityDecreaseCurrentByIdsTool(idsToolParent);
         }
     }
 
     @Override
     public void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer status) {
         toolRepository.updateToolStatusProcessCurrentByIdProcessCurrent(idProcessCurrent, status);
+    }
+
+    @Override
+    public Integer countToolIsNotIncreaseOrIsDecreaseOrPendingByIdsTool(List<Integer> idsTool) {
+        return toolRepository.countToolIsNotIncreaseOrDecreaseOrPendingByIdsTool(idsTool);
     }
 
     @Override

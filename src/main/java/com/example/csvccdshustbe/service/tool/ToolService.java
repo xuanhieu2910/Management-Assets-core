@@ -30,4 +30,6 @@ public interface ToolService {
     void updateToolParentIsIncreaseAndIsDecrease(Integer idProcess, String code);
 
     void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer status);
+
+    Integer countToolIsNotIncreaseOrIsDecreaseOrPendingByIdsTool(List<Integer> idsTool);
 }

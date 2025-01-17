@@ -37,6 +37,7 @@ public interface ToolRepositoryCustom {
 
     void updateIsIncreaseAndQuantityIncreaseCurrentByIdsTool(List<Integer> idsToolParent);
 
-    void updateIsDecreaseAndQuantityIncreaseCurrentByIdsTool(List<Integer> idsToolParent);
+    void updateIsDecreaseAndQuantityDecreaseCurrentByIdsTool(List<Integer> idsToolParent);
     void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer status);
+    Integer countToolIsNotIncreaseOrDecreaseOrPendingByIdsTool(List<Integer> idsTool);
 }

@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
 import com.example.csvccdshustbe.request.process.*;
+import com.example.csvccdshustbe.request.process.tool.CreateDecreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
@@ -46,8 +47,8 @@ public class DocumentController {
     }
 
 
-    @GetMapping("/asset-details")
-    public ResponseEntity<?> findDocumentDetailsByCodeDocumentAsset(@RequestParam("code") String code){
+    @GetMapping("/details")
+    public ResponseEntity<?> findDocumentDetailsByCodeDocument(@RequestParam("code") String code){
         try {
             return ApiResponseDto.createdWithState(documentService.findDetailsDocumentByCodeDocument(code),
                     "Find details document success!", HttpStatus.OK);
@@ -57,7 +58,6 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
-
 
     @GetMapping("/asset-find-all")
     public ResponseEntity<?> findAllProcessAsset(@And({
@@ -441,6 +441,18 @@ public class DocumentController {
             return ApiResponseDto.createdWithState(documentService.findDetailsDocumentByCodeDocument(code),
                     "Find details document tool success!", HttpStatus.OK);
         } catch (NotFoundException e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/tool-decrease")
+    public ResponseEntity<?> decreaseTool(@RequestBody CreateDecreaseToolRequest request){
+        try {
+            processService.createDecreaseTool(request);
+            return ApiResponseDto.createdWithMessage("Create increase tool success!", HttpStatus.OK);
+        } catch (ValidateFiledException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);

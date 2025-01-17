@@ -350,7 +350,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     @Transactional
     @Modifying
     @Override
-    public void updateIsDecreaseAndQuantityIncreaseCurrentByIdsTool(List<Integer> idsToolParent) {
+    public void updateIsDecreaseAndQuantityDecreaseCurrentByIdsTool(List<Integer> idsToolParent) {
         StringBuilder sb = new StringBuilder();
         sb.append(" update tool tl     " +
                 "    inner join     " +
@@ -387,6 +387,23 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         query.setParameter("statusProcessCurrent", status);
         query.setParameter("idProcessCurrent", idProcessCurrent);
         query.executeUpdate();
+    }
+
+    @Override
+    public Integer countToolIsNotIncreaseOrDecreaseOrPendingByIdsTool(List<Integer> idsTool) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(tool.id_tool) " +
+                "from tool " +
+                "where tool.id_tool in (:idsTool) " +
+                "and (tool.is_increase = :isNotIncrease " +
+                "  or tool.is_decrease = :isDecrease " +
+                "  or tool.status_process_current = :statusPending) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsTool", idsTool);
+        query.setParameter("isNotIncrease", Constants.TOOL_IS_NOT_INCREASE);
+        query.setParameter("isDecrease", Constants.TOOL_IS_DECREASED);
+        query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
     }
 
     @Override

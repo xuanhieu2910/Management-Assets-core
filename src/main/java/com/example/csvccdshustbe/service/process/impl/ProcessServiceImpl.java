@@ -16,7 +16,9 @@ import com.example.csvccdshustbe.request.process.asset.AssetDetailInventoryReque
 import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilDecreaseRequest;
 import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilInventoryRequest;
 import com.example.csvccdshustbe.request.process.document.*;
+import com.example.csvccdshustbe.request.process.tool.CreateDecreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
+import com.example.csvccdshustbe.request.process.tool.ToolDetailDecreaseRequest;
 import com.example.csvccdshustbe.request.process.tool.ToolDetailIncreaseRequest;
 import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.service.asset.AssetService;
@@ -128,13 +130,40 @@ public class ProcessServiceImpl implements ProcessService {
     public void createIncreaseTool(CreateIncreaseToolRequest request) throws ValidateFiledException {
         List<Integer> idsTool = new ArrayList<>();
         request.getToolsDetail().forEach(x->idsTool.add(x.getIdTool()));
-        validateAssetProcessTool(idsTool);
+        validateToolIncreaseProcess(idsTool);
         List<Tool> tools = toolService.findAllToolByIdsTool(idsTool);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(constructionDocumentIncrease(request.getDocument(), process));
         toolProcessService.saveAllToolProcess(constructionToolProcessIncrease(request.getToolsDetail(), process));
         updateInformationIncreaseTools(tools, process, request.getToolsDetail());
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
+                Arrays.asList(Constants.CODE_TYPE_STATE_INIT,
+                        Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                        Constants.CODE_TYPE_STATE_COMPLETED));
+        List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
+        transitionService.saveTransition(constructionTransition(process, states));
+        Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
+                states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
+        Integer idDepartment = process.getIdDepartment();
+        List<UserRoleDto> userRoles = userRoleService.findUserRoleByNameRoleAndIdDepartment(RolePattern.ManagerDepartment.name(),
+                idDepartment);
+        requestDataService.createNewRequestData(constructionRequestData(processRequest));
+        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
+        createTaskSendMailIncrease(userRoles, document, process);
+    }
+
+    @Override
+    public void createDecreaseTool(CreateDecreaseToolRequest request) throws ValidateFiledException {
+        List<Integer> idsTool = new ArrayList<>();
+        request.getToolsDetail().forEach(x->idsTool.add(x.getIdTool()));
+        validateToolDecreaseProcess(idsTool);
+        List<Tool> tools = toolService.findAllToolByIdsTool(idsTool);
+        TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
+        Process process = processRepository.save(constructionProcess(typeProcess));
+        Document document = documentService.saveDocument(constructionDocumentDecrease(request.getDocument(), process));
+        toolProcessService.saveAllToolProcess(constructionToolProcessDecrease(request.getToolsDetail(), process));
+        updateInformationDecreaseTools(tools, process, request.getToolsDetail());
         List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
                 Arrays.asList(Constants.CODE_TYPE_STATE_INIT,
                         Constants.CODE_TYPE_STATE_TEST_APPROVED,
@@ -164,6 +193,18 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
+    private void updateInformationDecreaseTools(List<Tool> tools, Process process, List<ToolDetailDecreaseRequest> toolsDetailDecrease) {
+        for (ToolDetailDecreaseRequest toolDetailDecreaseRequest: toolsDetailDecrease){
+            tools.stream().filter(x->x.getIdTool()
+                            .equals(toolDetailDecreaseRequest.getIdTool()))
+                    .findFirst().ifPresent(x->{
+                        x.setIdProcessCurrent(process.getIdProcess());
+                        x.setIdTypeProcessCurrent(process.getIdTypeProcess());
+                        x.setStatusProcessCurrent(process.getStatus());
+                    });
+        }
+    }
+
     private void updateInformationProcessCurrentAsset(List<Integer> idsAsset, Process process) {
         assetService.updateInformationProcessCurrentAsset(idsAsset, process);
     }
@@ -175,10 +216,17 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private void validateAssetProcessTool(List<Integer> idsTool) throws ValidateFiledException {
+    private void validateToolIncreaseProcess(List<Integer> idsTool) throws ValidateFiledException {
         Integer count = toolService.countToolIncreasedNotDecreased(idsTool);
         if (count != null && count > 0){
             throw new ValidateFiledException("Validate data to increase tool!");
+        }
+    }
+
+    private void validateToolDecreaseProcess(List<Integer> idsTool) throws ValidateFiledException {
+        Integer count = toolService.countToolIsNotIncreaseOrIsDecreaseOrPendingByIdsTool(idsTool);
+        if (count != null && count > 0){
+            throw new ValidateFiledException("Validate data to decrease tool!");
         }
     }
 
@@ -208,6 +256,27 @@ public class ProcessServiceImpl implements ProcessService {
         String currentTime = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         for (ToolDetailIncreaseRequest toolProcessRequest: toolProcessValue){
+            ToolProcess toolProcess = new ToolProcess();
+            toolProcess.setIdTool(toolProcessRequest.getIdTool());
+            toolProcess.setIdProcess(process.getIdProcess());
+            toolProcess.setIdTypeProcess(process.getIdTypeProcess());
+            toolProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+            toolProcess.setValue(toolProcessRequest.getValue());
+            toolProcess.setTimeCreated(currentTime);
+            toolProcess.setTimeModified(currentTime);
+            toolProcess.setIdUserCreated(csvcUser.getIdUser());
+            toolProcess.setIdUserModified(csvcUser.getIdUser());
+            toolProcess.setQuantity(toolProcess.getQuantity());
+            toolProcessList.add(toolProcess);
+        }
+        return toolProcessList;
+    }
+
+    private List<ToolProcess> constructionToolProcessDecrease(List<ToolDetailDecreaseRequest> toolProcessValue, Process process) {
+        List<ToolProcess> toolProcessList = new ArrayList<>();
+        String currentTime = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        for (ToolDetailDecreaseRequest toolProcessRequest: toolProcessValue){
             ToolProcess toolProcess = new ToolProcess();
             toolProcess.setIdTool(toolProcessRequest.getIdTool());
             toolProcess.setIdProcess(process.getIdProcess());
@@ -740,6 +809,14 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
+    private void validateCreateNewDocumentDecreaseTool(CreateDocumentDecreaseAssetRequest request) throws ValidateFiledException {
+        if (StringUtils.isBlank(request.getCodeDocument()) || StringUtils.isBlank(request.getTimeDocument())
+                || StringUtils.isBlank(request.getTimeDecrease())){
+            throw new ValidateFiledException("Validate data create document!");
+        }
+    }
+
+
     private void validateCreateNewDocumentChange(CreateDocumentChangeAssetRequest request) throws ValidateFiledException {
         if (StringUtils.isBlank(request.getCodeDocument()) || StringUtils.isBlank(request.getTimeDocument())
                 || StringUtils.isBlank(request.getTimeChange())){
@@ -772,6 +849,26 @@ public class ProcessServiceImpl implements ProcessService {
         document.setIdUserModified(process.getIdUserModified());
         return document;
     }
+
+    private Document constructionDocumentDecrease(CreateDocumentDecreaseAssetRequest request, Process process) throws ValidateFiledException {
+        validateCreateNewDocumentDecrease(request);
+        Document document = new Document();
+        String dateNow = String.valueOf(new Date().getTime());
+        document.setCode(request.getCodeDocument());
+        document.setIdProcess(process.getIdProcess());
+        document.setDescription(request.getDescription());
+        document.setTimeCreated(dateNow);
+        document.setTimeModified(dateNow);
+        document.setTimeIncrease(request.getTimeDecrease());
+        document.setTimeDocument(request.getTimeDocument());
+        document.setIdDepartmentOriginal(process.getIdDepartment());
+        document.setIdDepartment(null);
+        document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
+        document.setIdUserCreated(process.getIdUserCreated());
+        document.setIdUserModified(process.getIdUserModified());
+        return document;
+    }
+
 
     private Document constructionDocumentInventory(CreateDocumentInventoryAssetRequest request, Process process) throws ValidateFiledException {
         validateCreateNewDocumentInventory(request);
