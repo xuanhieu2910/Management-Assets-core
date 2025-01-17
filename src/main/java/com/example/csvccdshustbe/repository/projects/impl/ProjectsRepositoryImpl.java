@@ -36,16 +36,16 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
                 "               projects.visible,       " +
                 "               1 as depth,       " +
                 "               CAST(projects.id_project as NCHAR ) as path ,   " +
-                "               case when projects.parent is not null then projects.name end nameParent   " +
+                "               case when projects.parent is not null then projects.name end nameParent ,projects.id_department_original  " +
                 "        from projects projects       " +
-                "        where projects.parent is null       " +
+                "        where projects.parent is null      " +
                 "        union all       " +
                 "        select projects.id_project, projects.name, projects.short_name,       " +
                 "               projects.parent, projects.time_created, projects.time_modified,       " +
                 "               projects.visible,       " +
                 "               cte.depth + 1 as depth,       " +
                 "               concat_ws('/',cte.path,CAST(projects.id_project as NCHAR)) as path ,   " +
-                "               cte.name nameParent   " +
+                "               cte.name nameParent,projects.id_department_original   " +
                 "        from projects projects       " +
                 "                 INNER JOIN cte_projects cte ON projects.parent = cte.id_project       " +
                 "        )       " +
@@ -54,7 +54,7 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
                 "           cte.visible, cte.depth, cte.path ,   " +
                 "           cte.nameParent   " +
                 "from cte_projects cte   " +
-                "where 1 = 1 and cte.visible = :visible ");
+                "where 1 = 1 and cte.visible = :visible  and cte.id_department_original in (:idsDepartmentOriginal)  ");
         setConditionFindAllProjectVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllProjectVisible(request, query);
@@ -133,6 +133,7 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
     }
 
     private void setParameterFindAllProjectVisible(FindAllProjectsRequest request, Query query) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("visible", Constants.PROJECTS_IS_VISIBLE);
         if (StringUtils.isNotBlank(request.getKeyword())) {
             query.setParameter("keyword", request.getKeyword());
@@ -174,7 +175,7 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
                 "               projects.visible,       " +
                 "               1 as depth,       " +
                 "               CAST(projects.id_project as NCHAR ) as path ,   " +
-                "               case when projects.parent is not null then projects.name end nameParent   " +
+                "               case when projects.parent is not null then projects.name end nameParent,projects.id_department_original   " +
                 "        from projects projects       " +
                 "        where projects.parent is null       " +
                 "        union all       " +
@@ -183,13 +184,13 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
                 "               projects.visible,       " +
                 "               cte.depth + 1 as depth,       " +
                 "               concat_ws('/',cte.path,CAST(projects.id_project as NCHAR)) as path ,   " +
-                "               cte.name nameParent   " +
+                "               cte.name nameParent,projects.id_department_original   " +
                 "        from projects projects       " +
                 "                 INNER JOIN cte_projects cte ON projects.parent = cte.id_project       " +
                 "        )       " +
                 "select count(0) count   " +
                 "from cte_projects cte   " +
-                "where 1 = 1 and cte.visible = :visible ");
+                "where 1 = 1 and cte.visible = :visible   and cte.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllProjectVisible(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllProjectVisible(request, query);

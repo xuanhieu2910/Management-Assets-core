@@ -380,6 +380,7 @@ public class DocumentController {
             return ApiResponseDto.createdWithState(processService.getStatisticToolIncrease(),
                     "Get statistic tool increase success!", HttpStatus.OK);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

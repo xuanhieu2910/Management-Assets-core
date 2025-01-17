@@ -513,6 +513,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         query.setParameter("statusRequestPending", Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
         query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_INCREASE_TOOL);
         query.setParameter("idUser", csvcUser.getIdUser());
+        query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
         List<Object[]> result = query.getResultList();
         ProcessStatisticsToolIncreaseResponse response = new ProcessStatisticsToolIncreaseResponse();
         if (!CollectionUtils.isEmpty(result)){
@@ -564,6 +565,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         query.setParameter("statusRequestPending", Constants.STATUS_REQUEST_STAKE_HOLDER_PENDING);
         query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DECREASE_TOOL);
         query.setParameter("idUser", csvcUser.getIdUser());
+        query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
         List<Object[]> result = query.getResultList();
         ProcessStatisticsToolDecreaseResponse response = new ProcessStatisticsToolDecreaseResponse();
         if (!CollectionUtils.isEmpty(result)){

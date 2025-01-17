@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.projects.impl;
 
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Projects;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.projects.ProjectsRepository;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -36,6 +38,8 @@ public class ProjectsServiceImpl implements ProjectsService {
 
     @Override
     public Page<FindAllProjectsResponse> findAllProjectsVisibleResponse(FindAllProjectsRequest request) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         Page<FindAllProjectsDto> dtos = projectsRepository.findAllProjectVisible(pageable, request);
         return new PageImpl<>(convertToFindAllProjectsResponse(dtos.get().collect(Collectors.toList())),
