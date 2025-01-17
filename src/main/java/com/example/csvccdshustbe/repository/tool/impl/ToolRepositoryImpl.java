@@ -421,7 +421,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "from tool tol " +
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
                 "    left join department de on tol.id_department = de.id_department " +
-                "    left join location lo on de.id_department = lo.id_department " +
+                "    left join location lo on tol.id_location = lo.id_location " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
                 "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null)" +
                 "  and tol.id_tool not in ( " +
@@ -458,7 +458,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "from tool tol " +
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
                 "    left join department de on tol.id_department = de.id_department " +
-                "    left join location lo on de.id_department = lo.id_department " +
+                "    left join location lo on tol.id_location = lo.id_location " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
                 "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
                 "   and tol.id_tool not in (" +
@@ -874,7 +874,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "from tool tol  " +
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category  " +
                 "    left join department de on tol.id_department = de.id_department  " +
-                "    left join location lo on de.id_department = lo.id_department  " +
+                "    left join location lo on tol.id_location = lo.id_location  " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
                 " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null)" +
                 "  and tol.id_tool not in ( " +
@@ -893,7 +893,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "from tool tol  " +
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category  " +
                 "    left join department de on tol.id_department = de.id_department  " +
-                "    left join location lo on de.id_department = lo.id_department  " +
+                "    left join location lo on tol.id_location = lo.id_location  " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
                 " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
                 "   and tol.id_tool not in (" +

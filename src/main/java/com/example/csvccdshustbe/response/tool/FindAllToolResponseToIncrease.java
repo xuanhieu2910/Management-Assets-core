@@ -32,4 +32,8 @@ public class FindAllToolResponseToIncrease {
     private Integer quantity;
     @JsonProperty("value")
     private String value;
+    @JsonProperty("quantity_increase_current")
+    private Integer quantityIncreaseCurrent;
+    @JsonProperty("quantity_decrease_current")
+    private Integer quantityDecreaseCurrent;
 }

@@ -171,6 +171,8 @@ public class ToolServiceImpl implements ToolService {
             findAllToolResponseToDecrease.setSalt(toolDto.getSalt());
             findAllToolResponseToDecrease.setQuantity(toolDto.getQuantity());
             findAllToolResponseToDecrease.setValue(toolDto.getValue());
+            findAllToolResponseToDecrease.setQuantityIncreaseCurrent(toolDto.getQuantityIncreaseCurrent());
+            findAllToolResponseToDecrease.setQuantityDecreaseCurrent(toolDto.getQuantityDecreaseCurrent());
             responseToDecreaseList.add(findAllToolResponseToDecrease);
         }
         return responseToDecreaseList;
@@ -192,6 +194,8 @@ public class ToolServiceImpl implements ToolService {
             responseToIncrease.setSalt(toolDto.getSalt());
             responseToIncrease.setQuantity(toolDto.getQuantity());
             responseToIncrease.setValue(toolDto.getValue());
+            responseToIncrease.setQuantityIncreaseCurrent(toolDto.getQuantityIncreaseCurrent());
+            responseToIncrease.setQuantityDecreaseCurrent(toolDto.getQuantityDecreaseCurrent());
             responseToIncreases.add(responseToIncrease);
         }
         return responseToIncreases;
