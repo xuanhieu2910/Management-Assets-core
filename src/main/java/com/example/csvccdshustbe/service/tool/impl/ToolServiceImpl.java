@@ -403,6 +403,7 @@ public class ToolServiceImpl implements ToolService {
         childTool.setIdUserCreated(childTool.getIdUserCreated());
         childTool.setIdUserModified(childTool.getIdUserCreated());
         childTool.setQuantity(allocateToolRequest.getQuantity());
+        childTool.setValue(toolParent.getValue());
         childTool.setIsIncrease(Constants.IS_NOT_INCREASED);
         childTool.setIsDecrease(Constants.IS_NOT_DECREASED);
         childTool.setQuantityIncreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT);
