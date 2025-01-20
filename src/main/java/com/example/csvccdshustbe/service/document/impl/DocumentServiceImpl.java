@@ -15,6 +15,7 @@ import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
 import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDecreaseResponse;
+import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDocumentInventoryResponse;
 import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolIncreaseResponse;
 import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
@@ -427,6 +428,14 @@ public class DocumentServiceImpl implements DocumentService {
                 documentRepository.findAllDocumentToolDecreaseDtoByIdsDepartment(request,pageable);
         return new PageImpl<>(convertToFindAllDocumentToolDecrease(findAllDocumentToolDtos.getContent()),
                 pageable, findAllDocumentToolDtos.getTotalElements());
+    }
+
+    @Override
+    public Page<FindAllDocumentToolDocumentInventoryResponse>
+    findAllDocumentToolDocumentInventory(FindAllDocumentToolRequest findAllProcessAssetRequest) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return null;
     }
 
     private List<FindAllDocumentToolDecreaseResponse> convertToFindAllDocumentToolDecrease(List<FindAllDocumentToolDto> content) {

@@ -380,7 +380,6 @@ public class DocumentController {
             return ApiResponseDto.createdWithState(processService.getStatisticToolIncrease(),
                     "Get statistic tool increase success!", HttpStatus.OK);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -454,6 +453,22 @@ public class DocumentController {
             processService.createDecreaseTool(request);
             return ApiResponseDto.createdWithMessage("Create increase tool success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/tool-find-all-document-inventory")
+    public ResponseEntity<?> toolFindAllDocumentInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllDocumentToolRequest findAllProcessAssetRequest){
+        try {
+            return ApiResponseDto.createdWithState(documentService.findAllDocumentToolDecrease(findAllProcessAssetRequest),
+                    "Find all document tool decrease!", HttpStatus.OK);
+        }  catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
