@@ -34,10 +34,9 @@ public interface ToolRepositoryCustom {
     void updateStatusProcessCurrentAndIsIncrease(Integer idProcess, Integer status);
     void updateStatusProcessCurrentAndIsDecrease(Integer idProcess, Integer status);
     List<Integer> getAllIdsToolParentByIdProcess(Integer idProcess);
-
     void updateIsIncreaseAndQuantityIncreaseCurrentByIdsTool(List<Integer> idsToolParent);
-
     void updateIsDecreaseAndQuantityDecreaseCurrentByIdsTool(List<Integer> idsToolParent);
-    void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer status);
+    void updateToolIsIncreaseWhenNotApproved(Integer idProcessCurrent, Integer status);
+    void updateToolIsDecreaseWhenNotApproved(Integer idProcessCurrent, Integer status);
     Integer countToolIsNotIncreaseOrDecreaseOrPendingByIdsTool(List<Integer> idsTool);
 }
