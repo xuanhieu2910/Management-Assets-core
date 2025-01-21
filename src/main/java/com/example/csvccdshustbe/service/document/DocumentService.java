@@ -10,6 +10,7 @@ import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
 import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDecreaseResponse;
 import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDocumentInventoryResponse;
+import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDocumentUpdateInventoryResponse;
 import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolIncreaseResponse;
 import com.example.csvccdshustbe.response.process.*;
 import org.springframework.data.domain.Page;
@@ -38,4 +39,5 @@ public interface DocumentService {
     Page<FindAllDocumentToolIncreaseResponse> findAllDocumentToolIncrease(FindAllDocumentToolRequest findAllProcessAssetRequest);
     Page<FindAllDocumentToolDecreaseResponse> findAllDocumentToolDecrease(FindAllDocumentToolRequest findAllProcessAssetRequest);
     Page<FindAllDocumentToolDocumentInventoryResponse> findAllDocumentToolDocumentInventory(FindAllDocumentToolRequest findAllProcessAssetRequest);
+    Page<FindAllDocumentToolDocumentUpdateInventoryResponse> findAllDocumentToolDocumentUpdateInventory(FindAllDocumentToolRequest findAllProcessAssetRequest);
 }

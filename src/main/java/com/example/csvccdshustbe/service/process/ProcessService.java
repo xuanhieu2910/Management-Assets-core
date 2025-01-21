@@ -32,4 +32,7 @@ public interface ProcessService {
     ProcessStatisticsRevaluationResponse getStatisticRevaluation();
     ProcessStatisticsToolIncreaseResponse getStatisticToolIncrease();
     ProcessStatisticsToolDecreaseResponse getStatisticToolDecrease();
+    ProcessStatisticsToolDocumentInventoryResponse getStatisticToolDocumentInventory();
+    ProcessStatisticsToolDocumentBeInventoryResponse getStatisticToolDocumentBeInventory();
+    ProcessStatisticsToolUpdateInventoryResponse getStatisticToolUpdateInventory();
 }

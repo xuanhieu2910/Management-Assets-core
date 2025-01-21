@@ -16,6 +16,7 @@ import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
 import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDecreaseResponse;
 import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDocumentInventoryResponse;
+import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDocumentUpdateInventoryResponse;
 import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolIncreaseResponse;
 import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
@@ -432,10 +433,67 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Page<FindAllDocumentToolDocumentInventoryResponse>
-    findAllDocumentToolDocumentInventory(FindAllDocumentToolRequest findAllProcessAssetRequest) {
+    findAllDocumentToolDocumentInventory(FindAllDocumentToolRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllDocumentToolDto> findAllToolDtos =
+                documentRepository.findAllToolDocumentInventoryDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllToolInventoryResponse(findAllToolDtos.stream().toList()),
+                pageable, findAllToolDtos.getTotalElements());
+    }
 
-        return null;
+    @Override
+    public Page<FindAllDocumentToolDocumentUpdateInventoryResponse> findAllDocumentToolDocumentUpdateInventory(FindAllDocumentToolRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllDocumentToolDto> findAllToolUpdateInventoryDtos =
+                documentRepository.findAllToolDocumentUpdateInventoryDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllToolUpdateInventoryResponse(findAllToolUpdateInventoryDtos.stream().toList()),
+                pageable, findAllToolUpdateInventoryDtos.getTotalElements());
+    }
+
+    private List<FindAllDocumentToolDocumentUpdateInventoryResponse> convertToFindAllToolUpdateInventoryResponse(List<FindAllDocumentToolDto> content) {
+        List<FindAllDocumentToolDocumentUpdateInventoryResponse> responses = new ArrayList<>();
+        for (FindAllDocumentToolDto toolDto : content) {
+            FindAllDocumentToolDocumentUpdateInventoryResponse response = new FindAllDocumentToolDocumentUpdateInventoryResponse();
+            response.setCodeDocument(toolDto.getCodeDocument());
+            response.setIdUserCreate(toolDto.getIdUserCreate());
+            response.setFullNameCreate(toolDto.getFullNameUser());
+            response.setNameUserCreate(toolDto.getNameUserCreate());
+            response.setCodeDepartment(toolDto.getCodeDepartment());
+            response.setNameDepartment(toolDto.getNameDepartment());
+            response.setStatus(toolDto.getStatus());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()),DateUtil.DDMMYYYY));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()),DateUtil.DDMMYYYY));
+            response.setTimeDocument(toolDto.getTimeDocument());
+            response.setTimeUpdateInventory(toolDto.getTimeIncrease());
+            response.setDescription(toolDto.getDescription());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    private List<FindAllDocumentToolDocumentInventoryResponse> convertToFindAllToolInventoryResponse(List<FindAllDocumentToolDto> content) {
+        List<FindAllDocumentToolDocumentInventoryResponse> responses = new ArrayList<>();
+        for (FindAllDocumentToolDto toolDto : content) {
+            FindAllDocumentToolDocumentInventoryResponse response = new FindAllDocumentToolDocumentInventoryResponse();
+            response.setCodeDocument(toolDto.getCodeDocument());
+            response.setIdUserCreate(toolDto.getIdUserCreate());
+            response.setFullNameCreate(toolDto.getFullNameUser());
+            response.setNameUserCreate(toolDto.getNameUserCreate());
+            response.setCodeDepartment(toolDto.getCodeDepartment());
+            response.setNameDepartment(toolDto.getNameDepartment());
+            response.setStatus(toolDto.getStatus());
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()),DateUtil.DDMMYYYY));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()),DateUtil.DDMMYYYY));
+            response.setTimeDocument(toolDto.getTimeDocument());
+            response.setTimeInventory(toolDto.getTimeIncrease());
+            response.setDescription(toolDto.getDescription());
+            responses.add(response);
+        }
+        return responses;
     }
 
     private List<FindAllDocumentToolDecreaseResponse> convertToFindAllDocumentToolDecrease(List<FindAllDocumentToolDto> content) {
@@ -452,7 +510,7 @@ public class DocumentServiceImpl implements DocumentService {
             response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()),DateUtil.DDMMYYYY));
             response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()),DateUtil.DDMMYYYY));
             response.setTimeDocument(toolDto.getTimeDocument());
-            response.setTimeIncrease(toolDto.getTimeIncrease());
+            response.setTimeDecrease(toolDto.getTimeIncrease());
             response.setDescription(toolDto.getDescription());
             responses.add(response);
         }

@@ -2,13 +2,11 @@ package com.example.csvccdshustbe.response.document.tool;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-public class FindAllDocumentToolDecreaseResponse {
+public class FindAllDocumentToolDocumentUpdateInventoryResponse {
 
     @JsonProperty("code_document")
     private String codeDocument;
@@ -30,8 +28,9 @@ public class FindAllDocumentToolDecreaseResponse {
     private String timeModified;
     @JsonProperty("time_document")
     private String timeDocument;
-    @JsonProperty("time_decrease")
-    private String timeDecrease;
+    @JsonProperty("time_update_inventory")
+    private String timeUpdateInventory;
     @JsonProperty("description")
     private String description;
+
 }

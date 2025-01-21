@@ -404,8 +404,10 @@ public class DocumentController {
             processService.createIncreaseTool(request);
             return ApiResponseDto.createdWithMessage("Create increase tool success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -466,12 +468,58 @@ public class DocumentController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllDocumentToolRequest findAllProcessAssetRequest){
         try {
-            return ApiResponseDto.createdWithState(documentService.findAllDocumentToolDecrease(findAllProcessAssetRequest),
-                    "Find all document tool decrease!", HttpStatus.OK);
+            return ApiResponseDto.createdWithState(documentService.findAllDocumentToolDocumentInventory(findAllProcessAssetRequest),
+                    "Find all document tool inventory!", HttpStatus.OK);
         }  catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @GetMapping("/tool-find-all-document-update-inventory")
+    public ResponseEntity<?> toolFindAllDocumentUpdateInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllDocumentToolRequest findAllProcessAssetRequest){
+        try {
+            return ApiResponseDto.createdWithState(documentService.findAllDocumentToolDocumentUpdateInventory(findAllProcessAssetRequest),
+                    "Find all document tool update inventory!", HttpStatus.OK);
+        }  catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/tool-statistic-document-inventory")
+    public ResponseEntity<?> getStatisticToolDocumentInventoryAsset(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticToolDocumentInventory(),
+                    "Get statistic inventory tool success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/tool-statistic-document-be-inventory")
+    public ResponseEntity<?> getStatisticToolDocumentBeInventoryAsset(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticToolDocumentBeInventory(),
+                    "Get statistic be inventory tool success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/tool-statistic-update-inventory")
+    public ResponseEntity<?> getStatisticToolUpdateInventoryAsset(){
+        try {
+            return ApiResponseDto.createdWithState(processService.getStatisticToolUpdateInventory(),
+                    "Get statistic update inventory tool success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 }

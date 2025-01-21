@@ -132,10 +132,8 @@ public class ToolController {
             return ApiResponseDto.createdWithState(toolService.findAllToolToIncrease(findAllToolRequest),
                     "Find all tool to increase success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace( );
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
