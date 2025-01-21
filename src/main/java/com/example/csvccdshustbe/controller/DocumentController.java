@@ -6,7 +6,6 @@ import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
 import com.example.csvccdshustbe.request.process.*;
-import com.example.csvccdshustbe.request.process.document.CreateDocumentInventoryToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateDecreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateInventoryToolRequest;
@@ -42,7 +41,7 @@ public class DocumentController {
             return ApiResponseDto.createdWithState(documentService.generateCodeDocument(typeGenerate),
                     "Generate code document success!", HttpStatus.OK);
         } catch (NotFoundException e){
-          return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }

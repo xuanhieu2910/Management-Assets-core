@@ -48,7 +48,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       tol.id_type_process_current, tol.id_department_original, tol.status_use, " +
                 "       tol.parent, tol.id_department, tol.id_location, " +
                 "       tol.id_user_use, tol.year_use, " +
-                "       de.code, de.name, lo.name, tol.price,tolca.name, tol.quantity_inventory_current " +
+                "       de.code, de.name, lo.name, tol.price,tolca.name " +
                 "from tool tol " +
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
                 "    left join department de on tol.id_department = de.id_department " +
@@ -80,7 +80,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "        tol.id_type_process_current, tol.id_department_original, tol.status_use,    " +
                 "        tol.parent, tol.id_department, tol.id_location,    " +
                 "        tol.id_user_use, tol.year_use,    " +
-                "        de.code, de.name, lo.name, tol.price, tol.quantity_inventory_current    " +
+                "        de.code, de.name, lo.name, tol.price   " +
                 " from tool tol    " +
                 "     left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category    " +
                 "     left join department de on tol.id_department = de.id_department    " +
@@ -113,7 +113,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "          quantity_decrease_current, id_process_current,   " +
                 "          status_process_current, id_type_process_current,   " +
                 "          id_department_original, status_use, parent,   " +
-                "          id_department, id_location, id_user_use, year_use, price, quantity_inventory_current " +
+                "          id_department, id_location, id_user_use, year_use, price " +
                 "from tool where tool.id_tool = :idTool ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idTool", idTool);
@@ -257,7 +257,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       quantity_decrease_current, id_process_current,  " +
                 "       status_process_current, id_type_process_current,   " +
                 "       id_department_original, status_use, parent,  " +
-                "       id_department, id_location, id_user_use, year_use, price, quantity_inventory_current   " +
+                "       id_department, id_location, id_user_use, year_use, price  " +
                 "from tool where id_tool in (:idsTool) ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsTool", idsTool);
@@ -591,7 +591,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       tol.id_type_process_current, tol.id_department_original, tol.status_use, " +
                 "       tol.parent, tol.id_department, tol.id_location, " +
                 "       tol.id_user_use, tol.year_use, " +
-                "       de.code, de.name, lo.name, tol.price, tolca.name, tol.quantity_inventory_current " +
+                "       de.code, de.name, lo.name, tol.price, tolca.name " +
                 "from tool tol " +
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
                 "    left join department de on tol.id_department = de.id_department " +
@@ -628,7 +628,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       tol.id_type_process_current, tol.id_department_original, tol.status_use, " +
                 "       tol.parent, tol.id_department, tol.id_location, " +
                 "       tol.id_user_use, tol.year_use, " +
-                "       de.code, de.name, lo.name, tol.price,tolca.name, tol.quantity_inventory_current " +
+                "       de.code, de.name, lo.name, tol.price,tolca.name " +
                 "from tool tol " +
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
                 "    left join department de on tol.id_department = de.id_department " +
@@ -845,8 +845,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "         quantity_decrease_current, id_process_current,   " +
                 "         status_process_current, id_type_process_current, " +
                 "         id_department_original, status_use, parent, " +
-                "         id_department, id_location, id_user_use, year_use, price, " +
-                "         quantity_inventory_current " +
+                "         id_department, id_location, id_user_use, year_use, price " +
                 "  from tool     " +
                 "  where id_department_original = :idDepartmentOriginal    " +
                 "  order by tool.id_tool desc limit 1  ");
@@ -882,7 +881,6 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 tool.setIdUserUse(ValueUtil.getIntegerByObject(obj[23]));
                 tool.setYearUse(ValueUtil.getStringByObject(obj[24]));
                 tool.setPrice(ValueUtil.getStringByObject(obj[25]));
-                tool.setQuantityInventoryCurrent(ValueUtil.getIntegerByObject(obj[26]));
                 return Optional.of(tool);
             }
         }
@@ -901,8 +899,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "         quantity_decrease_current, id_process_current,    " +
                 "         status_process_current, id_type_process_current, " +
                 "         id_department_original, status_use, parent, " +
-                "         id_department, id_location, id_user_use, year_use, price, " +
-                "         quantity_inventory_current " +
+                "         id_department, id_location, id_user_use, year_use, price " +
                 "  from tool where tool.salt = :salt  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("salt", salt);
@@ -943,7 +940,6 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         tool.setIdUserUse(ValueUtil.getIntegerByObject(obj[23]));
         tool.setYearUse(ValueUtil.getStringByObject(obj[24]));
         tool.setPrice(ValueUtil.getStringByObject(obj[25]));
-        tool.setQuantityInventoryCurrent(ValueUtil.getIntegerByObject(obj[26]));
         return tool;
     }
 
@@ -958,7 +954,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       quantity_decrease_current, id_process_current,   " +
                 "       status_process_current, id_type_process_current,   " +
                 "       id_department_original, status_use, parent,   " +
-                "       id_department, id_location, id_user_use, year_use, price, quantity_inventory_current   " +
+                "       id_department, id_location, id_user_use, year_use, price  " +
                 "from tool where tool.parent = :idToolParent ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idToolParent", idToolParent);
@@ -1029,7 +1025,6 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         tool.setIdUserUse(ValueUtil.getIntegerByObject(obj[23]));
         tool.setYearUse(ValueUtil.getStringByObject(obj[24]));
         tool.setPrice(ValueUtil.getStringByObject(obj[25]));
-        tool.setQuantityInventoryCurrent(ValueUtil.getIntegerByObject(obj[26]));
         return tool;
     }
 
@@ -1117,7 +1112,6 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         toolDto.setNameLocation(ValueUtil.getStringByObject(obj[27]));
         toolDto.setPrice(ValueUtil.getStringByObject(obj[28]));
         toolDto.setNameToolCategory(ValueUtil.getStringByObject(obj[29]));
-        toolDto.setQuantityInventoryCurrent(ValueUtil.getIntegerByObject(obj[30]));
         return toolDto;
     }
     private ToolDto writeDataToolDtos(Object[] obj) {
@@ -1151,7 +1145,6 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         toolDto.setNameDepartment(ValueUtil.getStringByObject(obj[26]));
         toolDto.setNameLocation(ValueUtil.getStringByObject(obj[27]));
         toolDto.setPrice(ValueUtil.getStringByObject(obj[28]));
-        toolDto.setQuantityInventoryCurrent(ValueUtil.getIntegerByObject(obj[29]));
         return toolDto;
     }
 
@@ -1187,7 +1180,6 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         toolDto.setNameLocation(ValueUtil.getStringByObject(obj[27]));
         toolDto.setPrice(ValueUtil.getStringByObject(obj[28]));
         toolDto.setNameToolCategory(ValueUtil.getStringByObject(obj[29]));
-        toolDto.setQuantityInventoryCurrent(ValueUtil.getIntegerByObject(obj[30]));
         return toolDto;
     }
     private void setParameterFindAllToolDto(Query query, FindAllToolRequest request) {

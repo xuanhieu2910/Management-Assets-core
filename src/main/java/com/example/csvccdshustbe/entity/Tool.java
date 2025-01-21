@@ -68,6 +68,4 @@ public class Tool {
     private String yearUse;
     @Column(name = "price")
     private String price;
-    @Column(name = "quantity_inventory_current")
-    private Integer quantityInventoryCurrent;
 }

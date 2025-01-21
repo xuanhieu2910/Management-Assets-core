@@ -461,7 +461,6 @@ public class ToolServiceImpl implements ToolService {
         childTool.setIsDecrease(Constants.IS_NOT_DECREASED);
         childTool.setQuantityIncreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT);
         childTool.setQuantityDecreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT);
-        childTool.setQuantityInventoryCurrent(Constants.TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT);
         childTool.setStatusUse(allocateToolRequest.getStatusUse());
         childTool.setParent(toolParent.getIdTool());
         childTool.setIdDepartment(allocateToolRequest.getIdDepartment());

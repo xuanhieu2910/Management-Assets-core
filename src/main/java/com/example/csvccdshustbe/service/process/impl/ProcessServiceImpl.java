@@ -238,8 +238,6 @@ public class ProcessServiceImpl implements ProcessService {
             tools.stream().filter(x->x.getIdTool()
                             .equals(toolDetailDecreaseRequest.getIdTool()))
                     .findFirst().ifPresent(x->{
-                        x.setQuantityInventoryCurrent( (x.getQuantityInventoryCurrent() == 0 ? 0 : x.getQuantityInventoryCurrent())
-                                + toolDetailDecreaseRequest.getQuantityInventory());
                         x.setIdProcessCurrent(process.getIdProcess());
                         x.setIdTypeProcessCurrent(process.getIdTypeProcess());
                         x.setStatusProcessCurrent(process.getStatus());
