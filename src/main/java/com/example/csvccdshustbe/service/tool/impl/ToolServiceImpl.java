@@ -129,7 +129,7 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
-    public void updateToolStatusProcessCurrentByIdProcessCurrentWhenDisagree(Integer idProcessCurrent,
+    public void updateToolStatusProcessCurrentByIdProcessCurrentWhenNotApproved(Integer idProcessCurrent,
                                                                              Integer status, String codeTypeProcess) {
         switch (codeTypeProcess){
             case Constants.CODE_TYPE_PROCESS_INCREASE_TOOL -> {

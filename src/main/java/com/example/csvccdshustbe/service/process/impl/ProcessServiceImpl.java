@@ -991,13 +991,13 @@ public class ProcessServiceImpl implements ProcessService {
     void handleAssetByTypeProcess(Process process, Integer status, TypeProcess typeProcess)
             throws ValidateFiledException, JsonProcessingException, IllegalAccessException {
         if (status.equals(Constants.STATUS_SUCCESS_PROCESS)) {
-            handleAgreeApproved(process, status, typeProcess);
+            handleApproved(process, status, typeProcess);
         } else {
-            handleDisagreeApproved(process, status, typeProcess);
+            handleNotApproved(process, status, typeProcess);
         }
     }
 
-    private void handleAgreeApproved(Process process, Integer status, TypeProcess typeProcess)
+    private void handleApproved(Process process, Integer status, TypeProcess typeProcess)
             throws ValidateFiledException, JsonProcessingException, IllegalAccessException {
         switch (typeProcess.getCode()) {
             case Constants.CODE_TYPE_PROCESS_INCREASE,
@@ -1030,11 +1030,11 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private void handleDisagreeApproved(Process process, Integer status, TypeProcess typeProcess) {
+    private void handleNotApproved(Process process, Integer status, TypeProcess typeProcess) {
         switch (typeProcess.getCode()) {
             case Constants.CODE_TYPE_PROCESS_INCREASE_TOOL,
                     Constants.CODE_TYPE_PROCESS_DECREASE_TOOL-> {
-                toolService.updateToolStatusProcessCurrentByIdProcessCurrentWhenDisagree(process.getIdProcess(),
+                toolService.updateToolStatusProcessCurrentByIdProcessCurrentWhenNotApproved(process.getIdProcess(),
                         status, typeProcess.getCode());
             }
             default -> {

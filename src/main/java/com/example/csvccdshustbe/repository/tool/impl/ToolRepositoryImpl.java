@@ -280,8 +280,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         sb.append("update tool tl             " +
                 "   inner join tool_process tp on tl.id_tool = tp.id_tool      " +
                 "   set tl.status_process_current = :statusProcessCurrent,     " +
-                "       tl.is_increase = (case when tl.quantity_increase_current + tp.quantity = tl.quantity then 2 else 1 end), " +
-                "       tl.quantity_increase_current = tl.quantity_increase_current + tp.quantity     " +
+                "       tl.is_increase = (case when tl.quantity_increase_current + tp.quantity = tl.quantity then 2 else 1 end) " +
                 "where tp.id_process = :idProcess  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
@@ -295,8 +294,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         sb.append(" update tool tl  " +
                 "   inner join tool_process tp on tl.id_tool = tp.id_tool  " +
                 "   set tl.status_process_current = :statusProcessCurrent,  " +
-                "       tl.is_decrease = (case when tl.quantity_decrease_current + tp.quantity = tl.quantity then 2 else 1 end),  " +
-                "       tl.quantity_decrease_current = tl.quantity_decrease_current + tp.quantity  " +
+                "       tl.is_decrease = (case when tl.quantity_decrease_current + tp.quantity = tl.quantity then 2 else 1 end)  " +
                 "where tp.id_process = :idProcess ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
