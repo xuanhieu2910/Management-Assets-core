@@ -10,6 +10,6 @@ import java.util.List;
 @Setter
 public class CreateInventoryToolRequest {
     private CreateDocumentInventoryToolRequest document;
-    private List<ToolDetailInventoryRequest> toolDetail;
+    private List<ToolDetailInventoryRequest> toolsDetail;
     private String typeProcess;
 }

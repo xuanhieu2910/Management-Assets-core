@@ -10,4 +10,5 @@ public class ToolDetailInventoryRequest {
 
     private Integer idTool;
     private String value;
+    private Integer quantityInventory;
 }

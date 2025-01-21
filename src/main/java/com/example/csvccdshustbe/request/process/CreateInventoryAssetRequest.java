@@ -17,5 +17,4 @@ public class CreateInventoryAssetRequest {
     private CreateDocumentInventoryAssetRequest document;
     private List<AssetDetailInventoryRequest> assetDetail;
     private String typeProcess;
-//    private List<CreateCouncilInventoryRequest> councilInventory;
 }

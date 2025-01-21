@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.request.process.tool.CreateDecreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
+import com.example.csvccdshustbe.request.process.tool.CreateInventoryToolRequest;
 import com.example.csvccdshustbe.response.process.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ public interface ProcessService {
     void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException;
     void createIncreaseTool(CreateIncreaseToolRequest request) throws ValidateFiledException;
     void createDecreaseTool(CreateDecreaseToolRequest request) throws ValidateFiledException;
+    void createDocumentInventoryTool(CreateInventoryToolRequest request) throws ValidateFiledException;
     void createDocumentInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException;
     void createDecreaseAsset(CreateDecreaseAssetRequest request) throws ValidateFiledException;
     void createChangeAsset(CreateChangeAssetRequest request) throws ValidateFiledException, JsonProcessingException, IllegalAccessException;

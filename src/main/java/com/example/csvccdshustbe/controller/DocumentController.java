@@ -6,8 +6,10 @@ import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
 import com.example.csvccdshustbe.request.process.*;
+import com.example.csvccdshustbe.request.process.document.CreateDocumentInventoryToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateDecreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
+import com.example.csvccdshustbe.request.process.tool.CreateInventoryToolRequest;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -450,6 +452,18 @@ public class DocumentController {
         try {
             processService.createDecreaseTool(request);
             return ApiResponseDto.createdWithMessage("Create increase tool success!", HttpStatus.OK);
+        } catch (ValidateFiledException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/tool-document-inventory")
+    public ResponseEntity<?> createDocumentInventoryTool(@RequestBody CreateInventoryToolRequest request){
+        try {
+            processService.createDocumentInventoryTool(request);
+            return ApiResponseDto.createdWithMessage("Create inventory tool success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
