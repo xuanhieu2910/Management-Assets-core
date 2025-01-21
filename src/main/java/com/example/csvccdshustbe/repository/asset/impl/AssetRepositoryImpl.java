@@ -903,7 +903,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                                              left join units on asset.id_unit = units.id_unit " +
                 "                                     where 1 = 1 " +
                 "                                         and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                "                                         and (asset.status_process_current != :statusProcess or asset.status_process_current is null) ") ;
+                "                                         and (asset.status_process_current != :statusProcess ) ") ;
         setConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("increaseChild",Constants.IS_INCREASED);

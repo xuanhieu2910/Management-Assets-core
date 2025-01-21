@@ -34,6 +34,10 @@ public class FindAllToolToInventoryResponse {
     private Integer quantity;
     @JsonProperty("quantity_increase_current")
     private Integer quantityIncreaseCurrent;
+    @JsonProperty("quantity_decrease_current")
+    private Integer quantityDecreaseCurrent;
+    @JsonProperty("quantity_to_inventory")
+    private Integer quantityToInventory;
     @JsonProperty("value")
     private String value;
     @JsonProperty("name_location")

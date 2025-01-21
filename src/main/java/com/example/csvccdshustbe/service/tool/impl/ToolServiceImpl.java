@@ -182,6 +182,8 @@ public class ToolServiceImpl implements ToolService {
         response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()),DateUtil.DATE_FORMAT));
         response.setQuantity(toolDto.getQuantity());
         response.setQuantityIncreaseCurrent(toolDto.getQuantityIncreaseCurrent());
+        response.setQuantityDecreaseCurrent(toolDto.getQuantityDecreaseCurrent());
+        response.setQuantityToInventory(toolDto.getQuantityIncreaseCurrent() - toolDto.getQuantityDecreaseCurrent());
         response.setValue(toolDto.getValue());
         response.setNameLocation(toolDto.getNameLocation());
         response.setIdLocation(toolDto.getIdLocation());

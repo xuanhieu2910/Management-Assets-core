@@ -280,10 +280,11 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         sb.append("update tool tl             " +
                 "   inner join tool_process tp on tl.id_tool = tp.id_tool      " +
                 "   set tl.status_process_current = :statusProcessCurrent,     " +
-                "       tl.is_increase = (case when tl.quantity_increase_current + tp.quantity = tl.quantity then 2 else 1 end) " +
+                "       tl.is_increase = :isIncrease " +
                 "where tp.id_process = :idProcess  ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
+        query.setParameter("isIncrease", Constants.TOOL_IS_INCREASED);
         query.setParameter("statusProcessCurrent", status);
         query.executeUpdate();
     }
@@ -294,10 +295,11 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         sb.append(" update tool tl  " +
                 "   inner join tool_process tp on tl.id_tool = tp.id_tool  " +
                 "   set tl.status_process_current = :statusProcessCurrent,  " +
-                "       tl.is_decrease = (case when tl.quantity_decrease_current + tp.quantity = tl.quantity then 2 else 1 end)  " +
+                "       tl.is_decrease = :isDecrease  " +
                 "where tp.id_process = :idProcess ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
+        query.setParameter("isDecrease", Constants.TOOL_IS_DECREASED);
         query.setParameter("statusProcessCurrent", status);
         query.executeUpdate();
     }
@@ -385,11 +387,10 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         sb.append("update tool  " +
                 "    inner join tool_process on tool.id_process_current = tool_process.id_tool_process  " +
                 "set tool.status_process_current = :statusProcessCurrent,  " +
-                "    tool.quantity_increase_current =   " +
-                "        (case when tool.quantity_increase_current > 0 then tool.quantity_increase_current - tool_process.quantity  " +
-                "            else tool.quantity_increase_current end)                         " +
+                "    tool.quantity_increase_current =  :toolDefaultQuantityIncreaseCurrent " +
                 "where tool_process.id_tool_process = :idProcessCurrent ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("toolDefaultQuantityIncreaseCurrent", Constants.TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT);
         query.setParameter("statusProcessCurrent", status);
         query.setParameter("idProcessCurrent", idProcessCurrent);
         query.executeUpdate();
@@ -403,11 +404,10 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         sb.append(" update tool  " +
                 "    inner join tool_process on tool.id_process_current = tool_process.id_tool_process  " +
                 "set tool.status_process_current = :statusProcessCurrent,  " +
-                "    tool.quantity_decrease_current =  " +
-                "        (case when tool.quantity_decrease_current > 0 then tool.quantity_decrease_current - tool_process.quantity  " +
-                "            else tool.quantity_decrease_current end)  " +
+                "    tool.quantity_decrease_current = :toolDefaultQuantityDecreaseCurrent " +
                 "where tool_process.id_tool_process = :idProcessCurrent ");
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("toolDefaultQuantityDecreaseCurrent", Constants.TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT);
         query.setParameter("statusProcessCurrent", status);
         query.setParameter("idProcessCurrent", idProcessCurrent);
         query.executeUpdate();
@@ -433,24 +433,27 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     @Override
     public Page<ToolDto> findAllToolDtoToInventory(FindAllToolToInventoryRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select tl.id_tool, tl.name, tl.code_tool,  " +
-                "       tlc.id_tool_category, tlc.code_tool, tlc.name,  " +
-                "       tl.time_created, tl.time_modified, tl.value,  " +
-                "       tl.quantity, tl.is_increase, tl.is_decrease,  " +
-                "       tl.quantity_increase_current, tl.quantity_decrease_current,  " +
-                "       tl.id_process_current, tl.status_process_current,  " +
-                "       tl.status_use, tl.parent,  " +
-                "       de.id_department, de.code, de.name,  " +
-                "       lo.id_location, lo.name,  " +
-                "       cu.id_user, cu.user_name,  " +
-                "       tl.year_use, tl.price  " +
-                "from tool tl  " +
-                "    left join department de on tl.id_department = de.id_department  " +
-                "    left join location lo on tl.id_location = lo.id_location  " +
-                "    left join tool_categories tlc on tl.id_tool_category = tlc.id_tool_category  " +
-                "    left join csvc_user cu on cu.id_user = tl.id_user_use  " +
-                "where tl.id_department_original in (:idsDepartmentOriginal)  " +
-                "and tl.parent is not null ");
+        sb.append("select tl.id_tool, tl.name, tl.code_tool,      " +
+                "         tlc.id_tool_category, tlc.code_tool, tlc.name,      " +
+                "         tl.time_created, tl.time_modified, tl.value,      " +
+                "         tl.quantity, tl.is_increase, tl.is_decrease,      " +
+                "         tl.quantity_increase_current, tl.quantity_decrease_current,      " +
+                "         tl.id_process_current, tl.status_process_current,      " +
+                "         tl.status_use, tl.parent,      " +
+                "         de.id_department, de.code, de.name,      " +
+                "         lo.id_location, lo.name,      " +
+                "         cu.id_user, cu.user_name,      " +
+                "         tl.year_use, tl.price      " +
+                "  from tool tl      " +
+                "      left join department de on tl.id_department = de.id_department      " +
+                "      left join location lo on tl.id_location = lo.id_location      " +
+                "      left join tool_categories tlc on tl.id_tool_category = tlc.id_tool_category      " +
+                "      left join csvc_user cu on cu.id_user = tl.id_user_use      " +
+                "  where tl.id_department_original in (:idsDepartmentOriginal)  " +
+                "  and tl.status_process_current != :statusProcessCurrent  " +
+                "  and tl.is_increase = :isIncrease  " +
+                "  and tl.is_decrease != :isDecrease  " +
+                "  and tl.parent is not null  ");
         setConditionFindAllToolDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolDtoToInventory(request, query);
@@ -467,14 +470,17 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
 
     private long countFindAllToolDtoToInventory(FindAllToolToInventoryRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select count(0) count  " +
-                "from tool tl  " +
-                "    left join department de on tl.id_department = de.id_department  " +
-                "    left join location lo on tl.id_location = lo.id_location  " +
-                "    left join tool_categories tlc on tl.id_tool_category = tlc.id_tool_category  " +
-                "    left join csvc_user cu on cu.id_user = tl.id_user_use  " +
-                "where tl.id_department_original in (:idsDepartmentOriginal)  " +
-                "and tl.parent is not null ");
+        sb.append(" select count(0) count   " +
+                "  from tool tl      " +
+                "      left join department de on tl.id_department = de.id_department      " +
+                "      left join location lo on tl.id_location = lo.id_location      " +
+                "      left join tool_categories tlc on tl.id_tool_category = tlc.id_tool_category      " +
+                "      left join csvc_user cu on cu.id_user = tl.id_user_use      " +
+                "  where tl.id_department_original in (:idsDepartmentOriginal)  " +
+                "  and tl.status_process_current != :statusProcessCurrent  " +
+                "  and tl.is_increase = :isIncrease  " +
+                "  and tl.is_decrease != :isDecrease  " +
+                "  and tl.parent is not null  ");
         setConditionFindAllToolDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolDtoToInventory(request, query);
@@ -515,6 +521,9 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
 
     private void setParameterFindAllToolDtoToInventory(FindAllToolToInventoryRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartment());
+        query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
+        query.setParameter("isIncrease", Constants.TOOL_IS_INCREASED);
+        query.setParameter("isDecrease", Constants.TOOL_IS_DECREASED);
         if (StringUtils.isNotBlank(request.getCodeTool())){
             query.setParameter("codeTool", request.getCodeTool());
         }
@@ -617,23 +626,25 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     @Override
     public Page<ToolDto> findAllToolDtoToDecrease(FindAllToolToDecreaseRequest request, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select tol.id_tool, tol.name, tol.code_tool, tol.salt, " +
-                "       tol.id_tool_category, tol.time_created, tol.time_modified, " +
-                "       tol.id_user_created, tol.id_user_modified, tol.value, " +
-                "       tol.quantity, tol.is_increase, tol.is_decrease, tol.quantity_increase_current, " +
-                "       tol.quantity_decrease_current, tol.id_process_current, tol.status_process_current, " +
-                "       tol.id_type_process_current, tol.id_department_original, tol.status_use, " +
-                "       tol.parent, tol.id_department, tol.id_location, " +
-                "       tol.id_user_use, tol.year_use, " +
-                "       de.code, de.name, lo.name, tol.price,tolca.name " +
-                "from tool tol " +
-                "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
-                "    left join department de on tol.id_department = de.id_department " +
-                "    left join location lo on tol.id_location = lo.id_location " +
-                "where tol.id_department_original in (:idsDepartmentOriginal)  " +
-                "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
-                "   and tol.parent is not null" +
-                "   and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
+        sb.append("select tol.id_tool, tol.name, tol.code_tool, tol.salt,  " +
+                "         tol.id_tool_category, tol.time_created, tol.time_modified,  " +
+                "         tol.id_user_created, tol.id_user_modified, tol.value,  " +
+                "         tol.quantity, tol.is_increase, tol.is_decrease, tol.quantity_increase_current,  " +
+                "         tol.quantity_decrease_current, tol.id_process_current, tol.status_process_current,  " +
+                "         tol.id_type_process_current, tol.id_department_original, tol.status_use,  " +
+                "         tol.parent, tol.id_department, tol.id_location,  " +
+                "         tol.id_user_use, tol.year_use,  " +
+                "         de.code, de.name, lo.name, tol.price,tolca.name  " +
+                "  from tool tol  " +
+                "      left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category  " +
+                "      left join department de on tol.id_department = de.id_department  " +
+                "      left join location lo on tol.id_location = lo.id_location  " +
+                "      left join type_process tp on tol.id_type_process_current = tp.id_type_process  " +
+                "  where tol.id_department_original in (:idsDepartmentOriginal)  " +
+                "  and ( (tol.status_process_current != :statusProcessCurrent and  tp.code != :codeToolDecrease) or  " +
+                "      (tol.quantity_decrease_current < tol.quantity_increase_current and tp.code = :codeToolDecrease))  " +
+                "  and tol.parent is not null  " +
+                "  and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
         setConditionFindAllToolToDecreaseDto(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolToDecreaseDto(query, request);
@@ -685,6 +696,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("isIncrease", Constants.IS_INCREASED);
         query.setParameter("isDecrease", Constants.IS_DECREASED);
+        query.setParameter("codeToolDecrease", Constants.CODE_TYPE_PROCESS_DECREASE_TOOL);
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameTool())){
             query.setParameter("nameTool", request.getNameTool());
@@ -1055,13 +1067,15 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     private long countFindAllToolToDecreaseDtos(FindAllToolToDecreaseRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) count  " +
-                "from tool tol  " +
-                "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category  " +
-                "    left join department de on tol.id_department = de.id_department  " +
-                "    left join location lo on tol.id_location = lo.id_location  " +
-                "where tol.id_department_original in (:idsDepartmentOriginal)  " +
-                " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
-                "   and tol.parent is not null " +
+                "  from tool tol  " +
+                "      left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category  " +
+                "      left join department de on tol.id_department = de.id_department  " +
+                "      left join location lo on tol.id_location = lo.id_location  " +
+                "      left join type_process tp on tol.id_type_process_current = tp.id_type_process  " +
+                "  where tol.id_department_original in (:idsDepartmentOriginal)  " +
+                "  and ( (tol.status_process_current != :statusProcessCurrent and  tp.code != :codeToolDecrease) or  " +
+                "      (tol.quantity_decrease_current < tol.quantity_increase_current and tp.code = :codeToolDecrease))  " +
+                "  and tol.parent is not null  " +
                 "  and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
         setConditionFindAllToolToDecreaseDto(sb, request);
         Query query  = entityManager.createNativeQuery(sb.toString());

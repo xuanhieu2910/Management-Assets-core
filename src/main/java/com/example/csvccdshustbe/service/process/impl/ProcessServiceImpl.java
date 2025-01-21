@@ -210,8 +210,7 @@ public class ProcessServiceImpl implements ProcessService {
             tools.stream().filter(x->x.getIdTool()
                     .equals(toolDetailIncreaseRequest.getIdTool()))
                     .findFirst().ifPresent(x->{
-                    x.setQuantityIncreaseCurrent( (x.getQuantityIncreaseCurrent() == 0 ? 0 : x.getQuantityIncreaseCurrent())
-                            + toolDetailIncreaseRequest.getQuantityIncrease());
+                    x.setQuantityIncreaseCurrent(toolDetailIncreaseRequest.getQuantityIncrease());
                     x.setIdProcessCurrent(process.getIdProcess());
                     x.setIdTypeProcessCurrent(process.getIdTypeProcess());
                     x.setStatusProcessCurrent(process.getStatus());
@@ -313,7 +312,7 @@ public class ProcessServiceImpl implements ProcessService {
             toolProcess.setTimeModified(currentTime);
             toolProcess.setIdUserCreated(csvcUser.getIdUser());
             toolProcess.setIdUserModified(csvcUser.getIdUser());
-            toolProcess.setQuantity(toolProcess.getQuantity());
+            toolProcess.setQuantity(toolProcessRequest.getQuantityIncrease());
             toolProcessList.add(toolProcess);
         }
         return toolProcessList;

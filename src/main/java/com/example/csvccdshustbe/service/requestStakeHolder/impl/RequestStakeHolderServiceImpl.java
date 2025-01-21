@@ -67,11 +67,6 @@ public class RequestStakeHolderServiceImpl implements RequestStakeHolderService 
         requestService.updateStatusRequestByIdRequest(stakeHolder.getIdRequest());
     }
 
-//    @Override
-//    public void approvedInventory(ApprovedDocumentProcessInventoryRequest request) {
-//
-//    }
-
     private void validateDataApprovedRequestStakeHolder(ApprovedRequestStakeHolderRequest request) throws ValidateFiledException {
         if (request.getStatus().equals(Constants.STATUS_REQUEST_STAKE_HOLDER_FALSE)){
             if (StringUtils.isBlank(request.getDescription()) || Objects.isNull(request.getIdReason())){
