@@ -597,12 +597,9 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "    left join department de on tol.id_department = de.id_department " +
                 "    left join location lo on tol.id_location = lo.id_location " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
-                "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null)" +
-                "  and tol.id_tool not in ( " +
-                "      select distinct parent " +
-                "      from tool " +
-                "      where parent is not null " +
-                "  ) and tol.is_increase = :isIncrease ");
+                "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
+                "  and tol.parent is not null " +
+                "  and tol.is_increase = :isIncrease ");
         setConditionFindAllToolToIncreaseDto(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolToIncreaseDto(query, request);
@@ -635,11 +632,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "    left join location lo on tol.id_location = lo.id_location " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
                 "  and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
-                "   and tol.id_tool not in (" +
-                "      select distinct parent " +
-                "      from tool " +
-                "      where parent is not null" +
-                "  ) and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
+                "   and tol.parent is not null" +
+                "   and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
         setConditionFindAllToolToDecreaseDto(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolToDecreaseDto(query, request);
@@ -1050,12 +1044,9 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "    left join department de on tol.id_department = de.id_department  " +
                 "    left join location lo on tol.id_location = lo.id_location  " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
-                " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null)" +
-                "  and tol.id_tool not in ( " +
-                "      select distinct parent " +
-                "      from tool " +
-                "      where parent is not null " +
-                "  ) and tol.is_increase = :isIncrease ");
+                " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
+                " and tol.parent is not null " +
+                " and tol.is_increase = :isIncrease ");
         setConditionFindAllToolToIncreaseDto(sb, request);
         Query query  = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolToIncreaseDto(query, request);
@@ -1070,11 +1061,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "    left join location lo on tol.id_location = lo.id_location  " +
                 "where tol.id_department_original in (:idsDepartmentOriginal)  " +
                 " and (tol.status_process_current != :statusProcessCurrent or tol.status_process_current is null) " +
-                "   and tol.id_tool not in (" +
-                "      select distinct parent " +
-                "      from tool " +
-                "      where parent is not null" +
-                "  ) and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
+                "   and tol.parent is not null " +
+                "  and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
         setConditionFindAllToolToDecreaseDto(sb, request);
         Query query  = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolToDecreaseDto(query, request);

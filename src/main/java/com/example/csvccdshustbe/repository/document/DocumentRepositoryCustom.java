@@ -45,4 +45,8 @@ public interface DocumentRepositoryCustom {
 
     Page<FindAllDocumentToolDto> findAllDocumentToolIncreaseDtoByIdsDepartment(FindAllDocumentToolRequest request, Pageable pageable);
     Page<FindAllDocumentToolDto> findAllDocumentToolDecreaseDtoByIdsDepartment(FindAllDocumentToolRequest request, Pageable pageable);
+
+    Page<FindAllDocumentToolDto> findAllToolDocumentInventoryDtoByIdsDepartment(FindAllDocumentToolRequest request, Pageable pageable);
+
+    Page<FindAllDocumentToolDto> findAllToolDocumentUpdateInventoryDtoByIdsDepartment(FindAllDocumentToolRequest request, Pageable pageable);
 }

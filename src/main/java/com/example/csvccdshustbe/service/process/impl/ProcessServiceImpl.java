@@ -1198,6 +1198,21 @@ public class ProcessServiceImpl implements ProcessService {
         return processRepository.getStatisticsToolDecrease();
     }
 
+    @Override
+    public ProcessStatisticsToolDocumentInventoryResponse getStatisticToolDocumentInventory() {
+        return processRepository.getStatisticsToolDocumentInventory();
+    }
+
+    @Override
+    public ProcessStatisticsToolDocumentBeInventoryResponse getStatisticToolDocumentBeInventory() {
+        return processRepository.getStatisticsToolDocumentByInventory();
+    }
+
+    @Override
+    public ProcessStatisticsToolUpdateInventoryResponse getStatisticToolUpdateInventory() {
+        return processRepository.getStatisticsToolUpdateInventory();
+    }
+
     /***
      *
      * HIỆN TẠI ĐANG SET QUYỀN MANAGER ĐƠN VỊ SẼ ĐƯỢC PHÊ DUYỆT -> CẦN CHỈNH SỬA LẠI QUYỀN ĐỂ LẤY RA AI JOIN VỀ QUYỀN

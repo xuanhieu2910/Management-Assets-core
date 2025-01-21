@@ -28,8 +28,8 @@ public class FindAllDocumentToolDocumentInventoryResponse {
     private String timeModified;
     @JsonProperty("time_document")
     private String timeDocument;
-    @JsonProperty("time_increase")
-    private String timeIncrease;
+    @JsonProperty("time_inventory")
+    private String timeInventory;
     @JsonProperty("description")
     private String description;
 
