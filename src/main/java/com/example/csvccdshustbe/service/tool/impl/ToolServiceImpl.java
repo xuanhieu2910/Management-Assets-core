@@ -129,8 +129,18 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
-    public void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer status) {
-        toolRepository.updateToolStatusProcessCurrentByIdProcessCurrent(idProcessCurrent, status);
+    public void updateToolStatusProcessCurrentByIdProcessCurrentWhenDisagree(Integer idProcessCurrent,
+                                                                             Integer status, String codeTypeProcess) {
+        switch (codeTypeProcess){
+            case Constants.CODE_TYPE_PROCESS_INCREASE_TOOL -> {
+                toolRepository.updateToolIsIncreaseWhenNotApproved(idProcessCurrent, status);
+            }
+            case Constants.CODE_TYPE_PROCESS_DECREASE_TOOL -> {
+                toolRepository.updateToolIsDecreaseWhenNotApproved(idProcessCurrent, status);
+            }
+            default -> {return;}
+        }
+
     }
 
     @Override
@@ -451,6 +461,7 @@ public class ToolServiceImpl implements ToolService {
         childTool.setIsDecrease(Constants.IS_NOT_DECREASED);
         childTool.setQuantityIncreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT);
         childTool.setQuantityDecreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT);
+        childTool.setQuantityInventoryCurrent(Constants.TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT);
         childTool.setStatusUse(allocateToolRequest.getStatusUse());
         childTool.setParent(toolParent.getIdTool());
         childTool.setIdDepartment(allocateToolRequest.getIdDepartment());

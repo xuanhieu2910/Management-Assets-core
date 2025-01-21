@@ -186,6 +186,8 @@ public class ProcessServiceImpl implements ProcessService {
             tools.stream().filter(x->x.getIdTool()
                     .equals(toolDetailIncreaseRequest.getIdTool()))
                     .findFirst().ifPresent(x->{
+                    x.setQuantityIncreaseCurrent( (x.getQuantityIncreaseCurrent() == 0 ? 0 : x.getQuantityIncreaseCurrent())
+                            + toolDetailIncreaseRequest.getQuantityIncrease());
                     x.setIdProcessCurrent(process.getIdProcess());
                     x.setIdTypeProcessCurrent(process.getIdTypeProcess());
                     x.setStatusProcessCurrent(process.getStatus());
@@ -989,40 +991,53 @@ public class ProcessServiceImpl implements ProcessService {
     void handleAssetByTypeProcess(Process process, Integer status, TypeProcess typeProcess)
             throws ValidateFiledException, JsonProcessingException, IllegalAccessException {
         if (status.equals(Constants.STATUS_SUCCESS_PROCESS)) {
-            switch (typeProcess.getCode()) {
-                case Constants.CODE_TYPE_PROCESS_INCREASE,
-                        Constants.CODE_TYPE_PROCESS_DECREASE -> {
-                        assetService.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.getIdProcess(),
-                                    status, typeProcess.getCode());
-                        assetService.updateIncreaseOrDecreaseAssetLotByIdProcess(process.getIdProcess(), typeProcess.getCode());
-                }
-                case Constants.CODE_TYPE_PROCESS_CHANGE,
-                        Constants.CODE_TYPE_PROCESS_REVALUATION ->{
-                        assetService.updateInformationAssetByProcess(process, status);
-                        assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
-                }
-                case Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY -> {
-                        assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
-                        createUpdateInventoryAsset(process);
-                        }
-                case Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY-> {
-                        assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
-                        }
-                case Constants.CODE_TYPE_PROCESS_INCREASE_TOOL,
-                        Constants.CODE_TYPE_PROCESS_DECREASE_TOOL-> {
-                        toolService.updateToolStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.getIdProcess(),
-                                status, typeProcess.getCode());
-                        toolService.updateToolParentIsIncreaseAndIsDecrease(process.getIdProcess(), typeProcess.getCode());
-                        }
-                default -> {
-                    return;
-                }
-            }
+            handleAgreeApproved(process, status, typeProcess);
         } else {
-            if (typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_INCREASE_TOOL) ||
-                    typeProcess.getCode().equals(Constants.CODE_TYPE_PROCESS_DECREASE_TOOL)) {
-                toolService.updateToolStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
-            } else {
+            handleDisagreeApproved(process, status, typeProcess);
+        }
+    }
+
+    private void handleAgreeApproved(Process process, Integer status, TypeProcess typeProcess)
+            throws ValidateFiledException, JsonProcessingException, IllegalAccessException {
+        switch (typeProcess.getCode()) {
+            case Constants.CODE_TYPE_PROCESS_INCREASE,
+                    Constants.CODE_TYPE_PROCESS_DECREASE -> {
+                assetService.updateAssetStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.getIdProcess(),
+                        status, typeProcess.getCode());
+                assetService.updateIncreaseOrDecreaseAssetLotByIdProcess(process.getIdProcess(), typeProcess.getCode());
+            }
+            case Constants.CODE_TYPE_PROCESS_CHANGE,
+                    Constants.CODE_TYPE_PROCESS_REVALUATION ->{
+                assetService.updateInformationAssetByProcess(process, status);
+                assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+            }
+            case Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY -> {
+                assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+                createUpdateInventoryAsset(process);
+            }
+            case Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY-> {
+                assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+            }
+            case Constants.CODE_TYPE_PROCESS_INCREASE_TOOL,
+                    Constants.CODE_TYPE_PROCESS_DECREASE_TOOL-> {
+                toolService.updateToolStatusProcessCurrentAndIsIncreaseAndIsDecrease(process.getIdProcess(),
+                        status, typeProcess.getCode());
+                toolService.updateToolParentIsIncreaseAndIsDecrease(process.getIdProcess(), typeProcess.getCode());
+            }
+            default -> {
+                return;
+            }
+        }
+    }
+
+    private void handleDisagreeApproved(Process process, Integer status, TypeProcess typeProcess) {
+        switch (typeProcess.getCode()) {
+            case Constants.CODE_TYPE_PROCESS_INCREASE_TOOL,
+                    Constants.CODE_TYPE_PROCESS_DECREASE_TOOL-> {
+                toolService.updateToolStatusProcessCurrentByIdProcessCurrentWhenDisagree(process.getIdProcess(),
+                        status, typeProcess.getCode());
+            }
+            default -> {
                 assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
             }
         }
