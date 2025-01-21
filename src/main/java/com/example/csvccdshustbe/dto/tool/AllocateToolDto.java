@@ -11,19 +11,19 @@ import lombok.Setter;
 public class AllocateToolDto {
     @JsonProperty("id_department")
     private Integer idDepartment;
-                @JsonProperty("name_department")
+    @JsonProperty("name_department")
     private String nameDepartment;
-                @JsonProperty("id_location")
+    @JsonProperty("id_location")
     private Integer idLocation;
-                @JsonProperty("name_location")
+    @JsonProperty("name_location")
     private String nameLocation;
-                @JsonProperty("user_name")
+    @JsonProperty("user_name")
     private String userName;
-                @JsonProperty("full_name")
+    @JsonProperty("full_name")
     private String fullName;
-                @JsonProperty("status_use")
+    @JsonProperty("status_use")
     private Integer statusUse;
-                @JsonProperty("quantity")
+    @JsonProperty("quantity")
     private Integer quantity;
 
 

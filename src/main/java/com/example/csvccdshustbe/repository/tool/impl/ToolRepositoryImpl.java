@@ -9,6 +9,7 @@ import com.example.csvccdshustbe.repository.tool.ToolRepositoryCustom;
 import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
 import com.example.csvccdshustbe.request.tool.FindAllToolToDecreaseRequest;
 import com.example.csvccdshustbe.request.tool.FindAllToolToIncreaseRequest;
+import com.example.csvccdshustbe.request.tool.FindAllToolToInventoryRequest;
 import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -404,6 +405,156 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         query.setParameter("isDecrease", Constants.TOOL_IS_DECREASED);
         query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+    @Override
+    public Page<ToolDto> findAllToolDtoToInventory(FindAllToolToInventoryRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select tl.id_tool, tl.name, tl.code_tool,  " +
+                "       tlc.id_tool_category, tlc.code_tool, tlc.name,  " +
+                "       tl.time_created, tl.time_modified, tl.value,  " +
+                "       tl.quantity, tl.is_increase, tl.is_decrease,  " +
+                "       tl.quantity_increase_current, tl.quantity_decrease_current,  " +
+                "       tl.id_process_current, tl.status_process_current,  " +
+                "       tl.status_use, tl.parent,  " +
+                "       de.id_department, de.code, de.name,  " +
+                "       lo.id_location, lo.name,  " +
+                "       cu.id_user, cu.user_name,  " +
+                "       tl.year_use, tl.price  " +
+                "from tool tl  " +
+                "    left join department de on tl.id_department = de.id_department  " +
+                "    left join location lo on tl.id_location = lo.id_location  " +
+                "    left join tool_categories tlc on tl.id_tool_category = tlc.id_tool_category  " +
+                "    left join csvc_user cu on cu.id_user = tl.id_user_use  " +
+                "where tl.id_department_original in (:idsDepartmentOriginal)  " +
+                "and tl.parent is not null ");
+        setConditionFindAllToolDtoToInventory(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllToolDtoToInventory(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<ToolDto> toolDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                toolDtos.add(writeDataToolDtoToInventory(obj));
+            }
+        }
+        return new PageImpl<>(toolDtos, pageable, countFindAllToolDtoToInventory(request));
+    }
+
+    private long countFindAllToolDtoToInventory(FindAllToolToInventoryRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) count  " +
+                "from tool tl  " +
+                "    left join department de on tl.id_department = de.id_department  " +
+                "    left join location lo on tl.id_location = lo.id_location  " +
+                "    left join tool_categories tlc on tl.id_tool_category = tlc.id_tool_category  " +
+                "    left join csvc_user cu on cu.id_user = tl.id_user_use  " +
+                "where tl.id_department_original in (:idsDepartmentOriginal)  " +
+                "and tl.parent is not null ");
+        setConditionFindAllToolDtoToInventory(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllToolDtoToInventory(request, query);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private ToolDto writeDataToolDtoToInventory(Object[] obj) {
+        ToolDto toolDto = new ToolDto();
+        toolDto.setIdTool(ValueUtil.getIntegerByObject(obj[0]));
+        toolDto.setName(ValueUtil.getStringByObject(obj[1]));
+        toolDto.setCodeTool(ValueUtil.getStringByObject(obj[2]));
+        toolDto.setIdToolCategory(ValueUtil.getIntegerByObject(obj[3]));
+        toolDto.setCodeToolCategory(ValueUtil.getStringByObject(obj[4]));
+        toolDto.setNameToolCategory(ValueUtil.getStringByObject(obj[5]));
+        toolDto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+        toolDto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+        toolDto.setValue(ValueUtil.getStringByObject(obj[8]));
+        toolDto.setQuantity(ValueUtil.getIntegerByObject(obj[9]));
+        toolDto.setIsIncrease(ValueUtil.getIntegerByObject(obj[10]));
+        toolDto.setIsDecrease(ValueUtil.getIntegerByObject(obj[11]));
+        toolDto.setQuantityIncreaseCurrent(ValueUtil.getIntegerByObject(obj[12]));
+        toolDto.setQuantityDecreaseCurrent(ValueUtil.getIntegerByObject(obj[13]));
+        toolDto.setIdProcessCurrent(ValueUtil.getIntegerByObject(obj[14]));
+        toolDto.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[15]));
+        toolDto.setStatusUse(ValueUtil.getIntegerByObject(obj[16]));
+        toolDto.setParent(ValueUtil.getIntegerByObject(obj[17]));
+        toolDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[18]));
+        toolDto.setCodeDepartment(ValueUtil.getStringByObject(obj[19]));
+        toolDto.setNameDepartment(ValueUtil.getStringByObject(obj[20]));
+        toolDto.setIdLocation(ValueUtil.getIntegerByObject(obj[21]));
+        toolDto.setNameLocation(ValueUtil.getStringByObject(obj[22]));
+        toolDto.setIdUserUse(ValueUtil.getIntegerByObject(obj[23]));
+        toolDto.setUserName(ValueUtil.getStringByObject(obj[24]));
+        toolDto.setYearUse(ValueUtil.getStringByObject(obj[25]));
+        toolDto.setPrice(ValueUtil.getStringByObject(obj[26]));
+        return toolDto;
+    }
+
+    private void setParameterFindAllToolDtoToInventory(FindAllToolToInventoryRequest request, Query query) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartment());
+        if (StringUtils.isNotBlank(request.getCodeTool())){
+            query.setParameter("codeTool", request.getCodeTool());
+        }
+        if (StringUtils.isNotBlank(request.getNameTool())){
+            query.setParameter("nameTool", request.getNameTool());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdToolCategory())) {
+            query.setParameter("idToolCategory", request.getIdToolCategory());
+        }
+        if (StringUtils.isNotBlank(request.getNameToolCategory())){
+            query.setParameter("nameToolCategory", request.getNameToolCategory());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+        if (StringUtils.isNotBlank(request.getNameDepartment())){
+            query.setParameter("nameDepartment", request.getNameDepartment());
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdLocation())){
+            query.setParameter("idLocation", request.getIdLocation());
+        }
+        if (StringUtils.isNotBlank(request.getNameLocation())){
+            query.setParameter("nameLocation", request.getNameLocation());
+        }
+        if (StringUtils.isNotBlank(request.getUserName())){
+            query.setParameter("userName", request.getUserName());
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            query.setParameter("statusUse", request.getStatusUse());
+        }
+    }
+
+    private void setConditionFindAllToolDtoToInventory(FindAllToolToInventoryRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getCodeTool())){
+            sb.append(" and (tl.code_tool REGEXP :codeTool ) ");
+        }
+        if (StringUtils.isNotBlank(request.getNameTool())){
+            sb.append(" and (tl.name REGEXP :nameTool )  ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdToolCategory())) {
+            sb.append(" and tlc.id_tool_category = :idToolCategory ");
+        }
+        if (StringUtils.isNotBlank(request.getNameToolCategory())){
+            sb.append(" and (tlc.name REGEXP :nameToolCategory) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdDepartment())) {
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        if (StringUtils.isNotBlank(request.getNameDepartment())){
+            sb.append(" and (de.name REGEXP :nameDepartment) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getIdLocation())){
+            sb.append(" and lo.id_location = :idLocation ");
+        }
+        if (StringUtils.isNotBlank(request.getNameLocation())){
+            sb.append(" and (lo.name REGEXP :nameLocation) ");
+        }
+        if (StringUtils.isNotBlank(request.getUserName())){
+            sb.append(" and (cu.user_name REGEXP :userName) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusUse())){
+            sb.append(" and tl.status_use = :statusUse ");
+        }
     }
 
     @Override

@@ -132,10 +132,8 @@ public class ToolController {
             return ApiResponseDto.createdWithState(toolService.findAllToolToIncrease(findAllToolRequest),
                     "Find all tool to increase success!", HttpStatus.OK);
         } catch (NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace( );
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -150,6 +148,22 @@ public class ToolController {
                     "Find all tool to decrease success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/find-all-to-inventory")
+    public ResponseEntity<?> findAllToolToInventory(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllToolToInventoryRequest findAllToolRequest){
+        try {
+            return ApiResponseDto.createdWithState(toolService.findAllToolToInventory(findAllToolRequest),
+                    "Find all tool to inventory", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }

@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -135,6 +136,48 @@ public class ToolServiceImpl implements ToolService {
     @Override
     public Integer countToolIsNotIncreaseOrIsDecreaseOrPendingByIdsTool(List<Integer> idsTool) {
         return toolRepository.countToolIsNotIncreaseOrDecreaseOrPendingByIdsTool(idsTool);
+    }
+
+    @Override
+    public Page<FindAllToolToInventoryResponse>
+    findAllToolToInventory(FindAllToolToInventoryRequest findAllToolRequest) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        findAllToolRequest.setIdsDepartment(csvcUser.getIdsDepartmentCurrent());
+        Pageable pageable = PageUtils.buildPage(findAllToolRequest.getPage(), findAllToolRequest.getSize());
+        Page<ToolDto> toolDtos = toolRepository.findAllToolDtoToInventory(findAllToolRequest, pageable);
+        return new PageImpl<>(convertToFindAllToolToInventoryResponse(toolDtos.getContent()),
+                pageable, toolDtos.getTotalElements());
+    }
+
+    private List<FindAllToolToInventoryResponse> convertToFindAllToolToInventoryResponse(List<ToolDto> content) {
+        List<FindAllToolToInventoryResponse> responses = new ArrayList<>();
+        for (ToolDto toolDto : content){
+            responses.add(constructionFindAllToolToInventoryResponse(toolDto));
+        }
+        return responses;
+    }
+
+    private FindAllToolToInventoryResponse constructionFindAllToolToInventoryResponse(ToolDto toolDto) {
+        FindAllToolToInventoryResponse response = new FindAllToolToInventoryResponse();
+        response.setIdTool(toolDto.getIdTool());
+        response.setCodeTool(toolDto.getCodeTool());
+        response.setNameTool(toolDto.getName());
+        response.setNameToolCategory(toolDto.getNameToolCategory());
+        response.setCodeToolCategory(toolDto.getCodeToolCategory());
+        response.setIdToolCategory(toolDto.getIdToolCategory());
+        response.setCodeDepartment(toolDto.getCodeDepartment());
+        response.setIdDepartment(toolDto.getIdDepartment());
+        response.setNameDepartment(toolDto.getNameDepartment());
+        response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()),DateUtil.DATE_FORMAT));
+        response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()),DateUtil.DATE_FORMAT));
+        response.setQuantity(toolDto.getQuantity());
+        response.setQuantityIncreaseCurrent(toolDto.getQuantityIncreaseCurrent());
+        response.setValue(toolDto.getValue());
+        response.setNameLocation(toolDto.getNameLocation());
+        response.setIdLocation(toolDto.getIdLocation());
+        response.setUserName(toolDto.getUserName());
+        response.setStatusUse(toolDto.getStatusUse());
+        return response;
     }
 
     @Override

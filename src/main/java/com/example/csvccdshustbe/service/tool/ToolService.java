@@ -28,8 +28,7 @@ public interface ToolService {
     List<Tool> findAllToolByIdsTool(List<Integer> idsTool);
     void updateToolStatusProcessCurrentAndIsIncreaseAndIsDecrease(Integer idProcess, Integer status, String code);
     void updateToolParentIsIncreaseAndIsDecrease(Integer idProcess, String code);
-
     void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer status);
-
     Integer countToolIsNotIncreaseOrIsDecreaseOrPendingByIdsTool(List<Integer> idsTool);
+    Page<FindAllToolToInventoryResponse> findAllToolToInventory(FindAllToolToInventoryRequest findAllToolRequest);
 }
