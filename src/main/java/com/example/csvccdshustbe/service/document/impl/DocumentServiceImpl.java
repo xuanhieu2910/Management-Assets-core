@@ -465,8 +465,8 @@ public class DocumentServiceImpl implements DocumentService {
             response.setCodeDepartment(toolDto.getCodeDepartment());
             response.setNameDepartment(toolDto.getNameDepartment());
             response.setStatus(toolDto.getStatus());
-            response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()),DateUtil.DDMMYYYY));
-            response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()),DateUtil.DDMMYYYY));
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()), DateUtil.DATE_FORMAT));
             response.setTimeDocument(toolDto.getTimeDocument());
             response.setTimeUpdateInventory(toolDto.getTimeIncrease());
             response.setDescription(toolDto.getDescription());
@@ -486,8 +486,8 @@ public class DocumentServiceImpl implements DocumentService {
             response.setCodeDepartment(toolDto.getCodeDepartment());
             response.setNameDepartment(toolDto.getNameDepartment());
             response.setStatus(toolDto.getStatus());
-            response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()),DateUtil.DDMMYYYY));
-            response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()),DateUtil.DDMMYYYY));
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()), DateUtil.DATE_FORMAT));
             response.setTimeDocument(toolDto.getTimeDocument());
             response.setTimeInventory(toolDto.getTimeIncrease());
             response.setDescription(toolDto.getDescription());
@@ -507,8 +507,8 @@ public class DocumentServiceImpl implements DocumentService {
             response.setCodeDepartment(toolDto.getCodeDepartment());
             response.setNameDepartment(toolDto.getNameDepartment());
             response.setStatus(toolDto.getStatus());
-            response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()),DateUtil.DDMMYYYY));
-            response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()),DateUtil.DDMMYYYY));
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()), DateUtil.DATE_FORMAT));
             response.setTimeDocument(toolDto.getTimeDocument());
             response.setTimeDecrease(toolDto.getTimeIncrease());
             response.setDescription(toolDto.getDescription());
@@ -528,8 +528,8 @@ public class DocumentServiceImpl implements DocumentService {
             response.setCodeDepartment(toolDto.getCodeDepartment());
             response.setNameDepartment(toolDto.getNameDepartment());
             response.setStatus(toolDto.getStatus());
-            response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()),DateUtil.DDMMYYYY));
-            response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()),DateUtil.DDMMYYYY));
+            response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()), DateUtil.DATE_FORMAT));
             response.setTimeDocument(toolDto.getTimeDocument());
             response.setTimeIncrease(toolDto.getTimeIncrease());
             response.setDescription(toolDto.getDescription());

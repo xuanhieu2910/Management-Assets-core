@@ -19,8 +19,8 @@ public class FindAllDocumentToolDto {
     private String fullNameUser;
     private String nameUserCreate;
     private Integer status;
-    private String timeCreated;
-    private String timeModified;
+    private Long timeCreated;
+    private Long timeModified;
     private String timeDocument;
     private String timeIncrease;
     private String description;
