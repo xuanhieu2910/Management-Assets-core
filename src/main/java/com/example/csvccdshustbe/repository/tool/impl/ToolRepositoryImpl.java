@@ -1069,16 +1069,16 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     private long countFindAllToolToDecreaseDtos(FindAllToolToDecreaseRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) count  " +
-                "  from tool tol  " +
-                "      left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category  " +
-                "      left join department de on tol.id_department = de.id_department  " +
-                "      left join location lo on tol.id_location = lo.id_location  " +
-                "      left join type_process tp on tol.id_type_process_current = tp.id_type_process  " +
-                "  where tol.id_department_original in (:idsDepartmentOriginal)  " +
-                "  and ( (tol.status_process_current != :statusProcessCurrent and  tp.code != :codeToolDecrease) or  " +
-                "      (tol.quantity_decrease_current < tol.quantity_increase_current and tp.code = :codeToolDecrease))  " +
-                "  and tol.parent is not null  " +
-                "  and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
+                " from tool tol  " +
+                "     left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
+                "     left join department de on tol.id_department = de.id_department  " +
+                "     left join location lo on tol.id_location = lo.id_location  " +
+                "     left join type_process tp on tol.id_type_process_current = tp.id_type_process " +
+                " where tol.id_department_original in (:idsDepartmentOriginal)  " +
+                " and tol.status_process_current != :statusProcessCurrent  " +
+                " and tol.quantity_decrease_current < tol.quantity_increase_current " +
+                " and tol.parent is not null " +
+                " and tol.is_increase = :isIncrease and tol.is_decrease != :isDecrease ");
         setConditionFindAllToolToDecreaseDto(sb, request);
         Query query  = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolToDecreaseDto(query, request);
