@@ -694,7 +694,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
 
     private void setParameterFindAllToolToDecreaseDto(Query query, FindAllToolToDecreaseRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("isIncrease", Constants.IS_INCREASED);
+        query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
         query.setParameter("isDecrease", Constants.IS_DECREASED);
         query.setParameter("codeToolDecrease", Constants.CODE_TYPE_PROCESS_DECREASE_TOOL);
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
