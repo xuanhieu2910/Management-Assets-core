@@ -292,14 +292,16 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     @Override
     public void updateStatusProcessCurrentAndIsDecrease(Integer idProcess, Integer status) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" update tool tl  " +
-                "   inner join tool_process tp on tl.id_tool = tp.id_tool  " +
-                "   set tl.status_process_current = :statusProcessCurrent,  " +
-                "       tl.is_decrease = :isDecrease  " +
+        sb.append("update tool tl " +
+                "       inner join tool_process tp on tl.id_tool = tp.id_tool " +
+                "       set tl.status_process_current = :statusProcessCurrent,  " +
+                "           tl.is_decrease = (case when tl.quantity_decrease_current = tl.quantity_increase_current  " +
+                "               then :isDecreased else :isDecreasing end)  " +
                 "where tp.id_process = :idProcess ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
-        query.setParameter("isDecrease", Constants.TOOL_IS_DECREASED);
+        query.setParameter("isDecreased", Constants.TOOL_IS_DECREASED);
+        query.setParameter("isDecreasing", Constants.TOOL_IS_DECREASING);
         query.setParameter("statusProcessCurrent", status);
         query.executeUpdate();
     }
@@ -329,25 +331,26 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     @Override
     public void updateIsIncreaseAndQuantityIncreaseCurrentByIdsTool(List<Integer> idsToolParent) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" update tool tl     " +
-                "    inner join     " +
-                "(select result.id_tool,     " +
-                "       case when totalSubChildrenTool = sumIncreased then 2 else 1 end isIncreaseCurrent,     " +
-                "       totalQuantityIncreaseCurrent     " +
-                "from (select toolParent.id_tool,     " +
-                "       count(toolChildren.id_tool) totalSubChildrenTool,     " +
-                "       sum(case when toolChildren.is_increase = :isIncreased then 1 else 0 end) sumIncreased,     " +
-                "       sum(toolChildren.quantity_increase_current) totalQuantityIncreaseCurrent     " +
-                "from tool toolParent     " +
-                "    inner join tool toolChildren on toolParent.id_tool = toolChildren.id_tool     " +
-                "where toolParent.id_tool in (:idsTool)     " +
-                "group by toolParent.id_tool) result) result on tl.id_tool = result.id_tool     " +
-                "    set is_increase = result.isIncreaseCurrent,     " +
-                "        quantity_increase_current = totalQuantityIncreaseCurrent     " +
-                "where 1 = 1 ");
+        sb.append("update tool tl  " +
+                "         inner join  " +
+                "     (select result.id_tool,  " +
+                "            case when totalSubChildrenTool = sumIncreased then :isIncreased else :isIncreasing end isIncreaseCurrent,  " +
+                "            totalQuantityIncreaseCurrent  " +
+                "     from (select toolParent.id_tool,  " +
+                "            count(toolChildren.id_tool) totalSubChildrenTool,  " +
+                "            sum(case when toolChildren.is_increase = :isIncreased then 1 else 0 end) sumIncreased,  " +
+                "            sum(toolChildren.quantity_increase_current) totalQuantityIncreaseCurrent  " +
+                "     from tool toolParent  " +
+                "         inner join tool toolChildren on toolParent.id_tool = toolChildren.id_tool  " +
+                "     where toolParent.id_tool in (:idsTool)  " +
+                "     group by toolParent.id_tool) result) result on tl.id_tool = result.id_tool  " +
+                "         set is_increase = result.isIncreaseCurrent,  " +
+                "             quantity_increase_current = totalQuantityIncreaseCurrent  " +
+                "     where 1 = 1 ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsTool", idsToolParent);
         query.setParameter("isIncreased", Constants.TOOL_IS_INCREASED);
+        query.setParameter("isIncreasing", Constants.TOOL_IS_INCREASING);
         query.executeUpdate();
     }
 
@@ -359,7 +362,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         sb.append(" update tool tl     " +
                 "    inner join     " +
                 "(select result.id_tool,     " +
-                "       case when totalSubChildrenTool = sumDecreased then 2 else 1 end isDecreaseCurrent,     " +
+                "       case when totalSubChildrenTool = sumDecreased then :isDecreased else :isDecreasing end isDecreaseCurrent,     " +
                 "       totalQuantityDecreaseCurrent     " +
                 "from (select toolParent.id_tool,     " +
                 "       count(toolChildren.id_tool) totalSubChildrenTool,     " +
@@ -375,6 +378,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsTool", idsToolParent);
         query.setParameter("isDecreased", Constants.TOOL_IS_DECREASED);
+        query.setParameter("isDecreasing", Constants.TOOL_IS_DECREASING);
         query.executeUpdate();
     }
 
