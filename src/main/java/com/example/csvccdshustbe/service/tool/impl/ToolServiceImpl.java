@@ -183,8 +183,8 @@ public class ToolServiceImpl implements ToolService {
         response.setCodeDepartment(toolDto.getCodeDepartment());
         response.setIdDepartment(toolDto.getIdDepartment());
         response.setNameDepartment(toolDto.getNameDepartment());
-        response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()),DateUtil.DATE_FORMAT));
-        response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()),DateUtil.DATE_FORMAT));
+        response.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()), DateUtil.DATE_FORMAT));
+        response.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()), DateUtil.DATE_FORMAT));
         response.setQuantity(toolDto.getQuantity());
         response.setQuantityIncreaseCurrent(toolDto.getQuantityIncreaseCurrent());
         response.setQuantityDecreaseCurrent(toolDto.getQuantityDecreaseCurrent());
@@ -203,7 +203,7 @@ public class ToolServiceImpl implements ToolService {
         List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
         request.setIdsDepartmentOriginal(idsDepartment);
         Page<ToolDto> findAllToolDtos = toolRepository.findAllToolDtoToIncrease(request, pageable);
-        return new PageImpl<>(converttoFindAllToolToIncreaseResponse(findAllToolDtos.getContent()),pageable,findAllToolDtos.getTotalElements());
+        return new PageImpl<>(convertToFindAllToolToIncreaseResponse(findAllToolDtos.getContent()),pageable,findAllToolDtos.getTotalElements());
     }
 
     @Override
@@ -225,20 +225,23 @@ public class ToolServiceImpl implements ToolService {
             findAllToolResponseToDecrease.setNameToolCategory(toolDto.getNameToolCategory());
             findAllToolResponseToDecrease.setCodeDepartment(toolDto.getCodeDepartment());
             findAllToolResponseToDecrease.setNameDepartment(toolDto.getNameDepartment());
-            findAllToolResponseToDecrease.setTimeCreated(toolDto.getTimeCreated());
-            findAllToolResponseToDecrease.setTimeModified(toolDto.getTimeModified());
+            findAllToolResponseToDecrease.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            findAllToolResponseToDecrease.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()), DateUtil.DATE_FORMAT));
             findAllToolResponseToDecrease.setIdTool(toolDto.getIdTool());
             findAllToolResponseToDecrease.setSalt(toolDto.getSalt());
             findAllToolResponseToDecrease.setQuantity(toolDto.getQuantity());
             findAllToolResponseToDecrease.setValue(toolDto.getValue());
             findAllToolResponseToDecrease.setQuantityIncreaseCurrent(toolDto.getQuantityIncreaseCurrent());
             findAllToolResponseToDecrease.setQuantityDecreaseCurrent(toolDto.getQuantityDecreaseCurrent());
+            findAllToolResponseToDecrease.setStatusUse(toolDto.getStatusUse());
+            findAllToolResponseToDecrease.setFullName(toolDto.getFullName());
+            findAllToolResponseToDecrease.setNameLocation(toolDto.getNameLocation());
             responseToDecreaseList.add(findAllToolResponseToDecrease);
         }
         return responseToDecreaseList;
     }
 
-    private List<FindAllToolResponseToIncrease> converttoFindAllToolToIncreaseResponse(List<ToolDto> content) {
+    private List<FindAllToolResponseToIncrease> convertToFindAllToolToIncreaseResponse(List<ToolDto> content) {
         List<FindAllToolResponseToIncrease> responseToIncreases=new ArrayList<>();
         for (ToolDto toolDto : content) {
             FindAllToolResponseToIncrease responseToIncrease=new FindAllToolResponseToIncrease();
@@ -248,8 +251,8 @@ public class ToolServiceImpl implements ToolService {
             responseToIncrease.setNameToolCategory(toolDto.getNameToolCategory());
             responseToIncrease.setCodeDepartment(toolDto.getCodeDepartment());
             responseToIncrease.setNameDepartment(toolDto.getNameDepartment());
-            responseToIncrease.setTimeCreated(toolDto.getTimeCreated());
-            responseToIncrease.setTimeModified(toolDto.getTimeModified());
+            responseToIncrease.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()), DateUtil.DATE_FORMAT));
+            responseToIncrease.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()), DateUtil.DATE_FORMAT));
             responseToIncrease.setIdTool(toolDto.getIdTool());
             responseToIncrease.setSalt(toolDto.getSalt());
             responseToIncrease.setQuantity(toolDto.getQuantity());
@@ -537,10 +540,8 @@ public class ToolServiceImpl implements ToolService {
         allToolResponse.setNameToolCategory(toolDto.getNameToolCategory());
         allToolResponse.setCodeDepartment(toolDto.getCodeDepartment());
         allToolResponse.setNameDepartment(toolDto.getNameDepartment());
-        allToolResponse.setTimeCreated(DateUtil.formatToPattern(DateUtil.formatDatePattern(toolDto.getTimeCreated(),
-                DateUtil.DDMMYYYY),DateUtil.DDMMYYYY));
-        allToolResponse.setTimeModified(DateUtil.formatToPattern(DateUtil.formatDatePattern(toolDto.getTimeModified(),
-                DateUtil.DDMMYYYY),DateUtil.DDMMYYYY));
+        allToolResponse.setTimeCreated(DateUtil.formatToPattern(new Date(toolDto.getTimeCreated()), DateUtil.DATE_FORMAT));
+        allToolResponse.setTimeModified(DateUtil.formatToPattern(new Date(toolDto.getTimeModified()), DateUtil.DATE_FORMAT));
         allToolResponse.setSalt(toolDto.getSalt());
         allToolResponse.setQuantity(toolDto.getQuantity());
         allToolResponse.setIsIncrease(toolDto.getIsIncrease());

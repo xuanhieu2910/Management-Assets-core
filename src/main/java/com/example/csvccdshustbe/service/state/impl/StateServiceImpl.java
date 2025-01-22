@@ -165,7 +165,7 @@ public class StateServiceImpl implements StateService {
             stateRepository.save(stateNext.get().getStateCurrent());
             handleRequest(stateNext.get().getStateCurrent());
         } else {
-            stateNext.get().getStateCurrent().setStatus(Constants.STATUS_STATE_SUCCESS);
+             stateNext.get().getStateCurrent().setStatus(Constants.STATUS_STATE_SUCCESS);
             stateRepository.save(stateNext.get().getStateCurrent());
         }
     }
