@@ -361,6 +361,27 @@ public class ProcessServiceImpl implements ProcessService {
         return toolProcessList;
     }
 
+    private List<ToolProcess> constructionToolProcessUpdateInventory(List<ToolProcess> toolProcessesOriginal, Process process) {
+        List<ToolProcess> toolProcessList = new ArrayList<>();
+        String currentTime = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        for (ToolProcess toolProcessOriginal: toolProcessesOriginal){
+            ToolProcess toolProcess = new ToolProcess();
+            toolProcess.setIdTool(toolProcessOriginal.getIdTool());
+            toolProcess.setIdProcess(process.getIdProcess());
+            toolProcess.setIdTypeProcess(process.getIdTypeProcess());
+            toolProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+            toolProcess.setValue(toolProcessOriginal.getValue());
+            toolProcess.setTimeCreated(currentTime);
+            toolProcess.setTimeModified(currentTime);
+            toolProcess.setIdUserCreated(csvcUser.getIdUser());
+            toolProcess.setIdUserModified(csvcUser.getIdUser());
+            toolProcess.setQuantity(toolProcess.getQuantity());
+            toolProcessList.add(toolProcess);
+        }
+        return toolProcessList;
+    }
+
 
     private void createTaskSendMailIncrease(List<UserRoleDto> userRoleDtos, Document document, Process process) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -1118,10 +1139,43 @@ public class ProcessServiceImpl implements ProcessService {
                         status, typeProcess.getCode());
                 toolService.updateToolParentIsIncreaseAndIsDecrease(process.getIdProcess(), typeProcess.getCode());
             }
+            case Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL -> {
+                toolService.updateToolStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+                createUpdateInventoryTool(process);
+            }
             default -> {
                 return;
             }
         }
+    }
+
+    private void createUpdateInventoryTool(Process processOriginal) throws ValidateFiledException, JsonProcessingException {
+        List<ToolProcess> toolProcesses = toolProcessService.findAllToolProcessByIdProcess(processOriginal.getIdProcess());
+        Document documentOriginal = documentService.findDocumentByIdProcess(processOriginal.getIdProcess());
+        List<Integer> idsTool = new ArrayList<>();
+        toolProcesses.forEach(x->idsTool.add(x.getIdTool()));
+        TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY_TOOL);
+        Process process = processRepository.save(constructionDuplicationProcess(typeProcess, processOriginal));
+        Document document = documentService.saveDocument(constructionUpdateInventory(documentOriginal, process));
+        toolProcessService.saveAllToolProcess(constructionToolProcessUpdateInventory(toolProcesses, process));
+        updateInformationProcessCurrentAsset(idsTool, process);
+        List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
+                Arrays.asList(
+                        Constants.CODE_TYPE_STATE_INIT,
+                        Constants.CODE_TYPE_STATE_TEST_APPROVED,
+                        Constants.CODE_TYPE_STATE_COMPLETED)
+        );
+        List<State> states = stateService.saveAllState(constructionStateList(process, typeStates));
+        transitionService.saveTransition(constructionTransition(process, states));
+        Request processRequest = requestService.createNewRequestProcess(constructionRequest(process,
+                states.stream().filter(x->x.getCodeTypeState().equals(Constants.CODE_TYPE_STATE_TEST_APPROVED)).findFirst().get().getIdState()));
+        List<String> usersName = new ArrayList<>();
+        List<CreateCouncilInventoryRequest> councilInventory = transferToCouncilInventory(documentOriginal.getDescription());
+        councilInventory.forEach(x->usersName.add(x.getUserName()));
+        List<FindAllUserDto> usersDto = csvcUserService.findIdsUserByUsersName(usersName);
+        requestDataService.createNewRequestData(constructionRequestData(processRequest));
+        requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolderUpdateInventory(processRequest, councilInventory, usersDto));
+        createTaskSendMailInventory(usersDto, document, process);
     }
 
     private void handleNotApproved(Process process, Integer status, TypeProcess typeProcess) {

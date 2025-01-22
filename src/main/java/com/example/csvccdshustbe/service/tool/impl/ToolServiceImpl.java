@@ -159,6 +159,11 @@ public class ToolServiceImpl implements ToolService {
                 pageable, toolDtos.getTotalElements());
     }
 
+    @Override
+    public void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcess, Integer status) {
+        toolRepository.updateToolStatusProcessCurrentByIdProcessCurrent(idProcess, status);
+    }
+
     private List<FindAllToolToInventoryResponse> convertToFindAllToolToInventoryResponse(List<ToolDto> content) {
         List<FindAllToolToInventoryResponse> responses = new ArrayList<>();
         for (ToolDto toolDto : content){

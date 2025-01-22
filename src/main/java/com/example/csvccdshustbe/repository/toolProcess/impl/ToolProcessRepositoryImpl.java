@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.repository.toolProcess.impl;
 
 
 import com.example.csvccdshustbe.dto.toolProcess.FindAllToolProcessDto;
+import com.example.csvccdshustbe.entity.ToolProcess;
 import com.example.csvccdshustbe.repository.toolProcess.ToolProcessRepositoryCustom;
 import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -75,6 +76,39 @@ public class ToolProcessRepositoryImpl implements ToolProcessRepositoryCustom {
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllToolProcess(request));
+    }
+
+    @Override
+    public List<ToolProcess> findAllToolProcessByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select tool_process.id_tool_process, tool_process.id_tool, tool_process.id_process,  " +
+                "       tool_process.id_type_process, tool_process.status, tool_process.value,  " +
+                "       tool_process.time_created, tool_process.time_modified, tool_process.id_user_created,  " +
+                "       tool_process.id_user_modified, tool_process.quantity  " +
+                "from tool_process   " +
+                "    inner join process on tool_process.id_process = process.id_process  " +
+                "where process.id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        List<ToolProcess> toolProcesses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                ToolProcess toolProcess = new ToolProcess();
+                toolProcess.setIdToolProcess(ValueUtil.getIntegerByObject(obj[0]));
+                toolProcess.setIdTool(ValueUtil.getIntegerByObject(obj[1]));
+                toolProcess.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                toolProcess.setIdTypeProcess(ValueUtil.getIntegerByObject(obj[3]));
+                toolProcess.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                toolProcess.setValue(ValueUtil.getStringByObject(obj[5]));
+                toolProcess.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                toolProcess.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                toolProcess.setIdUserCreated(ValueUtil.getIntegerByObject(obj[8]));
+                toolProcess.setQuantity(ValueUtil.getIntegerByObject(obj[9]));
+                toolProcesses.add(toolProcess);
+            }
+        }
+        return toolProcesses;
     }
 
     private long countFindAllToolProcess(FindAllToolProcessRequest request) {

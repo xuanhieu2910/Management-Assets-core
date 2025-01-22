@@ -471,6 +471,20 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         return new PageImpl<>(toolDtos, pageable, countFindAllToolDtoToInventory(request));
     }
 
+    @Transactional
+    @Modifying
+    @Override
+    public void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcess, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update tool " +
+                "set status_process_current = :statusProcessCurrent " +
+                "where id_process_current = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusProcessCurrent", status);
+        query.setParameter("idProcess", idProcess);
+        query.executeUpdate();
+    }
+
     private long countFindAllToolDtoToInventory(FindAllToolToInventoryRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) count   " +

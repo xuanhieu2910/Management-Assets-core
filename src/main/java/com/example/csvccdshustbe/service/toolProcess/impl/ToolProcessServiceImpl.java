@@ -18,6 +18,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -45,6 +47,15 @@ public class ToolProcessServiceImpl implements ToolProcessService {
         Page<FindAllToolProcessDto> findAllToolProcessDtos  = toolProcessRepository.findAllToolProcess(request, pageable);
         return new PageImpl<>(convertToFindAllToolProcess(findAllToolProcessDtos.getContent()),
                 pageable, findAllToolProcessDtos.getTotalElements());
+    }
+
+    @Override
+    public List<ToolProcess> findAllToolProcessByIdProcess(Integer idProcess) {
+        List<ToolProcess> toolProcesses = toolProcessRepository.findAllToolProcessByIdProcess(idProcess);
+        if (!CollectionUtils.isEmpty(toolProcesses)){
+            throw new NotFoundException("Don't exits tool process by id process!");
+        }
+        return toolProcesses;
     }
 
     private List<FindAllToolProcessResponse> convertToFindAllToolProcess(List<FindAllToolProcessDto> content) {

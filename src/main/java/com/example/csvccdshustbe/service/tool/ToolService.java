@@ -32,4 +32,5 @@ public interface ToolService {
                                                                       Integer status, String codeTypeProcess);
     Integer countToolIsNotIncreaseOrIsDecreaseOrPendingByIdsTool(List<Integer> idsTool);
     Page<FindAllToolToInventoryResponse> findAllToolToInventory(FindAllToolToInventoryRequest findAllToolRequest);
+    void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcess, Integer status);
 }

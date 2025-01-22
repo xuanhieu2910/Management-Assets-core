@@ -15,5 +15,5 @@ import java.util.List;
 public interface ToolProcessService {
     List<ToolProcess> saveAllToolProcess(List<ToolProcess> toolProcessList);
     Page<FindAllToolProcessResponse> findAllToolProcess(FindAllToolProcessRequest request);
-
+    List<ToolProcess> findAllToolProcessByIdProcess(Integer idProcess);
 }

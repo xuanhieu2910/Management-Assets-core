@@ -41,4 +41,6 @@ public interface ToolRepositoryCustom {
     void updateToolIsDecreaseWhenNotApproved(Integer idProcessCurrent, Integer status);
     Integer countToolIsNotIncreaseOrDecreaseOrPendingByIdsTool(List<Integer> idsTool);
     Page<ToolDto> findAllToolDtoToInventory(FindAllToolToInventoryRequest findAllToolRequest, Pageable pageable);
+
+    void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcess, Integer status);
 }
