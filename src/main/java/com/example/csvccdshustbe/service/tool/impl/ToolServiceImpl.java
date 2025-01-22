@@ -228,6 +228,9 @@ public class ToolServiceImpl implements ToolService {
             findAllToolResponseToDecrease.setValue(toolDto.getValue());
             findAllToolResponseToDecrease.setQuantityIncreaseCurrent(toolDto.getQuantityIncreaseCurrent());
             findAllToolResponseToDecrease.setQuantityDecreaseCurrent(toolDto.getQuantityDecreaseCurrent());
+            findAllToolResponseToDecrease.setStatusUse(toolDto.getStatusUse());
+            findAllToolResponseToDecrease.setFullName(toolDto.getFullName());
+            findAllToolResponseToDecrease.setNameLocation(toolDto.getNameLocation());
             responseToDecreaseList.add(findAllToolResponseToDecrease);
         }
         return responseToDecreaseList;

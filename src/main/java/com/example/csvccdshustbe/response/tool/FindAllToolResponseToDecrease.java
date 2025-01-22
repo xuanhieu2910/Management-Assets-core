@@ -35,4 +35,10 @@ public class FindAllToolResponseToDecrease {
     private Integer quantityIncreaseCurrent;
     @JsonProperty("quantity_decrease_current")
     private Integer quantityDecreaseCurrent;
+    @JsonProperty("status_use")
+    private Integer statusUse;
+    @JsonProperty("full_name")
+    private String fullName;
+    @JsonProperty("name_location")
+    private String nameLocation;
 }

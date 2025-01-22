@@ -637,12 +637,13 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "        tol.id_type_process_current, tol.id_department_original, tol.status_use,  " +
                 "        tol.parent, tol.id_department, tol.id_location,  " +
                 "        tol.id_user_use, tol.year_use,  " +
-                "        de.code, de.name, lo.name, tol.price,tolca.name  " +
+                "        de.code, de.name, lo.name, tol.price,tolca.name,lo.name,csvc_user.full_name   " +
                 " from tool tol  " +
                 "     left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
                 "     left join department de on tol.id_department = de.id_department  " +
                 "     left join location lo on tol.id_location = lo.id_location  " +
                 "     left join type_process tp on tol.id_type_process_current = tp.id_type_process " +
+                "     left join csvc_user on tol.id_user_use = csvc_user.id_user " +
                 " where tol.id_department_original in (:idsDepartmentOriginal)  " +
                 " and tol.status_process_current != :statusProcessCurrent  " +
                 " and tol.quantity_decrease_current < tol.quantity_increase_current " +
@@ -656,7 +657,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         List<ToolDto> toolDtos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
-                toolDtos.add(writeDataToolInDocumentDtos(obj));
+                toolDtos.add(writeDataToolInDocumentDeCreaseDtos(obj));
             }
         }
         return new PageImpl<>(toolDtos, pageable, countFindAllToolToDecreaseDtos(request));
@@ -1074,6 +1075,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "     left join department de on tol.id_department = de.id_department  " +
                 "     left join location lo on tol.id_location = lo.id_location  " +
                 "     left join type_process tp on tol.id_type_process_current = tp.id_type_process " +
+                "     left join csvc_user on tol.id_user_use = csvc_user.id_user " +
                 " where tol.id_department_original in (:idsDepartmentOriginal)  " +
                 " and tol.status_process_current != :statusProcessCurrent  " +
                 " and tol.quantity_decrease_current < tol.quantity_increase_current " +
@@ -1184,6 +1186,42 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         toolDto.setNameLocation(ValueUtil.getStringByObject(obj[27]));
         toolDto.setPrice(ValueUtil.getStringByObject(obj[28]));
         toolDto.setNameToolCategory(ValueUtil.getStringByObject(obj[29]));
+        return toolDto;
+    }
+    private ToolDto writeDataToolInDocumentDeCreaseDtos(Object[] obj) {
+        ToolDto toolDto = new ToolDto();
+        toolDto.setIdTool(ValueUtil.getIntegerByObject(obj[0]));
+        toolDto.setName(ValueUtil.getStringByObject(obj[1]));
+        toolDto.setCodeTool(ValueUtil.getStringByObject(obj[2]));
+        toolDto.setSalt(ValueUtil.getStringByObject(obj[3]));
+        toolDto.setIdToolCategory(ValueUtil.getIntegerByObject(obj[4]));
+        toolDto.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+        toolDto.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+        toolDto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[7]));
+        toolDto.setIdUserModified(ValueUtil.getIntegerByObject(obj[8]));
+        toolDto.setValue(ValueUtil.getStringByObject(obj[9]));
+        toolDto.setQuantity(ValueUtil.getIntegerByObject(obj[10]));
+        toolDto.setIsIncrease(ValueUtil.getIntegerByObject(obj[11]));
+        toolDto.setIsDecrease(ValueUtil.getIntegerByObject(obj[12]));
+        toolDto.setQuantityIncreaseCurrent(ValueUtil.getIntegerByObject(obj[13]));
+        toolDto.setQuantityDecreaseCurrent(ValueUtil.getIntegerByObject(obj[14]));
+        toolDto.setIdProcessCurrent(ValueUtil.getIntegerByObject(obj[15]));
+        toolDto.setStatusProcessCurrent(ValueUtil.getIntegerByObject(obj[16]));
+        toolDto.setIdTypeProcessCurrent(ValueUtil.getIntegerByObject(obj[17]));
+        toolDto.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[18]));
+        toolDto.setStatusUse(ValueUtil.getIntegerByObject(obj[19]));
+        toolDto.setParent(ValueUtil.getIntegerByObject(obj[20]));
+        toolDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[21]));
+        toolDto.setIdLocation(ValueUtil.getIntegerByObject(obj[22]));
+        toolDto.setIdUserUse(ValueUtil.getIntegerByObject(obj[23]));
+        toolDto.setYearUse(ValueUtil.getStringByObject(obj[24]));
+        toolDto.setCodeDepartment(ValueUtil.getStringByObject(obj[25]));
+        toolDto.setNameDepartment(ValueUtil.getStringByObject(obj[26]));
+        toolDto.setNameLocation(ValueUtil.getStringByObject(obj[27]));
+        toolDto.setPrice(ValueUtil.getStringByObject(obj[28]));
+        toolDto.setNameToolCategory(ValueUtil.getStringByObject(obj[29]));
+        toolDto.setNameLocation(ValueUtil.getStringByObject(obj[30]));
+        toolDto.setFullName(ValueUtil.getStringByObject(obj[31]));
         return toolDto;
     }
     private void setParameterFindAllToolDto(Query query, FindAllToolRequest request) {
