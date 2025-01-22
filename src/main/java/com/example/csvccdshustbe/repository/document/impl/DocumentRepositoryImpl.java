@@ -1193,7 +1193,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
 
     private void setParameterFindAllDocumentToolInventoryDtoByIdsDepartment(Query query, FindAllDocumentToolRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_INVENTORY_TOOL);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL);
         if (StringUtils.isNotBlank(request.getCodeDocument())) {
             query.setParameter("codeDocument", request.getCodeDocument());
         }

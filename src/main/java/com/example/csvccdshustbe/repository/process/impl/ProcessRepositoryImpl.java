@@ -602,7 +602,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
         query.setParameter("statusReject", Constants.STATUS_FALSE_PROCESS);
-        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_INVENTORY_TOOL);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL);
         query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
         List<Object[]> result = query.getResultList();
         ProcessStatisticsToolDocumentInventoryResponse response = new ProcessStatisticsToolDocumentInventoryResponse();
@@ -628,7 +628,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 "  and de.id_department in (:idsDepartmentOriginal) ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
-        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_INVENTORY_TOOL);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL);
         query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
         ProcessStatisticsToolDocumentBeInventoryResponse response = new ProcessStatisticsToolDocumentBeInventoryResponse();
         response.setTotalInventoryBeApproved(ValueUtil.getIntegerByObject(query.getSingleResult()));
