@@ -345,7 +345,7 @@ public class DocumentController {
     }
 
     @PostMapping("/asset-update-inventory-finish")
-    public ResponseEntity<?> finishInventoryDraftAsset(@RequestBody UpdateInventoryDraftRequest request){
+    public ResponseEntity<?> finishInventoryFinishAsset(@RequestBody UpdateInventoryDraftRequest request){
         try {
             documentService.updateInventoryFinish(request);
             return ApiResponseDto.createdWithMessage("Update inventory finish success!", HttpStatus.OK);
