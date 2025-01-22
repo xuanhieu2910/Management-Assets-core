@@ -744,7 +744,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
 
     private void setParameterFindAllToolToIncreaseDto(Query query, FindAllToolToIncreaseRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
-        query.setParameter("isIncrease", Constants.IS_NOT_INCREASED);
+        query.setParameter("isIncrease", Constants.TOOL_IS_NOT_INCREASE);
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameTool())){
             query.setParameter("nameTool", request.getNameTool());

@@ -9,6 +9,7 @@ import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.repository.process.ProcessRepository;
+import com.example.csvccdshustbe.repository.tool.ToolRepository;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.request.process.asset.AssetDetailDecreaseRequest;
 import com.example.csvccdshustbe.request.process.asset.AssetDetailIncreaseRequest;
@@ -88,7 +89,8 @@ public class ProcessServiceImpl implements ProcessService {
     ToolService toolService;
     @Autowired
     AssetRepository assetRepository;
-
+    @Autowired
+    ToolRepository toolRepository;
 
     @Override
     public Process saveProcess(Process process) {
@@ -216,6 +218,7 @@ public class ProcessServiceImpl implements ProcessService {
                     x.setStatusProcessCurrent(process.getStatus());
             });
         }
+        toolRepository.saveAll(tools);
     }
 
     private void updateInformationDecreaseTools(List<Tool> tools, Process process, List<ToolDetailDecreaseRequest> toolsDetailDecrease) {
