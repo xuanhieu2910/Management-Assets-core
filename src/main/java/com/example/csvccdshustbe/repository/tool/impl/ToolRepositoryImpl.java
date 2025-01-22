@@ -314,11 +314,11 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "where pr.id_process = :idProcess ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
-        List<Object[]> result = query.getResultList();
+        List<Object> result = query.getResultList();
         List<Integer> idsTool = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj : result){
-                idsTool.add(ValueUtil.getIntegerByObject(obj[0]));
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object obj : result) {
+                idsTool.add(ValueUtil.getIntegerByObject(obj));
             }
         }
         return idsTool;
