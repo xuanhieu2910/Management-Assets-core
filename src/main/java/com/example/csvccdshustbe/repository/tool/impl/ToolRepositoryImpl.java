@@ -498,8 +498,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         toolDto.setIdToolCategory(ValueUtil.getIntegerByObject(obj[3]));
         toolDto.setCodeToolCategory(ValueUtil.getStringByObject(obj[4]));
         toolDto.setNameToolCategory(ValueUtil.getStringByObject(obj[5]));
-        toolDto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
-        toolDto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+        toolDto.setTimeCreated(ValueUtil.getLongByObject(obj[6]));
+        toolDto.setTimeModified(ValueUtil.getLongByObject(obj[7]));
         toolDto.setValue(ValueUtil.getStringByObject(obj[8]));
         toolDto.setQuantity(ValueUtil.getIntegerByObject(obj[9]));
         toolDto.setIsIncrease(ValueUtil.getIntegerByObject(obj[10]));
@@ -1093,8 +1093,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         toolDto.setCodeTool(ValueUtil.getStringByObject(obj[2]));
         toolDto.setSalt(ValueUtil.getStringByObject(obj[3]));
         toolDto.setIdToolCategory(ValueUtil.getIntegerByObject(obj[4]));
-        toolDto.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
-        toolDto.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+        toolDto.setTimeCreated(ValueUtil.getLongByObject(obj[5]));
+        toolDto.setTimeModified(ValueUtil.getLongByObject(obj[6]));
         toolDto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[7]));
         toolDto.setIdUserModified(ValueUtil.getIntegerByObject(obj[8]));
         toolDto.setValue(ValueUtil.getStringByObject(obj[9]));
@@ -1127,8 +1127,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         toolDto.setCodeTool(ValueUtil.getStringByObject(obj[2]));
         toolDto.setSalt(ValueUtil.getStringByObject(obj[3]));
         toolDto.setIdToolCategory(ValueUtil.getIntegerByObject(obj[4]));
-        toolDto.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
-        toolDto.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+        toolDto.setTimeCreated(ValueUtil.getLongByObject(obj[5]));
+        toolDto.setTimeModified(ValueUtil.getLongByObject(obj[6]));
         toolDto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[7]));
         toolDto.setIdUserModified(ValueUtil.getIntegerByObject(obj[8]));
         toolDto.setValue(ValueUtil.getStringByObject(obj[9]));
@@ -1161,8 +1161,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         toolDto.setCodeTool(ValueUtil.getStringByObject(obj[2]));
         toolDto.setSalt(ValueUtil.getStringByObject(obj[3]));
         toolDto.setIdToolCategory(ValueUtil.getIntegerByObject(obj[4]));
-        toolDto.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
-        toolDto.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+        toolDto.setTimeCreated(ValueUtil.getLongByObject(obj[5]));
+        toolDto.setTimeModified(ValueUtil.getLongByObject(obj[6]));
         toolDto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[7]));
         toolDto.setIdUserModified(ValueUtil.getIntegerByObject(obj[8]));
         toolDto.setValue(ValueUtil.getStringByObject(obj[9]));
@@ -1195,8 +1195,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         toolDto.setCodeTool(ValueUtil.getStringByObject(obj[2]));
         toolDto.setSalt(ValueUtil.getStringByObject(obj[3]));
         toolDto.setIdToolCategory(ValueUtil.getIntegerByObject(obj[4]));
-        toolDto.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
-        toolDto.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+        toolDto.setTimeCreated(ValueUtil.getLongByObject(obj[5]));
+        toolDto.setTimeModified(ValueUtil.getLongByObject(obj[6]));
         toolDto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[7]));
         toolDto.setIdUserModified(ValueUtil.getIntegerByObject(obj[8]));
         toolDto.setValue(ValueUtil.getStringByObject(obj[9]));

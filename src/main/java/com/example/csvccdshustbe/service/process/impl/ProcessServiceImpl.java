@@ -233,6 +233,7 @@ public class ProcessServiceImpl implements ProcessService {
                         x.setStatusProcessCurrent(process.getStatus());
                     });
         }
+        toolRepository.saveAll(tools);
     }
 
     private void updateInformationInventoryTools(List<Tool> tools, Process process, List<ToolDetailInventoryRequest> toolsDetailInventory) {

@@ -15,8 +15,8 @@ public class ToolDto {
     private Integer idToolCategory;
     private String codeToolCategory;
     private String nameToolCategory;
-    private String timeCreated;
-    private String timeModified;
+    private Long timeCreated;
+    private Long timeModified;
     private Integer idUserCreated;
     private Integer idUserModified;
     private String value;
