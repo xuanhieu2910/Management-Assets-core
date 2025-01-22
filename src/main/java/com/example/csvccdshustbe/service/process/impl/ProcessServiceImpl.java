@@ -246,6 +246,7 @@ public class ProcessServiceImpl implements ProcessService {
                         x.setStatusProcessCurrent(process.getStatus());
                     });
         }
+        toolRepository.saveAll(tools);
     }
 
     private void updateInformationProcessCurrentAsset(List<Integer> idsAsset, Process process) {
