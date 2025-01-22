@@ -111,6 +111,11 @@ public class ToolProcessRepositoryImpl implements ToolProcessRepositoryCustom {
         return toolProcesses;
     }
 
+    @Override
+    public List<ToolProcess> findListToolProcessByIdsToolAndIdProcess(List<Integer> idsTool, Integer idProcess) {
+        return null;
+    }
+
     private long countFindAllToolProcess(FindAllToolProcessRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append("  select count(0)   " +

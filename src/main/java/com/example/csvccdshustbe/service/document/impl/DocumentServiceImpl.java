@@ -11,6 +11,7 @@ import com.example.csvccdshustbe.repository.document.DocumentRepository;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
+import com.example.csvccdshustbe.request.document.tool.UpdateInventoryDraftToolRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
@@ -25,6 +26,7 @@ import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.fluctuatingSituationAssetService.FluctuatingSituationAssetService;
 import com.example.csvccdshustbe.service.fluctuatingSituationService.FluctuatingSituationService;
+import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -59,6 +61,8 @@ public class DocumentServiceImpl implements DocumentService {
     FluctuatingSituationService fluctuatingSituationService;
     @Autowired
     FluctuatingSituationAssetService fluctuatingSituationAssetService;
+    @Autowired
+    ToolProcessService toolProcessService;
 
 
     @Override
@@ -318,9 +322,27 @@ public class DocumentServiceImpl implements DocumentService {
         return document.get();
     }
 
+
     @Transactional
     @Override
-    public void updateInventoryDraft(UpdateInventoryDraftRequest request) {
+    public void updateInventoryDraftTool(UpdateInventoryDraftToolRequest request) {
+        Document document = findDocumentByCodeDocument(request.getCodeDocument());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        document.setTimeModified(String.valueOf(new Date().getTime()));
+        document.setIdUserModified(csvcUser.getIdUser());
+        documentRepository.save(document);
+        toolProcessService.updateListToolProcessByIdProcess(request.getToolProcess(), document.getIdDocument());
+    }
+
+    @Transactional
+    @Override
+    public void updateInventoryFinishTool(UpdateInventoryDraftToolRequest request) {
+
+    }
+
+    @Transactional
+    @Override
+    public void updateInventoryDraftAsset(UpdateInventoryDraftRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         document.setTimeModified(String.valueOf(new Date().getTime()));
@@ -332,7 +354,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Transactional
     @Override
-    public void updateInventoryFinish(UpdateInventoryDraftRequest request) {
+    public void updateInventoryFinishAsset(UpdateInventoryDraftRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
         documentRepository.save(updateInformationDocument(document));
         if (!CollectionUtils.isEmpty(request.getAssetProcess().getAssets())) {

@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
+import com.example.csvccdshustbe.request.document.tool.UpdateInventoryDraftToolRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
@@ -32,8 +33,10 @@ public interface DocumentService {
     Page<FindAllProcessAssetRevaluationResponse> findAllDataProcessAssetRevaluation(FindAllProcessAssetRevaluationRequest request);
     Document findDocumentByIdProcess(Integer idProcess);
     Document findDocumentByCodeDocument(String codeDocument);
-    void updateInventoryDraft(UpdateInventoryDraftRequest request);
-    void updateInventoryFinish(UpdateInventoryDraftRequest request);
+    void updateInventoryDraftTool(UpdateInventoryDraftToolRequest request);
+    void updateInventoryFinishTool(UpdateInventoryDraftToolRequest request);
+    void updateInventoryDraftAsset(UpdateInventoryDraftRequest request);
+    void updateInventoryFinishAsset(UpdateInventoryDraftRequest request);
     Page<FindAllProcessAssetUpdateInventoryResponse>
     findAllDataProcessAssetUpdateInventory(FindAllProcessAssetUpdateInventoryRequest findAllProcessAssetRequest);
     Page<FindAllDocumentToolIncreaseResponse> findAllDocumentToolIncrease(FindAllDocumentToolRequest findAllProcessAssetRequest);

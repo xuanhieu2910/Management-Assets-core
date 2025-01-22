@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
+import com.example.csvccdshustbe.request.document.tool.UpdateInventoryDraftToolRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.request.process.tool.CreateDecreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
@@ -335,7 +336,7 @@ public class DocumentController {
     @PostMapping("/asset-update-inventory-draft")
     public ResponseEntity<?> updateInventoryDraftAsset(@RequestBody UpdateInventoryDraftRequest request){
         try {
-            documentService.updateInventoryDraft(request);
+            documentService.updateInventoryDraftAsset(request);
             return ApiResponseDto.createdWithMessage("Update inventory draft success!", HttpStatus.OK);
         } catch (NotFoundException e){
           return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -347,7 +348,7 @@ public class DocumentController {
     @PostMapping("/asset-update-inventory-finish")
     public ResponseEntity<?> finishInventoryFinishAsset(@RequestBody UpdateInventoryDraftRequest request){
         try {
-            documentService.updateInventoryFinish(request);
+            documentService.updateInventoryFinishAsset(request);
             return ApiResponseDto.createdWithMessage("Update inventory finish success!", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -526,6 +527,30 @@ public class DocumentController {
         try {
             return ApiResponseDto.createdWithState(processService.getStatisticToolUpdateInventory(),
                     "Get statistic update inventory tool success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/tool-update-inventory-draft")
+    public ResponseEntity<?> updateInventoryDraftTool(@RequestBody UpdateInventoryDraftToolRequest request){
+        try {
+            documentService.updateInventoryDraftTool(request);
+            return ApiResponseDto.createdWithMessage("Update inventory draft success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/tool-update-inventory-finish")
+    public ResponseEntity<?> updateInventoryFinishedTool(@RequestBody UpdateInventoryDraftToolRequest request){
+        try {
+            documentService.updateInventoryFinishTool(request);
+            return ApiResponseDto.createdWithMessage("Update inventory draft success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }

@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.toolProcess.impl;
 
+import com.example.csvccdshustbe.entity.AssetProcess;
 import com.example.csvccdshustbe.entity.ToolProcess;
 import com.example.csvccdshustbe.repository.toolProcess.ToolProcessRepository;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
@@ -7,6 +8,8 @@ import com.example.csvccdshustbe.dto.toolProcess.FindAllToolProcessDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.repository.toolProcess.ToolProcessRepository;
 import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
+import com.example.csvccdshustbe.request.toolProcess.ToolProcessRequest;
+import com.example.csvccdshustbe.request.toolProcess.UpdateAllToolProcessRequest;
 import com.example.csvccdshustbe.response.toolProcess.FindAllToolProcessResponse;
 import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +59,19 @@ public class ToolProcessServiceImpl implements ToolProcessService {
             throw new NotFoundException("Don't exits tool process by id process!");
         }
         return toolProcesses;
+    }
+
+    @Override
+    public void updateListToolProcessByIdProcess(UpdateAllToolProcessRequest toolProcess, Integer idDocument) {
+        List<Integer> idsTool = getIdsToolFromUpdateToolProcessRequest(toolProcess.getToolProcessRequests());
+        List<ToolProcess> assetProcessList =
+                toolProcessRepository.findListToolProcessByIdsToolAndIdProcess(idsTool, toolProcess.getIdProcess());
+    }
+
+    private List<Integer> getIdsToolFromUpdateToolProcessRequest(List<ToolProcessRequest> toolProcessRequests) {
+        List<Integer> idsTool = new ArrayList<>();
+        toolProcessRequests.forEach(x->idsTool.add(x.getIdTool()));
+        return idsTool;
     }
 
     private List<FindAllToolProcessResponse> convertToFindAllToolProcess(List<FindAllToolProcessDto> content) {
