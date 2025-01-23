@@ -254,7 +254,9 @@ public class ProcessServiceImpl implements ProcessService {
     private void updateInformationProcessCurrentAsset(List<Integer> idsAsset, Process process) {
         assetService.updateInformationProcessCurrentAsset(idsAsset, process);
     }
-
+    private void updateInformationProcessCurrentTool(List<Integer> idsTool, Process process) {
+        toolService.updateInformationProcessCurrentTool(idsTool, process);
+    }
     private void validateAssetProcessIncrease(List<Integer> idsAsset) throws ValidateFiledException {
         Integer count = assetService.countAssetIncreasedNotDecreasedOrNotPending(idsAsset);
         if (count != null && count > 0){
@@ -1165,7 +1167,7 @@ public class ProcessServiceImpl implements ProcessService {
         Process process = processRepository.save(constructionDuplicationProcess(typeProcess, processOriginal));
         Document document = documentService.saveDocument(constructionUpdateInventory(documentOriginal, process));
         toolProcessService.saveAllToolProcess(constructionToolProcessUpdateInventory(toolProcesses, process));
-        updateInformationProcessCurrentAsset(idsTool, process);
+        updateInformationProcessCurrentTool(idsTool, process);
         List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
                 Arrays.asList(
                         Constants.CODE_TYPE_STATE_INIT,

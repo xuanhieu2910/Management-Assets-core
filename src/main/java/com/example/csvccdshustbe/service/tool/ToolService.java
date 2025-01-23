@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.tool;
 
+import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.tool.*;
@@ -33,4 +34,5 @@ public interface ToolService {
     Integer countToolIsNotIncreaseOrIsDecreaseOrPendingByIdsTool(List<Integer> idsTool);
     Page<FindAllToolToInventoryResponse> findAllToolToInventory(FindAllToolToInventoryRequest findAllToolRequest);
     void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcess, Integer status);
+    void updateInformationProcessCurrentTool(List<Integer> idsTool, Process process);
 }

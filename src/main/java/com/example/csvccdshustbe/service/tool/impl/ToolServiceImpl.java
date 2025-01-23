@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.service.tool.impl;
 import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
 import com.example.csvccdshustbe.entity.*;
+import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.tool.ToolRepository;
 import com.example.csvccdshustbe.request.tool.*;
@@ -163,6 +164,21 @@ public class ToolServiceImpl implements ToolService {
     public void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcess, Integer status) {
         toolRepository.updateToolStatusProcessCurrentByIdProcessCurrent(idProcess, status);
     }
+
+    @Override
+    public void updateInformationProcessCurrentTool(List<Integer> idsTool, Process process) {
+        List<Tool> tools = toolRepository.findAllToolByIdsTool(idsTool);
+        if (tools.size() != idsTool.size()){
+            throw new NotFoundException("Don't exits tools by ids!");
+        }
+        tools.forEach(x->{
+            x.setIdProcessCurrent(process.getIdProcess());
+            x.setStatusProcessCurrent(process.getStatus());
+            x.setIdTypeProcessCurrent(process.getIdTypeProcess());
+        });
+        toolRepository.saveAll(tools);
+    }
+
 
     private List<FindAllToolToInventoryResponse> convertToFindAllToolToInventoryResponse(List<ToolDto> content) {
         List<FindAllToolToInventoryResponse> responses = new ArrayList<>();
