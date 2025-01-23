@@ -3,9 +3,9 @@ package com.example.csvccdshustbe.service.document;
 import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
-import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
+import com.example.csvccdshustbe.request.document.UpdateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
-import com.example.csvccdshustbe.request.document.tool.UpdateInventoryDraftToolRequest;
+import com.example.csvccdshustbe.request.document.tool.UpdateInventoryToolRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
@@ -33,10 +33,10 @@ public interface DocumentService {
     Page<FindAllProcessAssetRevaluationResponse> findAllDataProcessAssetRevaluation(FindAllProcessAssetRevaluationRequest request);
     Document findDocumentByIdProcess(Integer idProcess);
     Document findDocumentByCodeDocument(String codeDocument);
-    void updateInventoryDraftTool(UpdateInventoryDraftToolRequest request);
-    void updateInventoryFinishTool(UpdateInventoryDraftToolRequest request);
-    void updateInventoryDraftAsset(UpdateInventoryDraftRequest request);
-    void updateInventoryFinishAsset(UpdateInventoryDraftRequest request);
+    void updateInventoryDraftTool(UpdateInventoryToolRequest request);
+    void updateInventoryFinishTool(UpdateInventoryToolRequest request);
+    void updateInventoryDraftAsset(UpdateInventoryAssetRequest request);
+    void updateInventoryFinishAsset(UpdateInventoryAssetRequest request);
     Page<FindAllProcessAssetUpdateInventoryResponse>
     findAllDataProcessAssetUpdateInventory(FindAllProcessAssetUpdateInventoryRequest findAllProcessAssetRequest);
     Page<FindAllDocumentToolIncreaseResponse> findAllDocumentToolIncrease(FindAllDocumentToolRequest findAllProcessAssetRequest);

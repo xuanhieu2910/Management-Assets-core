@@ -121,9 +121,9 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("statusNotYetFinish", Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
         query.setParameter("idFluctuatingSituation", idFluctuatingSituation);
-        query.setParameter("typeDeclare", Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE);
-        query.setParameter("typeIncrease", Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
-        query.setParameter("typeDecrease", Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE);
+        query.setParameter("typeDeclare", Constants.TYPE_FLUCTUATING_SITUATION_DECLARE);
+        query.setParameter("typeIncrease", Constants.TYPE_FLUCTUATING_SITUATION_INCREASE);
+        query.setParameter("typeDecrease", Constants.TYPE_FLUCTUATING_SITUATION_DECREASE);
         StatisticFluctuatingSituationAsset situation = new StatisticFluctuatingSituationAsset();
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)){

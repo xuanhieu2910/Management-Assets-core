@@ -275,7 +275,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         AssetProcess assetProcess = new AssetProcess();
         assetProcess.setIdProcess(process.getIdProcess());
         assetProcess.setIdTypeProcess(process.getIdTypeProcess());
-        assetProcess.setStatus(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE);
+        assetProcess.setStatus(Constants.TYPE_FLUCTUATING_SITUATION_DECLARE);
         assetProcess.setValue(assetProcessRequest.getValue());
         assetProcess.setTimeCreated(timeCurrent);
         assetProcess.setTimeModified(timeCurrent);

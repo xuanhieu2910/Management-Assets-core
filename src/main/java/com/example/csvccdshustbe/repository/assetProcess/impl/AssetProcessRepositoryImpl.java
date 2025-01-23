@@ -619,9 +619,9 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
         query.setParameter("statusFluctuationSituation", Arrays.asList(
-                Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE,
-                Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE,
-                Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE));
+                Constants.TYPE_FLUCTUATING_SITUATION_DECLARE,
+                Constants.TYPE_FLUCTUATING_SITUATION_INCREASE,
+                Constants.TYPE_FLUCTUATING_SITUATION_DECREASE));
         List<AssetsFluctuatingSituationAssetDto> fluctuatingSituationAssetDtos = new ArrayList<>();
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)){
@@ -630,12 +630,12 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 situationAssetDto.setIdAsset(ValueUtil.getIntegerByObject(obj[0]));
                 situationAssetDto.setValue(ValueUtil.getStringByObject(obj[1]));
                 situationAssetDto.setStatus(ValueUtil.getIntegerByObject(obj[2]));
-                if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE)) {
-                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE);
-                } else if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE)) {
-                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
-                } else if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE)) {
-                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE);
+                if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_DECLARE)) {
+                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_DECLARE);
+                } else if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_INCREASE)) {
+                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_INCREASE);
+                } else if (ValueUtil.getIntegerByObject(obj[2]).equals(Constants.TYPE_FLUCTUATING_SITUATION_DECREASE)) {
+                    situationAssetDto.setTypeFluctuatingSituationAsset(Constants.TYPE_FLUCTUATING_SITUATION_DECREASE);
                 }
                 fluctuatingSituationAssetDtos.add(situationAssetDto);
             }

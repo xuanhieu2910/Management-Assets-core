@@ -3,9 +3,9 @@ package com.example.csvccdshustbe.controller;
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
-import com.example.csvccdshustbe.request.document.UpdateInventoryDraftRequest;
+import com.example.csvccdshustbe.request.document.UpdateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
-import com.example.csvccdshustbe.request.document.tool.UpdateInventoryDraftToolRequest;
+import com.example.csvccdshustbe.request.document.tool.UpdateInventoryToolRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.request.process.tool.CreateDecreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
@@ -334,7 +334,7 @@ public class DocumentController {
     }
 
     @PostMapping("/asset-update-inventory-draft")
-    public ResponseEntity<?> updateInventoryDraftAsset(@RequestBody UpdateInventoryDraftRequest request){
+    public ResponseEntity<?> updateInventoryDraftAsset(@RequestBody UpdateInventoryAssetRequest request){
         try {
             documentService.updateInventoryDraftAsset(request);
             return ApiResponseDto.createdWithMessage("Update inventory draft success!", HttpStatus.OK);
@@ -346,7 +346,7 @@ public class DocumentController {
     }
 
     @PostMapping("/asset-update-inventory-finish")
-    public ResponseEntity<?> finishInventoryFinishAsset(@RequestBody UpdateInventoryDraftRequest request){
+    public ResponseEntity<?> finishInventoryFinishAsset(@RequestBody UpdateInventoryAssetRequest request){
         try {
             documentService.updateInventoryFinishAsset(request);
             return ApiResponseDto.createdWithMessage("Update inventory finish success!", HttpStatus.OK);
@@ -533,7 +533,7 @@ public class DocumentController {
     }
 
     @PostMapping("/tool-update-inventory-draft")
-    public ResponseEntity<?> updateInventoryDraftTool(@RequestBody UpdateInventoryDraftToolRequest request){
+    public ResponseEntity<?> updateInventoryDraftTool(@RequestBody UpdateInventoryToolRequest request){
         try {
             documentService.updateInventoryDraftTool(request);
             return ApiResponseDto.createdWithMessage("Update inventory draft success!", HttpStatus.OK);
@@ -545,7 +545,7 @@ public class DocumentController {
     }
 
     @PostMapping("/tool-update-inventory-finish")
-    public ResponseEntity<?> updateInventoryFinishedTool(@RequestBody UpdateInventoryDraftToolRequest request){
+    public ResponseEntity<?> updateInventoryFinishedTool(@RequestBody UpdateInventoryToolRequest request){
         try {
             documentService.updateInventoryFinishTool(request);
             return ApiResponseDto.createdWithMessage("Update inventory draft success!", HttpStatus.OK);

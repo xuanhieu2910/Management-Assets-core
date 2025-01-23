@@ -61,8 +61,8 @@ public class FluctuatingSituationAssetServiceImpl implements FluctuatingSituatio
         for (FluctuatingSituationAsset fluctuatingSituationAsset : fluctuatingSituationAssets) {
             fluctuatingSituationAsset.setTimeModified(String.valueOf(new Date().getTime()));
             fluctuatingSituationAsset.setIdUserModified(csvcUser.getIdUser());
-            if (updateAssetRequest.getTypeCurrent().equals(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE)) {
-                fluctuatingSituationAsset.setType(Constants.TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE);
+            if (updateAssetRequest.getTypeCurrent().equals(Constants.TYPE_FLUCTUATING_SITUATION_DECLARE)) {
+                fluctuatingSituationAsset.setType(Constants.TYPE_FLUCTUATING_SITUATION_INCREASE);
                 fluctuatingSituationAsset.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_ASSET_NOT_FINISH);
             } else {
                 fluctuatingSituationAsset.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_ASSET_FINISH);

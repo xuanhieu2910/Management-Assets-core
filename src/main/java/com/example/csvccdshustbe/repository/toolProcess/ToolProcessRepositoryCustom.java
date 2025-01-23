@@ -13,4 +13,6 @@ public interface ToolProcessRepositoryCustom {
     Page<FindAllToolProcessDto> findAllToolProcess(FindAllToolProcessRequest request, Pageable pageable);
     List<ToolProcess> findAllToolProcessByIdProcess(Integer idProcess);
     List<ToolProcess> findListToolProcessByIdsToolAndIdProcess(List<Integer> idsTool, Integer idProcess);
+    List<ToolProcess> findToolProcessByIdProcessAndStatusFluctuationSituation(Integer idProcess,
+                                                                              List<Integer> fluctuationSituation);
 }

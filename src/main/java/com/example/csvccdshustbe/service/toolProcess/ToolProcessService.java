@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.entity.ToolProcess;
 import java.util.List;
 
 import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
+import com.example.csvccdshustbe.request.toolProcess.ToolProcessRequest;
 import com.example.csvccdshustbe.request.toolProcess.UpdateAllToolProcessRequest;
 import com.example.csvccdshustbe.response.toolProcess.FindAllToolProcessResponse;
 import org.springframework.data.domain.Page;
@@ -17,5 +18,7 @@ public interface ToolProcessService {
     List<ToolProcess> saveAllToolProcess(List<ToolProcess> toolProcessList);
     Page<FindAllToolProcessResponse> findAllToolProcess(FindAllToolProcessRequest request);
     List<ToolProcess> findAllToolProcessByIdProcess(Integer idProcess);
-    void updateListToolProcessByIdProcess(UpdateAllToolProcessRequest toolProcess, Integer idDocument);
+    void updateListToolProcessByIdProcess(List<ToolProcessRequest> toolProcessRequests, Integer idProcess);
+    List<ToolProcess> findToolProcessByIdProcessAndStatusFluctuationSituation(Integer idProcess,
+                                                                              List<Integer> fluctuationSituation);
 }

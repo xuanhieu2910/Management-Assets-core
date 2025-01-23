@@ -6,9 +6,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateInventoryDraftToolRequest {
+public class UpdateInventoryToolRequest {
 
     private String codeDocument;
     private UpdateAllToolProcessRequest toolProcess;
+    private boolean isUpdateFinished;
 
 }

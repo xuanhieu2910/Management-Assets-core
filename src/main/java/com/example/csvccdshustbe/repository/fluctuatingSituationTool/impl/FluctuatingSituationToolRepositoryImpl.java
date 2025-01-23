@@ -1,0 +1,6 @@
+package com.example.csvccdshustbe.repository.fluctuatingSituationTool.impl;
+
+import com.example.csvccdshustbe.repository.fluctuatingSituationTool.FluctuatingSituationToolRepositoryCustom;
+
+public class FluctuatingSituationToolRepositoryImpl implements FluctuatingSituationToolRepositoryCustom {
+}

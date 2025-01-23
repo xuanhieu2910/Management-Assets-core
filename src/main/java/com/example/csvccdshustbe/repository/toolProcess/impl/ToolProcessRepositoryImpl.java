@@ -2,9 +2,11 @@ package com.example.csvccdshustbe.repository.toolProcess.impl;
 
 
 import com.example.csvccdshustbe.dto.toolProcess.FindAllToolProcessDto;
+import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.entity.ToolProcess;
 import com.example.csvccdshustbe.repository.toolProcess.ToolProcessRepositoryCustom;
 import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ToolProcessRepositoryImpl implements ToolProcessRepositoryCustom {
@@ -113,7 +116,76 @@ public class ToolProcessRepositoryImpl implements ToolProcessRepositoryCustom {
 
     @Override
     public List<ToolProcess> findListToolProcessByIdsToolAndIdProcess(List<Integer> idsTool, Integer idProcess) {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select tp.id_tool_process, tp.id_tool, tp.id_process, " +
+                "       tp.id_type_process, tp.status, tp.value, tp.time_created, " +
+                "       tp.time_modified, tp.id_user_created, tp.id_user_modified, tp.quantity " +
+                "from tool_process tp " +
+                "    inner join process pr on tp.id_process = pr.id_process " +
+                "    inner join tool tl on tp.id_tool = tl.id_tool " +
+                "where tl.id_tool in (:idsTool) " +
+                "and pr.id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsTool", idsTool);
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        List<ToolProcess> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(responses)){
+            for (Object[] obj : result){
+                ToolProcess toolProcess = new ToolProcess();
+                toolProcess.setIdToolProcess(ValueUtil.getIntegerByObject(obj[0]));
+                toolProcess.setIdTool(ValueUtil.getIntegerByObject(obj[1]));
+                toolProcess.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                toolProcess.setIdTypeProcess(ValueUtil.getIntegerByObject(obj[3]));
+                toolProcess.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                toolProcess.setValue(ValueUtil.getStringByObject(obj[5]));
+                toolProcess.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                toolProcess.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                toolProcess.setIdUserCreated(ValueUtil.getIntegerByObject(obj[8]));
+                toolProcess.setIdUserModified(ValueUtil.getIntegerByObject(obj[9]));
+                toolProcess.setQuantity(ValueUtil.getIntegerByObject(obj[10]));
+                responses.add(toolProcess);
+            }
+        }
+        return responses;
+    }
+
+    @Override
+    public List<ToolProcess> findToolProcessByIdProcessAndStatusFluctuationSituation(Integer idProcess,
+                                                                                     List<Integer> fluctuationSituation) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select tp.id_tool_process, tp.id_tool, tp.id_process,  " +
+                "       tp.id_type_process, tp.status, tp.value,  " +
+                "       tp.time_created, tp.time_modified, tp.id_user_created,  " +
+                "       tp.id_user_modified, tp.quantity  " +
+                "from tool_process tp  " +
+                "    inner join process pr on tp.id_process = pr.id_process  " +
+                "    inner join tool tl on tp.id_tool = tl.id_tool  " +
+                "where pr.id_process = :idProcess  " +
+                "and tp.status in (:typeFluctuationSituation) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        query.setParameter("typeFluctuationSituation",fluctuationSituation);
+        List<ToolProcess> toolProcessList = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                ToolProcess toolProcess = new ToolProcess();
+                toolProcess.setIdToolProcess(ValueUtil.getIntegerByObject(obj[0]));
+                toolProcess.setIdTool(ValueUtil.getIntegerByObject(obj[1]));
+                toolProcess.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                toolProcess.setIdTypeProcess(ValueUtil.getIntegerByObject(obj[3]));
+                toolProcess.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                toolProcess.setValue(ValueUtil.getStringByObject(obj[5]));
+                toolProcess.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                toolProcess.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                toolProcess.setIdUserCreated(ValueUtil.getIntegerByObject(obj[8]));
+                toolProcess.setIdUserModified(ValueUtil.getIntegerByObject(obj[9]));
+                toolProcess.setQuantity(ValueUtil.getIntegerByObject(obj[10]));
+                toolProcessList.add(toolProcess);
+            }
+        }
+        return toolProcessList;
     }
 
     private long countFindAllToolProcess(FindAllToolProcessRequest request) {

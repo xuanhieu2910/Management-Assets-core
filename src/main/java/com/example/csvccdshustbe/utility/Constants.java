@@ -585,11 +585,13 @@ public class Constants {
     public static Integer STATUS_FLUCTUATING_SITUATION_ASSET_NOT_FINISH = -1;
     public static Integer STATUS_FLUCTUATING_SITUATION_ASSET_FINISH = 1;
     /*----------------------------------------------------*/
-    /* Constant type fluctuating situation asset
+
+    /**
+     *  Constant type fluctuating situation asset
      * */
-    public static final Integer TYPE_FLUCTUATING_SITUATION_ASSET_DECLARE = 10;
-    public final static Integer TYPE_FLUCTUATING_SITUATION_ASSET_INCREASE = 11;
-    public final static Integer TYPE_FLUCTUATING_SITUATION_ASSET_DECREASE = 12;
+    public static final Integer TYPE_FLUCTUATING_SITUATION_DECLARE = 10;
+    public final static Integer TYPE_FLUCTUATING_SITUATION_INCREASE = 11;
+    public final static Integer TYPE_FLUCTUATING_SITUATION_DECREASE = 12;
     /*----------------------------------------------------*/
 
     /* Constant DEPTH DEFAULT in Categories
@@ -617,4 +619,15 @@ public class Constants {
     public static Integer TOOL_IS_DECREASED = 2;
 
     /*----------------------------------------------------*/
+    /**
+     * Constant fluctuating situation
+     * */
+    public static Integer TYPE_FLUCTUATING_SITUATION_DETAIL_ASSET = 100;
+    public static Integer TYPE_FLUCTUATING_SITUATION_DETAIL_TOOL = 200;
+
+    /*----------------------------------------------------*/ /**
+     * Constant status fluctuating situation tool
+     * */
+    public static Integer STATUS_FLUCTUATING_SITUATION_TOOL_NOT_FINISH = -1;
+    public static Integer STATUS_FLUCTUATING_SITUATION_TOOL_FINISH = 1;
 }

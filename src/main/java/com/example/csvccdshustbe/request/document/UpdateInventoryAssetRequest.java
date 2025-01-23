@@ -8,8 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UpdateInventoryDraftRequest {
+public class UpdateInventoryAssetRequest {
 
     private String codeDocument;
     private UpdateAllAssetProcessRequest assetProcess;
+    private boolean isUpdateFinished;
 }
