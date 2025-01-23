@@ -446,7 +446,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "         de.id_department, de.code, de.name,      " +
                 "         lo.id_location, lo.name,      " +
                 "         cu.id_user, cu.user_name,      " +
-                "         tl.year_use, tl.price      " +
+                "         tl.year_use, tl.price , cu.full_name     " +
                 "  from tool tl      " +
                 "      left join department de on tl.id_department = de.id_department      " +
                 "      left join location lo on tl.id_location = lo.id_location      " +
@@ -533,6 +533,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         toolDto.setUserName(ValueUtil.getStringByObject(obj[24]));
         toolDto.setYearUse(ValueUtil.getStringByObject(obj[25]));
         toolDto.setPrice(ValueUtil.getStringByObject(obj[26]));
+        toolDto.setFullName(ValueUtil.getStringByObject(obj[27]));
         return toolDto;
     }
 

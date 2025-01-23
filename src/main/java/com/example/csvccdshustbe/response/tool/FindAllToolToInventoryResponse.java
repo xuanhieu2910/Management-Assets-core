@@ -48,5 +48,7 @@ public class FindAllToolToInventoryResponse {
     private String userName;
     @JsonProperty("status_use")
     private Integer statusUse;
+    @JsonProperty("full_name")
+    private String fullName;
 
 }
