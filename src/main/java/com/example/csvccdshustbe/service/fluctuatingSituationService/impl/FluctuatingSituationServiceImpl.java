@@ -6,7 +6,6 @@ import com.example.csvccdshustbe.repository.fluctuatingSituationRepository.Fluct
 import com.example.csvccdshustbe.request.fluctuatingSituation.FindAllFluctuatingSituationRequest;
 import com.example.csvccdshustbe.response.fluctuatingSituation.FindAllFluctuationSituationResponse;
 import com.example.csvccdshustbe.response.fluctuatingSituation.StatisticFluctuatingSituation;
-import com.example.csvccdshustbe.response.fluctuatingSituationAsset.StatisticFluctuatingSituationAsset;
 import com.example.csvccdshustbe.service.fluctuatingSituationService.FluctuatingSituationService;
 import com.example.csvccdshustbe.utility.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +41,7 @@ public class FluctuatingSituationServiceImpl implements FluctuatingSituationServ
     }
 
     @Override
-    public StatisticFluctuatingSituationAsset getStatisticFluctuatingSituationAsset(Integer idFluctuatingSituation) {
-        return fluctuatingSituationRepository.getStatisticFluctuatingSituationAsset(idFluctuatingSituation);
-    }
-
-    @Override
-    public StatisticFluctuatingSituation getStatisticFluctuatingSituation() {
-        return fluctuatingSituationRepository.getStatisticFluctuatingSituation();
+    public StatisticFluctuatingSituation getStatisticFluctuatingSituation(Integer typeFluctuatingSituation) {
+        return fluctuatingSituationRepository.getStatisticFluctuatingSituation(typeFluctuatingSituation);
     }
 }

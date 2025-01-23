@@ -53,4 +53,15 @@ public class FluctuatingSituationAssetController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @GetMapping("/statistic")
+    public ResponseEntity<?> getStatisticFluctuatingSituationAsset(@RequestParam("id") Integer idFluctuatingSituation){
+        try {
+            return ApiResponseDto.createdWithState(
+                    fluctuatingSituationAssetService.getStatisticFluctuatingSituationAsset(idFluctuatingSituation),
+                    "Get statistic fluctuating situation", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

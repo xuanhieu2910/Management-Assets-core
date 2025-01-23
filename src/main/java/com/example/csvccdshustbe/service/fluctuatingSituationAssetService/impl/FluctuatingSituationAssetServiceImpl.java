@@ -2,21 +2,16 @@ package com.example.csvccdshustbe.service.fluctuatingSituationAssetService.impl;
 
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.FluctuatingSituationAsset;
-import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.fluctuatingSituationAssetRepository.FluctuatingSituationAssetRepository;
 import com.example.csvccdshustbe.request.fluctuatingSituationAsset.FindAllFluctuatingSituationAssetRequest;
 import com.example.csvccdshustbe.request.fluctuatingSituationAsset.FluctuatingSituationAssetRequest;
 import com.example.csvccdshustbe.response.fluctuatingSituationAsset.FindAllFluctuatingSituationAssetResponses;
-import com.example.csvccdshustbe.service.asset.AssetService;
+import com.example.csvccdshustbe.response.fluctuatingSituationAsset.StatisticFluctuatingSituationAsset;
 import com.example.csvccdshustbe.service.fluctuatingSituationAssetService.FluctuatingSituationAssetService;
 import com.example.csvccdshustbe.service.fluctuatingSituationService.FluctuatingSituationService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.ValueUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.util.JSONObjectUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -27,7 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class FluctuatingSituationAssetServiceImpl implements FluctuatingSituationAssetService {
@@ -84,5 +80,10 @@ public class FluctuatingSituationAssetServiceImpl implements FluctuatingSituatio
             throw new NotFoundException("Don't exits fluctuating situation asset by id!");
         }
         return fluctuatingSituationAssets;
+    }
+
+    @Override
+    public StatisticFluctuatingSituationAsset getStatisticFluctuatingSituationAsset(Integer idFluctuatingSituation) {
+        return fluctuatingSituationAssetRepository.getStatisticFluctuatingSituationAsset(idFluctuatingSituation);
     }
 }

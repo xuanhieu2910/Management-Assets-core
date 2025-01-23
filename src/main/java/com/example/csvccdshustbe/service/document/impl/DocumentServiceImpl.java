@@ -389,7 +389,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private void createFluctuatingSituation(Integer idProcess, Integer typeFluctuatingSituationDetail) {
-        FluctuatingSituation fluctuatingSituation = constructionFluctuatingSituation(idProcess);
+        FluctuatingSituation fluctuatingSituation = constructionFluctuatingSituation(idProcess, typeFluctuatingSituationDetail);
         if (typeFluctuatingSituationDetail.equals(Constants.TYPE_FLUCTUATING_SITUATION_DETAIL_ASSET)) {
             createFluctuatingSituationAsset(fluctuatingSituation, idProcess);
         } else if (typeFluctuatingSituationDetail.equals(Constants.TYPE_FLUCTUATING_SITUATION_DETAIL_TOOL)){
@@ -466,7 +466,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
 
-    private FluctuatingSituation constructionFluctuatingSituation(Integer idProcess) {
+    private FluctuatingSituation constructionFluctuatingSituation(Integer idProcess, Integer typeFluctuatingSituation) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String timeCurrent = String.valueOf(new Date().getTime());
         FluctuatingSituation fluctuatingSituation = new FluctuatingSituation();
@@ -475,6 +475,7 @@ public class DocumentServiceImpl implements DocumentService {
         fluctuatingSituation.setTimeCreated(timeCurrent);
         fluctuatingSituation.setTimeModified(timeCurrent);
         fluctuatingSituation.setIdUserModified(csvcUser.getIdUser());
+        fluctuatingSituation.setType(typeFluctuatingSituation);
         return fluctuatingSituationService.saveFluctuatingSituation(fluctuatingSituation);
     }
 

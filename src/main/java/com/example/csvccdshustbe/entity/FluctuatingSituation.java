@@ -28,4 +28,6 @@ public class FluctuatingSituation {
     private String timeModified;
     @Column(name = "id_user_modified")
     private Integer idUserModified;
+    @Column(name = "type")
+    private Integer type;
 }

@@ -1,4 +1,7 @@
 package com.example.csvccdshustbe.repository.fluctuatingSituationTool;
 
+import com.example.csvccdshustbe.response.fluctuatingSituationTool.StatisticFluctuatingSituationTool;
+
 public interface FluctuatingSituationToolRepositoryCustom {
+    StatisticFluctuatingSituationTool getStatisticFluctuatingSituationTool(Integer idFluctuatingSituation);
 }

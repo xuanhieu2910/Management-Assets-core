@@ -12,6 +12,5 @@ public interface FluctuatingSituationService {
     FluctuatingSituation saveFluctuatingSituation(FluctuatingSituation fluctuatingSituation);
     Page<FindAllFluctuationSituationResponse> findAllFluctuatingSituation(FindAllFluctuatingSituationRequest request);
     void calculatorStatusFluctuatingSituationById(Integer idFluctuatingSituation);
-    StatisticFluctuatingSituationAsset getStatisticFluctuatingSituationAsset(Integer idFluctuatingSituation);
-    StatisticFluctuatingSituation getStatisticFluctuatingSituation();
+    StatisticFluctuatingSituation getStatisticFluctuatingSituation(Integer typeFluctuatingSituation);
 }

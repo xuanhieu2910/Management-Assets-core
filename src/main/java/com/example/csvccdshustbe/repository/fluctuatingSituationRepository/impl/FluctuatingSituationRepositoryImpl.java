@@ -37,16 +37,17 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
     public Page<FindAllFluctuationSituationResponse>
     findAllFluctuationSituationResponse(Pageable pageable, FindAllFluctuatingSituationRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select fs.id_fluctuating_situation, pr.id_process, " +
-                "       fs.status, pr.time_created, pr.time_modified, " +
-                "       do.code, do.id_document, cu.user_name, cu.full_name, " +
-                "       do.time_increase, de.id_department, de.name " +
-                "from fluctuating_situation fs " +
-                "    inner join process pr on fs.id_process = pr.id_process " +
-                "    inner join document do on pr.id_process = do.id_process " +
-                "    inner join csvc_user cu on do.id_user_created = cu.id_user " +
-                "    inner join department de on do.id_department = de.id_department " +
-                "where do.id_department_original in (:idsDepartmentOriginal) ");
+        sb.append(" select fs.id_fluctuating_situation, pr.id_process,  " +
+                "         fs.status, pr.time_created, pr.time_modified,  " +
+                "         do.code, do.id_document, cu.user_name, cu.full_name,  " +
+                "         do.time_increase, de.id_department, de.name  " +
+                "  from fluctuating_situation fs  " +
+                "      inner join process pr on fs.id_process = pr.id_process  " +
+                "      inner join document do on pr.id_process = do.id_process  " +
+                "      inner join csvc_user cu on do.id_user_created = cu.id_user  " +
+                "      inner join department de on do.id_department = de.id_department  " +
+                "  where do.id_department_original in (:idsDepartmentOriginal)  " +
+                "  and fs.type = :type ");
         setConditionFindAllFluctuationSituation(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         PageUtils.buildQuery(pageable, query);
@@ -96,59 +97,20 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
     }
 
     @Override
-    public StatisticFluctuatingSituationAsset getStatisticFluctuatingSituationAsset(Integer idFluctuatingSituation) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(" select sum(totalDeclare) as totalDeclare,  " +
-                "       sum(totalIncrease) as totalIncrease,  " +
-                "       sum(totalDecrease) as totalDecrease  " +
-                "from (select count(0) totalDeclare, 0 totalIncrease, 0 totalDecrease  " +
-                "from fluctuating_situation_asset  " +
-                "where fluctuating_situation_asset.id_fluctuating_situation = :idFluctuatingSituation  " +
-                "  and fluctuating_situation_asset.type = :typeDeclare  " +
-                "  and fluctuating_situation_asset.status = :statusNotYetFinish  " +
-                "union all  " +
-                "select 0 totalDeclare, count(0) totalIncrease, 0 totalDecrease  " +
-                "from fluctuating_situation_asset  " +
-                "where fluctuating_situation_asset.id_fluctuating_situation = :idFluctuatingSituation  " +
-                "    and fluctuating_situation_asset.type = :typeIncrease  " +
-                "    and fluctuating_situation_asset.status = :statusNotYetFinish  " +
-                "union all  " +
-                "select 0 totalDeclare, 0 totalIncrease, count(0) totalDecrease  " +
-                "from fluctuating_situation_asset  " +
-                "where fluctuating_situation_asset.id_fluctuating_situation = :idFluctuatingSituation  " +
-                "  and fluctuating_situation_asset.type = :typeDecrease  " +
-                "  and fluctuating_situation_asset.status = :statusNotYetFinish) result ");
-        Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("statusNotYetFinish", Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
-        query.setParameter("idFluctuatingSituation", idFluctuatingSituation);
-        query.setParameter("typeDeclare", Constants.TYPE_FLUCTUATING_SITUATION_DECLARE);
-        query.setParameter("typeIncrease", Constants.TYPE_FLUCTUATING_SITUATION_INCREASE);
-        query.setParameter("typeDecrease", Constants.TYPE_FLUCTUATING_SITUATION_DECREASE);
-        StatisticFluctuatingSituationAsset situation = new StatisticFluctuatingSituationAsset();
-        List<Object[]> result = query.getResultList();
-        if (!CollectionUtils.isEmpty(result)){
-            for (Object[] obj : result){
-                situation.setTotalDeclare(ValueUtil.getIntegerByObject(obj[0]));
-                situation.setTotalIncrease(ValueUtil.getIntegerByObject(obj[1]));
-                situation.setTotalDecrease(ValueUtil.getIntegerByObject(obj[2]));
-            }
-        }
-        return situation;
-    }
-
-    @Override
-    public StatisticFluctuatingSituation getStatisticFluctuatingSituation() {
+    public StatisticFluctuatingSituation getStatisticFluctuatingSituation(Integer typeFluctuatingSituation) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) countNoyYetFinished  " +
                 "from fluctuating_situation fs  " +
                 "    inner join process pr on fs.id_process = pr.id_process  " +
                 "    inner join document dc on pr.id_process = dc.id_process  " +
                 "where dc.id_department_original in (:idsDepartmentOriginal)  " +
-                "and fs.status = :statusNotYetFinished ");
+                "and fs.status = :statusNotYetFinished " +
+                "and fs.type = :type ");
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
         query.setParameter("statusNotYetFinished", Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
+        query.setParameter("type", typeFluctuatingSituation);
         Object result = query.getSingleResult();
         StatisticFluctuatingSituation situation = new StatisticFluctuatingSituation();
         if (result != null) {
@@ -165,7 +127,8 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
                 "    inner join document do on pr.id_process = do.id_process " +
                 "    inner join csvc_user cu on do.id_user_created = cu.id_user " +
                 "    inner join department de on do.id_department = de.id_department " +
-                "where do.id_department_original in (:idsDepartmentOriginal) ");
+                " where do.id_department_original in (:idsDepartmentOriginal) " +
+                " and fs.type = :type  ");
         setConditionFindAllFluctuationSituation(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllFluctuationSituation(query, request);
@@ -174,6 +137,7 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
 
     private void setParameterFindAllFluctuationSituation(Query query, FindAllFluctuatingSituationRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+        query.setParameter("type", request.getType());
         if (StringUtils.isNotBlank(request.getCodeDocument())){
             query.setParameter("keyword", request.getCodeDocument());
         }

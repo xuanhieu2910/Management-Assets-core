@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.fluctuatingSituationAsset.FindAllFluctuatingSituationAssetRequest;
 import com.example.csvccdshustbe.request.fluctuatingSituationAsset.FluctuatingSituationAssetRequest;
 import com.example.csvccdshustbe.response.fluctuatingSituationAsset.FindAllFluctuatingSituationAssetResponses;
+import com.example.csvccdshustbe.response.fluctuatingSituationAsset.StatisticFluctuatingSituationAsset;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 
@@ -18,4 +19,5 @@ public interface FluctuatingSituationAssetService {
     Page<FindAllFluctuatingSituationAssetResponses> findAllFluctuatingSituationAsset(FindAllFluctuatingSituationAssetRequest request);
     void updateDeclareAssetFluctuatingSituation(FluctuatingSituationAssetRequest updateAssetRequest);
     List<FluctuatingSituationAsset> findFluctuatingSituationAssetByIds(List<Integer> idsFluctuatingSituation);
+    StatisticFluctuatingSituationAsset getStatisticFluctuatingSituationAsset(Integer idFluctuatingSituation);
 }

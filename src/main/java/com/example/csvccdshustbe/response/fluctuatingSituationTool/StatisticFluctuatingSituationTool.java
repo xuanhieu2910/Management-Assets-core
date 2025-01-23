@@ -1,4 +1,4 @@
-package com.example.csvccdshustbe.response.fluctuatingSituationAsset;
+package com.example.csvccdshustbe.response.fluctuatingSituationTool;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -7,8 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StatisticFluctuatingSituationAsset {
-
+public class StatisticFluctuatingSituationTool {
 
     @JsonProperty("total_declare")
     private Integer totalDeclare = 0;
