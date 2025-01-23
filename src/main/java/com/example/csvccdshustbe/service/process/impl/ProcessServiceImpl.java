@@ -10,6 +10,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.repository.process.ProcessRepository;
 import com.example.csvccdshustbe.repository.tool.ToolRepository;
+import com.example.csvccdshustbe.request.document.tool.FindAllToolBeAssignedDocumentToolRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.request.process.asset.AssetDetailDecreaseRequest;
 import com.example.csvccdshustbe.request.process.asset.AssetDetailIncreaseRequest;
@@ -18,6 +19,7 @@ import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilD
 import com.example.csvccdshustbe.request.process.councilInventory.CreateCouncilInventoryRequest;
 import com.example.csvccdshustbe.request.process.document.*;
 import com.example.csvccdshustbe.request.process.tool.*;
+import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolBeAssignedDocumentInventoryResponse;
 import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
@@ -1269,6 +1271,14 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public ProcessStatisticsToolUpdateInventoryResponse getStatisticToolUpdateInventory() {
         return processRepository.getStatisticsToolUpdateInventory();
+    }
+
+    @Override
+    public Page<FindAllDocumentToolBeAssignedDocumentInventoryResponse> findAllDocumentToolBeAssignedDocumentInventory(FindAllToolBeAssignedDocumentToolRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartment(csvcUser.getIdsDepartmentCurrent());
+        return processRepository.findAllToolBeAssignedDocumentInventory(request, pageable);
     }
 
     /***

@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.UpdateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
+import com.example.csvccdshustbe.request.document.tool.FindAllToolBeAssignedDocumentToolRequest;
 import com.example.csvccdshustbe.request.document.tool.UpdateInventoryToolRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.request.process.tool.CreateDecreaseToolRequest;
@@ -555,5 +556,20 @@ public class DocumentController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+    @GetMapping("/tool-be-assigned-document-inventory")
+    public ResponseEntity<?> findAllToolBeAssignedInventoryAsset(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllToolBeAssignedDocumentToolRequest request){
+        try {
+            return ApiResponseDto.createdWithState(processService.findAllDocumentToolBeAssignedDocumentInventory(request),
+                    "Find all tool be assigned document inventory success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 
 }

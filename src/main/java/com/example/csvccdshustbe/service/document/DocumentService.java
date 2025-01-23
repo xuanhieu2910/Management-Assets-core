@@ -5,14 +5,12 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.UpdateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
+
 import com.example.csvccdshustbe.request.document.tool.UpdateInventoryToolRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
-import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDecreaseResponse;
-import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDocumentInventoryResponse;
-import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDocumentUpdateInventoryResponse;
-import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolIncreaseResponse;
+import com.example.csvccdshustbe.response.document.tool.*;
 import com.example.csvccdshustbe.response.process.*;
 import org.springframework.data.domain.Page;
 
@@ -43,4 +41,6 @@ public interface DocumentService {
     Page<FindAllDocumentToolDecreaseResponse> findAllDocumentToolDecrease(FindAllDocumentToolRequest findAllProcessAssetRequest);
     Page<FindAllDocumentToolDocumentInventoryResponse> findAllDocumentToolDocumentInventory(FindAllDocumentToolRequest findAllProcessAssetRequest);
     Page<FindAllDocumentToolDocumentUpdateInventoryResponse> findAllDocumentToolDocumentUpdateInventory(FindAllDocumentToolRequest findAllProcessAssetRequest);
+
+
 }

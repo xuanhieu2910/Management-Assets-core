@@ -3,8 +3,10 @@ package com.example.csvccdshustbe.repository.process.impl;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.repository.process.ProcessRepositoryCustom;
+import com.example.csvccdshustbe.request.document.tool.FindAllToolBeAssignedDocumentToolRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedDocumentInventoryRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
+import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolBeAssignedDocumentInventoryResponse;
 import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
@@ -685,6 +687,86 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             }
         }
         return response;
+    }
+
+    @Override
+    public Page<FindAllDocumentToolBeAssignedDocumentInventoryResponse> findAllToolBeAssignedDocumentInventory(FindAllToolBeAssignedDocumentToolRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select pr.id_process, dc.id_document, dc.code codeDocument,     " +
+                "        tp.name typeProcess, dc.description, pr.time_created,         " +
+                "        pr.time_modified, csvcUserCreate.user_name, csvcUserCreate.full_name,         " +
+                "        dc.time_created, dc.time_modified, dc.time_increase, dc.time_document,  " +
+                "        rsh.id_request_stake_holder  " +
+                " from process pr  " +
+                "        inner join department de on pr.id_department = de.id_department     " +
+                "        inner join type_process tp on pr.id_type_process = tp.id_type_process     " +
+                "        inner join document dc on pr.id_process = dc.id_process     " +
+                "        inner join csvc_user csvcUserCreate on pr.id_user_created = csvcUserCreate.id_user  " +
+                "        inner join request re on pr.id_process = re.id_process  " +
+                "        inner join request_stake_holder rsh on re.id_request = rsh.id_request  " +
+                " where pr.status = :statusPending  " +
+                " and tp.code = :codeTypeProcess  " +
+                " and de.id_department in (:idsDepartmentOriginal) ");
+        setConditionFindAllToolBeAssignedDocumentInventory(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllToolBeAssignedDocumentInventory(query, request);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllDocumentToolBeAssignedDocumentInventoryResponse> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FindAllDocumentToolBeAssignedDocumentInventoryResponse response = new FindAllDocumentToolBeAssignedDocumentInventoryResponse();
+                response.setIdProcess(ValueUtil.getIntegerByObject(obj[0]));
+                response.setIdDocument(ValueUtil.getIntegerByObject(obj[1]));
+                response.setCodeDocument(ValueUtil.getStringByObject(obj[2]));
+                response.setTypeProcess(ValueUtil.getStringByObject(obj[3]));
+                response.setDescription(ValueUtil.getStringByObject(obj[4]));
+                response.setTimeCreatedProcess(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[5])), DateUtil.DATE_FORMAT));
+                response.setTimeModifiedProcess(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[6])), DateUtil.DATE_FORMAT));
+                response.setUserNameCreated(ValueUtil.getStringByObject(obj[7]));
+                response.setFullNameCreated(ValueUtil.getStringByObject(obj[8]));
+                response.setTimeCreatedDocument(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[9])), DateUtil.DATE_FORMAT));
+                response.setTimeModifiedDocument(DateUtil.formatToPattern(new Date(ValueUtil.getLongByObject(obj[10])), DateUtil.DATE_FORMAT));
+                response.setTimeIncrease(ValueUtil.getStringByObject(obj[11]));
+                response.setTimeDocument(ValueUtil.getStringByObject(obj[12]));
+                response.setIdRequestStakeHolder(ValueUtil.getIntegerByObject(obj[13]));
+                responses.add(response);
+            }
+        }
+        return new PageImpl<>(responses, pageable, countFinaAllToolBeAssignedDocumentInventory(request));
+    }
+
+    private long countFinaAllToolBeAssignedDocumentInventory(FindAllToolBeAssignedDocumentToolRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) count  " +
+                "from process pr  " +
+                "         inner join department de on pr.id_department = de.id_department  " +
+                "         inner join type_process tp on pr.id_type_process = tp.id_type_process  " +
+                "         inner join document dc on pr.id_process = dc.id_process  " +
+                "         inner join csvc_user csvcUserCreate on pr.id_user_created = csvcUserCreate.id_user  " +
+                "where pr.status = :statusPending  " +
+                "  and tp.code = :codeTypeProcess  " +
+                "  and de.id_department in (:idsDepartmentOriginal) ");
+        setConditionFindAllToolBeAssignedDocumentInventory(sb, request);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllToolBeAssignedDocumentInventory(query, request);
+        return ValueUtil.getLongByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindAllToolBeAssignedDocumentInventory(Query query, FindAllToolBeAssignedDocumentToolRequest request) {
+        query.setParameter("statusPending", Constants.STATUS_PENDING_PROCESS);
+        query.setParameter("codeTypeProcess", Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL);
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartment());
+        if (Objects.nonNull(request.getIdDepartment())) {
+            query.setParameter("idDepartment", request.getIdDepartment());
+        }
+    }
+
+    private void setConditionFindAllToolBeAssignedDocumentInventory(StringBuilder sb, FindAllToolBeAssignedDocumentToolRequest request) {
+        if (Objects.nonNull(request.getIdDepartment())) {
+            sb.append(" and de.id_department = :idDepartment ");
+        }
+        sb.append("   ORDER BY pr.id_process DESC  ");
     }
 
     private long countFinaAllProcessBeAssignedDocumentInventory(FindAllProcessBeAssignedDocumentInventoryRequest request) {

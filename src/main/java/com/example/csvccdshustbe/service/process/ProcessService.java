@@ -2,10 +2,12 @@ package com.example.csvccdshustbe.service.process;
 
 import com.example.csvccdshustbe.entity.Process;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.request.document.tool.FindAllToolBeAssignedDocumentToolRequest;
 import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.request.process.tool.CreateDecreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateInventoryToolRequest;
+import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolBeAssignedDocumentInventoryResponse;
 import com.example.csvccdshustbe.response.process.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
@@ -37,4 +39,5 @@ public interface ProcessService {
     ProcessStatisticsToolDocumentInventoryResponse getStatisticToolDocumentInventory();
     ProcessStatisticsToolDocumentBeInventoryResponse getStatisticToolDocumentBeInventory();
     ProcessStatisticsToolUpdateInventoryResponse getStatisticToolUpdateInventory();
+    Page<FindAllDocumentToolBeAssignedDocumentInventoryResponse> findAllDocumentToolBeAssignedDocumentInventory(FindAllToolBeAssignedDocumentToolRequest request);
 }

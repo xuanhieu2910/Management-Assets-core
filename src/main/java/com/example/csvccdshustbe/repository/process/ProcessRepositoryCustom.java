@@ -2,8 +2,10 @@ package com.example.csvccdshustbe.repository.process;
 
 
 import com.example.csvccdshustbe.entity.Process;
+import com.example.csvccdshustbe.request.document.tool.FindAllToolBeAssignedDocumentToolRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedDocumentInventoryRequest;
 import com.example.csvccdshustbe.request.process.FindAllProcessBeAssignedRequest;
+import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolBeAssignedDocumentInventoryResponse;
 import com.example.csvccdshustbe.response.process.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,4 +29,5 @@ public interface ProcessRepositoryCustom {
     ProcessStatisticsToolDocumentInventoryResponse getStatisticsToolDocumentInventory();
     ProcessStatisticsToolDocumentBeInventoryResponse getStatisticsToolDocumentByInventory();
     ProcessStatisticsToolUpdateInventoryResponse getStatisticsToolUpdateInventory();
+    Page<FindAllDocumentToolBeAssignedDocumentInventoryResponse> findAllToolBeAssignedDocumentInventory(FindAllToolBeAssignedDocumentToolRequest request, Pageable pageable);
 }
