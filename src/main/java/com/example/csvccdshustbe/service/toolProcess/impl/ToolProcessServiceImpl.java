@@ -111,6 +111,7 @@ public class ToolProcessServiceImpl implements ToolProcessService {
             findAllToolProcessResponse.setSalt(findAllToolProcessDto.getSalt());
             findAllToolProcessResponse.setQuantity(findAllToolProcessDto.getQuantity());
             findAllToolProcessResponse.setIdToolProcess(findAllToolProcessDto.getIdToolProcess());
+            findAllToolProcessResponse.setValue(findAllToolProcessDto.getValue());
             result.add(findAllToolProcessResponse);
         }
         return result;
