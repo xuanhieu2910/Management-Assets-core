@@ -194,6 +194,7 @@ public class ToolServiceImpl implements ToolService {
         response.setIdLocation(toolDto.getIdLocation());
         response.setUserName(toolDto.getUserName());
         response.setStatusUse(toolDto.getStatusUse());
+        response.setFullName(toolDto.getFullName());
         return response;
     }
 
