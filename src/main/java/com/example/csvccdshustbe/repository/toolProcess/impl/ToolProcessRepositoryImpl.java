@@ -32,7 +32,7 @@ public class ToolProcessRepositoryImpl implements ToolProcessRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append("select tool.id_tool idTool, tool.code_tool codeTl,  " +
                 "tool.name nameTool, toolCategories.id_tool_category idToolCategory,  " +
-                "ToolCategories.name nameToolCategory, ToolCategories.code_tool codeToolCategory,  " +
+                "toolCategories.name nameToolCategory, toolCategories.code_tool codeToolCategory,  " +
                 "de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment,  " +
                 "lo.id_location idLocation, lo.name nameLocation,  " +
                 "tool.time_created, tool.time_modified, tool.parent, tool.salt,  " +
@@ -47,7 +47,7 @@ public class ToolProcessRepositoryImpl implements ToolProcessRepositoryCustom {
                 "       left join document do on process.id_process = do.id_process              " +
                 "where 1 = 1           " +
                 "and tool.id_department_original in (:idsDepartmentOriginal)  " +
-                "and do.code = :codeDocument  and tool.parent is null");
+                "and do.code = :codeDocument  ");
         setConditionFindAllToolProcess(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolProcess(request, query);
@@ -201,7 +201,7 @@ public class ToolProcessRepositoryImpl implements ToolProcessRepositoryCustom {
                 "       left join document do on process.id_process = do.id_process              " +
                 "where 1 = 1           " +
                 "and tool.id_department_original in (:idsDepartmentOriginal)  " +
-                "and do.code = :codeDocument  and tool.parent is null");
+                "and do.code = :codeDocument  ");
         setConditionFindAllToolProcess(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolProcess(request, query);

@@ -32,6 +32,7 @@ public class ToolProcessController {
             return ApiResponseDto.createdWithState(toolProcessService.findAllToolProcess(request),
                     "Find all data tool document success!", HttpStatus.OK);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
