@@ -48,7 +48,7 @@ public class ToolProcessServiceImpl implements ToolProcessService {
     @Override
     public List<ToolProcess> findAllToolProcessByIdProcess(Integer idProcess) {
         List<ToolProcess> toolProcesses = toolProcessRepository.findAllToolProcessByIdProcess(idProcess);
-        if (!CollectionUtils.isEmpty(toolProcesses)){
+        if (CollectionUtils.isEmpty(toolProcesses)){
             throw new NotFoundException("Don't exits tool process by id process!");
         }
         return toolProcesses;
