@@ -988,7 +988,7 @@ public class ProcessServiceImpl implements ProcessService {
         document.setTimeIncrease(request.getTimeInventory());
         document.setTimeDocument(request.getTimeInventory());
         document.setIdDepartmentOriginal(process.getIdDepartment());
-        document.setIdDepartment(null);
+        document.setIdDepartment(request.getIdDepartment());
         document.setStatus(Constants.STATUS_DOCUMENT_CAN_CHANGE_OR_UPDATE);
         document.setIdUserCreated(process.getIdUserCreated());
         document.setIdUserModified(process.getIdUserModified());

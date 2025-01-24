@@ -200,7 +200,7 @@ public class ToolProcessRepositoryImpl implements ToolProcessRepositoryCustom {
                 "and tool.id_department_original in (:idsDepartmentOriginal)  " +
                 "and do.code = :codeDocument  ");
         setConditionFindAllToolProcess(request, sb);
-        Query query = entityManager.createNativeQuery(sb.toString());
+        Query query = entityManager.createNativeQuery(  sb.toString());
         setParameterFindAllToolProcess(request, query);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
     }
