@@ -130,7 +130,7 @@ public class ToolProcessRepositoryImpl implements ToolProcessRepositoryCustom {
         query.setParameter("idProcess", idProcess);
         List<Object[]> result = query.getResultList();
         List<ToolProcess> responses = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(responses)){
+        if (!CollectionUtils.isEmpty(result)){
             for (Object[] obj : result){
                 ToolProcess toolProcess = new ToolProcess();
                 toolProcess.setIdToolProcess(ValueUtil.getIntegerByObject(obj[0]));
