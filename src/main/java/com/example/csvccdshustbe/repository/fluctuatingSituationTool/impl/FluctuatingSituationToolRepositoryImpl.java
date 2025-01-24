@@ -1,5 +1,7 @@
 package com.example.csvccdshustbe.repository.fluctuatingSituationTool.impl;
 
+import com.example.csvccdshustbe.entity.FluctuatingSituationAsset;
+import com.example.csvccdshustbe.entity.FluctuatingSituationTool;
 import com.example.csvccdshustbe.repository.fluctuatingSituationTool.FluctuatingSituationToolRepositoryCustom;
 import com.example.csvccdshustbe.request.fluctuatingSituationTool.FindAllFluctuatingSituationToolRequest;
 import com.example.csvccdshustbe.response.fluctuatingSituationAsset.StatisticFluctuatingSituationAsset;
@@ -117,6 +119,42 @@ public class FluctuatingSituationToolRepositoryImpl implements FluctuatingSituat
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllFluctuatingSituationTool(request, query);
         return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+    @Override
+    public List<FluctuatingSituationTool> findFluctuatingSituationToolByIds(List<Integer> idsFluctuatingSituationTool) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_fluctuating_situation_tool, " +
+                "       id_tool, " +
+                "       id_process, " +
+                "       status, " +
+                "       type, " +
+                "       time_created, " +
+                "       time_modified, " +
+                "       id_user_modified, " +
+                "       id_fluctuating_situation " +
+                "from fluctuating_situation_tool " +
+                "where id_fluctuating_situation_tool in (:ids) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("ids", idsFluctuatingSituationTool);
+        List<FluctuatingSituationTool> response = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                FluctuatingSituationTool fluctuatingSituationTool = new FluctuatingSituationTool();
+                fluctuatingSituationTool.setIdFluctuatingSituationTool(ValueUtil.getIntegerByObject(obj[0]));
+                fluctuatingSituationTool.setIdTool(ValueUtil.getIntegerByObject(obj[1]));
+                fluctuatingSituationTool.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                fluctuatingSituationTool.setStatus(ValueUtil.getIntegerByObject(obj[3]));
+                fluctuatingSituationTool.setType(ValueUtil.getIntegerByObject(obj[4]));
+                fluctuatingSituationTool.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+                fluctuatingSituationTool.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                fluctuatingSituationTool.setIdUserModified(ValueUtil.getIntegerByObject(obj[7]));
+                fluctuatingSituationTool.setIdFluctuatingSituation(ValueUtil.getIntegerByObject(obj[8]));
+                response.add(fluctuatingSituationTool);
+            }
+        }
+        return response;
     }
 
     private void setParameterFindAllFluctuatingSituationTool(FindAllFluctuatingSituationToolRequest request, Query query) {

@@ -11,7 +11,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AssetProcessService {
     List<AssetProcess> saveListAssetProcess(List<AssetProcess> assetProcessList);
@@ -26,7 +25,7 @@ public interface AssetProcessService {
     Page<FindAllAssetResponseUpdateInventory> findAllAssetUpdateInventoryProcess(FindAllAssetProcessRequest request);
     Page<FindAllAssetResponseUpdateInventory> findAllAssetProcessLotUpdateInventoryProcess(FindAllAssetProcessRequest request);
     List<AssetProcess> createNewAssetNotDeclareWhenInventory(AssetNotDeclareWhenInventoryRequest request) throws JsonProcessingException, ValidateFiledException;
-    AssetProcess updateAssetProcessInventory(UpdateAssetProcessRequest request) throws JsonProcessingException, ValidateFiledException, IllegalAccessException;
+    void updateAssetProcessInventory(UpdateAssetProcessRequest request) throws JsonProcessingException, ValidateFiledException, IllegalAccessException;
     AssetProcess findAssetProcessByIdAssetProcess(Integer idAssetProcess);
     List<AssetsFluctuatingSituationAssetDto> findAssetsToFluctuatingSituationByIdProcess(Integer idProcess);
 }

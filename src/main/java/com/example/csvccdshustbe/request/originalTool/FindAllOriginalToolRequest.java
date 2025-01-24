@@ -11,4 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FindAllOriginalToolRequest extends RequestPageBase {
     private Integer visible;
+    private String code;
 }

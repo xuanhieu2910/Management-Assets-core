@@ -30,7 +30,7 @@ public class OriginalToolRepositoryImpl implements OriginalToolRepositoryCustom 
                 "                            originalTool.description, originalTool.parent, originalTool.sort_order,          " +
                 "                            originalTool.visible, originalTool.time_created, originalTool.time_modified,          " +
                 "                            originalTool.id_user_created, originalTool.id_user_modified, originalTool.id_tool_category,  " +
-                "                            1 as depth,   CAST(originalTool.id_original_tool as NCHAR ) as path  " +
+                "                            1 as depth,   CAST(originalTool.id_original_tool as NCHAR ) as path,originalTool.code " +
                 "                     from original_tool originalTool  " +
                 "                     where originalTool.parent is null          " +
                 "                     union all          " +
@@ -40,14 +40,14 @@ public class OriginalToolRepositoryImpl implements OriginalToolRepositoryCustom 
                 "                            originalTool.id_user_created, originalTool.id_user_modified,          " +
                 "                            originalTool.id_tool_category,  " +
                 "                            cte.depth + 1 as depth,  " +
-                "                            concat_ws('/',cte.path,CAST(originalTool.id_original_tool as NCHAR)) as path  " +
+                "                            concat_ws('/',cte.path,CAST(originalTool.id_original_tool as NCHAR)) as path ,originalTool.code " +
                 "                     from original_tool   originalTool  " +
                 "                     INNER JOIN cte_originalTool cte ON originalTool.parent = cte.id_original_tool )  " +
                 "                                    select cte.id_original_tool, cte.name, cte.short_name,  " +
                 "                      cte.description, cte.parent, cte.sort_order,          " +
                 "                      cte.visible, cte.time_created, cte.time_modified,          " +
                 "                      cte.id_user_created, cte.id_user_modified,          " +
-                "                      cte.id_tool_category,cte.depth, cte.path  " +
+                "                      cte.id_tool_category,cte.depth, cte.path ,cte.code " +
                 "                                    from cte_originalTool cte          " +
                 "                                        left join tool_categories toolCategory on cte.id_tool_category = toolCategory.id_tool_category  " +
                 "                                    where 1 = 1  ");
@@ -74,6 +74,7 @@ public class OriginalToolRepositoryImpl implements OriginalToolRepositoryCustom 
                 findAllOriginalToolDto.setIdToolCategory(ValueUtil.getIntegerByObject(objects[11]));
                 findAllOriginalToolDto.setDepth(ValueUtil.getIntegerByObject(objects[12]));
                 findAllOriginalToolDto.setPath(ValueUtil.getStringByObject(objects[13]));
+                findAllOriginalToolDto.setCode(ValueUtil.getStringByObject(objects[14]));
                 originalToolDtos.add(findAllOriginalToolDto);
             }
         }
@@ -88,7 +89,7 @@ public class OriginalToolRepositoryImpl implements OriginalToolRepositoryCustom 
                 "                            originalTool.description, originalTool.parent, originalTool.sort_order,          " +
                 "                            originalTool.visible, originalTool.time_created, originalTool.time_modified,          " +
                 "                            originalTool.id_user_created, originalTool.id_user_modified, originalTool.id_tool_category,  " +
-                "                            1 as depth,   CAST(originalTool.id_original_tool as NCHAR ) as path  " +
+                "                            1 as depth,   CAST(originalTool.id_original_tool as NCHAR ) as path,originalTool.code   " +
                 "                     from original_tool originalTool  " +
                 "                     where originalTool.parent is null          " +
                 "                     union all          " +
@@ -98,7 +99,7 @@ public class OriginalToolRepositoryImpl implements OriginalToolRepositoryCustom 
                 "                            originalTool.id_user_created, originalTool.id_user_modified,          " +
                 "                            originalTool.id_tool_category,  " +
                 "                            cte.depth + 1 as depth,  " +
-                "                            concat_ws('/',cte.path,CAST(originalTool.id_original_tool as NCHAR)) as path  " +
+                "                            concat_ws('/',cte.path,CAST(originalTool.id_original_tool as NCHAR)) as path ,originalTool.code  " +
                 "                     from original_tool   originalTool  " +
                 "                     INNER JOIN cte_originalTool cte ON originalTool.parent = cte.id_original_tool )  " +
                 "                                    select count(0) " +
@@ -118,11 +119,17 @@ public class OriginalToolRepositoryImpl implements OriginalToolRepositoryCustom 
         if (ObjectUtils.isNotEmpty(request.getVisible())) {
             query.setParameter("visible", request.getVisible());
         }
+        if (ObjectUtils.isNotEmpty(request.getCode())) {
+            query.setParameter("code", request.getCode());
+        }
     }
 
     private void setConditionFindAllOriginalTool(FindAllOriginalToolRequest request, StringBuilder sb) {
         if (ObjectUtils.isNotEmpty(request.getVisible())) {
             sb.append(" and (cte.visible = :visible ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getCode())) {
+            sb.append(" and (cte.code = :code ) ");
         }
         if (StringUtils.isNotBlank(request.getKeyword())) {
             sb.append(" and (ut.name REGEXP :keyword ) ");
