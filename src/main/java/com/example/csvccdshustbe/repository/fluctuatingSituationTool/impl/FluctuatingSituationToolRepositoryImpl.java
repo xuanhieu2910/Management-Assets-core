@@ -13,6 +13,7 @@ import jakarta.persistence.Query;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
@@ -87,8 +88,35 @@ public class FluctuatingSituationToolRepositoryImpl implements FluctuatingSituat
         setParameterFindAllFluctuatingSituationTool(request, query);
         List<Object[]> result = query.getResultList();
         List<FindAllFluctuatingSituationToolResponses> responses = new ArrayList<>();
-//        if ()
-        return null;
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result){
+                FindAllFluctuatingSituationToolResponses response = new FindAllFluctuatingSituationToolResponses();
+                response.setIdFluctuatingSituationTool(ValueUtil.getIntegerByObject(obj[0]));
+                response.setIdTool(ValueUtil.getIntegerByObject(obj[1]));
+                response.setValue(ValueUtil.getStringByObject(obj[2]));
+                response.setNameTool(ValueUtil.getStringByObject(obj[3]));
+                response.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                response.setTypeFluctuatingSituation(ValueUtil.getIntegerByObject(obj[5]));
+                response.setSalt(ValueUtil.getStringByObject(obj[6]));
+                responses.add(response);
+            }
+        }
+        return new PageImpl<>(responses, pageable, countFindAllFluctuatingSituationTool(request));
+    }
+
+    private long countFindAllFluctuatingSituationTool(FindAllFluctuatingSituationToolRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) count " +
+                "from fluctuating_situation_tool fst " +
+                "         inner join fluctuating_situation fs on fst.id_fluctuating_situation = fs.id_fluctuating_situation " +
+                "         inner join process pr on fst.id_process = pr.id_process " +
+                "         inner join tool tl on fst.id_tool = tl.id_tool " +
+                "         inner join tool_process tp on tl.id_tool = tp.id_tool and fs.id_process = tp.id_process " +
+                "where fs.id_fluctuating_situation = :idFluctuatingSituation ");
+        setConditionFindAllFluctuatingSituationTool(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllFluctuatingSituationTool(request, query);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
     }
 
     private void setParameterFindAllFluctuatingSituationTool(FindAllFluctuatingSituationToolRequest request, Query query) {
