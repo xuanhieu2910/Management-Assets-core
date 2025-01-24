@@ -423,7 +423,7 @@ public class DocumentServiceImpl implements DocumentService {
         fluctuatingSituationTool.setIdTool(toolProcess.getIdTool());
         fluctuatingSituationTool.setIdProcess(toolProcess.getIdProcess());
         fluctuatingSituationTool.setStatus(Constants.STATUS_FLUCTUATING_SITUATION_TOOL_NOT_FINISH);
-        fluctuatingSituationTool.setType(toolProcess.getIdTypeProcess());
+        fluctuatingSituationTool.setType(toolProcess.getStatus());
         fluctuatingSituationTool.setTimeCreated(timeCurrent);
         fluctuatingSituationTool.setTimeModified(timeCurrent);
         fluctuatingSituationTool.setIdUserCreated(csvcUser.getIdUser());
