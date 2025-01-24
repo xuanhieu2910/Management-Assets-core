@@ -306,9 +306,9 @@ public class ToolServiceImpl implements ToolService {
 
     @Transactional
     @Override
-    public void createNewTool(CreateNewToolRequest createNewToolRequest) throws ValidateFiledException {
+    public List<Tool> createNewTool(CreateNewToolRequest createNewToolRequest) throws ValidateFiledException {
         validateFieldCreateNewTool(createNewToolRequest);
-        storeNewTool(createNewToolRequest);
+        return storeNewTool(createNewToolRequest);
     }
 
     @Override
@@ -444,17 +444,17 @@ public class ToolServiceImpl implements ToolService {
         }
     }
 
-    private void storeNewTool(CreateNewToolRequest createNewToolRequest) {
+    private List<Tool> storeNewTool(CreateNewToolRequest createNewToolRequest) {
         Tool toolParent = toolRepository.save(constructionCreateNewToolParent(createNewToolRequest));
-        storeChildrenTool(toolParent, createNewToolRequest.getAllocateToolRequestList());
+        return storeChildrenTool(toolParent, createNewToolRequest.getAllocateToolRequestList());
     }
 
-    private void storeChildrenTool(Tool toolParent, List<ListAllocateToolRequest> allocateToolRequestList) {
+    private List<Tool> storeChildrenTool(Tool toolParent, List<ListAllocateToolRequest> allocateToolRequestList) {
         List<Tool> childrenTool = new ArrayList<>();
         for (ListAllocateToolRequest allocateToolRequest : allocateToolRequestList) {
             childrenTool.add(constructionChildTool(toolParent, allocateToolRequest));
         }
-        toolRepository.saveAll(childrenTool);
+        return toolRepository.saveAll(childrenTool);
     }
 
     private void createNewChildrenTool(Tool toolParent, UpdateListAllocateToolRequest updateAllocateToolRequestList) {

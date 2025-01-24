@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
+import com.example.csvccdshustbe.request.toolProcess.ToolProcessNotDeclareWhenInventoryRequest;
 import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -10,9 +11,7 @@ import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Tool Process Controller", description = "The Tool Process APIs. Contains operations like find all, create, edit, delete etc.")
 @RestController
@@ -35,9 +34,14 @@ public class ToolProcessController {
         }
     }
 
-//    @PostMapping("/create-new-tool-inventory")
-//    public ResponseEntity<?> createNewToolInventory(){
-//
-//    }
+    @PostMapping("/create-new-tool-inventory")
+    public ResponseEntity<?> createNewToolNotDeclareWhenInventory(@RequestBody ToolProcessNotDeclareWhenInventoryRequest request){
+        try {
+            return ApiResponseDto.createdWithState(toolProcessService.createNewToolNotDeclareWhenInventory(request),
+                    "Crete new tool not declare when inventory!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 
 }

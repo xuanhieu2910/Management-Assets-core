@@ -13,7 +13,7 @@ public interface ToolService {
 
     Page<FindAllToolResponse> findAllToolParentResponse(FindAllToolRequest request);
     String generateCodeTool();
-    void createNewTool(CreateNewToolRequest createNewToolRequest) throws ValidateFiledException;
+    List<Tool> createNewTool(CreateNewToolRequest createNewToolRequest) throws ValidateFiledException;
     void updateTool(UpdateToolRequest updateToolRequest) throws ValidateFiledException;
     Tool findToolBySaltTool(String salt);
     Tool findToolByIdTool(Integer idTool);

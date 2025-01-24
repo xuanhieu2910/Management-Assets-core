@@ -2,15 +2,23 @@ package com.example.csvccdshustbe.service.toolProcess.impl;
 
 import com.example.csvccdshustbe.dto.toolProcess.FindAllToolProcessDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.entity.Process;
+import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.entity.ToolProcess;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.toolProcess.ToolProcessRepository;
+import com.example.csvccdshustbe.request.tool.CreateNewToolRequest;
 import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
+import com.example.csvccdshustbe.request.toolProcess.ToolProcessNotDeclareWhenInventoryRequest;
 import com.example.csvccdshustbe.request.toolProcess.ToolProcessRequest;
 import com.example.csvccdshustbe.response.toolProcess.FindAllToolProcessResponse;
+import com.example.csvccdshustbe.service.process.ProcessService;
+import com.example.csvccdshustbe.service.tool.ToolService;
 import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +36,12 @@ public class ToolProcessServiceImpl implements ToolProcessService {
 
     @Autowired
     ToolProcessRepository toolProcessRepository;
-
+    @Lazy
+    @Autowired
+    ProcessService processService;
+    @Lazy
+    @Autowired
+    ToolService toolService;
 
     @Override
     public List<ToolProcess> saveAllToolProcess(List<ToolProcess> toolProcessList) {
@@ -70,6 +83,22 @@ public class ToolProcessServiceImpl implements ToolProcessService {
                                                                                      List<Integer> fluctuationSituation) {
         return toolProcessRepository.findToolProcessByIdProcessAndStatusFluctuationSituation(idProcess, fluctuationSituation);
     }
+
+    @Override
+    public List<ToolProcess> createNewToolNotDeclareWhenInventory(ToolProcessNotDeclareWhenInventoryRequest request) throws ValidateFiledException {
+        Process process = processService.findProcessByIdProcess(request.getIdProcess());
+        List<ToolProcess> toolProcessList = new ArrayList<>();
+        for (CreateNewToolRequest createNewToolRequest : request.getListToolDeclare()){
+            Tool tool = toolService.createNewTool(createNewToolRequest).get(0);
+            toolProcessList.add(createNewToolProcess(process, tool));
+        }
+        return null;
+    }
+
+    private ToolProcess createNewToolProcess(Process process, Tool tool) {
+        return null;
+    }
+
 
     private void updateChangeToolProcessByToolProcessRequest(List<ToolProcess> toolProcessList,
                                                              List<ToolProcessRequest> toolProcessRequests) {

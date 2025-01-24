@@ -4,7 +4,9 @@ import com.example.csvccdshustbe.entity.ToolProcess;
 
 import java.util.List;
 
+import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
+import com.example.csvccdshustbe.request.toolProcess.ToolProcessNotDeclareWhenInventoryRequest;
 import com.example.csvccdshustbe.request.toolProcess.ToolProcessRequest;
 import com.example.csvccdshustbe.request.toolProcess.UpdateAllToolProcessRequest;
 import com.example.csvccdshustbe.response.toolProcess.FindAllToolProcessResponse;
@@ -21,4 +23,5 @@ public interface ToolProcessService {
     void updateListToolProcessByIdProcess(List<ToolProcessRequest> toolProcessRequests, Integer idProcess);
     List<ToolProcess> findToolProcessByIdProcessAndStatusFluctuationSituation(Integer idProcess,
                                                                               List<Integer> fluctuationSituation);
+    List<ToolProcess> createNewToolNotDeclareWhenInventory(ToolProcessNotDeclareWhenInventoryRequest request) throws ValidateFiledException;
 }
