@@ -50,8 +50,8 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
                 "  and fs.type = :type ");
         setConditionFindAllFluctuationSituation(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
-        PageUtils.buildQuery(pageable, query);
         setParameterFindAllFluctuationSituation(query, request);
+        PageUtils.buildQuery(pageable, query);
         List<FindAllFluctuationSituationResponse> responses = new ArrayList<>();
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)) {
