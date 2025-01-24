@@ -106,7 +106,6 @@ public class AssetProcessController {
                     "Create new asset not declare when inventory success!",
                     HttpStatus.OK);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

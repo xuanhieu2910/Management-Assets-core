@@ -419,6 +419,12 @@ public class Constants {
     public static Integer STATUS_ASSET_PROCESS_ACTIVE = 1;
     public static Integer STATUS_ASSET_PROCESS_UN_ACTIVE = -1;
     /*----------------------------------------------------*/
+    /**
+     * Constant Status Asset Process
+     * */
+    public static Integer STATUS_TOOL_PROCESS_ACTIVE = 1;
+    public static Integer STATUS_TOOL_PROCESS_UN_ACTIVE = -1;
+    /*----------------------------------------------------*/
 
     /**
      * Constant Status Report

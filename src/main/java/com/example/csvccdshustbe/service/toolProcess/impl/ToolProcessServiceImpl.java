@@ -15,6 +15,7 @@ import com.example.csvccdshustbe.response.toolProcess.FindAllToolProcessResponse
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.example.csvccdshustbe.service.tool.ToolService;
 import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,13 +91,26 @@ public class ToolProcessServiceImpl implements ToolProcessService {
         List<ToolProcess> toolProcessList = new ArrayList<>();
         for (CreateNewToolRequest createNewToolRequest : request.getListToolDeclare()){
             Tool tool = toolService.createNewTool(createNewToolRequest).get(0);
-            toolProcessList.add(createNewToolProcess(process, tool));
+            toolProcessList.add(createNewToolProcess(process, tool, createNewToolRequest));
         }
-        return null;
+        return toolProcessRepository.saveAll(toolProcessList);
     }
 
-    private ToolProcess createNewToolProcess(Process process, Tool tool) {
-        return null;
+    private ToolProcess createNewToolProcess(Process process, Tool tool, CreateNewToolRequest createNewToolRequest) {
+        ToolProcess toolProcess = new ToolProcess();
+        String currentTime = String.valueOf(new Date().getTime());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        toolProcess.setIdTool(tool.getIdTool());
+        toolProcess.setIdProcess(process.getIdProcess());
+        toolProcess.setIdTypeProcess(process.getIdTypeProcess());
+        toolProcess.setStatus(Constants.STATUS_TOOL_PROCESS_ACTIVE);
+        toolProcess.setValue(createNewToolRequest.getValue());
+        toolProcess.setTimeCreated(currentTime);
+        toolProcess.setTimeModified(currentTime);
+        toolProcess.setIdUserCreated(csvcUser.getIdUser());
+        toolProcess.setIdUserModified(csvcUser.getIdUser());
+        toolProcess.setQuantity(createNewToolRequest.getQuantity());
+        return toolProcess;
     }
 
 

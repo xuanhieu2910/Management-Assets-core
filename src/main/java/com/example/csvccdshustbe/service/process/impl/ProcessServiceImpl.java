@@ -315,7 +315,7 @@ public class ProcessServiceImpl implements ProcessService {
             toolProcess.setIdTool(toolProcessRequest.getIdTool());
             toolProcess.setIdProcess(process.getIdProcess());
             toolProcess.setIdTypeProcess(process.getIdTypeProcess());
-            toolProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+            toolProcess.setStatus(Constants.STATUS_TOOL_PROCESS_ACTIVE);
             toolProcess.setValue(toolProcessRequest.getValue());
             toolProcess.setTimeCreated(currentTime);
             toolProcess.setTimeModified(currentTime);
@@ -336,13 +336,13 @@ public class ProcessServiceImpl implements ProcessService {
             toolProcess.setIdTool(toolProcessRequest.getIdTool());
             toolProcess.setIdProcess(process.getIdProcess());
             toolProcess.setIdTypeProcess(process.getIdTypeProcess());
-            toolProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+            toolProcess.setStatus(Constants.STATUS_TOOL_PROCESS_ACTIVE);
             toolProcess.setValue(toolProcessRequest.getValue());
             toolProcess.setTimeCreated(currentTime);
             toolProcess.setTimeModified(currentTime);
             toolProcess.setIdUserCreated(csvcUser.getIdUser());
             toolProcess.setIdUserModified(csvcUser.getIdUser());
-            toolProcess.setQuantity(toolProcess.getQuantity());
+            toolProcess.setQuantity(toolProcessRequest.getQuantityDecrease());
             toolProcessList.add(toolProcess);
         }
         return toolProcessList;
@@ -358,13 +358,13 @@ public class ProcessServiceImpl implements ProcessService {
             toolProcess.setIdTool(toolProcessRequest.getIdTool());
             toolProcess.setIdProcess(process.getIdProcess());
             toolProcess.setIdTypeProcess(process.getIdTypeProcess());
-            toolProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+            toolProcess.setStatus(Constants.STATUS_TOOL_PROCESS_ACTIVE);
             toolProcess.setValue(toolProcessRequest.getValue());
             toolProcess.setTimeCreated(currentTime);
             toolProcess.setTimeModified(currentTime);
             toolProcess.setIdUserCreated(csvcUser.getIdUser());
             toolProcess.setIdUserModified(csvcUser.getIdUser());
-            toolProcess.setQuantity(toolProcess.getQuantity());
+            toolProcess.setQuantity(toolProcessRequest.getQuantityInventory());
             toolProcessList.add(toolProcess);
         }
         return toolProcessList;
@@ -379,13 +379,13 @@ public class ProcessServiceImpl implements ProcessService {
             toolProcess.setIdTool(toolProcessOriginal.getIdTool());
             toolProcess.setIdProcess(process.getIdProcess());
             toolProcess.setIdTypeProcess(process.getIdTypeProcess());
-            toolProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
+            toolProcess.setStatus(Constants.STATUS_TOOL_PROCESS_ACTIVE);
             toolProcess.setValue(toolProcessOriginal.getValue());
             toolProcess.setTimeCreated(currentTime);
             toolProcess.setTimeModified(currentTime);
             toolProcess.setIdUserCreated(csvcUser.getIdUser());
             toolProcess.setIdUserModified(csvcUser.getIdUser());
-            toolProcess.setQuantity(toolProcess.getQuantity());
+            toolProcess.setQuantity(toolProcessOriginal.getQuantity());
             toolProcessList.add(toolProcess);
         }
         return toolProcessList;
