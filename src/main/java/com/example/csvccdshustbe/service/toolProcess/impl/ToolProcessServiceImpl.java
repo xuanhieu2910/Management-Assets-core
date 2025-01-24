@@ -103,7 +103,7 @@ public class ToolProcessServiceImpl implements ToolProcessService {
         toolProcess.setIdTool(tool.getIdTool());
         toolProcess.setIdProcess(process.getIdProcess());
         toolProcess.setIdTypeProcess(process.getIdTypeProcess());
-        toolProcess.setStatus(Constants.STATUS_TOOL_PROCESS_ACTIVE);
+        toolProcess.setStatus(Constants.TYPE_FLUCTUATING_SITUATION_DECLARE);
         toolProcess.setValue(createNewToolRequest.getValue());
         toolProcess.setTimeCreated(currentTime);
         toolProcess.setTimeModified(currentTime);
