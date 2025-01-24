@@ -15,9 +15,7 @@ import com.example.csvccdshustbe.repository.declare.DeclareRepository;
 import com.example.csvccdshustbe.repository.modules.ModulesRepository;
 import com.example.csvccdshustbe.repository.original.OriginalRepository;
 import com.example.csvccdshustbe.request.assetProcess.*;
-import com.example.csvccdshustbe.response.asset.FindAllAssetChildrenToInventoryResponse;
 import com.example.csvccdshustbe.response.asset.FindAllAssetChildrenToUpdateInventoryResponse;
-import com.example.csvccdshustbe.response.asset.FindAllAssetResponseToInventory;
 import com.example.csvccdshustbe.response.asset.FindAllAssetResponseUpdateInventory;
 import com.example.csvccdshustbe.response.assetProcess.FindAllAssetProcessResponse;
 import com.example.csvccdshustbe.service.asset.AssetService;
@@ -37,7 +35,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.sl.draw.geom.GuideIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -199,12 +196,12 @@ public class AssetProcessServiceImpl implements AssetProcessService {
     }
 
     @Override
-    public AssetProcess updateAssetProcessInventory(UpdateAssetProcessRequest request) throws JsonProcessingException, ValidateFiledException, IllegalAccessException {
+    public void updateAssetProcessInventory(UpdateAssetProcessRequest request) throws JsonProcessingException, ValidateFiledException, IllegalAccessException {
         AssetProcess assetProcess = findAssetProcessByIdAssetProcess(request.getIdAssetProcess());
 //        updateInformationAsset(request.getValue(), assetProcess.getIdAsset());
         HashMap<String, Object> informationAsset = (new ObjectMapper()).readValue(request.getValue(), new TypeReference<>() {});
         assetService.updateAsset(informationAsset);
-        return updateInformationAssetProcess(request, assetProcess);
+        updateInformationAssetProcess(request, assetProcess);
     }
 
 //    private void updateInformationAsset(String value, Integer idAsset) throws JsonProcessingException {
@@ -224,12 +221,12 @@ public class AssetProcessServiceImpl implements AssetProcessService {
 //        assetService.storeAsset(asset);
 //    }
 
-    private AssetProcess updateInformationAssetProcess(UpdateAssetProcessRequest request, AssetProcess assetProcess) {
+    private void updateInformationAssetProcess(UpdateAssetProcessRequest request, AssetProcess assetProcess) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         assetProcess.setValue(request.getValue());
         assetProcess.setTimeModified(String.valueOf(new Date().getTime()));
         assetProcess.setIdUserModified(csvcUser.getIdUser());
-        return assetProcessRepository.save(assetProcess);
+        assetProcessRepository.save(assetProcess);
     }
 
     @Override
