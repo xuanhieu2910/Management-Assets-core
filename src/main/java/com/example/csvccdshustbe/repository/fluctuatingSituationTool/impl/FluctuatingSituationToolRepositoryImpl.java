@@ -1,15 +1,22 @@
 package com.example.csvccdshustbe.repository.fluctuatingSituationTool.impl;
 
 import com.example.csvccdshustbe.repository.fluctuatingSituationTool.FluctuatingSituationToolRepositoryCustom;
+import com.example.csvccdshustbe.request.fluctuatingSituationTool.FindAllFluctuatingSituationToolRequest;
 import com.example.csvccdshustbe.response.fluctuatingSituationAsset.StatisticFluctuatingSituationAsset;
+import com.example.csvccdshustbe.response.fluctuatingSituationTool.FindAllFluctuatingSituationToolResponses;
 import com.example.csvccdshustbe.response.fluctuatingSituationTool.StatisticFluctuatingSituationTool;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FluctuatingSituationToolRepositoryImpl implements FluctuatingSituationToolRepositoryCustom {
@@ -56,5 +63,57 @@ public class FluctuatingSituationToolRepositoryImpl implements FluctuatingSituat
             }
         }
         return situation;
+    }
+
+    @Override
+    public Page<FindAllFluctuatingSituationToolResponses>
+    findAllFluctuatingSituationTool(FindAllFluctuatingSituationToolRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select fst.id_fluctuating_situation_tool, " +
+                "       tl.id_tool, " +
+                "       tp.value, " +
+                "       tl.name, " +
+                "       fst.status, " +
+                "       fst.type, " +
+                "       tl.salt " +
+                "from fluctuating_situation_tool fst " +
+                "         inner join fluctuating_situation fs on fst.id_fluctuating_situation = fs.id_fluctuating_situation " +
+                "         inner join process pr on fst.id_process = pr.id_process " +
+                "         inner join tool tl on fst.id_tool = tl.id_tool " +
+                "         inner join tool_process tp on tl.id_tool = tp.id_tool and fs.id_process = tp.id_process " +
+                "where fs.id_fluctuating_situation = :idFluctuatingSituation ");
+        setConditionFindAllFluctuatingSituationTool(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllFluctuatingSituationTool(request, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllFluctuatingSituationToolResponses> responses = new ArrayList<>();
+//        if ()
+        return null;
+    }
+
+    private void setParameterFindAllFluctuatingSituationTool(FindAllFluctuatingSituationToolRequest request, Query query) {
+        query.setParameter("idFluctuatingSituation", request.getIdFluctuatingSituation());
+        if (StringUtils.isNotBlank(request.getNameTool())) {
+            query.setParameter("nameTool", request.getNameTool());
+        }
+        if (ObjectUtils.isNotEmpty(request.getTypeFluctuatingSituation())){
+            query.setParameter("type", request.getTypeFluctuatingSituation());
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatus())) {
+            query.setParameter("status", request.getStatus());
+        }
+    }
+
+    private void setConditionFindAllFluctuatingSituationTool(FindAllFluctuatingSituationToolRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getNameTool())) {
+            sb.append(" and (tl.name REGEXP :nameTool ) ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getTypeFluctuatingSituation())){
+            sb.append(" and fst.type = :type ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatus())) {
+            sb.append(" and fst.status = :status ");
+        }
+        sb.append(" order by fst.id_fluctuating_situation_tool DESC ");
     }
 }

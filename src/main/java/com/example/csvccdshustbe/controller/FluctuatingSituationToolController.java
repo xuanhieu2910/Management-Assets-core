@@ -1,7 +1,7 @@
 package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
-import com.example.csvccdshustbe.request.fluctuatingSituationAsset.FindAllFluctuatingSituationAssetRequest;
+import com.example.csvccdshustbe.request.fluctuatingSituationTool.FindAllFluctuatingSituationToolRequest;
 import com.example.csvccdshustbe.service.fluctuatingSituationToolService.FluctuatingSituationToolService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
@@ -26,19 +26,20 @@ public class FluctuatingSituationToolController {
     FluctuatingSituationToolService fluctuatingSituationToolService;
 
 
-//    @GetMapping("/find-all")
-//    public ResponseEntity<?> findAllFluctuatingSituationAsset(@And({
-//            @Spec(path = "page", params = "page", spec = Like.class),
-//            @Spec(path = "size", params = "size", spec = Like.class),
-//            @Spec(path = "keyword", params = "keyword", spec = Like.class)
-//    }) FindAllFluctuatingSituationAssetRequest request){
-//        try {
-//            return ApiResponseDto.createdWithState(fluctuatingSituationAssetService.findAllFluctuatingSituationAsset(request),
-//                    "Find all fluctuating situation asset success!", HttpStatus.OK);
-//        } catch (Exception e){
-//            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
-//        }
-//    }
+    @GetMapping("/find-all")
+    public ResponseEntity<?> findAllFluctuatingSituationAsset(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllFluctuatingSituationToolRequest request){
+        try {
+            return ApiResponseDto.createdWithState(
+                    fluctuatingSituationToolService.findAllFluctuatingSituationTool(request),
+                    "Find all fluctuating situation asset success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 
 
     @GetMapping("/statistic")
