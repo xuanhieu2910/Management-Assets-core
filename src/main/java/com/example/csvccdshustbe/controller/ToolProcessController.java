@@ -1,7 +1,6 @@
 package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
-import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
 import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,8 +31,13 @@ public class ToolProcessController {
             return ApiResponseDto.createdWithState(toolProcessService.findAllToolProcess(request),
                     "Find all data tool document success!", HttpStatus.OK);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+
+//    @PostMapping("/create-new-tool-inventory")
+//    public ResponseEntity<?> createNewToolInventory(){
+//
+//    }
+
 }

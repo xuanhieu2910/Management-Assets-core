@@ -242,7 +242,7 @@ public class ToolProcessRepositoryImpl implements ToolProcessRepositoryCustom {
             }
             sb.append(" ").append(request.getSortOrder());
         } else {
-            sb.append(" ORDER BY tool.id_tool desc ");
+            sb.append(" order by toolProcess.id_tool_process desc  ");
         }
     }
 }

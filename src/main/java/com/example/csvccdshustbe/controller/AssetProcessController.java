@@ -3,7 +3,6 @@ package com.example.csvccdshustbe.controller;
 
 import com.example.csvccdshustbe.dto.ApiResponseDto;
 import com.example.csvccdshustbe.request.assetProcess.AssetNotDeclareWhenInventoryRequest;
-import com.example.csvccdshustbe.request.assetProcess.AssetProcessRequest;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.request.assetProcess.UpdateAssetProcessRequest;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
