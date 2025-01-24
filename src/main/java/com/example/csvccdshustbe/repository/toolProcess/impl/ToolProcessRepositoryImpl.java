@@ -2,11 +2,9 @@ package com.example.csvccdshustbe.repository.toolProcess.impl;
 
 
 import com.example.csvccdshustbe.dto.toolProcess.FindAllToolProcessDto;
-import com.example.csvccdshustbe.entity.Tool;
 import com.example.csvccdshustbe.entity.ToolProcess;
 import com.example.csvccdshustbe.repository.toolProcess.ToolProcessRepositoryCustom;
 import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
-import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -20,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ToolProcessRepositoryImpl implements ToolProcessRepositoryCustom {
