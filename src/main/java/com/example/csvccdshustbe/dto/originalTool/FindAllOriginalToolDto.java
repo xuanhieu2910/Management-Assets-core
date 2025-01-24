@@ -22,4 +22,5 @@ public class FindAllOriginalToolDto {
     private Integer idUserCreated;
     private Integer idUserModified;
     private Integer idToolCategory;
+    private String code;
 }

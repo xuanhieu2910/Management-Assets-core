@@ -39,4 +39,6 @@ public class OriginalTool {
     private Integer idUserModified;
     @Column(name = "id_tool_category")
     private Integer idToolCategory;
+    @Column(name = "code")
+    private String code;
 }

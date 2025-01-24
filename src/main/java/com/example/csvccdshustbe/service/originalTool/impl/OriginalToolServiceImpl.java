@@ -39,6 +39,7 @@ public class OriginalToolServiceImpl implements OriginalToolService {
         findAllOriginalToolVisibleResponse.setVisible(findAllOriginalToolDto.getVisible());
         findAllOriginalToolVisibleResponse.setDepth(findAllOriginalToolDto.getDepth());
         findAllOriginalToolVisibleResponse.setIdToolCategory(findAllOriginalToolDto.getIdToolCategory());
+        findAllOriginalToolVisibleResponse.setCode(findAllOriginalToolDto.getCode());
         responses.add(findAllOriginalToolVisibleResponse);
     }
     return responses;

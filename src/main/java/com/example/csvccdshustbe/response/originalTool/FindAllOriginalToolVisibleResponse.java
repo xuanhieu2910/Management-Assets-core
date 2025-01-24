@@ -23,4 +23,6 @@ public class FindAllOriginalToolVisibleResponse {
     private Integer visible;
     @JsonProperty("id_tool_category")
     private Integer idToolCategory;
+    @JsonProperty("code")
+    private String code;
 }
