@@ -684,7 +684,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         StringBuilder sb = new StringBuilder();
         sb.append(" select tool.id_department,department.name,tool.id_location,  " +
                 "       location.name,csvc_user.user_name,csvc_user.full_name,  " +
-                "       tool.quantity,tool.status_use  " +
+                "       tool.quantity,tool.status_use,tool.salt  " +
                 "         from tool  " +
                 "         left join department on tool.id_department=department.id_department  " +
                 "         left join location on tool.id_location=location.id_location  " +
@@ -705,6 +705,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 dto.setFullName(ValueUtil.getStringByObject(obj[5]));
                 dto.setQuantity(ValueUtil.getIntegerByObject(obj[6]));
                 dto.setStatusUse(ValueUtil.getIntegerByObject(obj[7]));
+                dto.setSalt(ValueUtil.getStringByObject(obj[8]));
                 allocateToolDtos.add(dto);
             }
         }

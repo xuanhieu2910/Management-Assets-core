@@ -56,8 +56,10 @@ public class DocumentController {
             return ApiResponseDto.createdWithState(documentService.findDetailsDocumentByCodeDocument(code),
                     "Find details document success!", HttpStatus.OK);
         } catch (NotFoundException e) {
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -454,8 +456,10 @@ public class DocumentController {
             processService.createDecreaseTool(request);
             return ApiResponseDto.createdWithMessage("Create increase tool success!", HttpStatus.OK);
         } catch (ValidateFiledException e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
