@@ -389,10 +389,10 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     public void updateToolIsIncreaseWhenNotApproved(Integer idProcessCurrent, Integer status) {
         StringBuilder sb = new StringBuilder();
         sb.append("update tool  " +
-                "    inner join tool_process on tool.id_process_current = tool_process.id_tool_process  " +
+                "    inner join process on tool.id_process_current = process.id_process  " +
                 "set tool.status_process_current = :statusProcessCurrent,  " +
                 "    tool.quantity_increase_current =  :toolDefaultQuantityIncreaseCurrent " +
-                "where tool_process.id_tool_process = :idProcessCurrent ");
+                "where process.id_process = :idProcessCurrent ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("toolDefaultQuantityIncreaseCurrent", Constants.TOOL_DEFAULT_QUANTITY_INCREASE_CURRENT);
         query.setParameter("statusProcessCurrent", status);
@@ -406,7 +406,9 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     public void updateToolIsDecreaseWhenNotApproved(Integer idProcessCurrent, Integer status) {
         StringBuilder sb = new StringBuilder();
         sb.append("update tool    " +
-                "      inner join tool_process on tool.id_process_current = tool_process.id_tool_process " +
+                "     inner join tool_process on tool.id_tool=tool_process.id_tool " +
+                "     inner join process  " +
+                "     on tool.id_process_current = process.id_process   " +
                 "set tool.status_process_current = :statusProcessCurrent, " +
                 "    tool.quantity_decrease_current = tool.quantity_decrease_current - tool_process.quantity " +
                 "where tool_process.id_tool_process = :idProcessCurrent ");
