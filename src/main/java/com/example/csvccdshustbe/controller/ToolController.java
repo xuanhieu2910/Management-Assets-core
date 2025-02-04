@@ -163,10 +163,18 @@ public class ToolController {
             return ApiResponseDto.createdWithState(toolService.findAllToolToInventory(findAllToolRequest),
                     "Find all tool to inventory", HttpStatus.OK);
         } catch (NotFoundException e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         } catch (Exception e){
-            e.printStackTrace();
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/download-file-template-import-tool")
+    public ResponseEntity<?> downloadFileTemplateImportTool(){
+        try {
+            return ApiResponseDto.createdWithState(toolService.downloadFileTemplateImportTool(),
+                    "Download file template import tool", HttpStatus.OK);
+        } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

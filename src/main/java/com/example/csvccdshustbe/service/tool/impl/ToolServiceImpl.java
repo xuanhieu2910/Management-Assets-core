@@ -11,6 +11,7 @@ import com.example.csvccdshustbe.response.tool.*;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.tool.ToolService;
 import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
+import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -42,6 +44,8 @@ public class ToolServiceImpl implements ToolService {
     ToolCategoriesService toolCategoriesService;
     @Autowired
     CsvcUserService csvcUserService;
+    @Autowired
+    FilesStorageService filesStorageService;
 
 
 
@@ -177,6 +181,11 @@ public class ToolServiceImpl implements ToolService {
             x.setIdTypeProcessCurrent(process.getIdTypeProcess());
         });
         toolRepository.saveAll(tools);
+    }
+
+    @Override
+    public String downloadFileTemplateImportTool() throws IOException {
+        return filesStorageService.downloadFileImportTool();
     }
 
 

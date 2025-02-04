@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.dto.toolCategories.FindAllToolCategoryDto;
 import com.example.csvccdshustbe.entity.AssetCategories;
 import com.example.csvccdshustbe.entity.ToolCategories;
 import com.example.csvccdshustbe.repository.toolCategories.ToolCategoriesRepositoryCustom;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -329,6 +330,150 @@ public class ToolCategoriesRepositoryImpl implements ToolCategoriesRepositoryCus
         query.setParameter("shortName", shortName);
         List<Object[]> result = query.getResultList();
         return CollectionUtils.isEmpty(result);
+    }
+
+    @Override
+    public List<FindAllToolCategoryDto> findAllToolCategoriesLeafByIdsDepartment(List<Integer> idsDepartment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select result.id_tool_category, result.name, result.code_tool,  " +
+                "       result.short_name, result.description, result.parent,  " +
+                "       result.sort_order, result.tool_count, result.visible,  " +
+                "       result.time_created, result.time_modified, result.depth,  " +
+                "       result.path, result.nameParent, result.id_department_original,  " +
+                "       result.is_leaf  " +
+                "from (WITH RECURSIVE cte_tool_categories as (  " +
+                "       select toolCategires.id_tool_category,toolCategires.name,   " +
+                "              toolCategires.code_tool, toolCategires.short_name,  " +
+                "              toolCategires.description, toolCategires.parent,   " +
+                "              toolCategires.sort_order, toolCategires.tool_count,  " +
+                "              toolCategires.visible, toolCategires.time_created,  " +
+                "              toolCategires.time_modified,  " +
+                "              1 as depth,  " +
+                "              CAST(toolCategires.id_tool_category as NCHAR ) as path,  " +
+                "              case when toolCategires.parent is not null then toolCategires.name end nameParent,  " +
+                "              toolCategires.id_department_original  " +
+                "       from tool_categories toolCategires  " +
+                "       where toolCategires.parent is null  " +
+                "       union all  " +
+                "       select toolCategires.id_tool_category,toolCategires.name,  " +
+                "              toolCategires.code_tool, toolCategires.short_name,  " +
+                "              toolCategires.description, toolCategires.parent,  " +
+                "              toolCategires.sort_order, toolCategires.tool_count,  " +
+                "              toolCategires.visible, toolCategires.time_created,  " +
+                "              toolCategires.time_modified,  " +
+                "              cte.depth + 1 as depth,  " +
+                "              concat_ws('/',cte.path,CAST(toolCategires.id_tool_category as NCHAR)) as path,  " +
+                "              cte.name nameParent,  " +
+                "              toolCategires.id_department_original  " +
+                "       from tool_categories toolCategires  " +
+                "                INNER JOIN cte_tool_categories cte ON toolCategires.parent = cte.id_tool_category  " +
+                "       )  " +
+                "       select cte.id_tool_category, cte.name,  " +
+                "          cte.code_tool, cte.short_name, cte.description,  " +
+                "          cte.parent, cte.sort_order, cte.tool_count,  " +
+                "          cte.visible, cte.time_created, cte.time_modified,  " +
+                "          cte.depth, cte.path,  " +
+                "          cte.nameParent, cte.id_department_original,  " +
+                "          CASE WHEN EXISTS (  " +
+                "              SELECT 1  " +
+                "              FROM tool_categories toolCategoies  " +
+                "              WHERE toolCategoies.parent = cte.id_tool_category  " +
+                "          ) THEN 0 ELSE 1 END AS is_leaf   " +
+                "  from cte_tool_categories cte  " +
+                "   where 1 = 1 and visible = :visible " +
+                "   and cte.id_department_original in (:idsDepartmentOriginal) ) result  " +
+                "where result.is_leaf = 1 order by result.id_tool_category ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("visible", Constants.TOOL_CATEGORY_IS_VISIBLE);
+        query.setParameter("idsDepartmentOriginal", idsDepartment);
+        List<FindAllToolCategoryDto> responses = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                responses.add(writeDataFindAllToolCategoryDto(obj));
+            }
+        }
+        return responses;
+    }
+
+    @Override
+    public List<FindAllToolCategoryDto> findAllToolCategoriesToDownloadAndViewByIdsDepartment(List<Integer> idsDepartment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WITH RECURSIVE cte_tool_categories as (  " +
+                "       select toolCategires.id_tool_category,toolCategires.name,   " +
+                "              toolCategires.code_tool, toolCategires.short_name,  " +
+                "              toolCategires.description, toolCategires.parent,   " +
+                "              toolCategires.sort_order, toolCategires.tool_count,  " +
+                "              toolCategires.visible, toolCategires.time_created,  " +
+                "              toolCategires.time_modified,  " +
+                "              1 as depth,  " +
+                "              CAST(toolCategires.id_tool_category as NCHAR ) as path,  " +
+                "              case when toolCategires.parent is not null then toolCategires.name end nameParent,  " +
+                "              toolCategires.id_department_original  " +
+                "       from tool_categories toolCategires  " +
+                "       where toolCategires.parent is null  " +
+                "       union all  " +
+                "       select toolCategires.id_tool_category,toolCategires.name,  " +
+                "              toolCategires.code_tool, toolCategires.short_name,  " +
+                "              toolCategires.description, toolCategires.parent,  " +
+                "              toolCategires.sort_order, toolCategires.tool_count,  " +
+                "              toolCategires.visible, toolCategires.time_created,  " +
+                "              toolCategires.time_modified,  " +
+                "              cte.depth + 1 as depth,  " +
+                "              concat_ws('/',cte.path,CAST(toolCategires.id_tool_category as NCHAR)) as path,  " +
+                "              cte.name nameParent,  " +
+                "              toolCategires.id_department_original  " +
+                "       from tool_categories toolCategires  " +
+                "                INNER JOIN cte_tool_categories cte ON toolCategires.parent = cte.id_tool_category  " +
+                "       )  " +
+                "       select cte.id_tool_category, cte.name,  " +
+                "          cte.code_tool, cte.short_name, cte.description,  " +
+                "          cte.parent, cte.sort_order, cte.tool_count,  " +
+                "          cte.visible, cte.time_created, cte.time_modified,  " +
+                "          cte.depth, cte.path,  " +
+                "          cte.nameParent, cte.id_department_original,  " +
+                "          CASE WHEN EXISTS (  " +
+                "              SELECT 1  " +
+                "              FROM tool_categories toolCategoies  " +
+                "              WHERE toolCategoies.parent = cte.id_tool_category  " +
+                "          ) THEN 0 ELSE 1 END AS is_leaf   " +
+                "  from cte_tool_categories cte  " +
+                "   where 1 = 1  " +
+                "   and cte.id_department_original in (:idsDepartmentOriginal)  " +
+                "   and visible = :visible  " +
+                "order by path ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsDepartmentOriginal", idsDepartment);
+        query.setParameter("visible", Constants.TOOL_CATEGORY_IS_VISIBLE);
+        List<FindAllToolCategoryDto> responses = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                responses.add(writeDataFindAllToolCategoryDto(obj));
+            }
+        }
+        return responses;
+    }
+
+    private FindAllToolCategoryDto writeDataFindAllToolCategoryDto(Object[] obj) {
+        FindAllToolCategoryDto findAllToolCategoryDto = new FindAllToolCategoryDto();
+        findAllToolCategoryDto.setIdToolCategory(ValueUtil.getIntegerByObject(obj[0]));
+        findAllToolCategoryDto.setName(ValueUtil.getStringByObject(obj[1]));
+        findAllToolCategoryDto.setCodeTool(ValueUtil.getStringByObject(obj[2]));
+        findAllToolCategoryDto.setShortName(ValueUtil.getStringByObject(obj[3]));
+        findAllToolCategoryDto.setDescription(ValueUtil.getStringByObject(obj[4]));
+        findAllToolCategoryDto.setParent(ValueUtil.getIntegerByObject(obj[5]));
+        findAllToolCategoryDto.setSortOrder(ValueUtil.getStringByObject(obj[6]));
+        findAllToolCategoryDto.setToolCount(ValueUtil.getIntegerByObject(obj[7]));
+        findAllToolCategoryDto.setVisible(ValueUtil.getIntegerByObject(obj[8]));
+        findAllToolCategoryDto.setTimeCreated(ValueUtil.getStringByObject(obj[9]));
+        findAllToolCategoryDto.setTimeModified(ValueUtil.getStringByObject(obj[10]));
+        findAllToolCategoryDto.setDepth(ValueUtil.getIntegerByObject(obj[11]));
+        findAllToolCategoryDto.setPath(ValueUtil.getStringByObject(obj[12]));
+        findAllToolCategoryDto.setNameParent(ValueUtil.getStringByObject(obj[13]));
+        findAllToolCategoryDto.setIdDepartmentOriginal(ValueUtil.getIntegerByObject(obj[14]));
+        findAllToolCategoryDto.setIsLeaf(ValueUtil.getIntegerByObject(obj[15]));
+        return findAllToolCategoryDto;
     }
 
 }

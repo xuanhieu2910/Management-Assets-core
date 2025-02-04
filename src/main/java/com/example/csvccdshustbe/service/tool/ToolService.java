@@ -7,6 +7,7 @@ import com.example.csvccdshustbe.request.tool.*;
 import com.example.csvccdshustbe.response.tool.*;
 import org.springframework.data.domain.Page;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ToolService {
@@ -35,4 +36,5 @@ public interface ToolService {
     Page<FindAllToolToInventoryResponse> findAllToolToInventory(FindAllToolToInventoryRequest findAllToolRequest);
     void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcess, Integer status);
     void updateInformationProcessCurrentTool(List<Integer> idsTool, Process process);
+    String downloadFileTemplateImportTool() throws IOException;
 }

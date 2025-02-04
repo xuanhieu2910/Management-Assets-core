@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UpdateSuppliersRequest {
+
     @NonNull
     private Integer idSuppliers;
     @NonNull
@@ -21,4 +22,5 @@ public class UpdateSuppliersRequest {
     private String notes;
     @NonNull
     private Integer status;
+
 }

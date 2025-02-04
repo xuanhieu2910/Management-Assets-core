@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface SuppliersService {
 
-    Page<FindAllSuppliersResponse>  findAllSuppliersResponseByStatus(FindAllSuppliersRequest request);
+    Page<FindAllSuppliersResponse>  findAllSuppliersResponse(FindAllSuppliersRequest request);
     void createSuppliers(CreateSuppliersRequest request) throws ValidateFiledException;
 
     void updateSuppliers(UpdateSuppliersRequest request) throws ValidateFiledException;

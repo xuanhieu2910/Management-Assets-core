@@ -8,6 +8,7 @@ import org.apache.catalina.util.Introspection;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public interface FilesStorageService { ;
@@ -22,4 +23,5 @@ public interface FilesStorageService { ;
      String downLoadRevaluationReport(Integer idAssetProcess, Integer status) throws IOException;
 
     String updateFilesAttached(MultipartFile[] files, String folderName) throws FileException, IOException;
+    String downloadFileImportTool() throws IOException;
 }

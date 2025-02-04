@@ -17,6 +17,7 @@ import com.example.csvccdshustbe.dto.provinces.ProvincesDto;
 import com.example.csvccdshustbe.dto.report.inventory.BlueprintInventoryReportDto;
 import com.example.csvccdshustbe.dto.report.inventory.CouncilInventoryReportDto;
 import com.example.csvccdshustbe.dto.report.inventory.FindAllAssetForInventoryReportDto;
+import com.example.csvccdshustbe.dto.toolCategories.FindAllToolCategoryDto;
 import com.example.csvccdshustbe.dto.typeUse.FindAllTypeUseDto;
 import com.example.csvccdshustbe.dto.unit.FindAllUnitsDto;
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
@@ -41,6 +42,7 @@ import com.example.csvccdshustbe.service.originalOfFormation.OriginalOfFormation
 import com.example.csvccdshustbe.service.positionName.PositionNameService;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
 import com.example.csvccdshustbe.service.province.ProvinceService;
+import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
 import com.example.csvccdshustbe.service.typeUse.TypeUseService;
 import com.example.csvccdshustbe.service.units.UnitsService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
@@ -158,6 +160,8 @@ public class FileUploadService implements FilesStorageService {
     OriginalOfFormationService originalOfFormationService;
     @Autowired
     ReportRepository reportRepository;
+    @Autowired
+    ToolCategoriesService toolCategoriesService;
 
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
@@ -852,6 +856,29 @@ public class FileUploadService implements FilesStorageService {
                 return updateFilesAttachedAsset(files,folderName);
             }
         }
+        return null;
+    }
+
+    @Override
+    public String downloadFileImportTool() throws IOException {
+        String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static") + SEPARATOR
+                + "Sample_Excel_Import_Tool.xlsx";
+        FileInputStream file = new FileInputStream(new File(fileExcel));
+        List<FindAllToolCategoryDto> toolCategoryToSelected = toolCategoriesService.findAllToolCategoriesToDownloadAndSelected();
+        List<FindAllToolCategoryDto> toolCategoryToView = toolCategoriesService.findAllToolCategoriesToDownloadAndView();
+        // Get suppliers
+//        List<>
+        // Get Point decision
+        // Get projects
+        // Get originals
+        // Get original of formation
+        // Get units
+        // Get departments
+        // Get locations
+        // Get user
+        // Get medicine categories
+        // Get medicine type
+        Workbook workbook = new XSSFWorkbook(file);
         return null;
     }
 
@@ -1856,7 +1883,9 @@ public class FileUploadService implements FilesStorageService {
         }
     }
 
-    private void createAssetCategoriesImport(Workbook workbook, Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory,Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategoryView) {
+    private void createAssetCategoriesImport(Workbook workbook,
+                                             Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategory,
+                                             Map<String, List<FindAllAssetCategoriesToDownloadDto>> mapAssetCategoryView) {
         Sheet sheetAssetCategories = workbook.createSheet(NAME_SHEET_DATA_ASSET_CATEGORY);
         Sheet sheetCategoriesView = workbook.getSheet(NAME_SHEET_CATEGORY_VIEW);
         Row headerRow = sheetAssetCategories.createRow(0);

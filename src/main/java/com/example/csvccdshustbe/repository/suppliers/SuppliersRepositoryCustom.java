@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SuppliersRepositoryCustom {
-    Page<Suppliers> findAllSuppliersByStatus(FindAllSuppliersRequest request, Pageable pageable);
+    Page<FindAllSuppliersResponse> findAllSuppliers(FindAllSuppliersRequest request, Pageable pageable);
     Optional<Suppliers> findSuppliersByName(String name);
     Optional<Suppliers> findSuppliersById(Integer idSuppliers);
 }

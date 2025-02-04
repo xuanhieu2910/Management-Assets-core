@@ -1,5 +1,6 @@
 package com.example.csvccdshustbe.service.toolCategories;
 
+import com.example.csvccdshustbe.dto.toolCategories.FindAllToolCategoryDto;
 import com.example.csvccdshustbe.entity.ToolCategories;
 
 import com.example.csvccdshustbe.entity.ToolCategories;
@@ -12,6 +13,9 @@ import com.example.csvccdshustbe.request.toolCategories.UpdateToolCategoryReques
 import com.example.csvccdshustbe.response.toolCategories.FindAllToolCategoriesResponse;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+import java.util.Map;
+
 public interface ToolCategoriesService {
 
     ToolCategories findToolCategoryByIdToolCategoryAndVisible(Integer idToolCategory, Integer visible);
@@ -21,4 +25,6 @@ public interface ToolCategoriesService {
     void deleteToolCategoryByIdAssetCategory(Integer idToolCategory) throws ValidateFiledException;
     ToolCategories findToolCategoryDetailsResponse(Integer idToolCategory);
     void updateStatusToolCategory(UpdateStatusToolCategoryRequest request) throws ValidateFiledException;
+    List<FindAllToolCategoryDto> findAllToolCategoriesToDownloadAndSelected();
+    List<FindAllToolCategoryDto> findAllToolCategoriesToDownloadAndView();
 }

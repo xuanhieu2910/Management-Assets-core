@@ -33,7 +33,7 @@ public class SuppliersController {
             @Spec(path = "keyword", params = "keyword", spec = Like.class)
     }) FindAllSuppliersRequest findAllSuppliersRequest){
         try {
-            return ApiResponseDto.createdWithState(suppliersService.findAllSuppliersResponseByStatus(findAllSuppliersRequest),
+            return ApiResponseDto.createdWithState(suppliersService.findAllSuppliersResponse(findAllSuppliersRequest),
                     "Find all Suppliers success", HttpStatus.OK);
         } catch (NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);

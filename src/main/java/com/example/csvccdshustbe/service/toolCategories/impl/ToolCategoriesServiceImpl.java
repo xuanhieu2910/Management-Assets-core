@@ -204,4 +204,22 @@ public class ToolCategoriesServiceImpl implements ToolCategoriesService {
         toolCategoriesOptional.get().setVisible(request.getStatus());
         toolCategoriesRepository.save(toolCategoriesOptional.get());
     }
+
+    @Override
+    public List<FindAllToolCategoryDto> findAllToolCategoriesToDownloadAndSelected() {
+        List<Integer>idsDepartment = new ArrayList<>();
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        idsDepartment.addAll(csvcUser.getIdsDepartmentCurrent());
+        return toolCategoriesRepository.findAllToolCategoriesLeafByIdsDepartment(idsDepartment);
+    }
+
+    @Override
+    public List<FindAllToolCategoryDto> findAllToolCategoriesToDownloadAndView() {
+        List<Integer> idsDepartment = new ArrayList<>();
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        idsDepartment.addAll(csvcUser.getIdsDepartmentCurrent());
+        return toolCategoriesRepository.findAllToolCategoriesToDownloadAndViewByIdsDepartment(idsDepartment);
+    }
 }

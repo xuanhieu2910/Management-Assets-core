@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.suppliers.impl;
 
 
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Suppliers;
 
 import com.example.csvccdshustbe.entity.UnitsTool;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -37,30 +39,17 @@ public class SuppliersServiceImpl implements SuppliersService {
 
 
     @Override
-    public Page<FindAllSuppliersResponse> findAllSuppliersResponseByStatus(FindAllSuppliersRequest request) {
+    public Page<FindAllSuppliersResponse> findAllSuppliersResponse(FindAllSuppliersRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-        Page<Suppliers> findAllSuppliersResponses = suppliersRepository.findAllSuppliersByStatus(request, pageable);
-        return new PageImpl<>(convertToFindAllUnitsToolsResponse(findAllSuppliersResponses.stream().collect(Collectors.toList())),pageable,findAllSuppliersResponses.getTotalElements());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartment(csvcUser.getIdsDepartmentCurrent());
+        return suppliersRepository.findAllSuppliers(request, pageable);
     }
-
-    private List<FindAllSuppliersResponse> convertToFindAllUnitsToolsResponse(List<Suppliers> collect) {
-        List<FindAllSuppliersResponse> responses = new ArrayList<>();
-        for (Suppliers suppliers : collect) {
-            FindAllSuppliersResponse response = new FindAllSuppliersResponse();
-            response.setIdSupplier(suppliers.getIdSupplier());
-            response.setName(suppliers.getName());
-            response.setEmail(suppliers.getEmail());
-            response.setPhoneNumber(suppliers.getPhoneNumber());
-            responses.add(response);
-        }
-        return responses;
-    }
-
 
     @Override
     public void createSuppliers(CreateSuppliersRequest request) throws ValidateFiledException {
         validateDataCreateSuppliers(request);
-        suppliersRepository.save(contructSuppliers(request));
+        suppliersRepository.save(constructionSuppliers(request));
     }
 
 
@@ -84,16 +73,15 @@ public class SuppliersServiceImpl implements SuppliersService {
 
 
     private void validateDataCreateSuppliers(CreateSuppliersRequest request) throws ValidateFiledException{
-       if (StringUtils.isBlank(request.getName())) {
-                throw new ValidateFiledException("Validate data request!");
-            }
-            Optional<Suppliers> suppliers = suppliersRepository.findSuppliersByName(request.getName());
-            if (suppliers.isPresent()){
-                throw new ValidateFiledException("Exits suppliers by name!");
+        if (StringUtils.isBlank(request.getName())) {
+            throw new ValidateFiledException("Validate data request!");
         }
-
+        Optional<Suppliers> suppliers = suppliersRepository.findSuppliersByName(request.getName());
+        if (suppliers.isPresent()) {
+            throw new ValidateFiledException("Exits suppliers by name!");
+        }
     }
-    private Suppliers contructSuppliers(CreateSuppliersRequest request) {
+    private Suppliers constructionSuppliers(CreateSuppliersRequest request) {
         Suppliers suppliers = new Suppliers();
         suppliers.setName(request.getName().trim());
         suppliers.setPhoneNumber(request.getPhoneNumber());
@@ -106,6 +94,10 @@ public class SuppliersServiceImpl implements SuppliersService {
         String timeCurrent = String.valueOf(new Date().getTime());
         suppliers.setTimeCreated(timeCurrent);
         suppliers.setTimeModified(timeCurrent);
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        suppliers.setIdUserCreated(csvcUser.getIdUser());
+        suppliers.setIdUserModified(csvcUser.getIdUser());
+        suppliers.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());
         return suppliers;
     }
 
@@ -116,12 +108,20 @@ public class SuppliersServiceImpl implements SuppliersService {
         }
         if (StringUtils.isBlank(request.getName())) {
             throw new ValidateFiledException("Validate data request!");
+        } else {
+            if (!suppliersOptional.get().getName().equals(request.getName())) {
+                Optional<Suppliers> suppliers = suppliersRepository.findSuppliersByName(request.getName());
+                if (suppliers.isPresent()){
+                    throw new ValidateFiledException("Exits supply by name, please choose another name!");
+                }
+            }
         }
         return suppliersOptional.get();
 
     }
 
     private Suppliers editSuppliers(Suppliers suppliers, UpdateSuppliersRequest request) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         suppliers.setName(request.getName());
         suppliers.setPhoneNumber(request.getPhoneNumber());
         suppliers.setEmail(request.getEmail());
@@ -132,6 +132,7 @@ public class SuppliersServiceImpl implements SuppliersService {
         suppliers.setStatus(request.getStatus());
         String timeModified = String.valueOf(new Date().getTime());
         suppliers.setTimeModified(timeModified);
+        suppliers.setIdUserModified(csvcUser.getIdUser());
         return suppliers;
     }
 

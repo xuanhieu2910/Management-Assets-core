@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.repository.toolCategories;
 
 import com.example.csvccdshustbe.entity.ToolCategories;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.example.csvccdshustbe.dto.toolCategories.FindAllToolCategoryDto;
@@ -21,4 +22,6 @@ public interface ToolCategoriesRepositoryCustom {
     boolean checkToolCategoriesByParentIdAndName(Integer parentId, String name);
     Optional<ToolCategories> findToolCategoryById(Integer toolCategoryId);
     boolean checkExitsToolCategoriesByNameOrShortName(String name, String shortName);
+    List<FindAllToolCategoryDto> findAllToolCategoriesLeafByIdsDepartment(List<Integer> idsDepartment);
+    List<FindAllToolCategoryDto> findAllToolCategoriesToDownloadAndViewByIdsDepartment(List<Integer> idsDepartment);
 }

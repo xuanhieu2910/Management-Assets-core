@@ -36,4 +36,10 @@ public class Suppliers {
     private String timeCreated;
     @Column(name = "time_modified")
     private String timeModified;
+    @Column(name = "id_department_original")
+    private Integer idDepartmentOriginal;
+    @Column(name = "id_user_created")
+    private Integer idUserCreated;
+    @Column(name = "id_user_modified")
+    private Integer idUserModified;
 }

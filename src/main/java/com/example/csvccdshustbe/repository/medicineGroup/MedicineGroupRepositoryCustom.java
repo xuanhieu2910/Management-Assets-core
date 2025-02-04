@@ -2,7 +2,6 @@ package com.example.csvccdshustbe.repository.medicineGroup;
 
 import com.example.csvccdshustbe.dto.modules.medicineModules.medicineGroup.MedicineGroupDetailsDto;
 import com.example.csvccdshustbe.entity.MedicineGroup;
-import com.example.csvccdshustbe.entity.Suppliers;
 import com.example.csvccdshustbe.request.medicineGroup.FindAllMedicineGroupRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
