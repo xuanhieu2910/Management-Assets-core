@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class AllocateToolDto {
+    @JsonProperty("salt")
+    private String salt;
     @JsonProperty("id_department")
     private Integer idDepartment;
     @JsonProperty("name_department")

@@ -28,5 +28,11 @@ public class Projects {
     private String timeModified;
     @Column(name = "visible")
     private Integer visible;
+    @Column(name = "id_department_original")
+    private Integer idDepartmentOriginal;
+    @Column(name = "id_user_created")
+    private Integer idUserCreated;
+    @Column(name = "id_user_modified")
+    private Integer idUserModified;
 
 }

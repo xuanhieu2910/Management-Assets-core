@@ -3,6 +3,8 @@ package com.example.csvccdshustbe.service.projects.impl;
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Projects;
+import com.example.csvccdshustbe.entity.Role;
+import com.example.csvccdshustbe.enums.RolePattern;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.projects.ProjectsRepository;
 import com.example.csvccdshustbe.request.projects.CreateProjectsRequest;
@@ -150,6 +152,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     }
     private Projects contructProjects(CreateProjectsRequest request) {
         Projects projects = new Projects();
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         projects.setName(request.getName().trim());
 
         if (StringUtils.isNotBlank(request.getShortName())){
@@ -161,6 +164,9 @@ public class ProjectsServiceImpl implements ProjectsService {
         if (ObjectUtils.isNotEmpty(request.getVisible())) {
             projects.setVisible(request.getVisible());
         }
+        projects.setIdUserCreated(csvcUser.getIdUser());
+        projects.setIdUserModified(csvcUser.getIdUser());
+        projects.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());
         String timeCurrent = String.valueOf(new Date().getTime());
         projects.setTimeCreated(timeCurrent);
         projects.setTimeModified(timeCurrent);
@@ -193,12 +199,15 @@ public class ProjectsServiceImpl implements ProjectsService {
     }
 
     private Projects editProject(Projects projects, UpdateProjectsRequest request) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         projects.setName(request.getName());
         projects.setShortName(request.getShortName());
         projects.setParent(request.getParentId());
         projects.setVisible(request.getVisible());
         String timeModified = String.valueOf(new Date().getTime());
         projects.setTimeModified(timeModified);
+        projects.setIdUserModified(csvcUser.getIdUser());
+        projects.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());
         return projects;
     }
 
