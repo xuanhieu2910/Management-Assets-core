@@ -21,4 +21,6 @@ public class FindAllFluctuatingSituationToolResponses {
     private Integer typeFluctuatingSituation;
     @JsonProperty("salt")
     private String salt;
+    @JsonProperty("saltParent")
+    private String saltParent;
 }

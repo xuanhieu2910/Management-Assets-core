@@ -78,12 +78,14 @@ public class FluctuatingSituationToolRepositoryImpl implements FluctuatingSituat
                 "       tl.name, " +
                 "       fst.status, " +
                 "       fst.type, " +
-                "       tl.salt " +
+                "       tl.salt," +
+                "       parent_tool.salt AS parent_salt " +
                 "from fluctuating_situation_tool fst " +
                 "         inner join fluctuating_situation fs on fst.id_fluctuating_situation = fs.id_fluctuating_situation " +
                 "         inner join process pr on fst.id_process = pr.id_process " +
                 "         inner join tool tl on fst.id_tool = tl.id_tool " +
                 "         inner join tool_process tp on tl.id_tool = tp.id_tool and fs.id_process = tp.id_process " +
+                "         LEFT JOIN tool parent_tool ON tl.parent = parent_tool.id_tool " +
                 "where fs.id_fluctuating_situation = :idFluctuatingSituation ");
         setConditionFindAllFluctuatingSituationTool(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -100,6 +102,7 @@ public class FluctuatingSituationToolRepositoryImpl implements FluctuatingSituat
                 response.setStatus(ValueUtil.getIntegerByObject(obj[4]));
                 response.setTypeFluctuatingSituation(ValueUtil.getIntegerByObject(obj[5]));
                 response.setSalt(ValueUtil.getStringByObject(obj[6]));
+                response.setSaltParent(ValueUtil.getStringByObject(obj[7]));
                 responses.add(response);
             }
         }
