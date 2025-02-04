@@ -1152,6 +1152,9 @@ public class ProcessServiceImpl implements ProcessService {
                 toolService.updateToolStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
                 createUpdateInventoryTool(process);
             }
+            case Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY_TOOL-> {
+                toolService.updateToolStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+            }
             default -> {
                 return;
             }
