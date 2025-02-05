@@ -39,6 +39,10 @@ public class FluctuatingSituationServiceImpl implements FluctuatingSituationServ
     public void calculatorStatusFluctuatingSituationById(Integer idFluctuatingSituation) {
         fluctuatingSituationRepository.calculatorStatusFluctuatingSituationById(idFluctuatingSituation);
     }
+    @Override
+    public void calculatorStatusFluctuatingSituationToolById(Integer idFluctuatingSituation) {
+        fluctuatingSituationRepository.calculatorStatusFluctuatingSituationToolById(idFluctuatingSituation);
+    }
 
     @Override
     public StatisticFluctuatingSituation getStatisticFluctuatingSituation(Integer typeFluctuatingSituation) {
