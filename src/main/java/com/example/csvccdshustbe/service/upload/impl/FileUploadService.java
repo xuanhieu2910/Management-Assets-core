@@ -11,12 +11,15 @@ import com.example.csvccdshustbe.dto.modules.medicineModules.medicineGroup.Medic
 import com.example.csvccdshustbe.dto.modules.medicineModules.medicineType.MedicineTypeDetailsDto;
 import com.example.csvccdshustbe.dto.original.FindAllOriginalDto;
 import com.example.csvccdshustbe.dto.originalOfFormation.FindAllOriginalOfFormationDto;
+import com.example.csvccdshustbe.dto.originalOfFormationTool.FindAllOriginalOfFormationToolDto;
+import com.example.csvccdshustbe.dto.originalTool.FindAllOriginalToolDto;
 import com.example.csvccdshustbe.dto.positionName.FindAllPositionNameDto;
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
 import com.example.csvccdshustbe.dto.provinces.ProvincesDto;
 import com.example.csvccdshustbe.dto.report.inventory.BlueprintInventoryReportDto;
 import com.example.csvccdshustbe.dto.report.inventory.CouncilInventoryReportDto;
 import com.example.csvccdshustbe.dto.report.inventory.FindAllAssetForInventoryReportDto;
+import com.example.csvccdshustbe.dto.suppliers.FindAllSuppliersDto;
 import com.example.csvccdshustbe.dto.toolCategories.FindAllToolCategoryDto;
 import com.example.csvccdshustbe.dto.typeUse.FindAllTypeUseDto;
 import com.example.csvccdshustbe.dto.unit.FindAllUnitsDto;
@@ -39,9 +42,12 @@ import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import com.example.csvccdshustbe.service.original.OriginalService;
 import com.example.csvccdshustbe.service.originalOfFormation.OriginalOfFormationService;
+import com.example.csvccdshustbe.service.originalOfFormationTool.OriginalOfFormationToolService;
+import com.example.csvccdshustbe.service.originalTool.OriginalToolService;
 import com.example.csvccdshustbe.service.positionName.PositionNameService;
 import com.example.csvccdshustbe.service.projects.ProjectsService;
 import com.example.csvccdshustbe.service.province.ProvinceService;
+import com.example.csvccdshustbe.service.suppliers.SuppliersService;
 import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
 import com.example.csvccdshustbe.service.typeUse.TypeUseService;
 import com.example.csvccdshustbe.service.units.UnitsService;
@@ -81,9 +87,7 @@ public class FileUploadService implements FilesStorageService {
 
 
     public static final String FOLDER_SAMPLE_EXCEL_IMPORT = "sample_import_asset";
-    public static final String FOLDER_PAYMENT = "payment";
     private static final String SEPARATOR = File.separator;
-
     private static final String REMOVE_FILE_UNIX = "rm -rf";
     private static final String REMOVE_FILE_WIN = "del";
     private static final String CREATE_FOLDER = "mkdir";
@@ -162,6 +166,12 @@ public class FileUploadService implements FilesStorageService {
     ReportRepository reportRepository;
     @Autowired
     ToolCategoriesService toolCategoriesService;
+    @Autowired
+    SuppliersService suppliersService;
+    @Autowired
+    OriginalToolService originalToolService;
+    @Autowired
+    OriginalOfFormationToolService originalOfFormationToolService;
 
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
@@ -867,11 +877,11 @@ public class FileUploadService implements FilesStorageService {
         List<FindAllToolCategoryDto> toolCategoryToSelected = toolCategoriesService.findAllToolCategoriesToDownloadAndSelected();
         List<FindAllToolCategoryDto> toolCategoryToView = toolCategoriesService.findAllToolCategoriesToDownloadAndView();
         // Get suppliers
-//        List<>
-        // Get Point decision
-        // Get projects
-        // Get originals
-        // Get original of formation
+        Map<String,List<FindAllSuppliersDto>> suppliers = suppliersService.findAllSuppliersToDownload();
+        Map<String,List<FindAllDocumentAttackDto>> documentAttackToDownload = documentAttackService.findAllDocumentAttackToDownload();
+        Map<String,List<FindAllProjectsDto>> projectsToDownload = projectsService.findAllProjectToDownloadTool();
+        List<FindAllOriginalToolDto> originalToolDtos = originalToolService.findAllOriginalToolByVisible(Constants.ORIGINAL_VISIBLE);
+//        List<FindAllOriginalOfFormationToolDto> findAllOriginalOfFormationToolDtos = originalOfFormationToolService.findAllOriginalOfFormationToolVisible(Constants.ORIG)
         // Get units
         // Get departments
         // Get locations

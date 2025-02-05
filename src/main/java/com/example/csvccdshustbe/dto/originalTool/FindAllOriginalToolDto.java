@@ -23,4 +23,5 @@ public class FindAllOriginalToolDto {
     private Integer idUserModified;
     private Integer idToolCategory;
     private String code;
+    private Integer isLeaf;
 }

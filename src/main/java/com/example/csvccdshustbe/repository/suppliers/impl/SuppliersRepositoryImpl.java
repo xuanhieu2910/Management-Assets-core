@@ -1,9 +1,11 @@
 package com.example.csvccdshustbe.repository.suppliers.impl;
 
+import com.example.csvccdshustbe.dto.suppliers.FindAllSuppliersDto;
 import com.example.csvccdshustbe.entity.Suppliers;
 import com.example.csvccdshustbe.repository.suppliers.SuppliersRepositoryCustom;
 import com.example.csvccdshustbe.request.suppliers.FindAllSuppliersRequest;
 import com.example.csvccdshustbe.response.suppliers.FindAllSuppliersResponse;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -17,9 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class SuppliersRepositoryImpl implements SuppliersRepositoryCustom {
     @PersistenceContext
@@ -205,5 +205,51 @@ public class SuppliersRepositoryImpl implements SuppliersRepositoryCustom {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Map<String, List<FindAllSuppliersDto>>
+    findAllSuppliersAndDepartmentToDownload(List<Integer> idsDepartmentCurrent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select de.id_department idDepartment, de.name nameDepartment, " +
+                "       su.id_supplier idSupply, su.name nameSupply " +
+                "from department de " +
+                "    left join suppliers su on de.id_department = su.id_department_original " +
+                "where de.id_department in (:idDepartments) " +
+                "and su.status = :statusSupply " +
+                "and de.status = :statusDepartment ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idDepartments", idsDepartmentCurrent);
+        query.setParameter("statusSupply", Constants.SUPPLIERS_ACTIVE_STATUS);
+        query.setParameter("statusDepartment", Constants.DEPARTMENT_ACTIVE_STATUS);
+        List<Object[]> result = query.getResultList();
+        Map<String, List<FindAllSuppliersDto>> responses = new HashMap<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            String keyword = null;
+            Integer idDepartment = null;
+            String nameDepartment = null;
+            for (Object[] obj : result){
+                idDepartment = ValueUtil.getIntegerByObject(obj[0]);
+                nameDepartment = ValueUtil.getStringByObject(obj[1]);
+                keyword = "STT_" + idDepartment + "_" + nameDepartment;
+                keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
+                if (responses.containsKey(keyword)){
+                    FindAllSuppliersDto findAllSuppliersDto = new FindAllSuppliersDto();
+                    findAllSuppliersDto.setIdSupplier(ValueUtil.getIntegerByObject(obj[2]));
+                    findAllSuppliersDto.setName(ValueUtil.getStringByObject(obj[3]));
+                    responses.get(keyword).add(findAllSuppliersDto);
+                } else {
+                    List<FindAllSuppliersDto> findAllSuppliersDtos = new ArrayList<>();
+                    if (ValueUtil.getIntegerByObject(obj[2]) != null){
+                        FindAllSuppliersDto findAllSuppliersDto = new FindAllSuppliersDto();
+                        findAllSuppliersDto.setIdSupplier(ValueUtil.getIntegerByObject(obj[2]));
+                        findAllSuppliersDto.setName(ValueUtil.getStringByObject(obj[3]));
+                        findAllSuppliersDtos.add(findAllSuppliersDto);
+                    }
+                    responses.put(keyword, findAllSuppliersDtos);
+                }
+            }
+        }
+        return responses;
     }
 }

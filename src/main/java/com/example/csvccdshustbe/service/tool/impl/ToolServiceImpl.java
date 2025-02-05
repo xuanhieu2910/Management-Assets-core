@@ -342,7 +342,7 @@ public class ToolServiceImpl implements ToolService {
                         .findFirst().ifPresent(x -> {
                             x.setName(tool.getName());
                             x.setYearUse(tool.getYearUse());
-                            x.setIdDepartment(allocateToolRequest.getIdDepartment());
+                            x.setIdDepartment(tool.getIdDepartment());
                             x.setIdLocation(allocateToolRequest.getIdLocation());
                             x.setStatusUse(allocateToolRequest.getStatusUse());
                             x.setQuantity(allocateToolRequest.getQuantity());
@@ -366,6 +366,7 @@ public class ToolServiceImpl implements ToolService {
     private void updateFieldToolParent(Tool tool, UpdateToolRequest updateToolRequest) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         tool.setName(updateToolRequest.getNameTool());
+        tool.setIdDepartment(updateToolRequest.getIdDepartment());
         tool.setIdToolCategory(updateToolRequest.getIdToolCategory());
         tool.setValue(updateToolRequest.getValue());
         tool.setQuantity(updateToolRequest.getQuantity());
@@ -468,7 +469,6 @@ public class ToolServiceImpl implements ToolService {
 
     private void createNewChildrenTool(Tool toolParent, UpdateListAllocateToolRequest updateAllocateToolRequestList) {
         ListAllocateToolRequest allocateToolRequest = new ListAllocateToolRequest();
-        allocateToolRequest.setIdDepartment(updateAllocateToolRequestList.getIdDepartment());
         allocateToolRequest.setIdLocation(updateAllocateToolRequestList.getIdLocation());
         allocateToolRequest.setUserName(updateAllocateToolRequestList.getUserName());
         allocateToolRequest.setStatusUse(updateAllocateToolRequestList.getStatusUse());
@@ -484,7 +484,7 @@ public class ToolServiceImpl implements ToolService {
         String currentTime = String.valueOf(new Date().getTime());
         Tool childTool = new Tool();
         childTool.setName(toolParent.getName());
-        childTool.setCodeTool(toolParent.getCodeTool() +"-"+ UUID.randomUUID());
+        childTool.setCodeTool(toolParent.getCodeTool() + "-" + UUID.randomUUID());
         childTool.setSalt(String.valueOf(UUID.randomUUID()));
         childTool.setIdToolCategory(toolParent.getIdToolCategory());
         childTool.setTimeCreated(currentTime);
@@ -499,7 +499,7 @@ public class ToolServiceImpl implements ToolService {
         childTool.setQuantityDecreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT);
         childTool.setStatusUse(allocateToolRequest.getStatusUse());
         childTool.setParent(toolParent.getIdTool());
-        childTool.setIdDepartment(allocateToolRequest.getIdDepartment());
+        childTool.setIdDepartment(toolParent.getIdDepartment());
         childTool.setIdLocation(allocateToolRequest.getIdLocation());
         childTool.setIdUserUse(user.get().getIdUser());
         childTool.setYearUse(toolParent.getYearUse());
@@ -520,6 +520,7 @@ public class ToolServiceImpl implements ToolService {
         tool.setIdUserCreated(csvcUser.getIdUser());
         tool.setIdUserModified(csvcUser.getIdUser());
         tool.setValue(createNewToolRequest.getValue());
+        tool.setIdDepartment(createNewToolRequest.getIdDepartment());
         tool.setQuantity(createNewToolRequest.getQuantity());
         tool.setIsIncrease(Constants.TOOL_IS_NOT_INCREASE);
         tool.setIsDecrease(Constants.TOOL_IS_NOT_DECREASE);
@@ -535,7 +536,8 @@ public class ToolServiceImpl implements ToolService {
             StringUtils.isBlank(createNewToolRequest.getCodeTool()) ||
             StringUtils.isBlank(createNewToolRequest.getValue()) ||
             ObjectUtils.isEmpty(createNewToolRequest.getIdToolCategory()) ||
-            ObjectUtils.isEmpty(createNewToolRequest.getYearUse())){
+            ObjectUtils.isEmpty(createNewToolRequest.getYearUse()) ||
+            ObjectUtils.isEmpty(createNewToolRequest.getIdDepartment())){
             throw new ValidateFiledException("Valid data");
         }
         toolCategoriesService.findToolCategoryByIdToolCategoryAndVisible(createNewToolRequest.getIdToolCategory(),

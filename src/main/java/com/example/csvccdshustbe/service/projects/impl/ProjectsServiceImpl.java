@@ -25,10 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -127,6 +124,12 @@ public class ProjectsServiceImpl implements ProjectsService {
     public List<FindAllProjectsDto> findAllProjectToDownload() {
         List<FindAllProjectsDto> findAllProjectsDtos = projectsRepository.findAllProjectsToDownload();
         return findAllProjectsDtos;
+    }
+
+    @Override
+    public Map<String, List<FindAllProjectsDto>> findAllProjectToDownloadTool() {
+        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
+        return projectsRepository.findAllProjectToDownloadTool(idsDepartment);
     }
 
     private void validateDataCreateProjects(CreateProjectsRequest request) throws ValidateFiledException{

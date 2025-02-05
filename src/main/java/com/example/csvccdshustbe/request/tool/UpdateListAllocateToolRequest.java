@@ -6,8 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateListAllocateToolRequest {
+
     private String salt;
-    private Integer idDepartment;
     private Integer idLocation;
     private String userName;
     private Integer statusUse;

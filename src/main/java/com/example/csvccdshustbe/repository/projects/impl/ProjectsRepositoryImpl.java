@@ -1,6 +1,8 @@
 package com.example.csvccdshustbe.repository.projects.impl;
 
+import com.example.csvccdshustbe.dto.documentAttack.FindAllDocumentAttackDto;
 import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
+import com.example.csvccdshustbe.dto.suppliers.FindAllSuppliersDto;
 import com.example.csvccdshustbe.entity.Projects;
 import com.example.csvccdshustbe.repository.projects.ProjectsRepositoryCustom;
 import com.example.csvccdshustbe.request.projects.FindAllProjectsRequest;
@@ -16,10 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
 
@@ -449,6 +448,51 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
             }
         }
         return projectsList;
+    }
+
+    @Override
+    public Map<String, List<FindAllProjectsDto>> findAllProjectToDownloadTool(List<Integer> idsDepartment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select de.id_department idDepartment, de.name nameDepartment, " +
+                "       pr.id_project, pr.name nameProject " +
+                "from department de " +
+                "    left join projects pr on de.id_department = pr.id_department_original " +
+                "where de.id_department in (:idDepartments) " +
+                "and pr.visible = :visible " +
+                "and de.status = :statusDepartment ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idDepartments", idsDepartment);
+        query.setParameter("visible", Constants.PROJECTS_IS_VISIBLE);
+        query.setParameter("statusDepartment", Constants.DEPARTMENT_ACTIVE_STATUS);
+        List<Object[]> result = query.getResultList();
+        Map<String, List<FindAllProjectsDto>> responses = new HashMap<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            String keyword = null;
+            Integer idDepartment = null;
+            String nameDepartment = null;
+            for (Object[] obj : result){
+                idDepartment = ValueUtil.getIntegerByObject(obj[0]);
+                nameDepartment = ValueUtil.getStringByObject(obj[1]);
+                keyword = "STT_" + idDepartment + "_" + nameDepartment;
+                keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
+                if (responses.containsKey(keyword)){
+                    FindAllProjectsDto findAllProjectsDto = new FindAllProjectsDto();
+                    findAllProjectsDto.setIdProject(ValueUtil.getIntegerByObject(obj[2]));
+                    findAllProjectsDto.setName(ValueUtil.getStringByObject(obj[3]));
+                    responses.get(keyword).add(findAllProjectsDto);
+                } else {
+                    List<FindAllProjectsDto> findAllProjectsDtoList = new ArrayList<>();
+                    if (ValueUtil.getIntegerByObject(obj[2]) != null){
+                        FindAllProjectsDto findAllProjectsDto = new FindAllProjectsDto();
+                        findAllProjectsDto.setIdProject(ValueUtil.getIntegerByObject(obj[2]));
+                        findAllProjectsDto.setName(ValueUtil.getStringByObject(obj[3]));
+                        findAllProjectsDtoList.add(findAllProjectsDto);
+                    }
+                    responses.put(keyword, findAllProjectsDtoList);
+                }
+            }
+        }
+        return responses;
     }
 
 }

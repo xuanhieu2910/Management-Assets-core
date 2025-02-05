@@ -21,5 +21,7 @@ public class FindAllProjectsDto {
     private String timeModified;
     private Integer visible;
     private String nameParent;
+    private Integer idDepartment;
+    private String nameDepartment;
 
 }

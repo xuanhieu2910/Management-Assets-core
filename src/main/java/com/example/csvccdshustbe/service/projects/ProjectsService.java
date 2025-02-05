@@ -10,6 +10,7 @@ import com.example.csvccdshustbe.response.projects.FindAllProjectsResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProjectsService {
 
@@ -26,4 +27,5 @@ public interface ProjectsService {
     void updateStatusProject(UpdateStatusProjectRequest request) throws ValidateFiledException;
 
     List<FindAllProjectsDto> findAllProjectToDownload();
+    Map<String, List<FindAllProjectsDto>> findAllProjectToDownloadTool();
 }

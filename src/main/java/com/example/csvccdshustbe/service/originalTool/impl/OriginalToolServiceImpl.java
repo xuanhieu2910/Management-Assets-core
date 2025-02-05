@@ -29,6 +29,11 @@ public class OriginalToolServiceImpl implements OriginalToolService {
                 pageable, findAllOriginalTool.getTotalElements());
     }
 
+    @Override
+    public List<FindAllOriginalToolDto> findAllOriginalToolByVisible(Integer originalVisible) {
+        return originalToolRepository.findAllOriginalToolByVisible(originalVisible);
+    }
+
     private List<FindAllOriginalToolVisibleResponse> convertToFindAllOriginalToolVisibleResponse(List<FindAllOriginalToolDto> collect) {
     List<FindAllOriginalToolVisibleResponse> responses = new ArrayList<>();
     for (FindAllOriginalToolDto findAllOriginalToolDto : collect) {

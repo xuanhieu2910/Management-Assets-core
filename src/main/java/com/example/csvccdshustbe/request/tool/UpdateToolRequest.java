@@ -22,6 +22,8 @@ public class UpdateToolRequest {
     private Integer quantity;
     @NotNull
     private String yearUse;
+    @NotNull
+    private Integer idDepartment;
     private List<UpdateListAllocateToolRequest> allocateToolRequestList;
 
 }

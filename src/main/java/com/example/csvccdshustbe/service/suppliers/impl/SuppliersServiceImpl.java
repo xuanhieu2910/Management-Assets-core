@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.suppliers.impl;
 
 
+import com.example.csvccdshustbe.dto.suppliers.FindAllSuppliersDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Suppliers;
 
@@ -14,6 +15,7 @@ import com.example.csvccdshustbe.request.suppliers.UpdateSuppliersRequest;
 
 import com.example.csvccdshustbe.response.suppliers.FindAllSuppliersResponse;
 import com.example.csvccdshustbe.service.suppliers.SuppliersService;
+import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -25,10 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,6 +68,14 @@ public class SuppliersServiceImpl implements SuppliersService {
             throw new NotFoundException("Don't exits Suppliers by id!");
         }
         suppliersRepository.delete(suppliersOptional.get());
+    }
+
+    @Override
+    public Map<String, List<FindAllSuppliersDto>> findAllSuppliersToDownload() {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Integer> idsDepartment = csvcUser.getIdsDepartmentCurrent();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        return suppliersRepository.findAllSuppliersAndDepartmentToDownload(idsDepartment);
     }
 
 
