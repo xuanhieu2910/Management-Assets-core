@@ -96,6 +96,26 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
         query.executeUpdate();
     }
 
+    @Modifying
+    @Transactional
+    @Override
+    public void calculatorStatusFluctuatingSituationToolById(Integer idFluctuatingSituation) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" update fluctuating_situation fs  " +
+                "    inner join (select fsa.id_fluctuating_situation,  " +
+                "                    case when fsa.status = :notYetFinish then -1 else 1 end totalyStatus  " +
+                "                from fluctuating_situation_tool fsa  " +
+                "                where fsa.id_fluctuating_situation = :idFsa  " +
+                "                group by fsa.id_fluctuating_situation) fsa  " +
+                "    on fs.id_fluctuating_situation = fsa.id_fluctuating_situation  " +
+                "set fs.status = fsa.totalyStatus  " +
+                "where 1 = 1   ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idFsa", idFluctuatingSituation);
+        query.setParameter("notYetFinish", Constants.STATUS_FLUCTUATING_SITUATION_TOOL_NOT_FINISH);
+        query.executeUpdate();
+    }
+
     @Override
     public StatisticFluctuatingSituation getStatisticFluctuatingSituation(Integer typeFluctuatingSituation) {
         StringBuilder sb = new StringBuilder();

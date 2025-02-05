@@ -54,11 +54,11 @@ public class FluctuatingSituationToolServiceImpl implements FluctuatingSituation
             }
         }
         fluctuatingSituationToolRepository.saveAll(fluctuatingSituationTools);
-        updateStatusFluctuatingSituation(fluctuatingSituationTools.get(0).getIdFluctuatingSituation());
+        updateStatusFluctuatingSituationTool(fluctuatingSituationTools.get(0).getIdFluctuatingSituation());
     }
 
-    private void updateStatusFluctuatingSituation(Integer idFluctuatingSituation) {
-        fluctuatingSituationService.calculatorStatusFluctuatingSituationById(idFluctuatingSituation);
+    private void updateStatusFluctuatingSituationTool(Integer idFluctuatingSituation) {
+        fluctuatingSituationService.calculatorStatusFluctuatingSituationToolById(idFluctuatingSituation);
     }
 
     @Override
