@@ -2760,7 +2760,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIsDecrease())){
             query.setParameter("isDecrease", request.getIsDecrease());
         }
-        if (ObjectUtils.isNotEmpty(request.getIsSingle())){
+        if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)
+                || request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)
+                || request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)
+        ) {
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
         }
         if (ObjectUtils.isNotEmpty(request.getStatusUse())){
@@ -2788,11 +2791,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIsDecrease())){
             sb.append("   and (asset.is_decrease = :isDecrease) ");
         }
-        if (Boolean.FALSE.equals(request.getIsSingle())){
-            sb.append("   and (asset.quantity != :isSingle) ");
-        }
-        if (Boolean.TRUE.equals(request.getIsSingle())){
-            sb.append("   and (asset.quantity = :isSingle) ");
+        if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)) {
+            sb.append("  and asset.quantity = :isSingle and asset.parent is null  ");
+        } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)) {
+            sb.append(" and asset.quantity > :isSingle and asset.parent is null ");
+        } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
+            sb.append(" and asset.quantity = :isSingle and asset.parent is not null ");
         }
         if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
             sb.append(" and asset.status_use = :statusUse ");
@@ -2831,11 +2835,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (ObjectUtils.isNotEmpty(request.getIsDecrease())){
             sb.append("   and (asset.is_decrease = :isDecrease) ");
         }
-        if (Boolean.FALSE.equals(request.getIsSingle())){
-            sb.append("   and (asset.quantity != :isSingle) ");
-        }
-        if (Boolean.TRUE.equals(request.getIsSingle())){
-            sb.append("   and (asset.quantity = :isSingle) ");
+        if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)) {
+            sb.append("  and asset.quantity = :isSingle and asset.parent is null  ");
+        } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)) {
+            sb.append(" and asset.quantity > :isSingle and asset.parent is null ");
+        } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
+            sb.append(" and asset.quantity = :isSingle and asset.parent is not null ");
         }
         if (ObjectUtils.isNotEmpty(request.getStatusUse())){
             sb.append("  and asset.status_use = :statusUse ");

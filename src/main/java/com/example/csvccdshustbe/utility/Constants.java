@@ -636,4 +636,10 @@ public class Constants {
      * */
     public static Integer STATUS_FLUCTUATING_SITUATION_TOOL_NOT_FINISH = -1;
     public static Integer STATUS_FLUCTUATING_SITUATION_TOOL_FINISH = 1;
+    /*----------------------------------------------------*/ /**
+     * Constant find all assets
+     * */
+    public static Integer FIND_ALL_ASSET_SINGLE = 1;
+    public static Integer FIND_ALL_ASSET_LOT = 2;
+    public static Integer FIND_ALL_ASSET_ALLOCATE = 3;
 }
