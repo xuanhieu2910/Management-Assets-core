@@ -56,4 +56,6 @@ public interface AssetService {
     Page<FindAllAssetResponseToDecrease> findAllAssetChildrenToDecrease(FindAllAssetToDecreaseRequest decreaseRequest);
     Page<FindAllAssetChildrenToInventoryResponse> findAllAssetChildrenToInventory(FindAllAssetToInventoryRequest inventoryRequest);
     Asset findAssetByIdAsset(Integer idAsset);
+    StatisticsAssetFindAllResponse getStatisticFindAllAsset();
+
 }

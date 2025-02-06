@@ -22,10 +22,13 @@ import com.example.csvccdshustbe.dto.projects.BluePrintProjectsDto;
 import com.example.csvccdshustbe.dto.report.inventory.FindAllAssetForInventoryReportDto;
 import com.example.csvccdshustbe.dto.unit.BluePrintUnitDto;
 import com.example.csvccdshustbe.entity.Asset;
+import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.repository.asset.AssetRepositoryCustom;
 import com.example.csvccdshustbe.request.asset.*;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
+import com.example.csvccdshustbe.response.asset.StatisticsAssetFindAllResponse;
+import com.example.csvccdshustbe.response.process.ProcessStatisticsToolDocumentInventoryResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -40,6 +43,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -1509,6 +1513,40 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             }
         }
         return new PageImpl<>(responses, pageable, countFindAllAssetChildrenToRevaluation(request));
+    }
+
+    @Override
+    public StatisticsAssetFindAllResponse getStatisticFindAllAsset() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select sum(totalSingle) as totalSingle,  " +
+                "       sum(totalDistribution) as totalDistribution,  " +
+                "       sum(totalLot) as totalLot  " +
+                " from(  " +
+                " select count(0) as totalSingle, 0 as totalDistribution, 0 as totalLot from asset  " +
+                "    where asset.parent is null and asset.quantity = :isSingle  " +
+                "    and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                " union all  " +
+                " select 0 as totalSingle,count(0) as totalDistribution, 0 as totalLot  from asset  " +
+                " where asset.parent is not null and asset.quantity = :isSingle  " +
+                "  and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+                " union all  " +
+                " select 0 as totalSingle,0 as totalDistribution, count(0) as totalLot from asset  " +
+                " where asset.parent is null and  asset.quantity != :isSingle  " +
+                "  and asset.id_department_origin in (:idsDepartmentOriginal)) result ");
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+        query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
+        List<Object[]> result = query.getResultList();
+        StatisticsAssetFindAllResponse response = new StatisticsAssetFindAllResponse();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                response.setTotalSingle(ValueUtil.getIntegerByObject(obj[0]));
+                response.setTotalDistribution(ValueUtil.getIntegerByObject(obj[1]));
+                response.setTotalLot(ValueUtil.getIntegerByObject(obj[2]));
+            }
+        }
+        return response;
     }
 
     private long countFindAllAssetToDecrease(FindAllAssetToDecreaseRequest decreaseRequest) {
