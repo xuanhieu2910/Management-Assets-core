@@ -327,10 +327,12 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void updateInventoryDraftTool(UpdateInventoryToolRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
-        documentRepository.save(updateInformationDocument(request,document));
+        if (!document.getStatus().equals(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE)) {
+        documentRepository.save(updateInformationDocument(request, document));
         if (!CollectionUtils.isEmpty(request.getToolProcess().getToolProcessRequests())) {
             toolProcessService.updateListToolProcessByIdProcess(request.getToolProcess().getToolProcessRequests(),
                     document.getIdProcess());
+            }
         }
     }
 
@@ -338,21 +340,25 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void updateInventoryFinishTool(UpdateInventoryToolRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
-        documentRepository.save(updateInformationDocument(request,document));
-        if (!CollectionUtils.isEmpty(request.getToolProcess().getToolProcessRequests())) {
-            toolProcessService.updateListToolProcessByIdProcess(request.getToolProcess().getToolProcessRequests(),
-                    document.getIdProcess());
+        if (!document.getStatus().equals(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE)) {
+            documentRepository.save(updateInformationDocument(request, document));
+            if (!CollectionUtils.isEmpty(request.getToolProcess().getToolProcessRequests())) {
+                toolProcessService.updateListToolProcessByIdProcess(request.getToolProcess().getToolProcessRequests(),
+                        document.getIdProcess());
+            }
+            createFluctuatingSituation(document.getIdProcess(), Constants.TYPE_FLUCTUATING_SITUATION_DETAIL_TOOL);
         }
-        createFluctuatingSituation(document.getIdProcess(), Constants.TYPE_FLUCTUATING_SITUATION_DETAIL_TOOL);
     }
 
     @Transactional
     @Override
     public void updateInventoryDraftAsset(UpdateInventoryAssetRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
-        documentRepository.save(updateInformationDocument(request,document));
-        if (!CollectionUtils.isEmpty(request.getAssetProcess().getAssets())) {
-            assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
+        if (!document.getStatus().equals(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE)) {
+            documentRepository.save(updateInformationDocument(request, document));
+            if (!CollectionUtils.isEmpty(request.getAssetProcess().getAssets())) {
+                assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
+            }
         }
     }
 
@@ -361,11 +367,13 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void updateInventoryFinishAsset(UpdateInventoryAssetRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
-        documentRepository.save(updateInformationDocument(request,document));
-        if (!CollectionUtils.isEmpty(request.getAssetProcess().getAssets())) {
-            assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
+        if (!document.getStatus().equals(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE)) {
+            documentRepository.save(updateInformationDocument(request, document));
+            if (!CollectionUtils.isEmpty(request.getAssetProcess().getAssets())) {
+                assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
+            }
+            createFluctuatingSituation(document.getIdProcess(), Constants.TYPE_FLUCTUATING_SITUATION_DETAIL_ASSET);
         }
-        createFluctuatingSituation(document.getIdProcess(), Constants.TYPE_FLUCTUATING_SITUATION_DETAIL_ASSET);
     }
 
     private Document updateInformationDocument(UpdateInventoryAssetRequest request, Document document) {

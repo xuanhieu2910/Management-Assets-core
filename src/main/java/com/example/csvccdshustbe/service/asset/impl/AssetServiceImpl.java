@@ -2060,6 +2060,11 @@ public class AssetServiceImpl implements AssetService {
         return asset.get();
     }
 
+    @Override
+    public StatisticsAssetFindAllResponse getStatisticFindAllAsset() {
+        return assetRepository.getStatisticFindAllAsset();
+    }
+
     private Asset duplicationAssetLot(FindDetailsAssetResponse assetRoot) {
         return null;
     }

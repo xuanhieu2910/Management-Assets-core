@@ -369,4 +369,13 @@ public class AssetController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+    @GetMapping("/statistics-asset")
+    public  ResponseEntity<?> getStatisticFindAllAsset(){
+        try {
+            return ApiResponseDto.createdWithState(assetService.getStatisticFindAllAsset(),
+                    "Get statistic find all asset success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }
