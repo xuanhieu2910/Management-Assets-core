@@ -642,4 +642,9 @@ public class Constants {
     public static Integer FIND_ALL_ASSET_SINGLE = 1;
     public static Integer FIND_ALL_ASSET_LOT = 2;
     public static Integer FIND_ALL_ASSET_ALLOCATE = 3;
+    /*----------------------------------------------------*/ /**
+     * Constant find all tool
+     * */
+    public static Integer FIND_ALL_TOOL_PARENT = 1;
+    public static Integer FIND_ALL_TOOT_ALLOCATE = 2;
 }

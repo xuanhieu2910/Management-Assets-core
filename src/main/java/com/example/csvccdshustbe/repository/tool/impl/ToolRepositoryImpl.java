@@ -53,8 +53,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
                 "    left join department de on tol.id_department = de.id_department " +
                 "    left join location lo on de.id_department = lo.id_department " +
-                "where tol.id_department_original in (:idsDepartmentOriginal)  " +
-                "  and tol.parent is null ");
+                "where tol.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllToolDto(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolDto(query, request);
@@ -780,7 +779,6 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     }
 
     private void setConditionFindAllToolToIncreaseDto(StringBuilder sb, FindAllToolToIncreaseRequest request) {
-
         if (StringUtils.isNotBlank(request.getNameTool())) {
             sb.append(" and (tol.name REGEXP :nameTool ) ");
         }
@@ -1062,8 +1060,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category  " +
                 "    left join department de on tol.id_department = de.id_department  " +
                 "    left join location lo on de.id_department = lo.id_department  " +
-                "where tol.id_department_original in (:idsDepartmentOriginal)  " +
-                " and tol.parent is null ");
+                "where tol.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllToolDto(sb, request);
         Query query  = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolDto(query, request);
@@ -1268,6 +1265,11 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     }
 
     private void setConditionFindAllToolDto(StringBuilder sb, FindAllToolRequest request) {
+        if (request.getTypeSearch().equals(Constants.FIND_ALL_TOOL_PARENT)){
+            sb.append("  and tol.parent is null ");
+        } else if (request.getTypeSearch().equals(Constants.FIND_ALL_TOOT_ALLOCATE)){
+            sb.append(" and tol.parent is not null  ");
+        }
         if (StringUtils.isNotBlank(request.getCodeTool())){
             sb.append(" and (tol.code_tool REGEXP :codeTool ) ");
         }
