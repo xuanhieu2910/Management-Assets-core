@@ -298,6 +298,9 @@ public class AssetServiceImpl implements AssetService {
         if (assetBluePrintDto.isEmpty()) {
             throw new NotFoundException("Don't exits asset by code!");
         }
+        if(assetBluePrintDto.get().getParent() != null) {
+            throw new NotFoundException("Don't delete asset by salt asset!");
+        }
         deleteAsseDepreciation(assetBluePrintDto.get());
         deleteCommonAsset(assetBluePrintDto.get());
         deleteModuleAsset(assetBluePrintDto.get());

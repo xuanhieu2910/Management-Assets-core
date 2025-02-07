@@ -37,4 +37,5 @@ public interface ToolService {
     void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcess, Integer status);
     void updateInformationProcessCurrentTool(List<Integer> idsTool, Process process);
     String downloadFileTemplateImportTool() throws IOException;
+    StatisticToolsFindAllResponse getStatisticFindAllTool();
 }

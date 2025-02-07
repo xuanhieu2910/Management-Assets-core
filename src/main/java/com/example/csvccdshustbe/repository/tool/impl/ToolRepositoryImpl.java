@@ -10,6 +10,7 @@ import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
 import com.example.csvccdshustbe.request.tool.FindAllToolToDecreaseRequest;
 import com.example.csvccdshustbe.request.tool.FindAllToolToIncreaseRequest;
 import com.example.csvccdshustbe.request.tool.FindAllToolToInventoryRequest;
+import com.example.csvccdshustbe.response.tool.StatisticToolsFindAllResponse;
 import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
@@ -484,6 +485,35 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         query.setParameter("statusProcessCurrent", status);
         query.setParameter("idProcess", idProcess);
         query.executeUpdate();
+    }
+
+    @Override
+    public StatisticToolsFindAllResponse getStatisticFindAllTool() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select sum(totalToolDistribution) as totalToolDistribution,  " +
+                "       sum(totalToolParent) as totalToolParent  " +
+                "from (select count(0) as totalToolDistribution,0 as totalToolParent  " +
+                "      from tool  " +
+                "      where parent is not null  " +
+                "        and tool.id_department_original in (:idsDepartmentOriginal)  " +
+                "   union all  " +
+                "      select 0 as totalToolDistribution, count(0) as totalToolParent  " +
+                "      from tool  " +
+                "      where parent is null  " +
+                "        and tool.id_department_original in (:idsDepartmentOriginal)  " +
+                "      ) result ");
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idsDepartmentOriginal", csvcUser.getIdsDepartmentCurrent());
+        List<Object[]> result = query.getResultList();
+        StatisticToolsFindAllResponse response = new StatisticToolsFindAllResponse();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                response.setTotalDistribution(ValueUtil.getIntegerByObject(obj[0]));
+                response.setTotalParent(ValueUtil.getIntegerByObject(obj[1]));
+            }
+        }
+        return response;
     }
 
     private long countFindAllToolDtoToInventory(FindAllToolToInventoryRequest request) {

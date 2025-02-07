@@ -188,6 +188,11 @@ public class ToolServiceImpl implements ToolService {
         return filesStorageService.downloadFileImportTool();
     }
 
+    @Override
+    public StatisticToolsFindAllResponse getStatisticFindAllTool() {
+        return toolRepository.getStatisticFindAllTool();
+    }
+
 
     private List<FindAllToolToInventoryResponse> convertToFindAllToolToInventoryResponse(List<ToolDto> content) {
         List<FindAllToolToInventoryResponse> responses = new ArrayList<>();
