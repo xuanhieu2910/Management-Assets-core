@@ -15,5 +15,5 @@ public interface SuppliersRepositoryCustom {
     Page<FindAllSuppliersResponse> findAllSuppliers(FindAllSuppliersRequest request, Pageable pageable);
     Optional<Suppliers> findSuppliersByName(String name);
     Optional<Suppliers> findSuppliersById(Integer idSuppliers);
-    Map<String, List<FindAllSuppliersDto>> findAllSuppliersAndDepartmentToDownload(List<Integer> idsDepartmentCurrent);
+    List<FindAllSuppliersDto> findAllSuppliersByIdsDepartmentOriginal(List<Integer> idsDepartmentOriginal);
 }

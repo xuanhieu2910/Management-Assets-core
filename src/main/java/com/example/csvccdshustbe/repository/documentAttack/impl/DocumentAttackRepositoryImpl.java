@@ -350,4 +350,28 @@ public class DocumentAttackRepositoryImpl implements DocumentAttackRepositoryCus
         return documentAttackList;
     }
 
+    @Override
+    public List<FindAllDocumentAttackDto> findAllDocumentAttackByIdsDepartment(List<Integer> idsDepartment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select da.id_document_attack, da.name  " +
+                "from document_attack da  " +
+                "    inner join department de on da.id_department = de.id_department  " +
+                "where de.status = :status  " +
+                "and de.id_department in (:idsDepartment) ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", Constants.DEPARTMENT_ACTIVE_STATUS);
+        query.setParameter("idsDepartment", idsDepartment);
+        List<Object[]> result = query.getResultList();
+        List<FindAllDocumentAttackDto> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FindAllDocumentAttackDto findAllDocumentAttackDto = new FindAllDocumentAttackDto();
+                findAllDocumentAttackDto.setIdDocumentAttack(ValueUtil.getIntegerByObject(obj[0]));
+                findAllDocumentAttackDto.setName(ValueUtil.getStringByObject(obj[1]));
+                responses.add(findAllDocumentAttackDto);
+            }
+        }
+        return responses;
+    }
+
 }

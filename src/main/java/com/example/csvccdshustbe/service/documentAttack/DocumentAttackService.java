@@ -21,4 +21,5 @@ public interface DocumentAttackService {
     DocumentAttack findDocumentAttackByIdDocumentAndStatus(Integer idDocumentAttack, Integer status);
     void updateStatusDocumentAttack(UpdateStatusDocumentAttackRequest request) throws ValidateFiledException;
     Map<String, List<FindAllDocumentAttackDto>> findAllDocumentAttackToDownload();
+    List<FindAllDocumentAttackDto> findAllDocumentAttackByIdsDepartmentOriginal();
 }

@@ -15,4 +15,5 @@ public interface UnitsToolRepositoryCustom {
     Optional<UnitsTool> findUnitToolByName(String name);
     Optional<UnitsTool> findUnitByIdUnitToolAndStatus(Integer idUnitTool, Integer status);
     Optional<UnitsTool> findUnitToolByIdUnitTool(Integer idUnitTool);
+    List<UnitsTool> findAllUnitsToolByStatus(Integer status);
 }

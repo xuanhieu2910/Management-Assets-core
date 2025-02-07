@@ -372,35 +372,42 @@ public class ProjectsRepositoryImpl implements ProjectsRepositoryCustom {
     }
 
     @Override
-    public List<FindAllProjectsDto> findAllProjectsToDownload() {
+    public List<FindAllProjectsDto> findAllProjectsToDownloadByIdsDepartment(List<Integer>IdsDepartment) {
         StringBuilder sb = new StringBuilder();
-        sb.append("WITH RECURSIVE cte_projects as (       " +
-                "        select projects.id_project, projects.name, projects.short_name,       " +
-                "               projects.parent, projects.time_created, projects.time_modified,       " +
-                "               projects.visible,       " +
-                "               1 as depth,       " +
-                "               CAST(projects.id_project as NCHAR ) as path ,   " +
-                "               case when projects.parent is not null then projects.name end nameParent   " +
-                "        from projects projects       " +
-                "        where projects.parent is null       " +
-                "        union all       " +
-                "        select projects.id_project, projects.name, projects.short_name,       " +
-                "               projects.parent, projects.time_created, projects.time_modified,       " +
-                "               projects.visible,       " +
-                "               cte.depth + 1 as depth,       " +
-                "               concat_ws('/',cte.path,CAST(projects.id_project as NCHAR)) as path ,   " +
-                "               cte.name nameParent   " +
-                "        from projects projects       " +
-                "                 INNER JOIN cte_projects cte ON projects.parent = cte.id_project       " +
-                "        )       " +
-                "select cte.id_project, cte.name, cte.short_name,   " +
-                "           cte.parent, cte.time_created, cte.time_modified,       " +
-                "           cte.visible, cte.depth, cte.path ,   " +
-                "           cte.nameParent   " +
-                "from cte_projects cte   " +
-                "where 1 = 1 and cte.visible = :visible ");
+        sb.append("WITH RECURSIVE cte_projects as ( " +
+                "       select projects.id_project, projects.name, projects.short_name, " +
+                "              projects.parent, projects.time_created, projects.time_modified, " +
+                "              projects.visible, " +
+                "              1 as depth, " +
+                "              CAST(projects.id_project as NCHAR ) as path, " +
+                "              case when projects.parent is not null then projects.name end nameParent, " +
+                "              projects.id_department_original " +
+                "       from projects projects " +
+                "       where projects.parent is null " +
+                "       union all " +
+                "       select projects.id_project, projects.name, projects.short_name, " +
+                "              projects.parent, projects.time_created, projects.time_modified, " +
+                "              projects.visible, " +
+                "              cte.depth + 1 as depth, " +
+                "              concat_ws('/',cte.path,CAST(projects.id_project as NCHAR)) as path, " +
+                "              cte.name nameParent, " +
+                "              projects.id_department_original " +
+                "       from projects projects  " +
+                "                INNER JOIN cte_projects cte ON projects.parent = cte.id_project  " +
+                "       )  " +
+                "                  select cte.id_project, cte.name, cte.short_name,  " +
+                "          cte.parent, cte.time_created, cte.time_modified,  " +
+                "          cte.visible, cte.depth, cte.path,  " +
+                "          cte.nameParent,cte.id_department_original  " +
+                "from cte_projects cte  " +
+                "    inner join department de on cte.id_department_original = de.id_department  " +
+                "where 1 = 1 and cte.visible = :visible   " +
+                "and de.status = :status  " +
+                "and de.id_department in (:idsDepartment) ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("visible", Constants.PROJECTS_IS_VISIBLE);
+        query.setParameter("status", Constants.DEPARTMENT_ACTIVE_STATUS);
+        query.setParameter("idsDepartment", IdsDepartment);
         List<Object[]> result = query.getResultList();
         List<FindAllProjectsDto> findAllProjectsDtos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {

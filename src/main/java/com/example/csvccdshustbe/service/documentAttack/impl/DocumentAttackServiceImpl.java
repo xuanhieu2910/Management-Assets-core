@@ -222,4 +222,12 @@ public class DocumentAttackServiceImpl implements DocumentAttackService {
         idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
         return documentAttackRepository.findAllDocumentAttackToDownloadByIdsDepartment(idsDepartment);
     }
+
+    @Override
+    public List<FindAllDocumentAttackDto> findAllDocumentAttackByIdsDepartmentOriginal() {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Integer> idsDepartment = csvcUser.getIdsDepartmentCurrent();
+        idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
+        return documentAttackRepository.findAllDocumentAttackByIdsDepartment(idsDepartment);
+    }
 }

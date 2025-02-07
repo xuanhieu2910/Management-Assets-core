@@ -208,46 +208,26 @@ public class SuppliersRepositoryImpl implements SuppliersRepositoryCustom {
     }
 
     @Override
-    public Map<String, List<FindAllSuppliersDto>>
-    findAllSuppliersAndDepartmentToDownload(List<Integer> idsDepartmentCurrent) {
+    public List<FindAllSuppliersDto> findAllSuppliersByIdsDepartmentOriginal(List<Integer> idsDepartmentOriginal) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select de.id_department idDepartment, de.name nameDepartment, " +
-                "       su.id_supplier idSupply, su.name nameSupply " +
-                "from department de " +
-                "    left join suppliers su on de.id_department = su.id_department_original " +
+        sb.append("select su.id_supplier idSupply, su.name nameSupply  " +
+                "  from suppliers su " +
+                "      inner join department de on de.id_department = su.id_department_original " +
                 "where de.id_department in (:idDepartments) " +
                 "and su.status = :statusSupply " +
                 "and de.status = :statusDepartment ");
         Query query = entityManager.createNativeQuery(sb.toString());
-        query.setParameter("idDepartments", idsDepartmentCurrent);
+        query.setParameter("idDepartments", idsDepartmentOriginal);
         query.setParameter("statusSupply", Constants.SUPPLIERS_ACTIVE_STATUS);
         query.setParameter("statusDepartment", Constants.DEPARTMENT_ACTIVE_STATUS);
         List<Object[]> result = query.getResultList();
-        Map<String, List<FindAllSuppliersDto>> responses = new HashMap<>();
+        List<FindAllSuppliersDto> responses = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
-            String keyword = null;
-            Integer idDepartment = null;
-            String nameDepartment = null;
             for (Object[] obj : result){
-                idDepartment = ValueUtil.getIntegerByObject(obj[0]);
-                nameDepartment = ValueUtil.getStringByObject(obj[1]);
-                keyword = "STT_" + idDepartment + "_" + nameDepartment;
-                keyword = ValueUtil.convertToVietnamese(keyword).replaceAll(ValueUtil.REGEX_letter_digit_period_underscore, "");
-                if (responses.containsKey(keyword)){
-                    FindAllSuppliersDto findAllSuppliersDto = new FindAllSuppliersDto();
-                    findAllSuppliersDto.setIdSupplier(ValueUtil.getIntegerByObject(obj[2]));
-                    findAllSuppliersDto.setName(ValueUtil.getStringByObject(obj[3]));
-                    responses.get(keyword).add(findAllSuppliersDto);
-                } else {
-                    List<FindAllSuppliersDto> findAllSuppliersDtos = new ArrayList<>();
-                    if (ValueUtil.getIntegerByObject(obj[2]) != null){
-                        FindAllSuppliersDto findAllSuppliersDto = new FindAllSuppliersDto();
-                        findAllSuppliersDto.setIdSupplier(ValueUtil.getIntegerByObject(obj[2]));
-                        findAllSuppliersDto.setName(ValueUtil.getStringByObject(obj[3]));
-                        findAllSuppliersDtos.add(findAllSuppliersDto);
-                    }
-                    responses.put(keyword, findAllSuppliersDtos);
-                }
+                FindAllSuppliersDto findAllSuppliersDto = new FindAllSuppliersDto();
+                findAllSuppliersDto.setIdSupplier(ValueUtil.getIntegerByObject(obj[0]));
+                findAllSuppliersDto.setName(ValueUtil.getStringByObject(obj[1]));
+                responses.add(findAllSuppliersDto);
             }
         }
         return responses;

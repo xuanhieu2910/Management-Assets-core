@@ -2,9 +2,8 @@ package com.example.csvccdshustbe.utility;
 
 import com.example.csvccdshustbe.exception.FileExcelException;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -163,6 +162,27 @@ public class ExcelUtil {
 
     }
 
+    public static CellStyle cellStyle(Workbook workbook, boolean isBold, String fontNameStyle,
+                                      boolean isCenter, boolean isBorder) {
+        CellStyle  cellStyle = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(isBold);
+        font.setFontName(fontNameStyle);
+        font.setFontHeightInPoints((short) 13);
+        cellStyle.setWrapText(true);
+        if (isBorder) {
+            cellStyle.setBorderTop(BorderStyle.THIN);
+            cellStyle.setBorderBottom(BorderStyle.THIN);
+            cellStyle.setBorderLeft(BorderStyle.THIN);
+            cellStyle.setBorderRight(BorderStyle.THIN);
+        }
+        if (isCenter){
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        }
+        cellStyle.setFont(font);
+        return cellStyle;
+    }
 
 
 }

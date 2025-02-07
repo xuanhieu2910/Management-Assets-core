@@ -3,7 +3,7 @@ package com.example.csvccdshustbe.repository.department;
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
 import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
-import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentsDto;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,7 @@ public interface DepartmentRepositoryCustom {
 
   List<FindAllDepartmentByCodeAndVisibleDto> findAllStructDepartmentByIdDepartment(Integer idDepartment);
 
-  Page<FindAllDepartmentSDto> findAllDepartmentByIdDepartment(Pageable pageable, FindAllDepartmentRequest request);
+  Page<FindAllDepartmentsDto> findAllDepartmentByIdDepartment(Pageable pageable, FindAllDepartmentRequest request);
 
   Page<FindAllDepartmentByCodeAndVisibleDto> findAllDepartmentSource(Pageable pageable, FindAllDepartmentVisibleRequest request);
 
@@ -42,6 +42,6 @@ public interface DepartmentRepositoryCustom {
   Map<String, List<FindAllLocationDto>>
   findAllDepartmentLocationToDownloadByIdsDepartment(List<Integer> idsDepartment);
 
-  List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload();
+  List<FindAllDepartmentsDto> findAllAssetDepartmentToDownload();
     Optional<Department> findDepartmentByDefault();
 }

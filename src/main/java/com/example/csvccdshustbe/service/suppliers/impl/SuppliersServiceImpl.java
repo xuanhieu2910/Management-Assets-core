@@ -71,11 +71,11 @@ public class SuppliersServiceImpl implements SuppliersService {
     }
 
     @Override
-    public Map<String, List<FindAllSuppliersDto>> findAllSuppliersToDownload() {
+    public List<FindAllSuppliersDto> findAllSuppliersByIdsDepartmentOriginal() {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Integer> idsDepartment = csvcUser.getIdsDepartmentCurrent();
         idsDepartment.add(Constants.DEFAULT_ASSET_CATEGORY);
-        return suppliersRepository.findAllSuppliersAndDepartmentToDownload(idsDepartment);
+        return suppliersRepository.findAllSuppliersByIdsDepartmentOriginal(idsDepartment);
     }
 
 

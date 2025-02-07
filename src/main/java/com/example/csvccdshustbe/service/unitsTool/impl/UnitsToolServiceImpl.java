@@ -98,6 +98,11 @@ public class UnitsToolServiceImpl implements UnitsToolService {
         return unitsTool.get();
     }
 
+    @Override
+    public List<UnitsTool> findAllUnitsToolByStatus(Integer status) {
+        return unitsToolRepository.findAllUnitsToolByStatus(status);
+    }
+
     private UnitsTool constructUnitTool(CreateUnitsToolRequest request) {
         UnitsTool unitsTool = new UnitsTool();
         unitsTool.setName(request.getName().trim());

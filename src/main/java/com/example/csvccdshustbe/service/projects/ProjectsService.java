@@ -27,5 +27,4 @@ public interface ProjectsService {
     void updateStatusProject(UpdateStatusProjectRequest request) throws ValidateFiledException;
 
     List<FindAllProjectsDto> findAllProjectToDownload();
-    Map<String, List<FindAllProjectsDto>> findAllProjectToDownloadTool();
 }

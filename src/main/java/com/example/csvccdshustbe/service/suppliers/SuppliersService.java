@@ -18,5 +18,5 @@ public interface SuppliersService {
     void createSuppliers(CreateSuppliersRequest request) throws ValidateFiledException;
     void updateSuppliers(UpdateSuppliersRequest request) throws ValidateFiledException;
     void deleteSuppliersByIdSuppliers(Integer idSuppliers);
-    Map<String, List<FindAllSuppliersDto>> findAllSuppliersToDownload();
+    List<FindAllSuppliersDto> findAllSuppliersByIdsDepartmentOriginal();
 }

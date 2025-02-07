@@ -8,6 +8,8 @@ import com.example.csvccdshustbe.request.unitsTool.FindAllUnitsToolRequest;
 import com.example.csvccdshustbe.request.unitsTool.UpdateUnitsToolRequest;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 
 public interface UnitsToolService {
     Page<UnitsTool> findAllUnitsTool(FindAllUnitsToolRequest request);
@@ -15,4 +17,5 @@ public interface UnitsToolService {
     void updateUnitsTool(UpdateUnitsToolRequest request) throws ValidateFiledException;
     void deleteUnitsToolByIdUnitsTool(Integer idUnitTool);
     UnitsTool findUnitsByIdUnitToolAndStatus(Integer idUnitTool, Integer status);
+    List<UnitsTool> findAllUnitsToolByStatus(Integer status);
 }

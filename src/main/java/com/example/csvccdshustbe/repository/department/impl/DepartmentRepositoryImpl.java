@@ -1,7 +1,7 @@
 package com.example.csvccdshustbe.repository.department.impl;
 
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
-import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentsDto;
 import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.repository.department.DepartmentRepositoryCustom;
@@ -200,7 +200,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
     }
 
     @Override
-    public Page<FindAllDepartmentSDto> findAllDepartmentByIdDepartment(Pageable pageable, FindAllDepartmentRequest request) {
+    public Page<FindAllDepartmentsDto> findAllDepartmentByIdDepartment(Pageable pageable, FindAllDepartmentRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append("WITH RECURSIVE cte_asset_categories as (  " +
                 "       select department.id_department,department.name,  " +
@@ -235,11 +235,11 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllDepartment(request, query);
         PageUtils.buildQuery(pageable, query);
-        List<FindAllDepartmentSDto> dtos = new ArrayList<>();
+        List<FindAllDepartmentsDto> dtos = new ArrayList<>();
         List<Object[]> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)){
             for(Object[] obj: result){
-                FindAllDepartmentSDto dto = new FindAllDepartmentSDto();
+                FindAllDepartmentsDto dto = new FindAllDepartmentsDto();
                 dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
                 dto.setName(ValueUtil.getStringByObject(obj[1]));
                 dto.setCode(ValueUtil.getStringByObject(obj[2]));
@@ -595,7 +595,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
     }
 
     @Override
-    public List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload() {
+    public List<FindAllDepartmentsDto> findAllAssetDepartmentToDownload() {
         StringBuilder sb = new StringBuilder();
         sb.append("WITH RECURSIVE cte_department as ( " +
                 "    select department.id_department,department.name, " +
@@ -627,10 +627,10 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("status", Constants.DEPARTMENT_ACTIVE_STATUS);
         List<Object[]> result = query.getResultList();
-        List<FindAllDepartmentSDto> dtos = new ArrayList<>();
+        List<FindAllDepartmentsDto> dtos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
             for (Object[] obj: result){
-                FindAllDepartmentSDto dto= new FindAllDepartmentSDto();
+                FindAllDepartmentsDto dto= new FindAllDepartmentsDto();
                 dto.setIdDepartment(ValueUtil.getIntegerByObject(obj[0]));
                 dto.setName(ValueUtil.getStringByObject(obj[1]));
                 dto.setCode(ValueUtil.getStringByObject(obj[2]));

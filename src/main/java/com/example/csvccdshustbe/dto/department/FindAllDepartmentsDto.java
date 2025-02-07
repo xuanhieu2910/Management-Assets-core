@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FindAllDepartmentSDto {
+public class FindAllDepartmentsDto {
 
     private Integer idDepartment;
     private String name;

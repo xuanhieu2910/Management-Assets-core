@@ -122,14 +122,8 @@ public class ProjectsServiceImpl implements ProjectsService {
 
     @Override
     public List<FindAllProjectsDto> findAllProjectToDownload() {
-        List<FindAllProjectsDto> findAllProjectsDtos = projectsRepository.findAllProjectsToDownload();
-        return findAllProjectsDtos;
-    }
-
-    @Override
-    public Map<String, List<FindAllProjectsDto>> findAllProjectToDownloadTool() {
-        List<Integer> idsDepartment = ((CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdsDepartmentCurrent();
-        return projectsRepository.findAllProjectToDownloadTool(idsDepartment);
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return projectsRepository.findAllProjectsToDownloadByIdsDepartment(csvcUser.getIdsDepartmentCurrent());
     }
 
     private void validateDataCreateProjects(CreateProjectsRequest request) throws ValidateFiledException{

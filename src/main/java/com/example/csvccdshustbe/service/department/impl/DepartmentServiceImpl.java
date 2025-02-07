@@ -1,25 +1,20 @@
 package com.example.csvccdshustbe.service.department.impl;
 
 import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
-import com.example.csvccdshustbe.dto.department.FindAllDepartmentSDto;
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentsDto;
 import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.Department;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
-import com.example.csvccdshustbe.repository.asset.AssetRepository;
 import com.example.csvccdshustbe.repository.department.DepartmentRepository;
-import com.example.csvccdshustbe.repository.user.CsvcUserRepository;
 import com.example.csvccdshustbe.request.department.*;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentSResponse;
 import com.example.csvccdshustbe.response.department.FindAllDepartmentVisibleResponse;
-import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.department.DepartmentService;
-import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.userRole.UserRoleService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.ValueUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,7 +117,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<FindAllDepartmentSDto> findAllAssetDepartmentToDownload() {
+    public List<FindAllDepartmentsDto> findAllAssetDepartmentToDownload() {
         return departmentRepository.findAllAssetDepartmentToDownload();
     }
 
@@ -142,7 +137,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer idDepartment = userRoleService.getDepartmentCurrentUserRoleByCodeUser(csvcUser.getCodeUser()).getIdDepartment();
         request.setIdDepartment(idDepartment);
-        Page<FindAllDepartmentSDto> dtos = departmentRepository.findAllDepartmentByIdDepartment(pageable, request);
+        Page<FindAllDepartmentsDto> dtos = departmentRepository.findAllDepartmentByIdDepartment(pageable, request);
         return new PageImpl<>(convertToFindAllDepartment(dtos.stream().collect(Collectors.toList())),
                 pageable, dtos.getTotalElements());
     }
@@ -269,9 +264,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
     }
 
-    private List<FindAllDepartmentSResponse> convertToFindAllDepartment(List<FindAllDepartmentSDto> collect) {
+    private List<FindAllDepartmentSResponse> convertToFindAllDepartment(List<FindAllDepartmentsDto> collect) {
         List<FindAllDepartmentSResponse> responses = new ArrayList<>();
-        for (FindAllDepartmentSDto dto : collect){
+        for (FindAllDepartmentsDto dto : collect){
             FindAllDepartmentSResponse response = new FindAllDepartmentSResponse();
             response.setIdDepartment(dto.getIdDepartment());
             response.setName(dto.getName());

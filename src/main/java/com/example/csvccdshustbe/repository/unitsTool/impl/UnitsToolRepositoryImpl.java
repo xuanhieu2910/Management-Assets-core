@@ -1,11 +1,8 @@
 package com.example.csvccdshustbe.repository.unitsTool.impl;
 
-import com.example.csvccdshustbe.entity.Units;
 import com.example.csvccdshustbe.entity.UnitsTool;
 import com.example.csvccdshustbe.repository.unitsTool.UnitsToolRepositoryCustom;
-import com.example.csvccdshustbe.request.units.FindAllUnitsByAssetCategoryRequest;
 import com.example.csvccdshustbe.request.unitsTool.FindAllUnitsToolRequest;
-import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
 import jakarta.persistence.EntityManager;
@@ -123,6 +120,33 @@ public class UnitsToolRepositoryImpl implements UnitsToolRepositoryCustom {
         }
         return Optional.empty();
     }
+
+    @Override
+    public List<UnitsTool> findAllUnitsToolByStatus(Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_unit_tool, name,   " +
+                "       time_created, time_modified,  " +
+                "       status  " +
+                "from units_tool ut   " +
+                "where ut.status = :status ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("status", status);
+        List<Object[]> result = query.getResultList();
+        List<UnitsTool>  unitsTools = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                UnitsTool unitsTool = new UnitsTool();
+                unitsTool.setIdUnitTool(ValueUtil.getIntegerByObject(obj[0]));
+                unitsTool.setName(ValueUtil.getStringByObject(obj[1]));
+                unitsTool.setTimeCreated(ValueUtil.getStringByObject(obj[2]));
+                unitsTool.setTimeModified(ValueUtil.getStringByObject(obj[3]));
+                unitsTool.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                unitsTools.add(unitsTool);
+            }
+        }
+        return unitsTools;
+    }
+
     @Override
     public Optional<UnitsTool> findUnitByIdUnitToolAndStatus(Integer idUnitTool, Integer status) {
         StringBuilder sb = new StringBuilder();

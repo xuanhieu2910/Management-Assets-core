@@ -21,6 +21,6 @@ public interface DocumentAttackRepositoryCustom {
     Optional<DocumentAttack> findDocumentAttackByIdDocumentAndStatus(Integer idDocumentAttack, Integer status);
     boolean isExitsAssetByIdDocumentAttack(Integer idDocumentAttack);
     Map<String, List<FindAllDocumentAttackDto>> findAllDocumentAttackToDownloadByIdsDepartment(List<Integer> idsDepartment);
-
     List<DocumentAttack> findAllDocumentAttackId(List<Integer> idDocumentAttack);
+    List<FindAllDocumentAttackDto> findAllDocumentAttackByIdsDepartment(List<Integer> idsDepartment);
 }
