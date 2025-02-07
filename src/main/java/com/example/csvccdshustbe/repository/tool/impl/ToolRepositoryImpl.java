@@ -452,11 +452,16 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "      left join location lo on tl.id_location = lo.id_location      " +
                 "      left join tool_categories tlc on tl.id_tool_category = tlc.id_tool_category      " +
                 "      left join csvc_user cu on cu.id_user = tl.id_user_use      " +
+                "      left join (select * " +
+                "                from fluctuating_situation_tool " +
+                "                where status = :statusNotFinished " +
+                "                and type = :typeDecrease) fst on tl.id_tool = fst.id_tool " +
                 "  where tl.id_department_original in (:idsDepartmentOriginal)  " +
                 "  and tl.status_process_current != :statusProcessCurrent  " +
                 "  and tl.is_increase = :isIncrease  " +
                 "  and tl.is_decrease != :isDecrease  " +
-                "  and tl.parent is not null  ");
+                "  and tl.parent is not null  " +
+                "  and fst.id_tool is null ");
         setConditionFindAllToolDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllToolDtoToInventory(request, query);
@@ -571,6 +576,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         query.setParameter("isIncrease", Constants.TOOL_IS_INCREASED);
         query.setParameter("isDecrease", Constants.TOOL_IS_DECREASED);
+        query.setParameter("statusNotFinished", Constants.STATUS_FLUCTUATING_SITUATION_TOOL_NOT_FINISH);
+        query.setParameter("typeDecrease", Constants.TYPE_FLUCTUATING_SITUATION_DECREASE);
         if (StringUtils.isNotBlank(request.getCodeTool())){
             query.setParameter("codeTool", request.getCodeTool());
         }

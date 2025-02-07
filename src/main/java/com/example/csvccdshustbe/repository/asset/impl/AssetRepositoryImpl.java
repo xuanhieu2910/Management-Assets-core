@@ -902,9 +902,14 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                                              left join asset_depreciation assetDepreciation " +
                 "                                                        on asset.id_asset = assetDepreciation.id_asset " +
                 "                                              left join units on asset.id_unit = units.id_unit " +
+                "                          left join (select * " +
+                "                                     from fluctuating_situation_asset fsa " +
+                "                                     where fsa.status = :statusNotFinished " +
+                "                                    and fsa.type = :type) fsa on asset.id_asset = fsa.id_asset " +
                 "                                     where 1 = 1 " +
                 "                                         and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                "                                         and (asset.status_process_current != :statusProcess ) ") ;
+                "                                         and (asset.status_process_current != :statusProcess ) " +
+                "                                         and fsa.id_asset is null ") ;
         setConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("increaseChild",Constants.IS_INCREASED);
