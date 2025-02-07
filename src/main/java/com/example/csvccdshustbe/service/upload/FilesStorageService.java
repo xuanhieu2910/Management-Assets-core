@@ -4,6 +4,7 @@ import com.example.csvccdshustbe.exception.FileExcelException;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
+import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
 import org.apache.catalina.util.Introspection;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,4 +25,5 @@ public interface FilesStorageService { ;
 
     String updateFilesAttached(MultipartFile[] files, String folderName) throws FileException, IOException;
     String downloadFileImportTool() throws IOException;
+    String downloadInventoryReportToolByCodeDocument(FindAllToolProcessRequest request) throws IOException;
 }

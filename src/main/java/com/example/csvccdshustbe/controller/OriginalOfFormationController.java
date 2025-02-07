@@ -22,6 +22,7 @@ import org.webjars.NotFoundException;
 public class OriginalOfFormationController {
 
 
+
     @Autowired
     OriginalOfFormationService originalOfFormationService;
 
@@ -39,7 +40,6 @@ public class OriginalOfFormationController {
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
-
     }
 
     @GetMapping("/find-all")
@@ -56,7 +56,6 @@ public class OriginalOfFormationController {
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
-
     }
 
     @PostMapping("/create")
@@ -101,7 +100,7 @@ public class OriginalOfFormationController {
     public ResponseEntity<?> updateStatusOriginalOfFormation(@RequestBody UpdateStatusOriginalOfFormationRequest request){
         try {
             originalOfFormationService.updateStatusOriginalOfFormation(request);
-            return ApiResponseDto.createdWithMessage("Update status original of formaiton success!", HttpStatus.OK);
+            return ApiResponseDto.createdWithMessage("Update status original of formation success!", HttpStatus.OK);
         } catch (NotFoundException | ValidateFiledException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

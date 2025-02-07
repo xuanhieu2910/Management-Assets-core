@@ -28,7 +28,7 @@ public class OriginalOfFormationTool {
     @Column(name = "parent")
     private Integer parent;
     @Column(name = "sort_order")
-    private Integer sortOrder;
+    private String sortOrder;
     @Column(name = "visible")
     private Integer visible;
     @Column(name = "time_created")

@@ -5,11 +5,13 @@ import com.example.csvccdshustbe.dto.report.inventory.BlueprintInventoryReportDt
 import com.example.csvccdshustbe.dto.report.inventory.FindAllAssetForInventoryReportDto;
 import com.example.csvccdshustbe.dto.report.FindAllReportDto;
 import com.example.csvccdshustbe.dto.report.IncreaseDecreaseReport08bDto;
+import com.example.csvccdshustbe.dto.toolProcess.FindAllToolProcessDto;
 import com.example.csvccdshustbe.entity.Report;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
+import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,4 +41,6 @@ public interface ReportRepositoryCustom {
     Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseHouseInReport(CreateReportInCreaseAndDecreaseAllRequest request);
     List<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseAssetShapeInReport(CreateReportInCreaseAndDecreaseAllRequest request);
     Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseOtherAssetInReport(CreateReportInCreaseAndDecreaseAllRequest request);
+    List<FindAllToolProcessDto> findInfoToolForInventoryReportByCodeDocument(FindAllToolProcessRequest request);
 }
+

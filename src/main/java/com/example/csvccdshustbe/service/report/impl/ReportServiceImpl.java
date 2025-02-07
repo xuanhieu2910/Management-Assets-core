@@ -11,6 +11,7 @@ import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
+import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
 import com.example.csvccdshustbe.response.report.FindAllReportResponse;
 import com.example.csvccdshustbe.response.report.FindAllReportVisibleResponse;
 import com.example.csvccdshustbe.service.report.ReportService;
@@ -225,6 +226,11 @@ public class ReportServiceImpl implements ReportService {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String downloadFileInventoryToolReportByCodeDocument(FindAllToolProcessRequest request) throws IOException {
+        return filesStorageService.downloadInventoryReportToolByCodeDocument(request);
     }
 
     @Override
