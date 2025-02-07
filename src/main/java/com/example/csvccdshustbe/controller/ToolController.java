@@ -6,6 +6,7 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.tool.*;
 import com.example.csvccdshustbe.service.tool.ToolService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -175,6 +176,16 @@ public class ToolController {
             return ApiResponseDto.createdWithState(toolService.downloadFileTemplateImportTool(),
                     "Download file template import tool", HttpStatus.OK);
         } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @GetMapping("/statistics-tool")
+    public ResponseEntity<?> getStatisticFindAllTool(){
+        try{
+            return ApiResponseDto.createdWithState(toolService.getStatisticFindAllTool(),"Get statistic find all tool success!", HttpStatus.OK);
+        }
+        catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

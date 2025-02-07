@@ -8,6 +8,7 @@ import com.example.csvccdshustbe.request.tool.FindAllToolRequest;
 import com.example.csvccdshustbe.request.tool.FindAllToolToDecreaseRequest;
 import com.example.csvccdshustbe.request.tool.FindAllToolToIncreaseRequest;
 import com.example.csvccdshustbe.request.tool.FindAllToolToInventoryRequest;
+import com.example.csvccdshustbe.response.tool.StatisticToolsFindAllResponse;
 import com.example.csvccdshustbe.response.tool.StatisticToolsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,4 +44,5 @@ public interface ToolRepositoryCustom {
     Page<ToolDto> findAllToolDtoToInventory(FindAllToolToInventoryRequest findAllToolRequest, Pageable pageable);
 
     void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcess, Integer status);
+    StatisticToolsFindAllResponse getStatisticFindAllTool();
 }
