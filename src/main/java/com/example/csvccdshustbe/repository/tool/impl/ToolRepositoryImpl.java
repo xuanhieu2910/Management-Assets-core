@@ -404,10 +404,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
     @Override
     public void updateToolIsDecreaseWhenNotApproved(Integer idProcessCurrent, Integer status) {
         StringBuilder sb = new StringBuilder();
-        sb.append("update tool    " +
-                "     inner join tool_process on tool.id_process_current=tool_process.id_process " +
-                "     inner join process  " +
-                "     on tool.id_process_current = process.id_process   " +
+        sb.append("update tool " +
+                "       inner join tool_process on tool.id_process_current = tool_process.id_process " +
                 "set tool.status_process_current = :statusProcessCurrent, " +
                 "    tool.quantity_decrease_current = tool.quantity_decrease_current - tool_process.quantity " +
                 "where tool_process.id_tool_process = :idProcessCurrent ");
