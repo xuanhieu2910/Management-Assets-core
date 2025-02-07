@@ -342,10 +342,11 @@ public class ToolServiceImpl implements ToolService {
                         .findFirst().ifPresent(x -> {
                             x.setName(tool.getName());
                             x.setYearUse(tool.getYearUse());
-                            x.setIdDepartment(tool.getIdDepartment());
+                            x.setIdDepartment(allocateToolRequest.getIdDepartment());
                             x.setIdLocation(allocateToolRequest.getIdLocation());
                             x.setStatusUse(allocateToolRequest.getStatusUse());
                             x.setQuantity(allocateToolRequest.getQuantity());
+                            x.setIdDepartmentOriginal(allocateToolRequest.getIdDepartment());
                             x.setIdUserUse(user.get().getIdUser());
                             x.setTimeModified(String.valueOf(new Date().getTime()));
                             x.setIdUserModified(tool.getIdUserModified());
@@ -366,7 +367,6 @@ public class ToolServiceImpl implements ToolService {
     private void updateFieldToolParent(Tool tool, UpdateToolRequest updateToolRequest) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         tool.setName(updateToolRequest.getNameTool());
-        tool.setIdDepartment(updateToolRequest.getIdDepartment());
         tool.setIdToolCategory(updateToolRequest.getIdToolCategory());
         tool.setValue(updateToolRequest.getValue());
         tool.setQuantity(updateToolRequest.getQuantity());
@@ -499,11 +499,11 @@ public class ToolServiceImpl implements ToolService {
         childTool.setQuantityDecreaseCurrent(Constants.TOOL_DEFAULT_QUANTITY_DECREASE_CURRENT);
         childTool.setStatusUse(allocateToolRequest.getStatusUse());
         childTool.setParent(toolParent.getIdTool());
-        childTool.setIdDepartment(toolParent.getIdDepartment());
+        childTool.setIdDepartment(allocateToolRequest.getIdDepartment());
         childTool.setIdLocation(allocateToolRequest.getIdLocation());
         childTool.setIdUserUse(user.get().getIdUser());
         childTool.setYearUse(toolParent.getYearUse());
-        childTool.setIdDepartmentOriginal(toolParent.getIdDepartmentOriginal());
+        childTool.setIdDepartmentOriginal(allocateToolRequest.getIdDepartment());
         return childTool;
     }
 
@@ -520,7 +520,6 @@ public class ToolServiceImpl implements ToolService {
         tool.setIdUserCreated(csvcUser.getIdUser());
         tool.setIdUserModified(csvcUser.getIdUser());
         tool.setValue(createNewToolRequest.getValue());
-        tool.setIdDepartment(createNewToolRequest.getIdDepartment());
         tool.setQuantity(createNewToolRequest.getQuantity());
         tool.setIsIncrease(Constants.TOOL_IS_NOT_INCREASE);
         tool.setIsDecrease(Constants.TOOL_IS_NOT_DECREASE);
@@ -536,8 +535,7 @@ public class ToolServiceImpl implements ToolService {
             StringUtils.isBlank(createNewToolRequest.getCodeTool()) ||
             StringUtils.isBlank(createNewToolRequest.getValue()) ||
             ObjectUtils.isEmpty(createNewToolRequest.getIdToolCategory()) ||
-            ObjectUtils.isEmpty(createNewToolRequest.getYearUse()) ||
-            ObjectUtils.isEmpty(createNewToolRequest.getIdDepartment())){
+            ObjectUtils.isEmpty(createNewToolRequest.getYearUse())){
             throw new ValidateFiledException("Valid data");
         }
         toolCategoriesService.findToolCategoryByIdToolCategoryAndVisible(createNewToolRequest.getIdToolCategory(),

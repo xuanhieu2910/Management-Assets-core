@@ -20,6 +20,7 @@ public class FindAllToolRequest extends RequestPageBase {
     private Integer isDecrease;
     private Integer statusUse;
     private Integer quantity;
+    private Integer typeSearch;
     private List<Integer> idsDepartmentOriginal;
 
 }
