@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
+import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
 import com.example.csvccdshustbe.response.report.FindAllReportResponse;
 import com.example.csvccdshustbe.response.report.FindAllReportVisibleResponse;
 import org.springframework.data.domain.Page;
@@ -27,4 +28,5 @@ public interface ReportService {
 
     String ReportIncreaseDecreaseAsset08b(CreateReportInCreaseAndDecreaseAllRequest request) throws IOException;
 
+    String downloadFileInventoryToolReportByCodeDocument(FindAllToolProcessRequest request) throws IOException;
 }

@@ -5,6 +5,7 @@ import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest
 import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportRequest;
 import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
+import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
 import com.example.csvccdshustbe.service.report.ReportService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.utility.PropertiesUtil;
@@ -120,6 +121,15 @@ public class ReportsController {
         try {
             return ApiResponseDto.createdWithState(reportService.ReportIncreaseDecreaseAsset08b(request),
                     "Download report success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/download-report-tool-inventory")
+    public ResponseEntity<?> downloadReportToolInventory(FindAllToolProcessRequest request){
+        try {
+            return ApiResponseDto.createdWithState(reportService.downloadFileInventoryToolReportByCodeDocument(request),
+                    "Download inventory report success!", HttpStatus.OK);
         } catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
