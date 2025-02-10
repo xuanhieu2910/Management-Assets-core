@@ -436,7 +436,6 @@ public class FileUploadService implements FilesStorageService {
         try (FileOutputStream fileOut = new FileOutputStream(fileFinal)) {
             workbook.write(fileOut);
             workbook.close();
-//            return fileFinal;
             return fileReturn;
         } catch (IOException e) {
             e.printStackTrace();
@@ -954,18 +953,14 @@ public class FileUploadService implements FilesStorageService {
         String folder = root + SEPARATOR + FOLDER_SAMPLE_EXCEL_IMPORT + SEPARATOR + FileUtil.getFolderInfo();
         FileUtil.createFolder(folder);
         String fileFinal = folder + SEPARATOR + "Sample_Excel_Import_Tool_" + new Date().getTime() + ".xlsx";
-//        String fileFinal = "D:\\CompanyBk\\Sample_Excel_Import_Asset_final_5.xlsx";
         log.info("File final:" + fileFinal);
-//        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
-        File fileTest = new File(fileFinal);
-        fileTest.createNewFile();
-//        String fileReturn = fileFinal.replace(root, PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
-//        log.info("File return: " + fileReturn);
+        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
+        String fileReturn = fileFinal.replace(root, PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
+        log.info("File return: " + fileReturn);
         try (FileOutputStream fileOut = new FileOutputStream(fileFinal)) {
             workbook.write(fileOut);
             workbook.close();
-            return fileFinal;
-//            return fileReturn;
+            return fileReturn;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -1114,7 +1109,7 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW, 19, 19);
+                    TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW, 19, 19);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -1147,7 +1142,7 @@ public class FileUploadService implements FilesStorageService {
             DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
 
             CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
-                    TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW, 18, 18);
+                    TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW, 18, 18);
             DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
             categoryValidation.setShowErrorBox(true);
             categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
@@ -1175,7 +1170,7 @@ public class FileUploadService implements FilesStorageService {
         String formula = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $K4)";
         DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
         CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
-                TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW, 12,12);
+                TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW, 12,12);
         DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
         productValidation.setShowErrorBox(true);
         productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
