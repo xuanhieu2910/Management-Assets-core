@@ -471,6 +471,12 @@ public class FileUploadService implements FilesStorageService {
         FileUtil.createFolder(folder);
         return folder + SEPARATOR + "Inventory_Report_" + new Date().getTime() + "." + ExcelUtil.FILE_EXCEL[1];
     }
+    private String createFileExportInventoryToolReport() {
+        String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
+        String folder = root + SEPARATOR + FileUtil.FOLDER_NAME_REPORT + SEPARATOR + FileUtil.getFolderInfo();
+        FileUtil.createFolder(folder);
+        return folder + SEPARATOR + "Inventory_Tool_Report_" + new Date().getTime() + "." + ExcelUtil.FILE_EXCEL[1];
+    }
 
     private void writeDataAssetInventoryReport(Sheet sheet,
                                                List<FindAllAssetForInventoryReportDto> assetReport,
@@ -922,7 +928,7 @@ public class FileUploadService implements FilesStorageService {
         Sheet sheet = workbook.getSheetAt(0);
         writeDataInfoInventoryToolReport(sheet, detailsDocumentDto);
         writeDataToolInventoryReport(sheet, listToolInventoryReport);
-        String fileFinal = createFileExportInventoryReport();
+        String fileFinal = createFileExportInventoryToolReport();
         File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
         String fileReturn = fileFinal.replace(PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe")
                 , PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
