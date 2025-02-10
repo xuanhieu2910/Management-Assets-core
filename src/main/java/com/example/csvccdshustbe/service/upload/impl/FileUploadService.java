@@ -28,8 +28,7 @@ import com.example.csvccdshustbe.dto.typeUse.FindAllTypeUseDto;
 import com.example.csvccdshustbe.dto.unit.FindAllUnitsDto;
 import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.dto.wards.WardsDto;
-import com.example.csvccdshustbe.entity.CountryProducer;
-import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.exception.FileException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.asset.AssetRepository;
@@ -56,6 +55,7 @@ import com.example.csvccdshustbe.service.suppliers.SuppliersService;
 import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
 import com.example.csvccdshustbe.service.typeUse.TypeUseService;
 import com.example.csvccdshustbe.service.units.UnitsService;
+import com.example.csvccdshustbe.service.unitsTool.UnitsToolService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
 import com.example.csvccdshustbe.service.wards.WardsService;
@@ -69,11 +69,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -81,6 +80,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.lang.Process;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -101,10 +101,15 @@ public class FileUploadService implements FilesStorageService {
     private static final String FILE_TEMPLATE_UP_ASSET = "Template_upload_asset";
     private static final Integer INDEX_START_FILLED_DATA = 1;
     private static final String NAME_SHEET_IMPORT_ASSET_CATEGORY = "ImportAsset";
+    private static final String NAME_SHEET_IMPORT_TOOL_CATEGORY = "ImportTool";
     private static final String NAME_SHEET_DATA_ASSET_CATEGORY = "AssetCategories";
+    private static final String NAME_SHEET_DATA_TOOL_CATEGORY_VIEW = "ToolCategoriesView";
+    private static final String NAME_SHEET_DATA_TOOL_CATEGORY = "ToolCategories";
+    private static final String NAME_SHEET_DATA_TOOL_SUPPLIERS = "ToolSuppliers";
     private static final String NAME_SHEET_DATA_DEPARTMENT = "Department";
     private static final String NAME_SHEET_DATA_LOCATION = "Location";
     private static final String NAME_SHEET_DATA_UNITS = "Units";
+    private static final String NAME_SHEET_DATA_UNITS_TOOL = "UnitsTool";
     private static final String NAME_SHEET_DATA_DOCUMENT_ATTACK = "DocumentAttacks";
     private static final String NAME_SHEET_DATA_PROJECTS = "Projects";
     private static final String NAME_SHEET_DATA_PROVINCES = "Provinces";
@@ -112,6 +117,7 @@ public class FileUploadService implements FilesStorageService {
     private static final String NAME_SHEET_DATA_WARDS = "Wards";
     private static final String NAME_SHEET_DATA_ASSET_DEPARTMENT = "AssetDepartment";
     private static final String NAME_SHEET_DATA_ORIGINAL = "Original";
+    private static final String NAME_SHEET_DATA_ORIGINAL_OF_FORMATION = "OriginalOfFormation";
     private static final String NAME_SHEET_DATA_COUNTRY_PRODUCER = "CountryProducer";
     private static final String NAME_SHEET_DATA_USER_USED = "UserUsed";
     private static final String NAME_SHEET_DATA_TYPE_USED = "TypeUsed";
@@ -126,6 +132,9 @@ public class FileUploadService implements FilesStorageService {
     private static final String VLOOKUP = "VLOOKUP";
     private static final Integer TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW  = 3;
     private static final Integer TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW  = 2000;
+
+    private static final Integer TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW  = 3;
+    private static final Integer TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW  = 2000;
     private static final String ERROR = "Error!";
     private static final String PROMPT = "Notes";
     private static final String[] PREFIX = {"category_","unit_", "original_",
@@ -176,7 +185,12 @@ public class FileUploadService implements FilesStorageService {
     @Autowired
     OriginalToolService originalToolService;
     @Autowired
+    OriginalOfFormationToolService originalOfFormationToolService;
+    @Autowired
+    UnitsToolService unitsToolService;
+    @Autowired
     DocumentRepository documentRepository;
+
     @Override
     public  String saveAndReturnPathAsset(MultipartFile uploadedFile, String folderName) throws IOException, FileException {
         FileUtil.checkFileAImportAsset(uploadedFile);
@@ -893,22 +907,69 @@ public class FileUploadService implements FilesStorageService {
         String fileExcel = PropertiesUtil.getProperty("hust.csvc.static.location.resources.static") + SEPARATOR
                 + "Sample_Excel_Import_Tool.xlsx";
         FileInputStream file = new FileInputStream(new File(fileExcel));
-        List<FindAllToolCategoryDto> toolCategoryToSelected = toolCategoriesService.findAllToolCategoriesToDownloadAndSelected();
-        List<FindAllToolCategoryDto> toolCategoryToView = toolCategoriesService.findAllToolCategoriesToDownloadAndView();
-        // Get suppliers
-//        Map<String,List<FindAllSuppliersDto>> suppliers = suppliersService.findAllSuppliersToDownload();
-        Map<String,List<FindAllDocumentAttackDto>> documentAttackToDownload = documentAttackService.findAllDocumentAttackToDownload();
-//        Map<String,List<FindAllProjectsDto>> projectsToDownload = projectsService.findAllProjectToDownloadTool();
-        List<FindAllOriginalToolDto> originalToolDtos = originalToolService.findAllOriginalToolByVisible(Constants.ORIGINAL_VISIBLE);
-//        List<FindAllOriginalOfFormationToolDto> findAllOriginalOfFormationToolDtos = originalOfFormationToolService.findAllOriginalOfFormationToolVisible(Constants.ORIG)
-        // Get units
-        // Get departments
-        // Get locations
-        // Get user
-        // Get medicine categories
-        // Get medicine type
+
+
+
+        List<FindAllToolCategoryDto> toolCategoryToSelected =
+                toolCategoriesService.findAllToolCategoriesToDownloadAndSelected();
+        List<FindAllToolCategoryDto> toolCategoryToView =
+                toolCategoriesService.findAllToolCategoriesToDownloadAndView();
+        List<FindAllSuppliersDto> suppliers =
+                suppliersService.findAllSuppliersByIdsDepartmentOriginal();
+        List<FindAllDocumentAttackDto> documentAttack =
+                documentAttackService.findAllDocumentAttackByIdsDepartmentOriginal();
+        List<FindAllProjectsDto> projects =
+                projectsService.findAllProjectToDownload();
+        List<FindAllOriginalToolDto> originalTool =
+                originalToolService.findAllOriginalToolByVisible(Constants.ORIGINAL_VISIBLE);
+        List<FindAllOriginalOfFormationToolDto> originalOfFormationTool =
+                originalOfFormationToolService.findAllOriginalOfFormationDtoByVisible(Constants.ORIGINAL_OF_FORMATION_VISIBLE);
+        List<UnitsTool> unitsTools = unitsToolService.findAllUnitsToolByStatus(Constants.UNITS_IS_ACTIVE);
+        Map<String,List<FindAllLocationDto>> dataDepartment =
+                departmentService.findAllDepartmentLocationVisibleToDownload();
+        Map<String, List<FindAllUserUsedDto>> dataUserUsed =
+                csvcUserService.findAllUserUsedToDownload();
+        List<MedicineTypeDetailsDto> dataMedicineType =
+                medicineTypeService.findAllMedicineTypeToDownload();
+        List<MedicineGroupDetailsDto> dataMedicineGroup =
+                medicineGroupService.findAllMedicineGroupToDownload();
+
+
         Workbook workbook = new XSSFWorkbook(file);
-        return null;
+        createToolCategoryImport(workbook, toolCategoryToSelected, toolCategoryToView);
+        createToolSuppliersImport(workbook, suppliers);
+        createToolDocumentAttack(workbook, documentAttack);
+        createToolProjects(workbook, projects);
+        createToolOriginal(workbook, originalTool);
+        createOriginalOfFormationTool(workbook, originalOfFormationTool);
+        createUnitsTool(workbook, unitsTools);
+        createToolDepartment(workbook, dataDepartment);
+        createToolUserUsed(workbook, dataUserUsed);
+        createToolMedicineType(workbook, dataMedicineType);
+        createToolMedicineGroup(workbook, dataMedicineGroup);
+
+
+
+        String root = PropertiesUtil.getProperty("hust.csvc.static.location.tomcat.webapp.csvcbe");
+        String folder = root + SEPARATOR + FOLDER_SAMPLE_EXCEL_IMPORT + SEPARATOR + FileUtil.getFolderInfo();
+        FileUtil.createFolder(folder);
+        String fileFinal = folder + SEPARATOR + "Sample_Excel_Import_Tool_" + new Date().getTime() + ".xlsx";
+//        String fileFinal = "D:\\CompanyBk\\Sample_Excel_Import_Asset_final_5.xlsx";
+        log.info("File final:" + fileFinal);
+//        File filePathOutput = FileUtil.createFileSampleAsset(fileFinal);
+        File fileTest = new File(fileFinal);
+        fileTest.createNewFile();
+//        String fileReturn = fileFinal.replace(root, PropertiesUtil.getProperty("hust.csvc.static.location.static.files"));
+//        log.info("File return: " + fileReturn);
+        try (FileOutputStream fileOut = new FileOutputStream(fileFinal)) {
+            workbook.write(fileOut);
+            workbook.close();
+            return fileFinal;
+//            return fileReturn;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -942,9 +1003,10 @@ public class FileUploadService implements FilesStorageService {
         return fileReturn;
 //        return filePathOutput;
     }
+
     private void writeDataToolInventoryReport(Sheet sheet,
                                               List<FindAllToolProcessDto> listToolInventoryReport
-                                              ) throws JsonProcessingException {
+    ) throws JsonProcessingException {
         int rowStart = 17;
         int shiftSize = Math.max(listToolInventoryReport.size(), 1);
         sheet.shiftRows(rowStart, sheet.getPhysicalNumberOfRows(), shiftSize, true, true);
@@ -1030,6 +1092,439 @@ public class FileUploadService implements FilesStorageService {
                 + (detailsDocumentDto.get().getNameDepartment() != null ? detailsDocumentDto.get().getNameDepartment() : "...") + "(*)  quản lý/tạm quản lý, kết quả như sau:", false);
         formatCell(sheet, 13, 0, false);
     }
+
+    private void createToolMedicineGroup(Workbook workbook, List<MedicineGroupDetailsDto> dataMedicineGroup) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_MEDICINE_GROUP);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataMedicineGroup.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dataMedicineGroup.get(i).getIdMedicineGroup() + "_" + dataMedicineGroup.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_MEDICINE_GROUP + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_MEDICINE_GROUP + "!$" + prefix + "$1:" + "$" + prefix + dataMedicineGroup.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW, 19, 19);
+            DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(categoryValidation);
+        }
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_MEDICINE_GROUP), true);
+    }
+
+    private void createToolMedicineType(Workbook workbook, List<MedicineTypeDetailsDto> dataMedicineType) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_MEDICINE_TYPE);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i< dataMedicineType.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = dataMedicineType.get(i).getIdMedicineType() + "_" + dataMedicineType.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_MEDICINE_TYPE + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_MEDICINE_TYPE + "!$" + prefix + "$1:" + "$" + prefix + dataMedicineType.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW, 18, 18);
+            DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "PVui lòng nhấp vào mục thả xuống.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(categoryValidation);
+        }
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_MEDICINE_TYPE), true);
+    }
+
+    private void createToolUserUsed(Workbook workbook, Map<String, List<FindAllUserUsedDto>> dataUserUsed) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_USER_USED);
+        Iterator<String> keywords = dataUserUsed.keySet().iterator();
+        int index = 0;
+        String[] data = new String[dataUserUsed.size()];
+        while (keywords.hasNext()){
+            String keyword = keywords.next();
+            filledDataUserUsed(sheet,dataUserUsed.get(keyword), index, keyword);
+            data[index] = keyword;
+            ++index;
+        }
+
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[8] + "\"" + " & $K4)";
+        DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW, 12,12);
+        DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(productValidation);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_USER_USED), true);
+    }
+
+
+    private void createUnitsTool(Workbook workbook, List<UnitsTool> unitsTools) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_UNITS_TOOL);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i < unitsTools.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = unitsTools.get(i).getIdUnitTool() + "_" + unitsTools.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_UNITS_TOOL + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_UNITS_TOOL + "!$" + prefix + "$1:" + "$" + prefix + unitsTools.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint toolCategoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW, 8, 8);
+            DataValidation categoryValidation = dvHelper.createValidation(toolCategoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(categoryValidation);
+            workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_UNITS_TOOL), true);
+        }
+    }
+    private void createToolDepartment(Workbook workbook, Map<String, List<FindAllLocationDto>> dataDepartment) {
+        Sheet sheetLocation = workbook.createSheet(NAME_SHEET_DATA_LOCATION);
+        Iterator<String> keywords = dataDepartment.keySet().iterator();
+        int index = 0;
+        String[] departments = new String[dataDepartment.size()];
+        while (keywords.hasNext()){
+            String keyword = keywords.next();
+            filledDataLocation(sheetLocation,dataDepartment.get(keyword), index, keyword);
+            departments[index] = keyword;
+            ++index;
+        }
+
+        if (workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY) == null) {
+            throw new IllegalArgumentException("Sheet " + NAME_SHEET_IMPORT_TOOL_CATEGORY + " does not exist.");
+        }
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+        setDataDepartmentTool(departments,workbook);
+        String formula = NAME_INDIRECT + "(\"" + PREFIX[3] + "\"" + " & $K4)";
+        DataValidationConstraint productConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList productAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW, 11,11);
+        DataValidation productValidation = dvHelper.createValidation(productConstraint, productAddressList);
+        productValidation.setShowErrorBox(true);
+        productValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+        productValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        productValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+        productValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(productValidation);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_LOCATION), true);
+    }
+
+    private void setDataDepartmentTool(String[] departments, Workbook workbook) {
+        Sheet sheetDepartment = workbook.createSheet(NAME_SHEET_DATA_DEPARTMENT);
+        Row row = null;
+        int indexCellDepartment = 0;
+        for (int i = 0; i< departments.length; i++){
+            if (sheetDepartment.getRow(i) == null) {
+                row = sheetDepartment.createRow(i);
+            } else {
+                row = sheetDepartment.getRow(i);
+            }
+            row.createCell(indexCellDepartment).setCellValue(departments[i]);
+        }
+        CellReference cellReference = new CellReference(row.getCell(indexCellDepartment));
+        String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_DEPARTMENT+"!", "").replaceAll("\\d","");
+        String formula = "=" + NAME_SHEET_DATA_DEPARTMENT + "!$" + prefix + "$1:" + "$" + prefix + departments.length;
+        DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+        DataValidationConstraint categoryConstraint = dvHelper.createFormulaListConstraint(formula);
+        CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_ASSET_INDEX_FIRST_ROW,
+                TEMPLATE_IMPORT_ASSET_LIMIT_AMOUNT_ROW, 10, 10);
+        DataValidation categoryValidation = dvHelper.createValidation(categoryConstraint, categoryAddressList);
+        categoryValidation.setShowErrorBox(true);
+        categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+        categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+        categoryValidation.setShowPromptBox(true);
+        workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(categoryValidation);
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_DEPARTMENT), false);
+    }
+
+    private void createOriginalOfFormationTool(Workbook workbook, List<FindAllOriginalOfFormationToolDto> originalOfFormationTool) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_ORIGINAL_OF_FORMATION);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i < originalOfFormationTool.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = originalOfFormationTool.get(i).getIdOriginalOfFormationTool() + "_" + originalOfFormationTool.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_ORIGINAL_OF_FORMATION + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_ORIGINAL_OF_FORMATION + "!$" + prefix + "$1:" + "$" + prefix + originalOfFormationTool.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint toolCategoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW, 7, 7);
+            DataValidation categoryValidation = dvHelper.createValidation(toolCategoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(categoryValidation);
+            workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ORIGINAL_OF_FORMATION), true);
+        }
+    }
+
+    private void createToolOriginal(Workbook workbook, List<FindAllOriginalToolDto> originalTool) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_ORIGINAL);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i < originalTool.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = originalTool.get(i).getIdOriginalTool() + "_" + originalTool.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_ORIGINAL + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_ORIGINAL + "!$" + prefix + "$1:" + "$" + prefix + originalTool.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint toolCategoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW, 6, 6);
+            DataValidation categoryValidation = dvHelper.createValidation(toolCategoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(categoryValidation);
+            workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_ORIGINAL), true);
+        }
+    }
+
+    private void createToolProjects(Workbook workbook, List<FindAllProjectsDto> projects) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_PROJECTS);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i < projects.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = projects.get(i).getIdProject() + "_" + projects.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_PROJECTS + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_PROJECTS + "!$" + prefix + "$1:" + "$" + prefix + projects.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint toolCategoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW, 4, 4);
+            DataValidation categoryValidation = dvHelper.createValidation(toolCategoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(categoryValidation);
+            workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_PROJECTS), true);
+        }
+    }
+
+    private void createToolDocumentAttack(Workbook workbook, List<FindAllDocumentAttackDto> documentAttack) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_DOCUMENT_ATTACK);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i < documentAttack.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = documentAttack.get(i).getIdDocumentAttack() + "_" + documentAttack.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_DOCUMENT_ATTACK + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_DOCUMENT_ATTACK + "!$" + prefix + "$1:" + "$" + prefix + documentAttack.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint toolCategoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW, 3, 3);
+            DataValidation categoryValidation = dvHelper.createValidation(toolCategoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(categoryValidation);
+            workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_DOCUMENT_ATTACK), true);
+        }
+    }
+
+    private void createToolSuppliersImport(Workbook workbook, List<FindAllSuppliersDto> suppliers) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_TOOL_SUPPLIERS);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i < suppliers.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = suppliers.get(i).getIdSupplier() + "_" + suppliers.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_TOOL_SUPPLIERS + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_TOOL_SUPPLIERS + "!$" + prefix + "$1:" + "$" + prefix + suppliers.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint toolCategoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW, 2, 2);
+            DataValidation categoryValidation = dvHelper.createValidation(toolCategoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(categoryValidation);
+        }
+        workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_TOOL_SUPPLIERS), true);
+    }
+
+    private void createToolCategoryImport(Workbook workbook, List<FindAllToolCategoryDto> toolCategoryToSelected,
+                                          List<FindAllToolCategoryDto> toolCategoryToView) {
+        Sheet sheetToolCategoriesView = workbook.createSheet(NAME_SHEET_DATA_TOOL_CATEGORY_VIEW);
+        writeDataHeadersSheetCategoriesView(sheetToolCategoriesView, toolCategoryToView);
+        writeDataToolCategories(workbook, toolCategoryToSelected);
+    }
+
+    private void writeDataToolCategories(Workbook workbook, List<FindAllToolCategoryDto> toolCategoryToSelected) {
+        Sheet sheet = workbook.createSheet(NAME_SHEET_DATA_TOOL_CATEGORY);
+        Row row = null;
+        int indexCell = 0;
+        for (int i = 0; i < toolCategoryToSelected.size(); i++){
+            if (sheet.getRow(i) == null) {
+                row = sheet.createRow(i);
+            } else {
+                row = sheet.getRow(i);
+            }
+            String valueCell = toolCategoryToSelected.get(i).getIdToolCategory() + "_" + toolCategoryToSelected.get(i).getName();
+            row.createCell(indexCell).setCellValue(valueCell);
+        }
+        if (row != null) {
+            CellReference cellReference = new CellReference(row.getCell(indexCell));
+            String prefix = cellReference.formatAsString().replaceAll(NAME_SHEET_DATA_TOOL_CATEGORY + "!", "").replaceAll("\\d", "");
+            String formula = "=" + NAME_SHEET_DATA_TOOL_CATEGORY + "!$" + prefix + "$1:" + "$" + prefix + toolCategoryToSelected.size();
+            DataValidationHelper dvHelper = workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).getDataValidationHelper();
+            DataValidationConstraint toolCategoryConstraint = dvHelper.createFormulaListConstraint(formula);
+
+            CellRangeAddressList categoryAddressList = new CellRangeAddressList(TEMPLATE_IMPORT_TOOL_INDEX_FIRST_ROW,
+                    TEMPLATE_IMPORT_TOOL_LIMIT_AMOUNT_ROW, 0, 0);
+            DataValidation categoryValidation = dvHelper.createValidation(toolCategoryConstraint, categoryAddressList);
+            categoryValidation.setShowErrorBox(true);
+            categoryValidation.createErrorBox(ERROR, "Không được phép sử dụng văn bản tùy chỉnh, vui lòng chọn từ danh sách thả xuống.");
+            categoryValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+            categoryValidation.createPromptBox(PROMPT, "Vui lòng nhấp vào mục thả xuống.");
+            categoryValidation.setShowPromptBox(true);
+            workbook.getSheet(NAME_SHEET_IMPORT_TOOL_CATEGORY).addValidationData(categoryValidation);
+            workbook.setSheetHidden(workbook.getSheetIndex(NAME_SHEET_DATA_TOOL_CATEGORY), true);
+        }
+    }
+
+    private void writeDataHeadersSheetCategoriesView(Sheet sheetToolCategoriesView, List<FindAllToolCategoryDto> toolCategoryToView) {
+        Row headerRowSheetCategoriesView = sheetToolCategoriesView.createRow(0);
+        String [] titleHeaders = {"Số thứ tự", "Tên loại CCDC", "Được chọn"};
+        for (int i = 0; i < titleHeaders.length; i++) {
+            Cell cell = headerRowSheetCategoriesView.createCell(i);
+            cell.setCellStyle(ExcelUtil.cellStyle(sheetToolCategoriesView.getWorkbook(),
+                    true, "Times New Roman", true, true, HSSFColor.HSSFColorPredefined.BLACK.getIndex()));
+            cell.setCellValue(titleHeaders[i]);
+        }
+        Row rowContent = null;
+        Cell cellContent = null;
+        int positionStartContent = 1;
+        for (int i = 0; i < toolCategoryToView.size(); i++) {
+            rowContent = sheetToolCategoriesView.createRow(positionStartContent);
+            cellContent = rowContent.createCell(0);
+            cellContent.setCellStyle(ExcelUtil.cellStyle(sheetToolCategoriesView.getWorkbook(),
+                    false, "Times New Roman", true, true,HSSFColor.HSSFColorPredefined.BLACK.getIndex()));
+            cellContent.setCellValue(i);
+
+            cellContent = rowContent.createCell(1);
+            cellContent.setCellStyle(ExcelUtil.cellStyle(sheetToolCategoriesView.getWorkbook(),
+                    false, "Times New Roman", true, true,HSSFColor.HSSFColorPredefined.BLACK.getIndex()));
+            cellContent.setCellValue(toolCategoryToView.get(i).getIdToolCategory() + "_" + toolCategoryToView.get(i).getName());
+
+            cellContent = rowContent.createCell(2);
+            if (toolCategoryToView.get(i).getIsLeaf().equals(1)) {
+                cellContent.setCellStyle(ExcelUtil.cellStyle(sheetToolCategoriesView.getWorkbook(),
+                        false, "Times New Roman", true, true,HSSFColor.HSSFColorPredefined.RED.getIndex()));
+                cellContent.setCellValue("Được chọn");
+            } else {
+                cellContent.setCellStyle(ExcelUtil.cellStyle(sheetToolCategoriesView.getWorkbook(),
+                        false, "Times New Roman", true, true,HSSFColor.HSSFColorPredefined.BLACK.getIndex()));
+                cellContent.setCellValue("Không được chọn");
+            }
+            ++positionStartContent;
+        }
+    }
+
+
+
+
 
     private String updateFilesAttachedAsset(MultipartFile[] files, String folderName) throws FileException, IOException {
         FileUtil.checkFileAsset(files);

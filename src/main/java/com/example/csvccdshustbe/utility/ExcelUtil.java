@@ -163,12 +163,13 @@ public class ExcelUtil {
     }
 
     public static CellStyle cellStyle(Workbook workbook, boolean isBold, String fontNameStyle,
-                                      boolean isCenter, boolean isBorder) {
+                                      boolean isCenter, boolean isBorder, short color) {
         CellStyle  cellStyle = workbook.createCellStyle();
         Font font = workbook.createFont();
         font.setBold(isBold);
         font.setFontName(fontNameStyle);
         font.setFontHeightInPoints((short) 13);
+        font.setColor(color);
         cellStyle.setWrapText(true);
         if (isBorder) {
             cellStyle.setBorderTop(BorderStyle.THIN);

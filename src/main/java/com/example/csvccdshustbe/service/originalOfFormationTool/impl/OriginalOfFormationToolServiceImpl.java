@@ -1,6 +1,7 @@
 package com.example.csvccdshustbe.service.originalOfFormationTool.impl;
 
 import com.example.csvccdshustbe.dto.originalOfFormation.FindAllOriginalOfFormationDto;
+import com.example.csvccdshustbe.dto.originalOfFormationTool.FindAllOriginalOfFormationToolDto;
 import com.example.csvccdshustbe.entity.OriginalOfFormation;
 import com.example.csvccdshustbe.entity.OriginalOfFormationTool;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
@@ -181,6 +182,11 @@ public class OriginalOfFormationToolServiceImpl implements OriginalOfFormationTo
         }
         originalOfFormationTool.get().setVisible(request.getVisible());
         originalOfFormationToolRepository.save(originalOfFormationTool.get());
+    }
+
+    @Override
+    public List<FindAllOriginalOfFormationToolDto> findAllOriginalOfFormationDtoByVisible(Integer visible) {
+        return originalOfFormationToolRepository.findAllOriginalOfFormationDtoByVisible(visible);
     }
 
     private List<FindAllOriginalOfFormationToolVisibleResponse> convertToFindAllOriginalOfFormationToolVisible(List<FindAllOriginalOfFormationDto> collect) {
