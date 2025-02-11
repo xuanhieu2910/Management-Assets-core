@@ -10,10 +10,12 @@ import lombok.Getter;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
 @Tag(name = "Tool Controller", description = "The Tool APIs. Contains operations like find all, find details, edit, delete etc.")
@@ -187,6 +189,16 @@ public class ToolController {
         }
         catch (Exception e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/upload-file-import-tool")
+    public ResponseEntity<?> uploadFileImportTool(@RequestParam("file")MultipartFile file){
+        try {
+            toolService.uploadFileImportTool(file);
+            return ApiResponseDto.createdWithMessage("Update file import tool success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -104,7 +104,7 @@ public class FileUploadService implements FilesStorageService {
     private static final String NAME_SHEET_IMPORT_TOOL_CATEGORY = "ImportTool";
     private static final String NAME_SHEET_DATA_ASSET_CATEGORY = "AssetCategories";
     private static final String NAME_SHEET_DATA_TOOL_CATEGORY_VIEW = "ToolCategoriesView";
-    private static final String NAME_SHEET_DATA_TOOL_CATEGORY = "ToolCategories";
+    public static final String NAME_SHEET_DATA_TOOL_CATEGORY = "ToolCategories";
     private static final String NAME_SHEET_DATA_TOOL_SUPPLIERS = "ToolSuppliers";
     private static final String NAME_SHEET_DATA_DEPARTMENT = "Department";
     private static final String NAME_SHEET_DATA_LOCATION = "Location";

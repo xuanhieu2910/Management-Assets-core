@@ -1609,36 +1609,27 @@ public class AssetServiceImpl implements AssetService {
         return filesStorageService.downLoadReportByPathFile(pathFile);
     }
 
-    public void uploadFileImportAsset(MultipartFile file) throws FileExcelException, ValidateFiledException, JsonProcessingException {
-    ValidateExcelUtils.checkFileExcel(file);
-    List<Map<String, Object>> assetRequests = handleUploadFileAsset(file);
-        //Lưu Request vào bảng tạm, rồi sao khi xử lý thì lưu vào assete sau.
-        //common:error
-    for (Map<String, Object> data: assetRequests) {
+    public void uploadFileImportAsset(MultipartFile file) throws FileExcelException,
+            JsonProcessingException {
+        ValidateExcelUtils.checkFileExcel(file);
+        List<Map<String, Object>> assetRequests = handleUploadFileAsset(file);
+        for (Map<String, Object> data : assetRequests) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String assetErrorRequestsJson = objectMapper.writeValueAsString(data.get(Constants.KEY_ERROR));
+            data.remove(Constants.KEY_ERROR);
+            String assetRequestsJson = objectMapper.writeValueAsString(data);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String assetErrorRequestsJson = objectMapper.writeValueAsString(data.get(Constants.KEY_ERROR));
-        data.remove(Constants.KEY_ERROR);
-        String assetRequestsJson = objectMapper.writeValueAsString(data);
-
-        String dateNow = String.valueOf(new Date().getTime());
-        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        AssetInstance assetInstance = new AssetInstance();
-        assetInstance.setIdUser(csvcUser.getIdUser());
-        assetInstance.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());
-        assetInstance.setTimeCreated(dateNow);
-        assetInstance.setTimeModified(dateNow);
-        assetInstance.setValue(assetRequestsJson);
-        assetInstance.setError(assetErrorRequestsJson.equals("null") ? null : assetErrorRequestsJson);
-        assetInstanceRepository.save(assetInstance);
-    }
-
-        //lưu bảng tạm
-        //khi chọn bảng tạm
-        //Map<String, Object> abc  =(Map<String, Object>)Object
-//    for (Map<String, Object> createAssetRequest : assetRequests) {
-//        createAssetFromFile(createAssetRequest);
-//        }
+            String dateNow = String.valueOf(new Date().getTime());
+            CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            AssetInstance assetInstance = new AssetInstance();
+            assetInstance.setIdUser(csvcUser.getIdUser());
+            assetInstance.setIdDepartmentOriginal(csvcUser.getIdDepartmentCurrent());
+            assetInstance.setTimeCreated(dateNow);
+            assetInstance.setTimeModified(dateNow);
+            assetInstance.setValue(assetRequestsJson);
+            assetInstance.setError(assetErrorRequestsJson.equals("null") ? null : assetErrorRequestsJson);
+            assetInstanceRepository.save(assetInstance);
+        }
     }
 
     @Override
@@ -2318,13 +2309,10 @@ public class AssetServiceImpl implements AssetService {
                 if (row != null && hasDataInRow(row,1)) {
                     allRows.add(row);
                 }
-//                if (row != null) {
-//                    allRows.add(row);
-//                }
             }
             int batchSize = Constants.SIZE_HANDLE;
             for (int start = 0; start < allRows.size(); start += batchSize) {
-                List<Integer> instanceCategoryListExcel= new ArrayList<>();
+                List<Integer> instanceCategoryListExcel = new ArrayList<>();
                 List<Integer> categoryListExcel = new ArrayList<>();
                 List<Integer> departmentAndDefaultListExcel = new ArrayList<>();
                 List<Integer> locationListExcel= new ArrayList<>();

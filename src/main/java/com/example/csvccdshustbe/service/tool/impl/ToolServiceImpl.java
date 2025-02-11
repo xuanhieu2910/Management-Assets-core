@@ -1,25 +1,49 @@
 package com.example.csvccdshustbe.service.tool.impl;
 
+import com.example.csvccdshustbe.dto.documentAttack.FindAllDocumentAttackDto;
+import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineGroup.MedicineGroupDetailsDto;
+import com.example.csvccdshustbe.dto.modules.medicineModules.medicineType.MedicineTypeDetailsDto;
+import com.example.csvccdshustbe.dto.originalOfFormationTool.FindAllOriginalOfFormationToolDto;
+import com.example.csvccdshustbe.dto.originalTool.FindAllOriginalToolDto;
+import com.example.csvccdshustbe.dto.projects.FindAllProjectsDto;
+import com.example.csvccdshustbe.dto.suppliers.FindAllSuppliersDto;
 import com.example.csvccdshustbe.dto.tool.FindDetailsToolDto;
 import com.example.csvccdshustbe.dto.tool.ToolDto;
+import com.example.csvccdshustbe.dto.tool.ToolImportDto;
+import com.example.csvccdshustbe.dto.toolCategories.FindAllToolCategoryDto;
+import com.example.csvccdshustbe.dto.user.FindAllUserUsedDto;
 import com.example.csvccdshustbe.entity.*;
 import com.example.csvccdshustbe.entity.Process;
+import com.example.csvccdshustbe.exception.FileExcelException;
 import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.repository.tool.ToolRepository;
 import com.example.csvccdshustbe.request.tool.*;
 import com.example.csvccdshustbe.response.tool.*;
 import com.example.csvccdshustbe.service.department.DepartmentService;
+import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
+import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
+import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
+import com.example.csvccdshustbe.service.originalOfFormationTool.OriginalOfFormationToolService;
+import com.example.csvccdshustbe.service.originalTool.OriginalToolService;
+import com.example.csvccdshustbe.service.projects.ProjectsService;
+import com.example.csvccdshustbe.service.suppliers.SuppliersService;
 import com.example.csvccdshustbe.service.tool.ToolService;
 import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
+import com.example.csvccdshustbe.service.unitsTool.UnitsToolService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
+import com.example.csvccdshustbe.service.upload.impl.FileUploadService;
 import com.example.csvccdshustbe.service.user.CsvcUserService;
-import com.example.csvccdshustbe.utility.Constants;
-import com.example.csvccdshustbe.utility.DateUtil;
-import com.example.csvccdshustbe.utility.PageUtils;
-import com.example.csvccdshustbe.utility.ValueUtil;
+import com.example.csvccdshustbe.utility.*;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,6 +52,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
 import java.io.IOException;
@@ -46,7 +71,22 @@ public class ToolServiceImpl implements ToolService {
     CsvcUserService csvcUserService;
     @Autowired
     FilesStorageService filesStorageService;
-
+    @Autowired
+    SuppliersService suppliersService;
+    @Autowired
+    DocumentAttackService documentAttackService;
+    @Autowired
+    ProjectsService projectsService;
+    @Autowired
+    OriginalToolService originalToolService;
+    @Autowired
+    OriginalOfFormationToolService originalOfFormationToolService;
+    @Autowired
+    UnitsToolService unitsToolService;
+    @Autowired
+    MedicineTypeService medicineTypeService;
+    @Autowired
+    MedicineGroupService medicineGroupService;
 
 
     @Override
@@ -193,6 +233,208 @@ public class ToolServiceImpl implements ToolService {
         return toolRepository.getStatisticFindAllTool();
     }
 
+    @Override
+    public void uploadFileImportTool(MultipartFile file) throws FileExcelException {
+        ValidateExcelUtils.checkFileExcel(file);
+        List<Map<String, Object>> dataTool = handleUploadFileTool(file);
+    }
+
+    private List<Map<String, Object>> handleUploadFileTool(MultipartFile file) {
+        List<ToolImportDto> dataImportExcel = handleDataImportToolFromFile(file);
+
+        return null;
+    }
+
+    private List<ToolImportDto> handleDataImportToolFromFile(MultipartFile file) {
+        List<FindAllToolCategoryDto> toolCategoryToSelected =
+                toolCategoriesService.findAllToolCategoriesToDownloadAndSelected();
+        List<FindAllToolCategoryDto> toolCategoryToView =
+                toolCategoriesService.findAllToolCategoriesToDownloadAndView();
+        List<FindAllSuppliersDto> suppliers =
+                suppliersService.findAllSuppliersByIdsDepartmentOriginal();
+        List<FindAllDocumentAttackDto> documentAttack =
+                documentAttackService.findAllDocumentAttackByIdsDepartmentOriginal();
+        List<FindAllProjectsDto> projects =
+                projectsService.findAllProjectToDownload();
+        List<FindAllOriginalToolDto> originalTool =
+                originalToolService.findAllOriginalToolByVisible(Constants.ORIGINAL_VISIBLE);
+        List<FindAllOriginalOfFormationToolDto> originalOfFormationTool =
+                originalOfFormationToolService.findAllOriginalOfFormationDtoByVisible(Constants.ORIGINAL_OF_FORMATION_VISIBLE);
+        List<UnitsTool> unitsTools = unitsToolService.findAllUnitsToolByStatus(Constants.UNITS_IS_ACTIVE);
+        Map<String,List<FindAllLocationDto>> dataDepartment =
+                departmentService.findAllDepartmentLocationVisibleToDownload();
+        Map<String, List<FindAllUserUsedDto>> dataUserUsed =
+                csvcUserService.findAllUserUsedToDownload();
+        List<MedicineTypeDetailsDto> dataMedicineType =
+                medicineTypeService.findAllMedicineTypeToDownload();
+        List<MedicineGroupDetailsDto> dataMedicineGroup =
+                medicineGroupService.findAllMedicineGroupToDownload();
+        int maxRowData = 2000;
+        int indexRowStartToReadData = 3;
+        int amountCheckRowHasData = 10;
+        List<ToolImportDto> dataToolsImport = new ArrayList<>();
+        try {
+            XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file.getInputStream());
+            XSSFSheet xssfSheet = xssfWorkbook.getSheet(FileUploadService.NAME_SHEET_DATA_TOOL_CATEGORY);
+            int totalRow = xssfSheet.getLastRowNum();
+            if (totalRow > maxRowData + indexRowStartToReadData) {
+                totalRow = maxRowData;
+            }
+            for (int i = indexRowStartToReadData; i < totalRow ; i++){
+                XSSFRow row = xssfSheet.getRow(i);
+                ToolImportDto toolImportDto = new ToolImportDto();
+                List<String> errors = new ArrayList<>();
+                if (row != null && hasDataInRow(row, 1)) {
+                    if (ExcelUtil.convertValue(row.getCell(0), CellType.STRING) == null) {
+                        errors.add("Không được để trống loại công cụ dụng cụ!");
+                    } else {
+                        toolImportDto.setIdToolCategory(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(0), CellType.STRING)).split("_")[0]));
+                        toolImportDto.setNameToolCategory(((String) ExcelUtil.convertValue(row.getCell(0), CellType.STRING)).split("_")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(1), CellType.STRING) == null) {
+                        errors.add("Không được để trống tên công cụ dụng cụ!");
+                    } else {
+                        toolImportDto.setNameTool((String)ExcelUtil.convertValue(row.getCell(1), CellType.STRING));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(2), CellType.STRING) != null) {
+                        toolImportDto.setIdSupply(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(2), CellType.STRING)).split("_")[0]));
+                        toolImportDto.setNameSupply(((String) ExcelUtil.convertValue(row.getCell(2), CellType.STRING)).split("_")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(3), CellType.STRING) != null) {
+                        toolImportDto.setIdDocumentAttach(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(3), CellType.STRING)).split("_")[0]));
+                        toolImportDto.setNameDocumentAttach(((String) ExcelUtil.convertValue(row.getCell(3), CellType.STRING)).split("_")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(4), CellType.STRING) != null) {
+                        toolImportDto.setIdProject(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(4), CellType.STRING)).split("_")[0]));
+                        toolImportDto.setNameProject(((String) ExcelUtil.convertValue(row.getCell(4), CellType.STRING)).split("_")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(5), CellType.STRING) == null) {
+                        errors.add("Không được để trống năm đưa vào sử dụng");
+                    } else {
+                        toolImportDto.setYearUsed((String)ExcelUtil.convertValue(row.getCell(5), CellType.STRING));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(6), CellType.STRING) == null) {
+                        errors.add("Không được để trống lý do tăng");
+                    } else {
+                        toolImportDto.setIdOriginal(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(6), CellType.STRING)).split("_")[0]));
+                        toolImportDto.setNameOriginal(((String) ExcelUtil.convertValue(row.getCell(6), CellType.STRING)).split("_")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(7), CellType.STRING) == null) {
+                        errors.add("Không được để trống nguồn hình thành");
+                    } else {
+                        toolImportDto.setIdOriginalOfFormation(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(7), CellType.STRING)).split("_")[0]));
+                        toolImportDto.setNameOriginalOfFormation(((String) ExcelUtil.convertValue(row.getCell(7), CellType.STRING)).split("_")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(8), CellType.STRING) == null) {
+                        errors.add("Không được để trống đơn vị tính");
+                    } else {
+                        toolImportDto.setIdUnit(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(8), CellType.STRING)).split("_")[0]));
+                        toolImportDto.setNameUnit(((String) ExcelUtil.convertValue(row.getCell(8), CellType.STRING)).split("_")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(9), CellType.STRING) == null) {
+                        errors.add("Không được để trống đơn giá");
+                    } else {
+                        toolImportDto.setPrice((String)ExcelUtil.convertValue(row.getCell(9), CellType.STRING));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(10), CellType.STRING) == null) {
+                        errors.add("Không được để trống đơn vị sử dụng");
+                    } else {
+                        toolImportDto.setIdDepartment(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING)).replace("STT","").split("_")[0]));
+                        toolImportDto.setNameDepartment(((String) ExcelUtil.convertValue(row.getCell(10), CellType.STRING)).replace("STT","").split("_")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(11), CellType.STRING) == null){
+                        errors.add("Không được để trống địa điểm sử dụng");
+                    } else {
+                        toolImportDto.setIdLocation(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(11), CellType.STRING)).split("_")[0]));
+                        toolImportDto.setNameDepartment(((String) ExcelUtil.convertValue(row.getCell(11), CellType.STRING)).split("_")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(12), CellType.STRING) == null){
+                        errors.add("Không được để trống người sử dụng");
+                    } else {
+                        toolImportDto.setUserName(((String) ExcelUtil.convertValue(row.getCell(12), CellType.STRING)).split("\\(")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(13), CellType.STRING) == null){
+                        errors.add("Không được để trống người tình trạng của công cụ dụng cụ");
+                    } else {
+                        toolImportDto.setStatusUse(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(13), CellType.STRING))));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(14), CellType.STRING) != null) {
+                        toolImportDto.setTypeAllocate(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(14), CellType.STRING))));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(15), CellType.STRING) != null) {
+                        toolImportDto.setAmountAllocate(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(15), CellType.STRING))));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(16), CellType.STRING) != null) {
+                        toolImportDto.setAmountAllocated(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(16), CellType.STRING))));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(17), CellType.STRING) != null) {
+                        toolImportDto.setIdMedicineType(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(17), CellType.STRING)).split("_")[0]));
+                        toolImportDto.setNameMedicineType(((String) ExcelUtil.convertValue(row.getCell(17), CellType.STRING)).split("_")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(18), CellType.STRING) != null) {
+                        toolImportDto.setIdMedicineGroup(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(18), CellType.STRING)).split("_")[0]));
+                        toolImportDto.setNameMedicineGroup(((String) ExcelUtil.convertValue(row.getCell(18), CellType.STRING)).split("_")[1]);
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(19), CellType.STRING) != null) {
+                        toolImportDto.setTimeProduced(((String) ExcelUtil.convertValue(row.getCell(19), CellType.STRING)));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(20), CellType.STRING) != null) {
+                        toolImportDto.setTimeExpiry(((String) ExcelUtil.convertValue(row.getCell(20), CellType.STRING)));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(21), CellType.STRING) != null) {
+                        toolImportDto.setNumberUsed(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(21), CellType.STRING))));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(22), CellType.STRING) != null) {
+                        toolImportDto.setNumberLot(Integer.valueOf(((String) ExcelUtil.convertValue(row.getCell(22), CellType.STRING))));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(23), CellType.STRING) != null) {
+                        toolImportDto.setNameOwner(((String) ExcelUtil.convertValue(row.getCell(23), CellType.STRING)));
+                    }
+                    if (ExcelUtil.convertValue(row.getCell(24), CellType.STRING) != null) {
+                        toolImportDto.setAddressOwner(((String) ExcelUtil.convertValue(row.getCell(24), CellType.STRING)));
+                    }
+                    dataToolsImport.add(toolImportDto);
+                } else {
+                    if (checkNextRowEmpty(i,xssfSheet, amountCheckRowHasData)) {
+                        i = totalRow;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return dataToolsImport;
+    }
+
+    private boolean checkNextRowEmpty(int i, XSSFSheet xssfSheet, int amountCheckRowHasData) {
+        int tmp = 0;
+        while(i < (i + amountCheckRowHasData) && i < 2000) {
+            if (xssfSheet.getRow(i) != null && hasDataInRow(xssfSheet.getRow(i), 1)) {
+                return false;
+            }
+            ++i;
+            ++tmp;
+        }
+        if (tmp == amountCheckRowHasData) {
+            return true;
+        }
+        return true;
+    }
+
+    private boolean hasDataInRow(XSSFRow row, int numCellsToCheck) {
+        int limit = Math.min(numCellsToCheck, row.getLastCellNum());
+        int countCheckExits = 0;
+        for (int cellIndex = 0; cellIndex < limit; cellIndex++) {
+            XSSFCell cell = row.getCell(cellIndex);
+            if (cell != null && cell.getCellType() != CellType.BLANK) {
+                ++countCheckExits;
+            }
+        }
+        if (countCheckExits == numCellsToCheck){
+            return true;
+        }
+        return false;
+    }
 
     private List<FindAllToolToInventoryResponse> convertToFindAllToolToInventoryResponse(List<ToolDto> content) {
         List<FindAllToolToInventoryResponse> responses = new ArrayList<>();
