@@ -2806,6 +2806,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
 
     private void setParameterFindAllAsset(FindAllAssetRequest request, Query query) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        query.setParameter("idDepartmentCurrent", csvcUser.getIdDepartmentCurrent());
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         if (StringUtils.isNotBlank(request.getCodeAsset())){
             query.setParameter("codeAsset", request.getCodeAsset());
@@ -2861,7 +2863,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)) {
             sb.append(" and asset.quantity > :isSingle and asset.parent is null ");
         } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
-            sb.append(" and asset.quantity = :isSingle and asset.parent is not null ");
+            sb.append(" and asset.id_department_origin != :idDepartmentCurrent " +
+                    " and asset.quantity = :isSingle and asset.parent is not null ");
         }
         if (ObjectUtils.isNotEmpty(request.getStatusUse())) {
             sb.append(" and asset.status_use = :statusUse ");
@@ -2905,7 +2908,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)) {
             sb.append(" and asset.quantity > :isSingle and asset.parent is null ");
         } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
-            sb.append(" and asset.quantity = :isSingle and asset.parent is not null ");
+            sb.append(" and asset.id_department_origin != :idDepartmentCurrent " +
+                      " and asset.quantity = :isSingle and asset.parent is not null ");
         }
         if (ObjectUtils.isNotEmpty(request.getStatusUse())){
             sb.append("  and asset.status_use = :statusUse ");
