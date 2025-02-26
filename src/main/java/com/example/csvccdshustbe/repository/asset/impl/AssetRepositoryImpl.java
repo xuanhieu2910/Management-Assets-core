@@ -2807,7 +2807,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAsset(FindAllAssetRequest request, Query query) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        query.setParameter("idDepartmentCurrent", csvcUser.getIdDepartmentCurrent());
+
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         if (StringUtils.isNotBlank(request.getCodeAsset())){
             query.setParameter("codeAsset", request.getCodeAsset());
@@ -2832,6 +2832,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 || request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)
         ) {
             query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+        }
+        if(request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)){
+            query.setParameter("idDepartmentCurrent", csvcUser.getIdDepartmentCurrent());
         }
         if (ObjectUtils.isNotEmpty(request.getStatusUse())){
             query.setParameter("statusUse", request.getStatusUse());
