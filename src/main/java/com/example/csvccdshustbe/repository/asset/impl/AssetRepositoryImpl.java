@@ -909,10 +909,13 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                                         and asset.id_department_origin in (:idsDepartmentOriginal) " +
                 "                                         and (asset.status_process_current != :statusProcess ) " +
                 "                                         and fsa.id_asset is null ") ;
+
         setConditionFindAllAssetDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("increaseChild",Constants.IS_INCREASED);
         query.setParameter("decreaseChild", Constants.IS_DECREASED);
+        query.setParameter("statusNotFinished", Constants.STATUS_FLUCTUATING_SITUATION_ASSET_NOT_FINISH);
+        query.setParameter("type", Constants.TYPE_FLUCTUATING_SITUATION_INCREASE);
         setParameterFindAllAssetDtoToInventory(request, query);
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
@@ -1595,6 +1598,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterCountFindAllAssetDtoToDecrease(FindAllAssetToDecreaseRequest request,
                                                             Query query) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)
@@ -1607,6 +1612,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 query.setParameter("isIncreasePart", Constants.IS_INCREASED_PART_LOT);
             }
         }
+        if(request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)){
+            query.setParameter("idDepartmentCurrent", csvcUser.getIdDepartmentCurrent());
+        }
+
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }
@@ -1630,6 +1639,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                     "     asset.is_decrease != :isDecrease))  " +
                     "  and asset.quantity > :quantityDefault and asset.parent is null ");
         } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
+            sb.append("  and asset.id_department_origin != :idDepartmentCurrent ");
             sb.append(" and asset.is_increase = :isIncrease  " +
                     "  and asset.is_decrease != :isDecrease  " +
                     "  and asset.quantity = :quantityDefault and asset.parent is not null ");
@@ -1684,6 +1694,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
 
     private void setParameterFindAllAssetDtoToDecrease(FindAllAssetToDecreaseRequest request, Query query) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)
@@ -1696,6 +1708,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 query.setParameter("isIncreasePart", Constants.IS_INCREASED_PART_LOT);
             }
         }
+        if(request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)){
+            query.setParameter("idDepartmentCurrent", csvcUser.getIdDepartmentCurrent());
+        }
+
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }
@@ -1735,6 +1751,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                     "     asset.is_decrease != :isDecrease))  " +
                     "  and asset.quantity > :quantityDefault and asset.parent is null ");
         } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
+            sb.append("  and asset.id_department_origin != :idDepartmentCurrent ");
             sb.append(" and asset.is_increase = :isIncrease  " +
                     "  and asset.is_decrease != :isDecrease  " +
                     "  and asset.quantity = :quantityDefault and asset.parent is not null ");
@@ -2159,6 +2176,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
 
     private void setParameterFindAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Query query) {
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)
             || request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)
@@ -2168,6 +2186,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)) {
                 query.setParameter("isIncreasePart", Constants.IS_INCREASED_PART_LOT);
             }
+        }
+        if(request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)){
+            query.setParameter("idDepartmentCurrent", csvcUser.getIdDepartmentCurrent());
         }
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (StringUtils.isNotBlank(request.getNameAsset())){
@@ -2205,6 +2226,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private void setParameterFindAllAssetDtoToInventory(FindAllAssetToInventoryRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+
         query.setParameter("statusProcess", Constants.STATUS_PENDING_PROCESS);
         query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
         query.setParameter("isDisplay", Constants.UNITES_IS_DISPLAY);
@@ -2281,6 +2303,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             sb.append(" and (asset.is_increase = :isIncrease or asset.is_increase = :isIncreasePart) ");
             sb.append("  and asset.quantity > :quantityDefault and asset.parent is null ");
         } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)){
+            sb.append("  and asset.id_department_origin != :idDepartmentCurrent ");
             sb.append("  and asset.is_increase = :isIncrease ");
             sb.append("  and asset.quantity = :quantityDefault and asset.parent is not null ");
         }
@@ -2345,6 +2368,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             sb.append(" and (asset.is_increase = :isIncrease or asset.is_increase = :isIncreasePart) ");
             sb.append("  and asset.quantity > :quantityDefault and asset.parent is null ");
         } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)){
+            sb.append("  and asset.id_department_origin != :idDepartmentCurrent ");
             sb.append("  and asset.is_increase = :isIncrease ");
             sb.append("  and asset.quantity = :quantityDefault and asset.parent is not null ");
         }
