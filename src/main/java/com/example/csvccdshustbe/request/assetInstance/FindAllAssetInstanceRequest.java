@@ -10,4 +10,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FindAllAssetInstanceRequest extends RequestPageBase {
     private Integer isError;
+
 }

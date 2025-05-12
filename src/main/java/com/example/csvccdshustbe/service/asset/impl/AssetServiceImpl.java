@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.service.asset.impl;
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.CommonAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.asset.GroundAssetDto;
 import com.example.csvccdshustbe.dto.assetDepreciation.AssetDepreciationDto;
 import com.example.csvccdshustbe.dto.assetProcess.AssetProcessDto;
 import com.example.csvccdshustbe.dto.declare.AssetDeclareDto;
@@ -328,7 +329,21 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public Page<FindAllGroundAssetResponse> findAllGroundAsset(FindAllGroundAssetRequest request) {
         Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
-        return  assetRepository.findAllGroundAsset(pageable, request);
+        Page<GroundAssetDto> findAllgroundDtos = assetRepository.findAllGroundAsset(pageable, request);
+        return new PageImpl<>(convertFindAllAssetGroundResponse(findAllgroundDtos.getContent()),pageable,findAllgroundDtos.getTotalElements());
+    }
+
+    private List<FindAllGroundAssetResponse> convertFindAllAssetGroundResponse(List<GroundAssetDto> content) {
+        List<FindAllGroundAssetResponse> responses = new ArrayList<>();
+        for (GroundAssetDto groundAssetDto : content) {
+            FindAllGroundAssetResponse findAllGroundAssetResponse = new FindAllGroundAssetResponse();
+            findAllGroundAssetResponse.setIdGroundAsset(groundAssetDto.getIdGroundAsset());
+            findAllGroundAssetResponse.setCodeGroundAsset(groundAssetDto.getCodeGroundAsset());
+            findAllGroundAssetResponse.setNameGroundAsset(groundAssetDto.getNameGroundAsset() + "_" + groundAssetDto.getNameDepartment());
+            findAllGroundAssetResponse.setSalt(groundAssetDto.getSalt());
+            responses.add(findAllGroundAssetResponse);
+        }
+        return responses;
     }
 
     @Override

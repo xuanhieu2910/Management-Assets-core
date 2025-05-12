@@ -3,6 +3,7 @@ package com.example.csvccdshustbe.repository.asset;
 import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
 import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
 import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
+import com.example.csvccdshustbe.dto.asset.GroundAssetDto;
 import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
 import com.example.csvccdshustbe.dto.report.inventory.FindAllAssetForInventoryReportDto;
 import com.example.csvccdshustbe.entity.Asset;
@@ -23,7 +24,7 @@ public interface AssetRepositoryCustom {
     Optional<AssetBluePrintDto> findDetailAssetBySaltAsset(String saltAsset);
     Optional<Asset> findAssetBySalt(String salt);
     void deleteByIdAsset(Integer idAsset);
-    Page<FindAllGroundAssetResponse> findAllGroundAsset(Pageable pageable, FindAllGroundAssetRequest request);
+    Page<GroundAssetDto> findAllGroundAsset(Pageable pageable, FindAllGroundAssetRequest request);
     List<FindAllGroundAssetDto> findAllGroundAssetToDownload();
     Page<FindAllAssetDto> findAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable);
     Page<FindAllAssetDto> findAllAssetChildrenDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable);

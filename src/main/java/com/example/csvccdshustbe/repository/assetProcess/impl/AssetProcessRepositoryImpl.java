@@ -258,8 +258,6 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
         sb.append(" select assetParent.id_asset idAsset, assetParent.code_asset codeAsset, " +
                 "       assetParent.name nameAsset, assetCategories.id_asset_category idAssetCategory, " +
                 "        assetCategories.name nameAssetCategory, assetCategories.code_name codeAssetCategory, " +
-                "        de.id_department idDepartment, de.code codeDepartment, de.name nameDepartment, " +
-                "        lo.id_location idLocation, lo.name nameLocation, " +
                 "       assetParent.time_created, assetParent.time_modified, assetParent.salt, " +
                 "       assetProcess.value " +
                 " from asset asset " +
@@ -267,8 +265,6 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "     left join process process on assetProcess.id_process = process.id_process " +
                 "     left join asset_categories assetCategories " +
                 "             on asset.id_asset_category = assetCategories.id_asset_category " +
-                "     left join department de on asset.id_department = de.id_department " +
-                "     left join location lo on asset.id_location = lo.id_location " +
                 "     left join document do on process.id_process = do.id_process " +
                 "     inner join asset assetParent on asset.parent = assetParent.id_asset " +
                 " where 1 = 1          " +
@@ -289,15 +285,10 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 findAllAssetDto.setIdAssetCategory(ValueUtil.getIntegerByObject(obj[3]));
                 findAllAssetDto.setNameAssetCategory(ValueUtil.getStringByObject(obj[4]));
                 findAllAssetDto.setCodeAssetCategory(ValueUtil.getStringByObject(obj[5]));
-                findAllAssetDto.setIdDepartment(ValueUtil.getIntegerByObject(obj[6]));
-                findAllAssetDto.setCodeDepartment(ValueUtil.getStringByObject(obj[7]));
-                findAllAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
-                findAllAssetDto.setIdLocation(ValueUtil.getIntegerByObject(obj[9]));
-                findAllAssetDto.setNameLocation(ValueUtil.getStringByObject(obj[10]));
-                findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[11]));
-                findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[12]));
-                findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[13]));
-                findAllAssetDto.setValue(ValueUtil.getStringByObject(obj[14]));
+                findAllAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[6]));
+                findAllAssetDto.setTimeModified(ValueUtil.getLongByObject(obj[7]));
+                findAllAssetDto.setSalt(ValueUtil.getStringByObject(obj[8]));
+                findAllAssetDto.setValue(ValueUtil.getStringByObject(obj[9]));
                 responses.add(findAllAssetDto);
             }
         }
@@ -953,8 +944,6 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "    left join process process on assetProcess.id_process = process.id_process   " +
                 "    left join asset_categories assetCategories   " +
                 "            on asset.id_asset_category = assetCategories.id_asset_category   " +
-                "    left join department de on asset.id_department = de.id_department   " +
-                "    left join location lo on asset.id_location = lo.id_location   " +
                 "    left join document do on process.id_process = do.id_process   " +
                 "    inner join asset assetParent on asset.parent = assetParent.id_asset   " +
                 "where 1 = 1  " +
@@ -975,9 +964,6 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
         if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
             query.setParameter("idAssetCategory", request.getIdAssetCategory());
         }
-        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
-            query.setParameter("idDepartment", request.getIdDepartment());
-        }
     }
 
     private void setConditionFindAllAssetLotProcess(StringBuilder sb, FindAllAssetProcessRequest request) {
@@ -987,22 +973,15 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
         if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
             sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
         }
-        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
-            sb.append(" and de.id_department = :idDepartment ");
-        }
         sb.append(" group by assetParent.id_asset, assetParent.code_asset, " +
                 "         assetParent.name, assetCategories.id_asset_category, " +
                 "         assetCategories.name, assetCategories.code_name, " +
-                "         de.id_department, de.code, de.name, " +
-                "         lo.id_location, lo.name, assetParent.time_created, " +
+                " assetParent.time_created, " +
                 "         assetParent.time_modified, assetParent.salt ");
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
                 sb.append(" asset.name ");
-            }
-            if (request.getSortBy().equals("nameDepartment")) {
-                sb.append(" de.name ");
             }
             sb.append(" ").append(request.getSortOrder());
         } else {
@@ -1016,23 +995,18 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
         if (ObjectUtils.isNotEmpty(request.getIdAssetCategory())){
             sb.append(" and assetCategories.id_asset_category = :idAssetCategory ");
         }
-        if (ObjectUtils.isNotEmpty(request.getIdDepartment())){
-            sb.append(" and de.id_department = :idDepartment ");
-        }
+
         sb.append(" group by assetParent.id_asset, assetParent.code_asset, " +
                 "         assetParent.name, assetCategories.id_asset_category, " +
                 "         assetCategories.name, assetCategories.code_name, " +
-                "         de.id_department, de.code, de.name, " +
-                "         lo.id_location, lo.name, assetParent.time_created, " +
+                "         assetParent.time_created, " +
                 "         assetParent.time_modified, assetParent.salt ");
         if (StringUtils.isNotBlank(request.getSortBy())){
             sb.append("ORDER BY ");
             if (request.getSortBy().equals("nameAsset")) {
                 sb.append(" asset.name ");
             }
-            if (request.getSortBy().equals("nameDepartment")) {
-                sb.append(" de.name ");
-            }
+
             sb.append(" ").append(request.getSortOrder());
         } else {
             sb.append(" ORDER BY assetParent.id_asset desc ");
