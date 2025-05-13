@@ -53,6 +53,7 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProcessServiceImpl implements ProcessService {
@@ -101,8 +102,12 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException {
-        List<Integer> idsAsset = new ArrayList<>();
-        request.getAssetDetail().forEach(x->idsAsset.add(x.getIdAsset()));
+//        List<Integer> idsAsset = new ArrayList<>();
+//        request.getAssetDetail().forEach(x->idsAsset.add(x.getIdAsset()));
+        Set<Integer> idsAssetSet = request.getAssetDetail().stream()
+                .map(x -> x.getIdAsset())
+                .collect(Collectors.toSet());
+        List<Integer> idsAsset = new ArrayList<>(idsAssetSet);
         validateAssetProcessIncrease(idsAsset);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
@@ -129,8 +134,12 @@ public class ProcessServiceImpl implements ProcessService {
     @Transactional
     @Override
     public void createIncreaseTool(CreateIncreaseToolRequest request) throws ValidateFiledException {
-        List<Integer> idsTool = new ArrayList<>();
-        request.getToolsDetail().forEach(x->idsTool.add(x.getIdTool()));
+//        List<Integer> idsTool = new ArrayList<>();
+//        request.getToolsDetail().forEach(x->idsTool.add(x.getIdTool()));
+        Set<Integer> idsToolSet = request.getToolsDetail().stream()
+                .map(x -> x.getIdTool())
+                .collect(Collectors.toSet());
+        List<Integer> idsTool = new ArrayList<>(idsToolSet);
         validateToolIncreaseProcess(idsTool);
         List<Tool> tools = toolService.findAllToolByIdsTool(idsTool);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
@@ -156,8 +165,12 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void createDecreaseTool(CreateDecreaseToolRequest request) throws ValidateFiledException {
-        List<Integer> idsTool = new ArrayList<>();
-        request.getToolsDetail().forEach(x->idsTool.add(x.getIdTool()));
+//        List<Integer> idsTool = new ArrayList<>();
+//        request.getToolsDetail().forEach(x->idsTool.add(x.getIdTool()));
+        Set<Integer> idsToolSet = request.getToolsDetail().stream()
+                .map(x -> x.getIdTool())
+                .collect(Collectors.toSet());
+        List<Integer> idsTool = new ArrayList<>(idsToolSet);
         validateToolDecreaseProcess(idsTool);
         List<Tool> tools = toolService.findAllToolByIdsTool(idsTool);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
@@ -183,8 +196,12 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void createDocumentInventoryTool(CreateInventoryToolRequest request) throws ValidateFiledException {
-        List<Integer> idsTool = new ArrayList<>();
-        request.getToolsDetail().forEach(x->idsTool.add(x.getIdTool()));
+//        List<Integer> idsTool = new ArrayList<>();
+//        request.getToolsDetail().forEach(x->idsTool.add(x.getIdTool()));
+        Set<Integer> idsToolSet = request.getToolsDetail().stream()
+                .map(x -> x.getIdTool())
+                .collect(Collectors.toSet());
+        List<Integer> idsTool = new ArrayList<>(idsToolSet);
         validateToolInventoryProcess(idsTool);
         List<Tool> tools = toolService.findAllToolByIdsTool(idsTool);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
@@ -467,10 +484,15 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
+    @Transactional
     @Override
     public void createDocumentInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException {
-        List<Integer> idsAsset = new ArrayList<>();
-        request.getAssetDetail().forEach(x->idsAsset.add(x.getIdAsset()));
+//        List<Integer> idsAsset = new ArrayList<>();
+//        request.getAssetDetail().forEach(x->idsAsset.add(x.getIdAsset()));
+        Set<Integer> idsAssetSet = request.getAssetDetail().stream()
+                .map(x -> x.getIdAsset())
+                .collect(Collectors.toSet());
+        List<Integer> idsAsset = new ArrayList<>(idsAssetSet);
         validateAssetProcessInventory(idsAsset);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
@@ -539,8 +561,12 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void createDecreaseAsset(CreateDecreaseAssetRequest request) throws ValidateFiledException {
-        List<Integer> idsAsset = new ArrayList<>();
-        request.getAssetDetail().forEach(x-> idsAsset.add(x.getIdAsset()));
+//        List<Integer> idsAsset = new ArrayList<>();
+//        request.getAssetDetail().forEach(x-> idsAsset.add(x.getIdAsset()));
+        Set<Integer> idsAssetSet = request.getAssetDetail().stream()
+                .map(x -> x.getIdAsset())
+                .collect(Collectors.toSet());
+        List<Integer> idsAsset = new ArrayList<>(idsAssetSet);
         validateAssetProcessDecrease(idsAsset);
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));

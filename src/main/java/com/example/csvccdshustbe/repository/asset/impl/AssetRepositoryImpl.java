@@ -910,7 +910,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "                                    and fsa.type = :type) fsa on asset.id_asset = fsa.id_asset " +
                 "                                     where 1 = 1 " +
                 "                                         and asset.id_department_origin in (:idsDepartmentOriginal) " +
-                "                                         and (asset.status_process_current != :statusProcess ) " +
+                "                                         and (asset.status_process_current != :statusProcess or asset.status_process_current is null ) " +
                 "                                         and fsa.id_asset is null ") ;
 
         setConditionFindAllAssetDtoToInventory(request, sb);
@@ -2223,12 +2223,17 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)
                 || request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)
                 || request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)){
-            query.setParameter("isIncrease", Constants.IS_INCREASED);
-            query.setParameter("isDecrease", Constants.IS_DECREASED);
             query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
+            if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE) || request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE) ) {
+                query.setParameter("isIncrease", Constants.IS_INCREASED);
+                query.setParameter("isDecrease", Constants.IS_DECREASED);
+            }
             if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)) {
+                query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
+                query.setParameter("isDecrease", Constants.IS_DECREASED_WHOLE_LOT);
                 query.setParameter("isIncreasePart", Constants.IS_INCREASED_PART_LOT);
             }
+
         }
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
@@ -2419,12 +2424,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             sb.append("   and (((asset.is_increase = :isIncrease or  " +
                     "     asset.is_increase = :isIncreasePart) and   " +
                     "     asset.is_decrease != :isDecrease))   " +
-                    "     and asset.quantity > :quantityDefault and asset.parent is not null ");
+                    "     and asset.quantity > :quantityDefault and asset.parent is null ");
         } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
             sb.append("   and asset.is_increase = :isIncrease  " +
                     "  and asset.is_decrease != :isDecrease  " +
                     "  and asset.quantity = :quantityDefault  " +
-                    "  and asset.parent is null and asset.parent is null ");
+                    "  and asset.parent is not null  ");
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
@@ -2542,12 +2547,12 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
             sb.append("   and (((asset.is_increase = :isIncrease or  " +
                     "     asset.is_increase = :isIncreasePart) and   " +
                     "     asset.is_decrease != :isDecrease))   " +
-                    "     and asset.quantity > :quantityDefault and asset.parent is not null ");
+                    "     and asset.quantity > :quantityDefault and asset.parent is null ");
         } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
             sb.append("   and asset.is_increase = :isIncrease  " +
                     "  and asset.is_decrease != :isDecrease  " +
                     "  and asset.quantity = :quantityDefault  " +
-                    "  and asset.parent is null and asset.parent is null ");
+                    "  and asset.parent is not null  ");
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
