@@ -530,9 +530,26 @@ public class FileUploadService implements FilesStorageService {
 //            writeValueCell(sheet, rowStart, 9, Objects.equals(ValueUtil.getStringByObject(dataAsset.get("acreage")), "") ? "" : ValueUtil.getStringByObject(dataAsset.get("acreage")),null);
 //            writeValueCell(sheet, rowStart, 10,Objects.equals(ValueUtil.getStringByObject(dataAsset.get("acreage_inventory")), "") ? "" : ValueUtil.getStringByObject(dataAsset.get("acreage_inventory")), null);
 //            writeValueCell(sheet, rowStart, 11, ValueUtil.getStringByObject(dataAsset.get("acreage_difference")), null);
-            writeValueCell(sheet, rowStart, 11, String.format("%.0f", ValueUtil.getDoubleByObject(dataAsset.get("acreage_difference"))), null);
-            writeValueCell(sheet, rowStart, 12, String.format("%.0f", ValueUtil.getDoubleByObject(dataAsset.get("original_of_formation"))), null);
-            writeValueCell(sheet, rowStart, 13, String.format("%.0f", ValueUtil.getDoubleByObject(dataAsset.get("rest_value"))), null);
+            Object acreageDiffObj = dataAsset.get("acreage_difference");
+            writeValueCell(sheet, rowStart, 11,
+                    (acreageDiffObj == null || acreageDiffObj.toString().isEmpty())
+                            ? ""
+                            : String.format("%.0f", ValueUtil.getDoubleByObject(acreageDiffObj)),
+                    null);
+
+            Object originalFormationObj = dataAsset.get("original_of_formation");
+            writeValueCell(sheet, rowStart, 12,
+                    (originalFormationObj == null || originalFormationObj.toString().isEmpty())
+                            ? ""
+                            : String.format("%.0f", ValueUtil.getDoubleByObject(originalFormationObj)),
+                    null);
+
+            Object restValueObj = dataAsset.get("rest_value");
+            writeValueCell(sheet, rowStart, 13,
+                    (restValueObj == null || restValueObj.toString().isEmpty())
+                            ? ""
+                            : String.format("%.0f", ValueUtil.getDoubleByObject(restValueObj)),
+                    null);
             writeValueCell(sheet, rowStart, 14, ValueUtil.getStringByObject(dataAsset.get("recorded_accounting")), null);
             if(asset.getValue() != null){
                 writeValueCell(sheet, rowStart, (Objects.equals(ValueUtil.getStringByObject(dataAsset.get("is_increase")), "1") ||
