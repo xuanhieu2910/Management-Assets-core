@@ -341,7 +341,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "            sum(case when toolChildren.is_increase = :isIncreased then 1 else 0 end) sumIncreased,  " +
                 "            sum(toolChildren.quantity_increase_current) totalQuantityIncreaseCurrent  " +
                 "     from tool toolParent  " +
-                "         inner join tool toolChildren on toolParent.id_tool = toolChildren.id_tool  " +
+                "         inner join tool toolChildren on toolParent.id_tool = toolChildren.parent  " +
                 "     where toolParent.id_tool in (:idsTool)  " +
                 "     group by toolParent.id_tool) result) result on tl.id_tool = result.id_tool  " +
                 "         set is_increase = result.isIncreaseCurrent,  " +
@@ -409,7 +409,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       inner join tool_process on tool.id_process_current = tool_process.id_process " +
                 "set tool.status_process_current = :statusProcessCurrent, " +
                 "    tool.quantity_decrease_current = tool.quantity_decrease_current - tool_process.quantity " +
-                "where tool_process.id_tool_process = :idProcessCurrent ");
+                "where tool_process.id_process = :idProcessCurrent ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("statusProcessCurrent", status);
         query.setParameter("idProcessCurrent", idProcessCurrent);
@@ -464,6 +464,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "  and fst.id_tool is null ");
         setConditionFindAllToolDtoToInventory(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusNotFinished", Constants.STATUS_FLUCTUATING_SITUATION_TOOL_NOT_FINISH);
+        query.setParameter("typeDecrease", Constants.TYPE_FLUCTUATING_SITUATION_DECREASE);
         setParameterFindAllToolDtoToInventory(request, query);
         PageUtils.buildQuery(pageable, query);
         List<Object[]> result = query.getResultList();
@@ -576,8 +578,8 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         query.setParameter("isIncrease", Constants.TOOL_IS_INCREASED);
         query.setParameter("isDecrease", Constants.TOOL_IS_DECREASED);
-        query.setParameter("statusNotFinished", Constants.STATUS_FLUCTUATING_SITUATION_TOOL_NOT_FINISH);
-        query.setParameter("typeDecrease", Constants.TYPE_FLUCTUATING_SITUATION_DECREASE);
+
+
         if (StringUtils.isNotBlank(request.getCodeTool())){
             query.setParameter("codeTool", request.getCodeTool());
         }
