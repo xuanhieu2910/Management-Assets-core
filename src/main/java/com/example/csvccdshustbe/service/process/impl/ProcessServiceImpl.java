@@ -303,22 +303,29 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     private List<AssetProcess> contructionAssetProcessIncrease(List<AssetDetailIncreaseRequest> assetProcessValue, Process process) {
+        Map<Integer, AssetDetailIncreaseRequest> uniqueAssets = new LinkedHashMap<>();
+        for (AssetDetailIncreaseRequest request : assetProcessValue) {
+            uniqueAssets.putIfAbsent(request.getIdAsset(), request);
+        }
+
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String currentTime = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        for (AssetDetailIncreaseRequest assetProcessRequest: assetProcessValue){
+
+        for (AssetDetailIncreaseRequest request : uniqueAssets.values()) {
             AssetProcess assetProcess = new AssetProcess();
-            assetProcess.setIdAsset(assetProcessRequest.getIdAsset());
+            assetProcess.setIdAsset(request.getIdAsset());
             assetProcess.setIdProcess(process.getIdProcess());
             assetProcess.setIdTypeProcess(process.getIdTypeProcess());
             assetProcess.setStatus(Constants.STATUS_ASSET_PROCESS_ACTIVE);
-            assetProcess.setValue(assetProcessRequest.getValue());
+            assetProcess.setValue(request.getValue());
             assetProcess.setTimeCreated(currentTime);
             assetProcess.setTimeModified(currentTime);
             assetProcess.setIdUserCreated(csvcUser.getIdUser());
             assetProcess.setIdUserModified(csvcUser.getIdUser());
             assetProcessList.add(assetProcess);
         }
+
         return assetProcessList;
     }
 
@@ -571,7 +578,7 @@ public class ProcessServiceImpl implements ProcessService {
         TypeProcess typeProcess = typeProcessService.findTypeProcessByCode(request.getTypeProcess());
         Process process = processRepository.save(constructionProcess(typeProcess));
         Document document = documentService.saveDocument(contructionDocumentDecrease(request.getDocument(), process));
-        assetProcessService.saveListAssetProcess(contructionAssetProcessDecrease(request, process));
+        assetProcessService.saveListAssetProcess(contructionAssetProcessDecrease(request.getAssetDetail(), process));
         updateInformationProcessCurrentAsset(idsAsset, process);
         List<TypeState> typeStates = typeStateService.findAllTypeStateByCodes(
                 Arrays.asList(
@@ -725,11 +732,15 @@ public class ProcessServiceImpl implements ProcessService {
 //        return assetProcessList;
 //    }
 
-    private List<AssetProcess> contructionAssetProcessDecrease(CreateDecreaseAssetRequest request, Process process) {
+    private List<AssetProcess> contructionAssetProcessDecrease(List<AssetDetailDecreaseRequest> assetProcessValue, Process process) {
+        Map<Integer, AssetDetailDecreaseRequest> uniqueAssets = new LinkedHashMap<>();
+        for (AssetDetailDecreaseRequest request : assetProcessValue) {
+            uniqueAssets.putIfAbsent(request.getIdAsset(), request);
+        }
         List<AssetProcess> assetProcessList = new ArrayList<>();
         String timeCurrent = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        for (AssetDetailDecreaseRequest inventoryRequest : request.getAssetDetail()){
+        for (AssetDetailDecreaseRequest inventoryRequest : uniqueAssets.values()){
             AssetProcess assetProcess = new AssetProcess();
             assetProcess.setIdAsset(inventoryRequest.getIdAsset());
             assetProcess.setIdProcess(process.getIdProcess());
