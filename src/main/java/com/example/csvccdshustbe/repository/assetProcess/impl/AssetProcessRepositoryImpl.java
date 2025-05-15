@@ -53,7 +53,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       left join document do on process.id_process = do.id_process           " +
                 "where 1 = 1        " +
                 "and asset.id_department_origin in (:idsDepartmentOriginal)        " +
-                "and do.code = :codeDocument  and asset.parent is null ");
+                "and do.code = :codeDocument  ");
         setConditionFindAllAssetProcess(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetProcess(request, query);
@@ -1028,7 +1028,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "       left join document do on process.id_process = do.id_process   " +
                 "where 1 = 1   " +
                 "and asset.id_department_origin in (:idsDepartmentOriginal)   " +
-                "and do.code = :codeDocument  and asset.parent is null ");
+                "and do.code = :codeDocument   ");
         setConditionFindAllAssetProcess(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());
         setParameterFindAllAssetProcess(request, query);
@@ -1036,6 +1036,12 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
     }
 
     private void setConditionFindAllAssetProcess(FindAllAssetProcessRequest request, StringBuilder sb) {
+        if(request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)){
+            sb.append("  and asset.quantity = :isSingle and asset.parent is null  ");
+        }
+        if(request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)){
+            sb.append("  and asset.quantity = :isSingle and asset.parent is not null  ");
+        }
         if (StringUtils.isNotBlank(request.getNameAsset())){
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
         }
@@ -1086,6 +1092,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
     private void setParameterFindAllAssetProcess(FindAllAssetProcessRequest request, Query query) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("codeDocument", request.getCodeDocument());
+        query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
         }

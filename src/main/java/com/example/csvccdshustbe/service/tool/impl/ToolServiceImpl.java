@@ -183,6 +183,9 @@ public class ToolServiceImpl implements ToolService {
             case Constants.CODE_TYPE_PROCESS_DECREASE_TOOL -> {
                 toolRepository.updateToolIsDecreaseWhenNotApproved(idProcessCurrent, status);
             }
+            case Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL -> {
+                toolRepository.updateToolInventoryWhenNotApproved(idProcessCurrent, status);
+            }
             default -> {return;}
         }
 

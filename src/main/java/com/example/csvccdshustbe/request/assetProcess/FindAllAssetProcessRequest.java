@@ -18,5 +18,6 @@ public class FindAllAssetProcessRequest extends RequestPageBase {
     private Integer idDepartment;
     private String salt;
     private List<Integer> idsDepartmentOriginal;
+    private Integer typeSearch;
 
 }

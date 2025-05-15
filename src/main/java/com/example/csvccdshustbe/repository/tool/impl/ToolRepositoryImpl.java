@@ -53,7 +53,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "from tool tol " +
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category " +
                 "    left join department de on tol.id_department = de.id_department " +
-                "    left join location lo on de.id_department = lo.id_department " +
+                "    left join location lo on tol.id_location = lo.id_location " +
                 "where tol.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllToolDto(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -409,6 +409,20 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "       inner join tool_process on tool.id_process_current = tool_process.id_process " +
                 "set tool.status_process_current = :statusProcessCurrent, " +
                 "    tool.quantity_decrease_current = tool.quantity_decrease_current - tool_process.quantity " +
+                "where tool_process.id_process = :idProcessCurrent ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("statusProcessCurrent", status);
+        query.setParameter("idProcessCurrent", idProcessCurrent);
+        query.executeUpdate();
+    }
+    @Transactional
+    @Modifying
+    @Override
+    public void updateToolInventoryWhenNotApproved(Integer idProcessCurrent, Integer status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("update tool " +
+                "       inner join tool_process on tool.id_process_current = tool_process.id_process " +
+                "set tool.status_process_current = :statusProcessCurrent " +
                 "where tool_process.id_process = :idProcessCurrent ");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("statusProcessCurrent", status);
@@ -1096,7 +1110,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "from tool tol  " +
                 "    left join tool_categories tolca on tol.id_tool_category = tolca.id_tool_category  " +
                 "    left join department de on tol.id_department = de.id_department  " +
-                "    left join location lo on de.id_department = lo.id_department  " +
+                "    left join location lo on tol.id_location = lo.id_location  " +
                 "where tol.id_department_original in (:idsDepartmentOriginal) ");
         setConditionFindAllToolDto(sb, request);
         Query query  = entityManager.createNativeQuery(sb.toString());

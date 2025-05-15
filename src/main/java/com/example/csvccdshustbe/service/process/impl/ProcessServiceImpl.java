@@ -1230,10 +1230,12 @@ public class ProcessServiceImpl implements ProcessService {
     private void handleNotApproved(Process process, Integer status, TypeProcess typeProcess) {
         switch (typeProcess.getCode()) {
             case Constants.CODE_TYPE_PROCESS_INCREASE_TOOL,
-                    Constants.CODE_TYPE_PROCESS_DECREASE_TOOL-> {
+                 Constants.CODE_TYPE_PROCESS_DECREASE_TOOL,
+                 Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL-> {
                 toolService.updateToolStatusProcessCurrentByIdProcessCurrentWhenNotApproved(process.getIdProcess(),
                         status, typeProcess.getCode());
             }
+
             default -> {
                 assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
             }
