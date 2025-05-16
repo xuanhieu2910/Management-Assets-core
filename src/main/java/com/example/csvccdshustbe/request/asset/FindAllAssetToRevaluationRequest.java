@@ -13,7 +13,7 @@ public class FindAllAssetToRevaluationRequest extends RequestPageBase {
     private String nameAsset;
     private Integer idAssetCategory;
     private Integer idDepartment;
-    private Boolean isSingle = true;
+    private Integer TypeSearch;
     private String salt;
     private Integer statusUse;
     private List<Integer> idsDepartmentOriginal;

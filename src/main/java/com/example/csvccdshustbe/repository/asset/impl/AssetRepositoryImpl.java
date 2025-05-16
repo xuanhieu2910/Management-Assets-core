@@ -1839,16 +1839,21 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     private void setCountConditionFindAllAssetDtoToRevaluation(StringBuilder sb, FindAllAssetToRevaluationRequest request) {
-        if (request.getIsSingle()){
+        if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)) {
             sb.append("   and asset.is_increase = :isIncrease  " +
                     "  and asset.is_decrease != :isDecrease  " +
                     "  and asset.quantity = :quantityDefault  " +
                     "  and asset.parent is null ");
-        } else {
-            sb.append("   and (((asset.is_increase = :isIncrease or  " +
-                    "     asset.is_increase = :isIncreasePart) and   " +
-                    "     asset.is_decrease != :isDecrease))   " +
-                    "     and asset.quantity > :quantityDefault  ");
+        } else  if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)){
+            sb.append("   and (((asset.is_increase = :isIncrease or " +
+                    "         asset.is_increase = :isIncreasePart) and " +
+                    "        asset.is_decrease != :isDecrease)) " +
+                    "  and asset.quantity > :quantityDefault ");
+        } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
+            sb.append("   and asset.is_increase = :isIncrease  " +
+                    "  and asset.is_decrease != :isDecrease  " +
+                    "  and asset.quantity = :quantityDefault  " +
+                    "  and asset.parent is not null ");
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
@@ -1901,11 +1906,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private void setParameterFindAllAssetDtoToRevaluation(Query query, FindAllAssetToRevaluationRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
-        if (request.getIsSingle()){
+        if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE) || request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)){
             query.setParameter("isIncrease", Constants.IS_INCREASED);
             query.setParameter("isDecrease", Constants.IS_DECREASED);
             query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
-        } else {
+        } else if(request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)){
             query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
             query.setParameter("isIncreasePart", Constants.IS_INCREASED_PART_LOT);
             query.setParameter("isDecrease", Constants.IS_DECREASED_WHOLE_LOT);
@@ -1954,16 +1959,21 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     private void setConditionFindAllAssetDtoToRevaluation(StringBuilder sb, FindAllAssetToRevaluationRequest request) {
-        if (request.getIsSingle()) {
+        if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)) {
             sb.append("   and asset.is_increase = :isIncrease  " +
                     "  and asset.is_decrease != :isDecrease  " +
                     "  and asset.quantity = :quantityDefault  " +
                     "  and asset.parent is null ");
-        } else {
+        } else  if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)){
             sb.append("   and (((asset.is_increase = :isIncrease or " +
                     "         asset.is_increase = :isIncreasePart) and " +
                     "        asset.is_decrease != :isDecrease)) " +
                     "  and asset.quantity > :quantityDefault ");
+        } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
+            sb.append("   and asset.is_increase = :isIncrease  " +
+                    "  and asset.is_decrease != :isDecrease  " +
+                    "  and asset.quantity = :quantityDefault  " +
+                    "  and asset.parent is not null ");
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
