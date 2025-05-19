@@ -13,7 +13,7 @@ public class FindAllAssetToChangeRequest extends RequestPageBase {
     private String nameAsset;
     private Integer idAssetCategory;
     private Integer idDepartment;
-    private Boolean isSingle = true;
+    private Integer TypeSearch;
     private List<Integer> idsDepartmentOriginal;
 
 }

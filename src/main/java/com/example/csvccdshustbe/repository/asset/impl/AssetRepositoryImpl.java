@@ -1882,15 +1882,15 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     private void setParameterFindAllAssetDtoToChange(Query query, FindAllAssetToChangeRequest request) {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
-        if (Boolean.FALSE.equals(request.getIsSingle())){
-            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
-            query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
-            query.setParameter("isDecrease", Constants.IS_DECREASED_WHOLE_LOT);
-        }
-        if (Boolean.TRUE.equals(request.getIsSingle())){
-            query.setParameter("isSingle", Constants.QUANTITY_DEFAULT);
+        if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE) || request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)){
             query.setParameter("isIncrease", Constants.IS_INCREASED);
             query.setParameter("isDecrease", Constants.IS_DECREASED);
+            query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
+        } else if(request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)){
+            query.setParameter("isIncrease", Constants.IS_INCREASED_WHOLE_LOT);
+            query.setParameter("isDecrease", Constants.IS_DECREASED_WHOLE_LOT);
+            query.setParameter("isDecreasePart", Constants.IS_DECREASED_PART_LOT);
+            query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             query.setParameter("nameAsset", request.getNameAsset());
@@ -1928,11 +1928,20 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     private void setConditionFindAllAssetDtoToChange(StringBuilder sb, FindAllAssetToChangeRequest request) {
-        if (Boolean.FALSE.equals(request.getIsSingle())){
-            sb.append("   and (asset.quantity != :isSingle) ");
-        }
-        if (Boolean.TRUE.equals(request.getIsSingle())){
-            sb.append("   and (asset.quantity = :isSingle) ");
+        if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)) {
+            sb.append("   and asset.is_increase = :isIncrease  " +
+                    "  and asset.is_decrease != :isDecrease  " +
+                    "  and asset.quantity = :quantityDefault  " +
+                    "  and asset.parent is null ");
+        } else  if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)){
+            sb.append("   and (asset.is_increase = :isIncrease and " +
+                    "        (asset.is_decrease != :isDecrease and asset.is_decrease != isDecreasePart)) " +
+                    "  and asset.quantity > :quantityDefault ");
+        } else if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
+            sb.append("   and asset.is_increase = :isIncrease  " +
+                    "  and asset.is_decrease != :isDecrease  " +
+                    "  and asset.quantity = :quantityDefault  " +
+                    "  and asset.parent is not null ");
         }
         if (StringUtils.isNotBlank(request.getNameAsset())) {
             sb.append(" and (asset.name REGEXP :nameAsset ) ");
