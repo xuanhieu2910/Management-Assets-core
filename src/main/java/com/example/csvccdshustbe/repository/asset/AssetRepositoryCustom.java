@@ -11,6 +11,8 @@ import com.example.csvccdshustbe.request.asset.*;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
 import com.example.csvccdshustbe.response.asset.StatisticsAssetFindAllResponse;
+import com.example.csvccdshustbe.response.dashboard.StatisticsAssetAndUserFindAllResponse;
+import com.example.csvccdshustbe.response.dashboard.StatisticsAssetCategoryStatusUse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -48,4 +50,8 @@ public interface AssetRepositoryCustom {
     List<Asset> findAllAssetChildrenToChangeByParentId(Integer idAsset);
     Page<FindAllAssetDto> findAllAssetChildrenDtoToRevaluation(FindAllAssetToRevaluationRequest revaluationRequest, Pageable pageable);
     StatisticsAssetFindAllResponse getStatisticFindAllAsset();
+
+    StatisticsAssetAndUserFindAllResponse getStatisticFindAllAssetInCategoryAndUser();
+
+    StatisticsAssetCategoryStatusUse getStatisticFindAllAssetCategoryStatusUse(String codeName);
 }

@@ -379,4 +379,22 @@ public class AssetController {
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
+    @GetMapping("/statistics-dashboard-asset")
+    public  ResponseEntity<?> getStatisticAssetAndUserFindAllAsset(){
+        try {
+            return ApiResponseDto.createdWithState(assetService.getStatisticAssetAndUserFindAllAsset(),
+                    "Get statistic asset in category success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+    @GetMapping("/statistics-dashboard-status-use-asset")
+    public  ResponseEntity<?> getStatisticAssetCategoryStatusUse(@RequestParam("code-category") String codeCategory){
+        try {
+            return ApiResponseDto.createdWithState(assetService.getStatisticAssetCategoryStatusUse(codeCategory),
+                    "Get statistic dashboard status asset inc category success!", HttpStatus.OK);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

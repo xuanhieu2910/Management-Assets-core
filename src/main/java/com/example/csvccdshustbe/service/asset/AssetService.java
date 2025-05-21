@@ -8,6 +8,8 @@ import com.example.csvccdshustbe.exception.ValidateFiledException;
 import com.example.csvccdshustbe.request.asset.*;
 import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
 import com.example.csvccdshustbe.response.asset.*;
+import com.example.csvccdshustbe.response.dashboard.StatisticsAssetAndUserFindAllResponse;
+import com.example.csvccdshustbe.response.dashboard.StatisticsAssetCategoryStatusUse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,5 +59,9 @@ public interface AssetService {
     Page<FindAllAssetChildrenToInventoryResponse> findAllAssetChildrenToInventory(FindAllAssetToInventoryRequest inventoryRequest);
     Asset findAssetByIdAsset(Integer idAsset);
     StatisticsAssetFindAllResponse getStatisticFindAllAsset();
+
+    StatisticsAssetAndUserFindAllResponse getStatisticAssetAndUserFindAllAsset();
+
+    StatisticsAssetCategoryStatusUse getStatisticAssetCategoryStatusUse(String CodeName);
 
 }

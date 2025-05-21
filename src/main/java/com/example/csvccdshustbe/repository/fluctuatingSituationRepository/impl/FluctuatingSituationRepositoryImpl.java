@@ -81,15 +81,16 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
     @Override
     public void calculatorStatusFluctuatingSituationById(Integer idFluctuatingSituation) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" update fluctuating_situation fs  " +
-                "    inner join (select fsa.id_fluctuating_situation,  " +
-                "                    case when fsa.status = :notYetFinish then -1 else 1 end totalyStatus  " +
-                "                from fluctuating_situation_asset fsa  " +
-                "                where fsa.id_fluctuating_situation = :idFsa  " +
-                "                group by fsa.id_fluctuating_situation) fsa  " +
-                "    on fs.id_fluctuating_situation = fsa.id_fluctuating_situation  " +
-                "set fs.status = fsa.totalyStatus  " +
-                "where 1 = 1   ");
+        sb.append("UPDATE fluctuating_situation fs " +
+                " INNER JOIN ( " +
+                "    SELECT fsa.id_fluctuating_situation, " +
+                "           CASE WHEN SUM(CASE WHEN fsa.status = :notYetFinish THEN 1 ELSE 0 END) > 0 THEN -1 ELSE 1 END AS totalyStatus " +
+                "    FROM fluctuating_situation_asset fsa " +
+                "    WHERE fsa.id_fluctuating_situation = :idFsa " +
+                "    GROUP BY fsa.id_fluctuating_situation " +
+                ") fsa ON fs.id_fluctuating_situation = fsa.id_fluctuating_situation " +
+                "SET fs.status = fsa.totalyStatus where 1=1 ");
+
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idFsa", idFluctuatingSituation);
         query.setParameter("notYetFinish", Constants.STATUS_FLUCTUATING_SITUATION_NOT_FINISH);
@@ -103,7 +104,7 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
         StringBuilder sb = new StringBuilder();
         sb.append(" update fluctuating_situation fs  " +
                 "    inner join (select fsa.id_fluctuating_situation,  " +
-                "                    case when fsa.status = :notYetFinish then -1 else 1 end totalyStatus  " +
+                "                    case when SUM(CASE WHEN fsa.status = :notYetFinish THEN 1 ELSE 0 END) > 0 then -1 else 1 end as totalyStatus  " +
                 "                from fluctuating_situation_tool fsa  " +
                 "                where fsa.id_fluctuating_situation = :idFsa  " +
                 "                group by fsa.id_fluctuating_situation) fsa  " +

@@ -41,4 +41,6 @@ public interface ToolService {
     String downloadFileTemplateImportTool() throws IOException;
     StatisticToolsFindAllResponse getStatisticFindAllTool();
     void uploadFileImportTool(MultipartFile file) throws FileExcelException;
+
+    void saveTool(Tool tool);
 }

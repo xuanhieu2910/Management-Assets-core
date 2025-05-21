@@ -554,6 +554,15 @@ public class Constants {
     public static String CODE_NAME_HOUSE= "house";
 
     public static String CODE_NAME_GROUND= "ground";
+    public static String CODE_NAME_ARCHITECTURE= "architecture";
+    public static String CODE_NAME_OTHER_VEHICLE_TRANSPORT= "other-vehicle-transport";
+    public static String CODE_NAME_MACHINE= "machine";
+    public static String CODE_NAME_TREE_AND_ANIMAL= "tree-and-animal";
+    public static String CODE_NAME_OTHER_ASSET= "other-asset";
+    public static String CODE_NAME_SPECIAL_ASSET= "special-asset";
+    public static String CODE_NAME_CONSTRUCTION= "construction";
+    public static String CODE_NAME_ELECTRIC_CONSTRUCTION= "electric-construction";
+
     /*-----------------------------------------------------*/
     /**
      * Constants Code Name Category

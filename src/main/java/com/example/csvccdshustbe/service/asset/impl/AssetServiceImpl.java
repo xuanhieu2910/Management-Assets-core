@@ -49,6 +49,8 @@ import com.example.csvccdshustbe.repository.user.CsvcUserRepository;
 import com.example.csvccdshustbe.repository.wards.WardsRepository;
 import com.example.csvccdshustbe.request.asset.*;
 import com.example.csvccdshustbe.response.asset.*;
+import com.example.csvccdshustbe.response.dashboard.StatisticsAssetAndUserFindAllResponse;
+import com.example.csvccdshustbe.response.dashboard.StatisticsAssetCategoryStatusUse;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetCategories.AssetCategoriesService;
 import com.example.csvccdshustbe.service.assetDepreciation.AssetDepreciationService;
@@ -2072,6 +2074,16 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public StatisticsAssetFindAllResponse getStatisticFindAllAsset() {
         return assetRepository.getStatisticFindAllAsset();
+    }
+
+    @Override
+    public StatisticsAssetAndUserFindAllResponse getStatisticAssetAndUserFindAllAsset() {
+        return assetRepository.getStatisticFindAllAssetInCategoryAndUser();
+    }
+
+    @Override
+    public StatisticsAssetCategoryStatusUse getStatisticAssetCategoryStatusUse(String codeName) {
+        return assetRepository.getStatisticFindAllAssetCategoryStatusUse(codeName);
     }
 
     private Asset duplicationAssetLot(FindDetailsAssetResponse assetRoot) {

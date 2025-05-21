@@ -18,6 +18,7 @@ import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.DateUtil;
 import com.example.csvccdshustbe.utility.PageUtils;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -91,9 +92,16 @@ public class ToolProcessServiceImpl implements ToolProcessService {
         List<ToolProcess> toolProcessList = new ArrayList<>();
         for (CreateNewToolRequest createNewToolRequest : request.getListToolDeclare()){
             Tool tool = toolService.createNewTool(createNewToolRequest).get(0);
+            createStatusCurrent(tool,request.getIdProcess());
             toolProcessList.add(createNewToolProcess(process, tool, createNewToolRequest));
         }
         return toolProcessRepository.saveAll(toolProcessList);
+    }
+
+    private void createStatusCurrent(Tool tool, @NotNull Integer idProcess) {
+        tool.setIdProcessCurrent(idProcess);
+        tool.setStatusProcessCurrent(Constants.STATUS_PENDING_PROCESS);
+        toolService.saveTool(tool);
     }
 
     private ToolProcess createNewToolProcess(Process process, Tool tool, CreateNewToolRequest createNewToolRequest) {

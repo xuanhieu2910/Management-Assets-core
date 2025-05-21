@@ -1235,7 +1235,8 @@ public class ProcessServiceImpl implements ProcessService {
         switch (typeProcess.getCode()) {
             case Constants.CODE_TYPE_PROCESS_INCREASE_TOOL,
                  Constants.CODE_TYPE_PROCESS_DECREASE_TOOL,
-                 Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL-> {
+                 Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL,
+                 Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY_TOOL -> {
                 toolService.updateToolStatusProcessCurrentByIdProcessCurrentWhenNotApproved(process.getIdProcess(),
                         status, typeProcess.getCode());
             }

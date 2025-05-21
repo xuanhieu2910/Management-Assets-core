@@ -183,7 +183,8 @@ public class ToolServiceImpl implements ToolService {
             case Constants.CODE_TYPE_PROCESS_DECREASE_TOOL -> {
                 toolRepository.updateToolIsDecreaseWhenNotApproved(idProcessCurrent, status);
             }
-            case Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL -> {
+            case Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL,
+                 Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY_TOOL -> {
                 toolRepository.updateToolInventoryWhenNotApproved(idProcessCurrent, status);
             }
             default -> {return;}
@@ -240,6 +241,11 @@ public class ToolServiceImpl implements ToolService {
     public void uploadFileImportTool(MultipartFile file) throws FileExcelException {
         ValidateExcelUtils.checkFileExcel(file);
         List<Map<String, Object>> dataTool = handleUploadFileTool(file);
+    }
+
+    @Override
+    public void saveTool(Tool tool) {
+        toolRepository.save(tool);
     }
 
     private List<Map<String, Object>> handleUploadFileTool(MultipartFile file) {

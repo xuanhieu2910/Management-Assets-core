@@ -185,7 +185,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         Process process = processService.findProcessByIdProcess(request.getIdProcess());
         List<AssetProcess> assetProcessList = new ArrayList<>();
         for (AssetProcessNotDeclareInventoryRequest assetProcess: request.getListAssetDeclare()){
-            Asset asset = constructionAssetNotDeclareWhenInventory(assetProcess);
+            Asset asset = constructionAssetNotDeclareWhenInventory(assetProcess,request.getIdProcess());
             storeDepreciationFluctuatingSituationAsset(asset);
             storeModuleFluctuatingSituationAsset(assetProcess,asset);
             storeOriginalFluctuatingSituationAsset(assetProcess,asset);
@@ -243,7 +243,7 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         return assetProcessRepository.findAssetsToFluctuatingSituationByIdProcess(idProcess);
     }
 
-    private Asset constructionAssetNotDeclareWhenInventory(AssetProcessNotDeclareInventoryRequest assetProcess) throws JsonProcessingException {
+    private Asset constructionAssetNotDeclareWhenInventory(AssetProcessNotDeclareInventoryRequest assetProcess,Integer idProcess) throws JsonProcessingException {
         String currentTime = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         HashMap<String, Object> informationAsset = (new ObjectMapper()).readValue(assetProcess.getValue(), new TypeReference<>() {});
@@ -256,6 +256,8 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         asset.setIdUserModified(csvcUser.getIdUser());
         asset.setTimeCreated(currentTime);
         asset.setTimeModified(currentTime);
+        asset.setIdProcessCurrent(idProcess);
+        asset.setStatusProcessCurrent(Constants.STATUS_PENDING_PROCESS);
         asset.setCodeAsset(ValueUtil.getStringByObject(informationAsset.get("code_asset")));
         asset.setIdInstance(ValueUtil.getIntegerByObject(informationAsset.get("id_instance")));
         asset.setStatusUse(ValueUtil.getIntegerByObject(informationAsset.get("status_use")));
