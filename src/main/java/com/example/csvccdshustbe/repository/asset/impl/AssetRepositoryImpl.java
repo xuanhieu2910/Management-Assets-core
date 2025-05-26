@@ -1668,8 +1668,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "select 0 as TotalAsset,count(0) as totalUser,0 as totalGround,0 as totalHouse,0 as totalArchitecture,    " +
                 "       0 as totalCar, 0 as totalOtherVehicleTransport,0 as totalMachine,0 as totalTreeAndAnimal,    " +
                 "       0 as totalOtherAsset,0 as totalInvisibleAsset,0 as totalInvisibleAssetSpecial,0 as totalConstruction, 0 as totalElectricConstruction    " +
-                "from csvc_user    " +
-                "where csvc_user.id_department_current in (:idsDepartmentOriginal)    " +
+                "from csvc_user inner join user_role ur on  csvc_user.id_user=ur.id_user   " +
+                "where ur.id_department in (:idsDepartmentOriginal)    " +
                 "union all    " +
                 "select 0 as TotalAsset,0 as totalUser,count(0) as totalGround,0 as totalHouse,0 as totalArchitecture,    " +
                 "       0 as totalCar, 0 as totalOtherVehicleTransport,0 as totalMachine,0 as totalTreeAndAnimal,    " +

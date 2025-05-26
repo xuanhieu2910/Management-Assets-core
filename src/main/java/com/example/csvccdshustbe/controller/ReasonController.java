@@ -33,10 +33,8 @@ public class ReasonController {
             return ApiResponseDto.createdWithState(reasonService.findAllReasonsResponse(request),
                     "Find all reason success!", HttpStatus.OK);
         } catch (NotFoundException e) {
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -46,10 +44,8 @@ public class ReasonController {
             return ApiResponseDto.createdWithState(reasonService.findReasonByIdReason(idReason),
                     "Find reason details success!", HttpStatus.OK);
         } catch (NotFoundException e) {
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -64,10 +60,8 @@ public class ReasonController {
             return ApiResponseDto.createdWithState(reasonService.findReasonsByTypeAction(request),
                     "Find all reasons by type action success!", HttpStatus.OK);
         } catch (NotFoundException e) {
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
