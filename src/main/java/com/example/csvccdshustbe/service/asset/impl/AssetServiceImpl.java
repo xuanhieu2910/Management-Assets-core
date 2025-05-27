@@ -1610,7 +1610,7 @@ public class AssetServiceImpl implements AssetService {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         asset.setIdUserCreated(csvcUser.getIdUser());
         asset.setIdUserModified(csvcUser.getIdUser());
-        asset.setIdDepartmentOrigin(ValueUtil.getIntegerByObject(dataAsset.get("idDepartment")));
+        asset.setIdDepartmentOrigin(csvcUser.getIdDepartmentCurrent());
         asset.setIsIncrease(Constants.IS_NOT_INCREASED);
         asset.setIsDecrease(Constants.IS_NOT_DECREASED);
         return asset;
