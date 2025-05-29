@@ -16,4 +16,5 @@ public interface FluctuatingSituationAssetRepositoryCustom {
     List<FluctuatingSituationAsset> findFluctuatingSituationAssetByIds(List<Integer> idsFluctuatingSituationAsset);
 
     StatisticFluctuatingSituationAsset getStatisticFluctuatingSituationAsset(Integer idFluctuatingSituation);
+    List<FluctuatingSituationAsset> findFluctuatingSituationAssetByIdFlu (Integer idFluctuatingSituation);
 }

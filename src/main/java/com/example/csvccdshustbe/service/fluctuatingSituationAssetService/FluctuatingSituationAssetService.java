@@ -20,4 +20,8 @@ public interface FluctuatingSituationAssetService {
     void updateDeclareAssetFluctuatingSituation(FluctuatingSituationAssetRequest updateAssetRequest);
     List<FluctuatingSituationAsset> findFluctuatingSituationAssetByIds(List<Integer> idsFluctuatingSituation);
     StatisticFluctuatingSituationAsset getStatisticFluctuatingSituationAsset(Integer idFluctuatingSituation);
+
+    void deleteListFluctuatingSituationAsset(List<FluctuatingSituationAsset> fluctuatingSituationAssets);
+
+    List<FluctuatingSituationAsset> findFluctuatingSituationAssetByIdFlu(Integer idFluctuatingSituation);
 }

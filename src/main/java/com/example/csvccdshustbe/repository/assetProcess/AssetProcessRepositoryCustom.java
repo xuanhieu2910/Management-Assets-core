@@ -28,4 +28,6 @@ public interface AssetProcessRepositoryCustom {
                                                                                             Pageable pageable);
     Optional<AssetProcess> findAssetProcessByIdAssetProcess(Integer idAssetProcess);
     List<AssetsFluctuatingSituationAssetDto> findAssetsToFluctuatingSituationByIdProcess(Integer idProcess);
+
+    List<AssetProcess> findListAssetProcessDtoByIdProcess(Integer idProcess);
 }

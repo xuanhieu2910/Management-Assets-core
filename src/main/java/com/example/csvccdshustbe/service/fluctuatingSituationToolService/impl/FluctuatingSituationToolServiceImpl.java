@@ -81,4 +81,19 @@ public class FluctuatingSituationToolServiceImpl implements FluctuatingSituation
         }
         return fluctuatingSituationTools;
     }
+
+    @Override
+    public List<FluctuatingSituationTool> findFluctuatingSituationToolByIdFlu(Integer idsFluctuatingSituation) {
+        List<FluctuatingSituationTool> fluctuatingSituationTools =
+                fluctuatingSituationToolRepository.findFluctuatingSituationToolByIdFlu(idsFluctuatingSituation);
+        if (CollectionUtils.isEmpty(fluctuatingSituationTools)){
+            throw new NotFoundException("Don't exits fluctuating situation tool by id!");
+        }
+        return fluctuatingSituationTools;
+    }
+
+    @Override
+    public void deleteListFluctuatingSituationTool(List<FluctuatingSituationTool> fluctuatingSituationTools) {
+        fluctuatingSituationToolRepository.deleteAll(fluctuatingSituationTools);
+    }
 }

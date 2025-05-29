@@ -22,6 +22,8 @@ import com.example.csvccdshustbe.request.tool.*;
 import com.example.csvccdshustbe.response.tool.*;
 import com.example.csvccdshustbe.service.department.DepartmentService;
 import com.example.csvccdshustbe.service.documentAttack.DocumentAttackService;
+import com.example.csvccdshustbe.service.fluctuatingSituationService.FluctuatingSituationService;
+import com.example.csvccdshustbe.service.fluctuatingSituationToolService.FluctuatingSituationToolService;
 import com.example.csvccdshustbe.service.medicineGroup.MedicineGroupService;
 import com.example.csvccdshustbe.service.medicineType.MedicineTypeService;
 import com.example.csvccdshustbe.service.originalOfFormationTool.OriginalOfFormationToolService;
@@ -30,6 +32,7 @@ import com.example.csvccdshustbe.service.projects.ProjectsService;
 import com.example.csvccdshustbe.service.suppliers.SuppliersService;
 import com.example.csvccdshustbe.service.tool.ToolService;
 import com.example.csvccdshustbe.service.toolCategories.ToolCategoriesService;
+import com.example.csvccdshustbe.service.toolProcess.ToolProcessService;
 import com.example.csvccdshustbe.service.unitsTool.UnitsToolService;
 import com.example.csvccdshustbe.service.upload.FilesStorageService;
 import com.example.csvccdshustbe.service.upload.impl.FileUploadService;
@@ -88,6 +91,13 @@ public class ToolServiceImpl implements ToolService {
     @Autowired
     MedicineGroupService medicineGroupService;
 
+    @Autowired
+    ToolProcessService toolProcessService;
+
+    @Autowired
+    FluctuatingSituationService fluctuatingSituationService;
+    @Autowired
+    private FluctuatingSituationToolService fluctuatingSituationToolService;
 
     @Override
     public Page<FindAllToolResponse> findAllToolParentResponse(FindAllToolRequest request) {
@@ -177,6 +187,7 @@ public class ToolServiceImpl implements ToolService {
         }
     }
 
+    @Transactional
     @Override
     public void updateToolStatusProcessCurrentByIdProcessCurrentWhenNotApproved(Integer idProcessCurrent,
                                                                              Integer status, String codeTypeProcess) {
@@ -187,13 +198,26 @@ public class ToolServiceImpl implements ToolService {
             case Constants.CODE_TYPE_PROCESS_DECREASE_TOOL -> {
                 toolRepository.updateToolIsDecreaseWhenNotApproved(idProcessCurrent, status);
             }
-            case Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL,
-                 Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY_TOOL -> {
+            case Constants.CODE_TYPE_PROCESS_DOCUMENT_INVENTORY_TOOL -> {
                 toolRepository.updateToolInventoryWhenNotApproved(idProcessCurrent, status);
+            }
+            case Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY_TOOL -> {
+                toolRepository.updateToolInventoryWhenNotApproved(idProcessCurrent, status);
+                deleteFluctuatingSituationTool(idProcessCurrent);
             }
             default -> {return;}
         }
 
+    }
+
+    private void deleteFluctuatingSituationTool(Integer idProcessCurrent) {
+        //delte process asset, fluc, fluctool
+        List<ToolProcess> toolProcessList = toolProcessService.findAllToolProcessByIdProcess(idProcessCurrent);
+        FluctuatingSituation fluctuatingSituation = fluctuatingSituationService.findFluctuatingSituationByIdProcess(idProcessCurrent);
+        List<FluctuatingSituationTool> fluctuatingSituationTools =fluctuatingSituationToolService.findFluctuatingSituationToolByIdFlu(fluctuatingSituation.getIdFluctuatingSituation());
+        toolProcessService.deleteListToolProcess(toolProcessList);
+        fluctuatingSituationToolService.deleteListFluctuatingSituationTool(fluctuatingSituationTools);
+        fluctuatingSituationService.deleteFluctuatingSituation(fluctuatingSituation);
     }
 
     @Override

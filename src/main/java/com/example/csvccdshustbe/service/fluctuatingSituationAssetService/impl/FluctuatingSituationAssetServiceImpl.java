@@ -2,6 +2,7 @@ package com.example.csvccdshustbe.service.fluctuatingSituationAssetService.impl;
 
 import com.example.csvccdshustbe.entity.CsvcUser;
 import com.example.csvccdshustbe.entity.FluctuatingSituationAsset;
+import com.example.csvccdshustbe.entity.FluctuatingSituationTool;
 import com.example.csvccdshustbe.repository.fluctuatingSituationAssetRepository.FluctuatingSituationAssetRepository;
 import com.example.csvccdshustbe.request.fluctuatingSituationAsset.FindAllFluctuatingSituationAssetRequest;
 import com.example.csvccdshustbe.request.fluctuatingSituationAsset.FluctuatingSituationAssetRequest;
@@ -85,5 +86,20 @@ public class FluctuatingSituationAssetServiceImpl implements FluctuatingSituatio
     @Override
     public StatisticFluctuatingSituationAsset getStatisticFluctuatingSituationAsset(Integer idFluctuatingSituation) {
         return fluctuatingSituationAssetRepository.getStatisticFluctuatingSituationAsset(idFluctuatingSituation);
+    }
+
+    @Override
+    public void deleteListFluctuatingSituationAsset(List<FluctuatingSituationAsset> fluctuatingSituationAssets) {
+        fluctuatingSituationAssetRepository.deleteAll(fluctuatingSituationAssets);
+    }
+
+    @Override
+    public List<FluctuatingSituationAsset> findFluctuatingSituationAssetByIdFlu(Integer idFluctuatingSituation) {
+        List<FluctuatingSituationAsset> fluctuatingSituationAssets =
+                fluctuatingSituationAssetRepository.findFluctuatingSituationAssetByIdFlu(idFluctuatingSituation);
+        if (CollectionUtils.isEmpty(fluctuatingSituationAssets)){
+            throw new NotFoundException("Don't exits fluctuating situation tool by id!");
+        }
+        return fluctuatingSituationAssets;
     }
 }

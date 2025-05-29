@@ -243,6 +243,20 @@ public class AssetProcessServiceImpl implements AssetProcessService {
         return assetProcessRepository.findAssetsToFluctuatingSituationByIdProcess(idProcess);
     }
 
+    @Override
+    public void deleteListAssetProcess(List<AssetProcess> assetProcesses) {
+        assetProcessRepository.deleteAll(assetProcesses);
+    }
+
+    @Override
+    public List<AssetProcess> findListAssetProcessByIdProcess(Integer idProcess) {
+        List<AssetProcess> assetProcessList = assetProcessRepository.findListAssetProcessDtoByIdProcess(idProcess);
+        if (CollectionUtils.isEmpty(assetProcessList)){
+            throw new NotFoundException("Don't exits asset process by id process!");
+        }
+        return assetProcessList;
+    }
+
     private Asset constructionAssetNotDeclareWhenInventory(AssetProcessNotDeclareInventoryRequest assetProcess,Integer idProcess) throws JsonProcessingException {
         String currentTime = String.valueOf(new Date().getTime());
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

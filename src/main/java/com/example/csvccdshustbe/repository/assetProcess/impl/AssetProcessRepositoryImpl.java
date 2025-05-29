@@ -634,6 +634,38 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
         return fluctuatingSituationAssetDtos;
     }
 
+    @Override
+    public List<AssetProcess> findListAssetProcessDtoByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_asset_process, id_asset,  " +
+                "       id_process, id_type_process,  " +
+                "       status, value,  " +
+                "       time_created, time_modified, id_user_created,id_user_modified" +
+                "from asset_process  " +
+                "where id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        List<AssetProcess> assetProcessDtos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                AssetProcess assetProcessDto = new AssetProcess();
+                assetProcessDto.setIdAssetProcess(ValueUtil.getIntegerByObject(obj[0]));
+                assetProcessDto.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                assetProcessDto.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                assetProcessDto.setIdTypeProcess(ValueUtil.getIntegerByObject(obj[3]));
+                assetProcessDto.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                assetProcessDto.setValue(ValueUtil.getStringByObject(obj[5]));
+                assetProcessDto.setTimeCreated(ValueUtil.getStringByObject(obj[6]));
+                assetProcessDto.setTimeModified(ValueUtil.getStringByObject(obj[7]));
+                assetProcessDto.setIdUserCreated(ValueUtil.getIntegerByObject(obj[8]));
+                assetProcessDto.setIdUserModified(ValueUtil.getIntegerByObject(obj[9]));
+                assetProcessDtos.add(assetProcessDto);
+            }
+        }
+        return assetProcessDtos;
+    }
+
     private long countFindAllAssetProcessLotToUpdateInventory(FindAllAssetProcessRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" WITH ROOT_ASSET_CATEGORIES as   " +

@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -47,5 +50,19 @@ public class FluctuatingSituationServiceImpl implements FluctuatingSituationServ
     @Override
     public StatisticFluctuatingSituation getStatisticFluctuatingSituation(Integer typeFluctuatingSituation) {
         return fluctuatingSituationRepository.getStatisticFluctuatingSituation(typeFluctuatingSituation);
+    }
+
+    @Override
+    public FluctuatingSituation findFluctuatingSituationByIdProcess(Integer idProcess) {
+        Optional<FluctuatingSituation> fluctuatingSituationOptional = fluctuatingSituationRepository.findFluctuatingSituationByIdProcess(idProcess);
+        if (fluctuatingSituationOptional.isEmpty()) {
+            throw new UsernameNotFoundException("fluctuatingSituationOptional not found!");
+        }
+        return fluctuatingSituationOptional.get();
+    }
+
+    @Override
+    public void deleteFluctuatingSituation(FluctuatingSituation fluctuatingSituation) {
+        fluctuatingSituationRepository.delete(fluctuatingSituation);
     }
 }

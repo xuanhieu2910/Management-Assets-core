@@ -1,6 +1,8 @@
 package com.example.csvccdshustbe.repository.fluctuatingSituationRepository.impl;
 
 import com.example.csvccdshustbe.entity.CsvcUser;
+import com.example.csvccdshustbe.entity.FluctuatingSituation;
+import com.example.csvccdshustbe.entity.State;
 import com.example.csvccdshustbe.repository.fluctuatingSituationRepository.FluctuatingSituationRepositoryCustom;
 import com.example.csvccdshustbe.request.fluctuatingSituation.FindAllFluctuatingSituationRequest;
 import com.example.csvccdshustbe.response.fluctuatingSituation.FindAllFluctuationSituationResponse;
@@ -26,6 +28,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationRepositoryCustom {
 
@@ -138,6 +141,30 @@ public class FluctuatingSituationRepositoryImpl implements FluctuatingSituationR
             situation.setTotalNotYetFinish(ValueUtil.getIntegerByObject(result));
         }
         return situation;
+    }
+
+    @Override
+    public Optional<FluctuatingSituation> findFluctuatingSituationByIdProcess(Integer idProcess) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_fluctuating_situation,id_process,status,  " +
+                "       time_created,time_modified,id_user_modified,type  " +
+                "       from fluctuating_situation where id_process = :idProcess ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idProcess", idProcess);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                FluctuatingSituation fluctuatingSituation = new FluctuatingSituation();
+                fluctuatingSituation.setIdFluctuatingSituation(ValueUtil.getIntegerByObject(obj[0]));
+                fluctuatingSituation.setIdProcess(ValueUtil.getIntegerByObject(obj[1]));
+                fluctuatingSituation.setStatus(ValueUtil.getIntegerByObject(obj[2]));
+                fluctuatingSituation.setTimeCreated(ValueUtil.getStringByObject(obj[3]));
+                fluctuatingSituation.setTimeModified(ValueUtil.getStringByObject(obj[4]));
+                fluctuatingSituation.setType(ValueUtil.getIntegerByObject(obj[5]));
+                return Optional.of(fluctuatingSituation);
+            }
+        }
+        return Optional.empty();
     }
 
     private long countFindAllFluctuationSituation(FindAllFluctuatingSituationRequest request) {

@@ -98,6 +98,12 @@ public class ToolProcessServiceImpl implements ToolProcessService {
         return toolProcessRepository.saveAll(toolProcessList);
     }
 
+    @Override
+    public void deleteListToolProcess(List<ToolProcess> toolProcessList) {
+        toolProcessRepository.deleteAll(toolProcessList);
+
+    }
+
     private void createStatusCurrent(Tool tool, @NotNull Integer idProcess) {
         tool.setIdProcessCurrent(idProcess);
         tool.setStatusProcessCurrent(Constants.STATUS_PENDING_PROCESS);

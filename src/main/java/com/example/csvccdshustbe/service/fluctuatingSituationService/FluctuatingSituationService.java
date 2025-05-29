@@ -14,4 +14,8 @@ public interface FluctuatingSituationService {
     void calculatorStatusFluctuatingSituationById(Integer idFluctuatingSituation);
     void calculatorStatusFluctuatingSituationToolById(Integer idFluctuatingSituation);
     StatisticFluctuatingSituation getStatisticFluctuatingSituation(Integer typeFluctuatingSituation);
+
+    FluctuatingSituation findFluctuatingSituationByIdProcess(Integer idProcess);
+
+    void deleteFluctuatingSituation(FluctuatingSituation fluctuatingSituation);
 }

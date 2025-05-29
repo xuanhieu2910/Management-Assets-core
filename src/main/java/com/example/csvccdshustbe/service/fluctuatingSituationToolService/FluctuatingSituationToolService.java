@@ -23,4 +23,8 @@ public interface FluctuatingSituationToolService {
     findAllFluctuatingSituationTool(FindAllFluctuatingSituationToolRequest request);
 
     List<FluctuatingSituationTool> findFluctuatingSituationToolByIds(List<Integer> idsFluctuatingSituation);
+
+    List<FluctuatingSituationTool> findFluctuatingSituationToolByIdFlu(Integer idsFluctuatingSituation);
+
+    void deleteListFluctuatingSituationTool(List<FluctuatingSituationTool> fluctuatingSituationTools);
 }

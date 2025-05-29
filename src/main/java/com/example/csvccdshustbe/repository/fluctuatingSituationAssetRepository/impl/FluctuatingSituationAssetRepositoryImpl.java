@@ -143,6 +143,42 @@ public class FluctuatingSituationAssetRepositoryImpl implements FluctuatingSitua
         return situation;
     }
 
+    @Override
+    public List<FluctuatingSituationAsset> findFluctuatingSituationAssetByIdFlu(Integer idFluctuatingSituation) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_fluctuating_situation_asset, " +
+                "       id_asset, " +
+                "       id_process, " +
+                "       status, " +
+                "       type, " +
+                "       time_created, " +
+                "       time_modified, " +
+                "       id_user_modified, " +
+                "       id_fluctuating_situation " +
+                "from fluctuating_situation_asset " +
+                "where id_fluctuating_situation = :idFluctuatingSituation ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idFluctuatingSituation", idFluctuatingSituation);
+        List<FluctuatingSituationAsset> response = new ArrayList<>();
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj: result){
+                FluctuatingSituationAsset fluctuatingSituationAsset = new FluctuatingSituationAsset();
+                fluctuatingSituationAsset.setIdFluctuatingSituationAsset(ValueUtil.getIntegerByObject(obj[0]));
+                fluctuatingSituationAsset.setIdAsset(ValueUtil.getIntegerByObject(obj[1]));
+                fluctuatingSituationAsset.setIdProcess(ValueUtil.getIntegerByObject(obj[2]));
+                fluctuatingSituationAsset.setStatus(ValueUtil.getIntegerByObject(obj[3]));
+                fluctuatingSituationAsset.setType(ValueUtil.getIntegerByObject(obj[4]));
+                fluctuatingSituationAsset.setTimeCreated(ValueUtil.getStringByObject(obj[5]));
+                fluctuatingSituationAsset.setTimeModified(ValueUtil.getStringByObject(obj[6]));
+                fluctuatingSituationAsset.setIdUserModified(ValueUtil.getIntegerByObject(obj[7]));
+                fluctuatingSituationAsset.setIdFluctuatingSituation(ValueUtil.getIntegerByObject(obj[8]));
+                response.add(fluctuatingSituationAsset);
+            }
+        }
+        return response;
+    }
+
     private long countFindFluctuatingSituationAsset(FindAllFluctuatingSituationAssetRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) " +

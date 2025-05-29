@@ -28,4 +28,8 @@ public interface AssetProcessService {
     void updateAssetProcessInventory(UpdateAssetProcessRequest request) throws JsonProcessingException, ValidateFiledException, IllegalAccessException;
     AssetProcess findAssetProcessByIdAssetProcess(Integer idAssetProcess);
     List<AssetsFluctuatingSituationAssetDto> findAssetsToFluctuatingSituationByIdProcess(Integer idProcess);
+
+    void deleteListAssetProcess(List<AssetProcess> assetProcesses);
+
+    List<AssetProcess> findListAssetProcessByIdProcess(Integer idProcess);
 }

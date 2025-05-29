@@ -24,6 +24,8 @@ import com.example.csvccdshustbe.response.process.*;
 import com.example.csvccdshustbe.service.asset.AssetService;
 import com.example.csvccdshustbe.service.assetProcess.AssetProcessService;
 import com.example.csvccdshustbe.service.document.DocumentService;
+import com.example.csvccdshustbe.service.fluctuatingSituationAssetService.FluctuatingSituationAssetService;
+import com.example.csvccdshustbe.service.fluctuatingSituationService.FluctuatingSituationService;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.example.csvccdshustbe.service.request.RequestService;
 import com.example.csvccdshustbe.service.requestData.RequestDataService;
@@ -94,12 +96,17 @@ public class ProcessServiceImpl implements ProcessService {
     AssetRepository assetRepository;
     @Autowired
     ToolRepository toolRepository;
+    @Autowired
+    private FluctuatingSituationAssetService fluctuatingSituationAssetService;
+    @Autowired
+    private FluctuatingSituationService fluctuatingSituationService;
 
     @Override
     public Process saveProcess(Process process) {
         return processRepository.save(process);
     }
 
+    @Transactional
     @Override
     public void createIncreaseAsset(CreateIncreaseAssetRequest request) throws ValidateFiledException {
 //        List<Integer> idsAsset = new ArrayList<>();
@@ -1240,11 +1247,25 @@ public class ProcessServiceImpl implements ProcessService {
                 toolService.updateToolStatusProcessCurrentByIdProcessCurrentWhenNotApproved(process.getIdProcess(),
                         status, typeProcess.getCode());
             }
+            case Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY -> {
+                assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
+                deleteFluctuationSituationAsset(process.getIdProcess());
+            }
 
             default -> {
                 assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
             }
         }
+    }
+
+    private void deleteFluctuationSituationAsset(Integer idProcess) {
+        //delte process asset, fluc, flucasset
+        List<AssetProcess> assetProcesses = assetProcessService.findListAssetProcessByIdProcess(idProcess);
+        FluctuatingSituation fluctuatingSituation = fluctuatingSituationService.findFluctuatingSituationByIdProcess(idProcess);
+        List<FluctuatingSituationAsset> fluctuatingSituationAssets =fluctuatingSituationAssetService.findFluctuatingSituationAssetByIdFlu(fluctuatingSituation.getIdFluctuatingSituation());
+        assetProcessService.deleteListAssetProcess(assetProcesses);
+        fluctuatingSituationAssetService.deleteListFluctuatingSituationAsset(fluctuatingSituationAssets);
+        fluctuatingSituationService.deleteFluctuatingSituation(fluctuatingSituation);
     }
 
     @Override

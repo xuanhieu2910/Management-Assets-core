@@ -14,4 +14,6 @@ public interface FluctuatingSituationToolRepositoryCustom {
     StatisticFluctuatingSituationTool getStatisticFluctuatingSituationTool(Integer idFluctuatingSituation);
     Page<FindAllFluctuatingSituationToolResponses> findAllFluctuatingSituationTool(FindAllFluctuatingSituationToolRequest request, Pageable pageable);
     List<FluctuatingSituationTool> findFluctuatingSituationToolByIds(List<Integer> idsFluctuatingSituationTool);
+
+    List<FluctuatingSituationTool> findFluctuatingSituationToolByIdFlu(Integer idFluctuatingSituation);
 }

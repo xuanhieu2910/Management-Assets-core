@@ -24,4 +24,5 @@ public interface ToolProcessService {
     List<ToolProcess> findToolProcessByIdProcessAndStatusFluctuationSituation(Integer idProcess,
                                                                               List<Integer> fluctuationSituation);
     List<ToolProcess> createNewToolNotDeclareWhenInventory(ToolProcessNotDeclareWhenInventoryRequest request) throws ValidateFiledException;
+    void deleteListToolProcess(List<ToolProcess> toolProcessList);
 }
