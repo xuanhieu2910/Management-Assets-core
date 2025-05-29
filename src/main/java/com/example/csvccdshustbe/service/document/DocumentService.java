@@ -8,6 +8,7 @@ import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolReques
 
 import com.example.csvccdshustbe.request.document.tool.UpdateInventoryToolRequest;
 import com.example.csvccdshustbe.request.process.*;
+import com.example.csvccdshustbe.request.tool.FindAllDocumentByToolRequest;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
 import com.example.csvccdshustbe.response.document.tool.*;
@@ -43,4 +44,5 @@ public interface DocumentService {
     Page<FindAllDocumentToolDocumentUpdateInventoryResponse> findAllDocumentToolDocumentUpdateInventory(FindAllDocumentToolRequest findAllProcessAssetRequest);
 
 
+    Page<FindAllDocumentAssetResponse> findAllDocumentByTool(FindAllDocumentByToolRequest request);
 }

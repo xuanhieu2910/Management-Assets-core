@@ -11,6 +11,7 @@ import com.example.csvccdshustbe.request.process.*;
 import com.example.csvccdshustbe.request.process.tool.CreateDecreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateIncreaseToolRequest;
 import com.example.csvccdshustbe.request.process.tool.CreateInventoryToolRequest;
+import com.example.csvccdshustbe.request.tool.FindAllDocumentByToolRequest;
 import com.example.csvccdshustbe.service.document.DocumentService;
 import com.example.csvccdshustbe.service.process.ProcessService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -571,5 +572,19 @@ public class DocumentController {
         }
     }
 
-
+    @GetMapping("/tool-find-all-document")
+    public ResponseEntity<?> findAllDocumentByTool(@And({
+            @Spec(path = "page", params = "page", spec = Like.class),
+            @Spec(path = "size", params = "size", spec = Like.class),
+            @Spec(path = "keyword", params = "keyword", spec = Like.class)
+    }) FindAllDocumentByToolRequest findAllDocumentByToolRequest){
+        try {
+            return ApiResponseDto.createdWithState(documentService.findAllDocumentByTool(findAllDocumentByToolRequest),
+                    "Find all document by Tool success!", HttpStatus.OK);
+        } catch (NotFoundException e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
 }

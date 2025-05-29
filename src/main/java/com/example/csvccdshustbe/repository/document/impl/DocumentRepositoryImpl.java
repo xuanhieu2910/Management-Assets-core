@@ -10,6 +10,7 @@ import com.example.csvccdshustbe.repository.document.DocumentRepositoryCustom;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
 import com.example.csvccdshustbe.request.process.*;
+import com.example.csvccdshustbe.request.tool.FindAllDocumentByToolRequest;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.PageUtils;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -1112,6 +1113,114 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
             }
         }
         return new PageImpl<>(findAllDocumentToolDtos, pageable, countFindAllDocumentToolUpdateInventoryDtoByIdsDepartment(request));
+    }
+
+    @Override
+    public Page<FindAllDocumentAssetDto> findAllDocumentByToolDtoByIdsDepartment(FindAllDocumentByToolRequest request, Pageable pageable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT document.code,type_process.code,type_process.name,user.full_name,process.status,      " +
+                "         document.description,document.time_created, de.code codeDepartment, de.name nameDepartment,  " +
+                "         document.status " +
+                "FROM document       " +
+                "    INNER JOIN process ON document.id_process = process.id_process    " +
+                "    INNER JOIN type_process ON process.id_type_process = type_process.id_type_process    " +
+                "    LEFT JOIN csvc_user user ON process.id_user_created = user.id_user          " +
+                "    LEFT JOIN department de ON process.id_department = de.id_department    " +
+                "    LEFT join tool_process on process.id_process = tool_process.id_process    " +
+                "    INNER JOIN tool ON tool_process.id_tool = tool.id_tool     " +
+                "WHERE process.id_department IN (:idsDepartmentOriginal)  " );
+        setConditionFindAllDocumentByTool(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllDocumentByTool(request, query);
+        PageUtils.buildQuery(pageable, query);
+        List<Object[]> result = query.getResultList();
+        List<FindAllDocumentAssetDto> responses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                FindAllDocumentAssetDto findAllDocumentAssetDto = new FindAllDocumentAssetDto();
+                findAllDocumentAssetDto.setCodeDocument(ValueUtil.getStringByObject(obj[0]));
+                findAllDocumentAssetDto.setCodeTypeProcess(ValueUtil.getStringByObject(obj[1]));
+                findAllDocumentAssetDto.setNameTypeProcess(ValueUtil.getStringByObject(obj[2]));
+                findAllDocumentAssetDto.setNameUserCreate(ValueUtil.getStringByObject(obj[3]));
+                findAllDocumentAssetDto.setStatus(ValueUtil.getIntegerByObject(obj[4]));
+                findAllDocumentAssetDto.setDescription(ValueUtil.getStringByObject(obj[5]));
+                findAllDocumentAssetDto.setTimeCreated(ValueUtil.getLongByObject(obj[6]));
+                findAllDocumentAssetDto.setCodeDepartment(ValueUtil.getStringByObject(obj[7]));
+                findAllDocumentAssetDto.setNameDepartment(ValueUtil.getStringByObject(obj[8]));
+                findAllDocumentAssetDto.setStatusDocument(ValueUtil.getIntegerByObject(obj[9]));
+                responses.add(findAllDocumentAssetDto);
+            }
+        }
+        return new PageImpl<>(responses, pageable, countFindAllDocumentByTool(request));
+    }
+
+    private long countFindAllDocumentByTool(FindAllDocumentByToolRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select count(0) FROM document  " +
+                "    INNER JOIN process ON document.id_process = process.id_process    " +
+                "    INNER JOIN type_process ON process.id_type_process = type_process.id_type_process    " +
+                "    LEFT JOIN csvc_user user ON process.id_user_created = user.id_user          " +
+                "    LEFT JOIN department de ON process.id_department = de.id_department    " +
+                "    LEFT join tool_process on process.id_process = tool_process.id_process    " +
+                "    INNER JOIN tool ON tool_process.id_tool = tool.id_tool     " +
+                "WHERE process.id_department IN (:idsDepartmentOriginal)  " );
+        setConditionFindAllDocumentByTool(request, sb);
+        Query query = entityManager.createNativeQuery(sb.toString());
+        setParameterFindAllDocumentByTool(request, query);
+        return ValueUtil.getIntegerByObject(query.getSingleResult());
+    }
+
+    private void setParameterFindAllDocumentByTool(FindAllDocumentByToolRequest request, Query query) {
+        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+
+        if (ObjectUtils.isNotEmpty(request.getStatusTypeProcess())){
+            query.setParameter("statusTypeProcess", request.getStatusTypeProcess());
+        }
+        if (StringUtils.isNotBlank(request.getTimeCreated())){
+            query.setParameter("timeCreate", request.getTimeCreated());
+        }
+        if (StringUtils.isNotBlank(request.getNameUserCreate())){
+            query.setParameter("nameUserCreate", request.getNameUserCreate());
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatus())){
+            query.setParameter("status", request.getStatus());
+        }
+        if (ObjectUtils.isNotEmpty(request.getCodeTool())){
+            query.setParameter("codeTool", request.getCodeTool());
+        }
+        if (ObjectUtils.isNotEmpty(request.getSalt())){
+            query.setParameter("salt", request.getSalt());
+        }
+    }
+
+    private void setConditionFindAllDocumentByTool(FindAllDocumentByToolRequest request, StringBuilder sb) {
+        if (StringUtils.isNotBlank(request.getNameUserCreate())){
+            sb.append(" and (user.full_name REGEXP :nameUserCreate ) ");
+        }
+        if (StringUtils.isNotBlank(request.getTimeCreated())){
+            sb.append(" and document.time_created = :timeCreate ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatus())){
+            sb.append(" and process.status = :status ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getStatusTypeProcess())){
+            sb.append(" and da.status = :statusTypeProcess ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getCodeTool())){
+            sb.append(" and asset.code_tool = :codeTool ");
+        }
+        if (ObjectUtils.isNotEmpty(request.getSalt())){
+            sb.append(" and tool.salt = :salt ");
+        }
+        if (StringUtils.isNotBlank(request.getSortBy())){
+            sb.append("ORDER BY ");
+            if (request.getSortBy().equals("timeCreate")) {
+                sb.append(" document.time_created ");
+            }
+            sb.append(" ").append(request.getSortOrder());
+        } else {
+            sb.append(" ORDER BY document.time_created desc ");
+        }
     }
 
     private long countFindAllDocumentToolUpdateInventoryDtoByIdsDepartment(FindAllDocumentToolRequest request) {

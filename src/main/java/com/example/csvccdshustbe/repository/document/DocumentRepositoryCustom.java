@@ -8,6 +8,7 @@ import com.example.csvccdshustbe.entity.Document;
 import com.example.csvccdshustbe.request.document.FindAllDocumentAssetRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
 import com.example.csvccdshustbe.request.process.*;
+import com.example.csvccdshustbe.request.tool.FindAllDocumentByToolRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -49,4 +50,7 @@ public interface DocumentRepositoryCustom {
     Page<FindAllDocumentToolDto> findAllToolDocumentInventoryDtoByIdsDepartment(FindAllDocumentToolRequest request, Pageable pageable);
 
     Page<FindAllDocumentToolDto> findAllToolDocumentUpdateInventoryDtoByIdsDepartment(FindAllDocumentToolRequest request, Pageable pageable);
+
+
+    Page<FindAllDocumentAssetDto> findAllDocumentByToolDtoByIdsDepartment(FindAllDocumentByToolRequest request, Pageable pageable);
 }

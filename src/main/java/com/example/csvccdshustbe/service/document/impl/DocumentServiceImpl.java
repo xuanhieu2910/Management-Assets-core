@@ -13,6 +13,7 @@ import com.example.csvccdshustbe.request.document.UpdateInventoryAssetRequest;
 import com.example.csvccdshustbe.request.document.tool.FindAllDocumentToolRequest;
 import com.example.csvccdshustbe.request.document.tool.UpdateInventoryToolRequest;
 import com.example.csvccdshustbe.request.process.*;
+import com.example.csvccdshustbe.request.tool.FindAllDocumentByToolRequest;
 import com.example.csvccdshustbe.response.document.FindAllDocumentAssetResponse;
 import com.example.csvccdshustbe.response.document.FindDetailsDocumentResponse;
 import com.example.csvccdshustbe.response.document.tool.FindAllDocumentToolDecreaseResponse;
@@ -544,6 +545,17 @@ public class DocumentServiceImpl implements DocumentService {
         return new PageImpl<>(convertToFindAllToolUpdateInventoryResponse(findAllToolUpdateInventoryDtos.stream().toList()),
                 pageable, findAllToolUpdateInventoryDtos.getTotalElements());
     }
+
+    @Override
+    public Page<FindAllDocumentAssetResponse> findAllDocumentByTool(FindAllDocumentByToolRequest request) {
+        Pageable pageable = PageUtils.buildPage(request.getPage(), request.getSize());
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setIdsDepartmentOriginal(csvcUser.getIdsDepartmentCurrent());
+        Page<FindAllDocumentAssetDto> findAllDocumentByToolDtos = documentRepository.findAllDocumentByToolDtoByIdsDepartment(request, pageable);
+        return new PageImpl<>(convertToFindAllDocumentAssetResponse(findAllDocumentByToolDtos.get().collect(Collectors.toList())),
+                pageable, findAllDocumentByToolDtos.getTotalElements());
+    }
+
 
     private List<FindAllDocumentToolDocumentUpdateInventoryResponse> convertToFindAllToolUpdateInventoryResponse(List<FindAllDocumentToolDto> content) {
         List<FindAllDocumentToolDocumentUpdateInventoryResponse> responses = new ArrayList<>();
