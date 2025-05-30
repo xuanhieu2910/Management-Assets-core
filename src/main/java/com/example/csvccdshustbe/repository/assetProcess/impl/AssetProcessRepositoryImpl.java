@@ -637,12 +637,13 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
     @Override
     public List<AssetProcess> findListAssetProcessDtoByIdProcess(Integer idProcess) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" select id_asset_process, id_asset,  " +
-                "       id_process, id_type_process,  " +
-                "       status, value,  " +
-                "       time_created, time_modified, id_user_created,id_user_modified" +
-                "from asset_process  " +
-                "where id_process = :idProcess ");
+        sb.append(" select ap.id_asset_process, ap.id_asset,  " +
+                "       ap.id_process,ap.id_type_process,  " +
+                "       ap.status, ap.value,  " +
+                "       ap.time_created, ap.time_modified,   " +
+                "       ap.id_user_created,ap.id_user_modified  " +
+                "       from asset_process  ap  " +
+                "       where id_process = :idProcess");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idProcess", idProcess);
         List<Object[]> result = query.getResultList();

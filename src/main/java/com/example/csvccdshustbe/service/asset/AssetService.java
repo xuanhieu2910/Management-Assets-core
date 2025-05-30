@@ -64,4 +64,5 @@ public interface AssetService {
 
     StatisticsAssetCategoryStatusUse getStatisticAssetCategoryStatusUse(String CodeName);
 
+    void deleteAllAssetByListAsset(List<Asset> assetList);
 }

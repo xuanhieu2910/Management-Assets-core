@@ -48,6 +48,7 @@ import com.nimbusds.jose.shaded.gson.Gson;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -90,6 +91,7 @@ public class ProcessServiceImpl implements ProcessService {
     ToolProcessService toolProcessService;
     @Autowired
     AssetService assetService;
+    @Lazy
     @Autowired
     ToolService toolService;
     @Autowired
@@ -1261,9 +1263,17 @@ public class ProcessServiceImpl implements ProcessService {
     private void deleteFluctuationSituationAsset(Integer idProcess) {
         //delte process asset, fluc, flucasset
         List<AssetProcess> assetProcesses = assetProcessService.findListAssetProcessByIdProcess(idProcess);
+        List<Integer> idsAsset = new ArrayList<>();
+        for(AssetProcess assetProcess : assetProcesses) {
+            if(assetProcess.getStatus().equals(Constants.TYPE_FLUCTUATING_SITUATION_DECLARE)){
+                idsAsset.add(assetProcess.getIdAsset());
+            }
+        }
+        List<Asset> assetList = assetService.findAllAssetByIdsAsset(idsAsset);
         FluctuatingSituation fluctuatingSituation = fluctuatingSituationService.findFluctuatingSituationByIdProcess(idProcess);
         List<FluctuatingSituationAsset> fluctuatingSituationAssets =fluctuatingSituationAssetService.findFluctuatingSituationAssetByIdFlu(fluctuatingSituation.getIdFluctuatingSituation());
         assetProcessService.deleteListAssetProcess(assetProcesses);
+        assetService.deleteAllAssetByListAsset(assetList);
         fluctuatingSituationAssetService.deleteListFluctuatingSituationAsset(fluctuatingSituationAssets);
         fluctuatingSituationService.deleteFluctuatingSituation(fluctuatingSituation);
     }

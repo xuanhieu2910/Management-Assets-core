@@ -43,4 +43,7 @@ public interface ToolService {
     void uploadFileImportTool(MultipartFile file) throws FileExcelException;
 
     void saveTool(Tool tool);
+
+    void deleteListTool(List<Tool> toolList);
+    Tool findToolParentByIdTool(Integer idTool);
 }

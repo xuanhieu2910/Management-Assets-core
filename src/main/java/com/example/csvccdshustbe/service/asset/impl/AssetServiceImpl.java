@@ -75,6 +75,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
+import net.kaczmarzyk.spring.data.jpa.domain.In;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
@@ -2086,6 +2087,11 @@ public class AssetServiceImpl implements AssetService {
         return assetRepository.getStatisticFindAllAssetCategoryStatusUse(codeName);
     }
 
+    @Override
+    public void deleteAllAssetByListAsset(List<Asset> assetList) {
+        assetRepository.deleteAll(assetList);
+    }
+
     private Asset duplicationAssetLot(FindDetailsAssetResponse assetRoot) {
         return null;
     }
@@ -2318,8 +2324,25 @@ public class AssetServiceImpl implements AssetService {
         }
         return false;
     }
+
+
+    private static boolean isElementPresent(List<Integer> arr, Integer key)
+    {
+        // check if the specified element
+        // is present in the array or not
+        // using Linear Search method
+        for (Integer element : arr) {
+            if (element == key) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private List<Map<String, Object>> handleUploadFileAsset(MultipartFile file) {
         List<Map<String, Object>> assetRequests = new ArrayList<>();
+        CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         int constantMaximumRow = 2004;
         int indexSheet = 0;
         int indexRowStartToReadData = 3;
@@ -2407,7 +2430,12 @@ public class AssetServiceImpl implements AssetService {
                         categoryListExcel.add(extractIdValueFromExcel(idCategoryExcel));
                     }
                     if (idDepartmentExcel != null) {
-                        departmentAndDefaultListExcel.add(extractIdSTTFromExcel(idDepartmentExcel));
+                        Integer idDepartmentCheck = extractIdSTTFromExcel(idDepartmentExcel);
+                        if(!isElementPresent(csvcUser.getIdsDepartmentCurrent(), idDepartmentCheck)){
+                            throw new RuntimeException("You can't  Upload file Asset");
+                        }
+                        departmentAndDefaultListExcel.add(idDepartmentCheck);
+
                     }
                     if (idLocationExcel != null  && !idLocationExcel.equals("Không có")) {
                         locationListExcel.add(extractIdValueFromExcel(idLocationExcel));
@@ -2574,6 +2602,7 @@ public class AssetServiceImpl implements AssetService {
                     throw new RuntimeException("You need update new file temple Upload Asset");
                 }
 
+
                 Map<String, OriginalOfFormation> originalOfFormationMap = ofFormationList.stream()
                         .collect(Collectors.toMap(OriginalOfFormation::getName, Function.identity(), (existing, replacement) -> existing));
                 Map<Integer, AssetCategories> AssetCategoriesInstanceMap = assetInstanceCategoryNamesList.stream()
@@ -2707,8 +2736,8 @@ public class AssetServiceImpl implements AssetService {
                 originOfFormation.put("idOriginOfFormation", null);
                 originOfFormation.put("nameOriginOfFormation", null);
                 originOfFormation.put("value", originOfFormationValuesArray[i]);
-
             }
+            errorList.add("Cột tên nguồn hình thành thiếu giá trị");
         }
         else if(originalOfFormationName != null && originalOfFormationValues == null){
             String[] originOfFormationNameArray = originalOfFormationValues.split(";");
@@ -2722,6 +2751,7 @@ public class AssetServiceImpl implements AssetService {
                 }
                 originOfFormation.put("nameOriginOfFormation", originOfFormationNameArray[i]);
                 originOfFormation.put("value", null);
+                errorList.add("Cột giá trị nguồn hình thaành thiếu giá trị");
             }
         }
         else {

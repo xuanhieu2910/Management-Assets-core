@@ -46,4 +46,6 @@ public interface ToolRepositoryCustom {
 
     void updateToolStatusProcessCurrentByIdProcessCurrent(Integer idProcess, Integer status);
     StatisticToolsFindAllResponse getStatisticFindAllTool();
+
+    Optional<Tool> findToolParentById(Integer idTool);
 }

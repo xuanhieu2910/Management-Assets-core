@@ -535,6 +535,30 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
         return response;
     }
 
+    @Override
+    public Optional<Tool> findToolParentById(Integer idTool) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" select id_tool, name, code_tool, salt,   " +
+                "          id_tool_category, time_created,   " +
+                "          time_modified, id_user_created,   " +
+                "          id_user_modified, value, quantity,   " +
+                "          is_increase, is_decrease, quantity_increase_current,   " +
+                "          quantity_decrease_current, id_process_current,   " +
+                "          status_process_current, id_type_process_current,   " +
+                "          id_department_original, status_use, parent,   " +
+                "          id_department, id_location, id_user_use, year_use, price " +
+                "from tool where tool.parent = :idTool ");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idTool", idTool);
+        List<Object[]> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)){
+            for (Object[] obj : result){
+                return Optional.of(writeDataTool(obj));
+            }
+        }
+        return Optional.empty();
+    }
+
     private long countFindAllToolDtoToInventory(FindAllToolToInventoryRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(" select count(0) count   " +

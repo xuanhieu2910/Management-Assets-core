@@ -48,6 +48,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -98,6 +99,9 @@ public class ToolServiceImpl implements ToolService {
     FluctuatingSituationService fluctuatingSituationService;
     @Autowired
     private FluctuatingSituationToolService fluctuatingSituationToolService;
+    @Lazy
+    @Autowired
+    private ToolService toolService;
 
     @Override
     public Page<FindAllToolResponse> findAllToolParentResponse(FindAllToolRequest request) {
@@ -213,9 +217,21 @@ public class ToolServiceImpl implements ToolService {
     private void deleteFluctuatingSituationTool(Integer idProcessCurrent) {
         //delte process asset, fluc, fluctool
         List<ToolProcess> toolProcessList = toolProcessService.findAllToolProcessByIdProcess(idProcessCurrent);
+        List<Integer> idsTools = new ArrayList<>();
+        for (ToolProcess toolProcess : toolProcessList) {
+            if(toolProcess.getStatus().equals(Constants.TYPE_FLUCTUATING_SITUATION_DECLARE)){
+                Tool toolParent = toolService.findToolByIdTool(toolProcess.getIdTool());
+                idsTools.add(toolProcess.getIdTool());
+                idsTools.add(toolParent.getParent());
+
+            }
+        }
+
+        List<Tool> toolList = toolService.findAllToolByIdsTool(idsTools);
         FluctuatingSituation fluctuatingSituation = fluctuatingSituationService.findFluctuatingSituationByIdProcess(idProcessCurrent);
         List<FluctuatingSituationTool> fluctuatingSituationTools =fluctuatingSituationToolService.findFluctuatingSituationToolByIdFlu(fluctuatingSituation.getIdFluctuatingSituation());
         toolProcessService.deleteListToolProcess(toolProcessList);
+        toolService.deleteListTool(toolList);
         fluctuatingSituationToolService.deleteListFluctuatingSituationTool(fluctuatingSituationTools);
         fluctuatingSituationService.deleteFluctuatingSituation(fluctuatingSituation);
     }
@@ -274,6 +290,20 @@ public class ToolServiceImpl implements ToolService {
     @Override
     public void saveTool(Tool tool) {
         toolRepository.save(tool);
+    }
+
+    @Override
+    public void deleteListTool(List<Tool> toolList) {
+        toolRepository.deleteAll(toolList);
+    }
+
+    @Override
+    public Tool findToolParentByIdTool(Integer idTool) {
+        Optional<Tool> tool = toolRepository.findToolParentById(idTool);
+        if (tool.isEmpty()){
+            throw new NotFoundException("Don't exits tool by id tool");
+        }
+        return tool.get();
     }
 
     private List<Map<String, Object>> handleUploadFileTool(MultipartFile file) {
