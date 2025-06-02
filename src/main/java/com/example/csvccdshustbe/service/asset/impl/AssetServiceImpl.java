@@ -2332,7 +2332,7 @@ public class AssetServiceImpl implements AssetService {
         // is present in the array or not
         // using Linear Search method
         for (Integer element : arr) {
-            if (element == key) {
+            if (key.equals(element)) {
                 return true;
             }
         }

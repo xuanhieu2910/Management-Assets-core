@@ -1118,11 +1118,11 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
                 "SELECT id_asset_category FROM category_tree");
         Query query = entityManager.createNativeQuery(sb.toString());
         query.setParameter("idCategoryParent", idCategoryParent);
-        List<Object[]> result = query.getResultList();
+        List<Object> result = query.getResultList();
         List<Integer> idCategoryList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(result)) {
-            for (Object[] obj : result) {
-                idCategoryList.add(ValueUtil.getIntegerByObject(obj[0]));
+            for (Object obj : result) {
+                idCategoryList.add(ValueUtil.getIntegerByObject(obj));
             }
         }
         return idCategoryList;
