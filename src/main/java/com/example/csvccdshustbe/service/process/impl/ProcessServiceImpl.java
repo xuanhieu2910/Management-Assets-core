@@ -172,6 +172,7 @@ public class ProcessServiceImpl implements ProcessService {
         createTaskSendMailIncrease(userRoles, document, process);
     }
 
+    @Transactional
     @Override
     public void createDecreaseTool(CreateDecreaseToolRequest request) throws ValidateFiledException {
 //        List<Integer> idsTool = new ArrayList<>();
@@ -203,6 +204,7 @@ public class ProcessServiceImpl implements ProcessService {
         createTaskSendMailIncrease(userRoles, document, process);
     }
 
+    @Transactional
     @Override
     public void createDocumentInventoryTool(CreateInventoryToolRequest request) throws ValidateFiledException {
 //        List<Integer> idsTool = new ArrayList<>();
@@ -574,7 +576,7 @@ public class ProcessServiceImpl implements ProcessService {
         }
         return councilInventoryRequestList;
     }
-
+    @Transactional
     @Override
     public void createDecreaseAsset(CreateDecreaseAssetRequest request) throws ValidateFiledException {
 //        List<Integer> idsAsset = new ArrayList<>();
@@ -644,7 +646,7 @@ public class ProcessServiceImpl implements ProcessService {
         requestStakeHolderService.createNewRequestStakeHolder(constructionRequestStakeHolder(processRequest, userRoles));
         createTaskSendMailChange(userRoles, document, process);
     }
-
+    @Transactional
     @Override
     public void createRevaluationAsset(CreateRevaluationAssetRequest request) throws ValidateFiledException{
         validateAssetProcessChange(List.of(request.getAssetDetail().getIdAsset()));
