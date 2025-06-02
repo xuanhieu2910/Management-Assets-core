@@ -1887,7 +1887,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
         query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("statusProcessCurrent", Constants.STATUS_PENDING_PROCESS);
         if (request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_SINGLE)
-                || request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_LOT)) {
+                || request.getTypeSearch().equals(Constants.FIND_ALL_ASSET_ALLOCATE)) {
             query.setParameter("isIncrease", Constants.IS_INCREASED);
             query.setParameter("isDecrease", Constants.IS_DECREASED);
             query.setParameter("quantityDefault", Constants.QUANTITY_DEFAULT);

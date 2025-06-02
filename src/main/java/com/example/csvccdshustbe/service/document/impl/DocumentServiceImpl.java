@@ -101,11 +101,18 @@ public class DocumentServiceImpl implements DocumentService {
             return prefix + String.format("%0" + minLength + "d", codeValueCurrent) + "-" + String.valueOf(new Date().getTime());
         }
         String codeDocument = document.getCode().split("-")[0];
-        int index = codeDocument.indexOf(department.getCode());
-        if (index != -1) {
-            String suffix = codeDocument.substring(index + department.getCode().length()); // Lấy phần sau "KTX_B"
-            codeValueCurrent = Integer.parseInt(suffix);
+
+        if(department.getCode() == null) {
+            codeValueCurrent = Integer.parseInt(codeDocument.replaceAll(ValueUtil.PATTERN_NON_NUMBER, ""));
         }
+        else {
+            int index = codeDocument.indexOf(department.getCode());
+            if (index != -1) {
+                String suffix = codeDocument.substring(index + department.getCode().length());
+                codeValueCurrent = Integer.parseInt(suffix);
+            }
+        }
+
 //        codeValueCurrent = Integer.parseInt(codeDocument.replaceAll(ValueUtil.PATTERN_NON_NUMBER, ""));
         if (String.valueOf(codeValueCurrent).length() > minLength) {
             minLength = minLength + 2;

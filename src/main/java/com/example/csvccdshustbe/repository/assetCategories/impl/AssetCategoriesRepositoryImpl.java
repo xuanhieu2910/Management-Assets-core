@@ -1102,4 +1102,29 @@ public class AssetCategoriesRepositoryImpl implements AssetCategoriesRepositoryC
 
         return categoriesList;
     }
+
+    @Override
+    public List<Integer> findAllListAssetCategoriesByParent(Integer idCategoryParent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("WITH RECURSIVE category_tree AS ( " +
+                "    SELECT asset_categories.id_asset_category " +
+                "    FROM asset_categories " +
+                "    WHERE id_asset_category = :idCategoryParent " +
+                "    UNION ALL " +
+                "    SELECT ac.id_asset_category " +
+                "    FROM asset_categories ac " +
+                "             INNER JOIN category_tree ct ON ac.parent = ct.id_asset_category " +
+                ") " +
+                "SELECT id_asset_category FROM category_tree");
+        Query query = entityManager.createNativeQuery(sb.toString());
+        query.setParameter("idCategoryParent", idCategoryParent);
+        List<Object[]> result = query.getResultList();
+        List<Integer> idCategoryList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result)) {
+            for (Object[] obj : result) {
+                idCategoryList.add(ValueUtil.getIntegerByObject(obj[0]));
+            }
+        }
+        return idCategoryList;
+    }
 }

@@ -2669,13 +2669,22 @@ public class AssetServiceImpl implements AssetService {
 
 
         String instanceCategory = (String) ExcelUtil.convertValue(row.getCell(0), CellType.STRING);
+
         if (instanceCategory == null) {
             errorList.add("Thiếu dữ liệu Danh mục tài sản");
         }
 
         String category = (String) ExcelUtil.convertValue(row.getCell(1), CellType.STRING);
-        if (category == null) {
+        List<Integer> integeCategoriesList= assetCategoriesRepository.findAllListAssetCategoriesByParent(extractIdSTTFromExcel(instanceCategory));
+
+        if (category == null || !isElementPresent(integeCategoriesList, extractIdValueFromExcel(category))) {
             errorList.add("Thiếu dữ liệu cho Loại tài sản");
+            commonData.put("idAssetCategory", null);
+            commonData.put("nameAssetCategory", null);
+        }
+        else{
+            commonData.put("idAssetCategory", extractIdValueFromExcel(category));
+            commonData.put("nameAssetCategory", extractNameAfterIDFromExcel(category));
         }
 
         String nameAsset = (String) ExcelUtil.convertValue(row.getCell(2), CellType.STRING);
@@ -2812,8 +2821,7 @@ public class AssetServiceImpl implements AssetService {
 
         commonData.put("codeAsset", generateCodeAsset(Constants.PREFIX_ASSET));
         commonData.put("name", nameAsset);
-        commonData.put("idAssetCategory", extractIdValueFromExcel(category));
-        commonData.put("nameAssetCategory", extractNameAfterIDFromExcel(category));
+
 //        commonData.put("idInstance", assetInstanceCategoriesMap.get(instanceCategory).getIdAssetCategory());
         commonData.put("idInstance",extractIdSTTFromExcel(instanceCategory));
         commonData.put("codeInstance",AssetCategoriesInstanceMap.get(extractIdSTTFromExcel(instanceCategory)).getCodeName());

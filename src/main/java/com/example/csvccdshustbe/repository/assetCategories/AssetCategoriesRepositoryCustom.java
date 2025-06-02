@@ -38,4 +38,6 @@ public interface AssetCategoriesRepositoryCustom {
     List<FindAllAssetCategoriesToDownloadDto> findAllAssetCategoriesLeafByCodeParentVisibleToDownload(List<Integer> idsDepartment, String code);
     Optional<AssetCategories> findAssetCategoryByName(String name);
     List<AssetCategories> findAllAssetCategoriesByIdIn(List<Integer> idCategory);
+
+    List<Integer> findAllListAssetCategoriesByParent(Integer idCategoryParent);
 }
