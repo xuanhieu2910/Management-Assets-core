@@ -143,7 +143,7 @@ public class ToolRepositoryImpl implements ToolRepositoryCustom {
                 "                             sum(toolChildren.quantity) quantity,   " +
                 "                             sum(case when toolChildren.is_increase = :isIncrease then toolChildren.quantity else 0 end) sumIncrease,   " +
                 "                             sum(case when toolChildren.is_decrease = :isDecrease then toolChildren.quantity else 0 end) sumDecrease,   " +
-                "                             CONVERT(varchar(255), CAST(toolChildren.price as INT))sumPrice   " +
+                "                             CAST(toolChildren.price AS CHAR) sumPrice   " +
                 "                      from tool toolParent   " +
                 "                               inner join tool toolChildren on toolParent.id_tool = toolChildren.parent   " +
                 "                      where toolParent.id_tool = :idTool   " +

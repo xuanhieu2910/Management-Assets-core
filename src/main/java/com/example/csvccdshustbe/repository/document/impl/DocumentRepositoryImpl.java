@@ -155,7 +155,7 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
                 "         pr.id_process,pr.status, de.code codeDepartment,   " +
                 "         de.name, dc.status documentStatus   " +
                 "  from document dc       " +
-                "      inner join department de on dc.id_department_original = de.id_department   " +
+                "      inner join department de on dc.id_department = de.id_department   " +
                 "      inner join process pr on dc.id_process = pr.id_process   " +
                 "      inner join csvc_user cu on pr.id_user_created = cu.id_user   " +
                 "      inner join state st on pr.id_process = st.id_process   " +
