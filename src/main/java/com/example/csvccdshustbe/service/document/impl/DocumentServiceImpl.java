@@ -353,7 +353,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void updateInventoryFinishTool(UpdateInventoryToolRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
-        if (!document.getStatus().equals(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE)) {
+        if (!CollectionUtils.isEmpty(request.getToolProcess().getToolProcessRequests())) {
             documentRepository.save(updateInformationDocument(request, document));
             if (!CollectionUtils.isEmpty(request.getToolProcess().getToolProcessRequests())) {
                 toolProcessService.updateListToolProcessByIdProcess(request.getToolProcess().getToolProcessRequests(),
@@ -380,7 +380,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void updateInventoryFinishAsset(UpdateInventoryAssetRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
-        if (!document.getStatus().equals(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE)) {
+        if (!CollectionUtils.isEmpty(request.getAssetProcess().getAssets())) {
             documentRepository.save(updateInformationDocument(request, document));
             if (!CollectionUtils.isEmpty(request.getAssetProcess().getAssets())) {
                 assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
