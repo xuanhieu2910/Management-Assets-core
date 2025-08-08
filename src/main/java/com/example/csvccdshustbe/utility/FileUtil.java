@@ -402,7 +402,7 @@ public class FileUtil {
             file = CREATE_FILE_WIN + " " + file;
             cmdArray = new String[]{"cmd.exe", "/c", file};
         } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
-            file = CREATE_FILE_UNIX + " " + file + " && chmod 751 " + file;
+            file = CREATE_FILE_UNIX + " " + file + " && chmod 2755 " + file;
             cmdArray = new String[]{"/bin/bash", "-c", file};
         }
         log.info("Cmd: " + Arrays.toString(cmdArray));
