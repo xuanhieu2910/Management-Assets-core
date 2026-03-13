@@ -12,7 +12,7 @@ public interface NoOriginalAssetTransferLandService {
 
     NoShapeOriginalAssetTransferLandDetailsDto findNoOriginalAssetTransferLandById(Integer idInstance) throws IllegalAccessException;
 
-    void deleteNoShapOriginalAssetTransferLandById(Integer idInstance);
+    void deleteNoShapeOriginalAssetTransferLandById(Integer idInstance);
 
     NoShapeOriginalAssetTransferLand findNoShapeOriginalAssetTransferLandById(Integer idInstance);
 }

@@ -35,7 +35,7 @@ public class NoOriginalAssetTransferLandServiceImpl implements NoOriginalAssetTr
     }
 
     @Override
-    public void deleteNoShapOriginalAssetTransferLandById(Integer idInstance) {
+    public void deleteNoShapeOriginalAssetTransferLandById(Integer idInstance) {
         noShapeOriginalAssetTransferLandRepository.deleteNoShapeOriginalAssetTransferLandById(idInstance);
     }
 

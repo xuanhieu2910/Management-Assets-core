@@ -406,7 +406,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "            where un.is_display = :isDisplay) un  " +
                 "           on cte.id_asset_category = un.id_asset_category  " +
                 "          where 1 = 1  " +
-                "            and cte.id_department_original in (:idsDepartmentOriginal)  " +
+//                "            and cte.id_department_original in (:idsDepartmentOriginal)  " +
                 "          group by cte.id_asset_category, cte.name, cte.code_name,  " +
                 "                   cte.depth, cte.path, cte.number_code_pattern, is_leaf, cte.type_target  " +
                 "          order by cte.path),  " +
@@ -423,7 +423,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "                  left join location lo on asset.id_location = lo.id_location  " +
                 "                  left join document do on process.id_process = do.id_process  " +
                 "         where 1 = 1  " +
-                "           and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+//                "           and asset.id_department_origin in (:idsDepartmentOriginal)  " +
                 "           and do.code = :codeDocument  and asset.parent is null ");
         setConditionFindAllAssetProcessToUpdateInventory(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -511,7 +511,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "            where un.is_display = :isDisplay) un  " +
                 "           on cte.id_asset_category = un.id_asset_category  " +
                 "          where 1 = 1  " +
-                "            and cte.id_department_original in (:idsDepartmentOriginal)  " +
+//                "            and cte.id_department_original in (:idsDepartmentOriginal)  " +
                 "          group by cte.id_asset_category, cte.name, cte.code_name,  " +
                 "   cte.depth, cte.path, cte.number_code_pattern, is_leaf, cte.type_target  " +
                 "          order by cte.path),  " +
@@ -528,7 +528,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "                  left join document do on process.id_process = do.id_process  " +
                 "                  inner join asset assetParent on asset.parent = assetParent.id_asset  " +
                 "         where 1 = 1  " +
-                "           and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+//                "           and asset.id_department_origin in (:idsDepartmentOriginal)  " +
                 "           and do.code = :codeDocument ");
         setConditionFindAllAssetProcessLotToUpdateInventory(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -717,7 +717,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "            where un.is_display = :isDisplay) un   " +
                 "           on cte.id_asset_category = un.id_asset_category   " +
                 "          where 1 = 1   " +
-                "            and cte.id_department_original in (:idsDepartmentOriginal)   " +
+//                "            and cte.id_department_original in (:idsDepartmentOriginal)   " +
                 "          group by cte.id_asset_category, cte.name, cte.code_name,   " +
                 "   cte.depth, cte.path, cte.number_code_pattern, is_leaf, cte.type_target   " +
                 "          order by cte.path),   " +
@@ -734,7 +734,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "                  left join document do on process.id_process = do.id_process   " +
                 "                  inner join asset assetParent on asset.parent = assetParent.id_asset   " +
                 "         where 1 = 1   " +
-                "           and asset.id_department_origin in (:idsDepartmentOriginal)   " +
+//                "           and asset.id_department_origin in (:idsDepartmentOriginal)   " +
                 "           and do.code = :codeDocument ");
         setCountConditionFindAllAssetProcessLotToUpdateInventory(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -765,7 +765,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
     private void setParameterFindAllAssetProcessLotToUpdateInventory(Query query, FindAllAssetProcessRequest request) {
         query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
         query.setParameter("isDisplay", Constants.UNITES_IS_DISPLAY);
-        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+//        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("codeDocument", request.getCodeDocument());
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());
@@ -858,7 +858,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "            where un.is_display = :isDisplay) un  " +
                 "           on cte.id_asset_category = un.id_asset_category  " +
                 "          where 1 = 1  " +
-                "            and cte.id_department_original in (:idsDepartmentOriginal)  " +
+//                "            and cte.id_department_original in (:idsDepartmentOriginal)  " +
                 "          group by cte.id_asset_category, cte.name, cte.code_name,  " +
                 "                   cte.depth, cte.path, cte.number_code_pattern, is_leaf, cte.type_target  " +
                 "          order by cte.path),  " +
@@ -874,7 +874,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
                 "                  left join location lo on asset.id_location = lo.id_location  " +
                 "                  left join document do on process.id_process = do.id_process  " +
                 "         where 1 = 1  " +
-                "           and asset.id_department_origin in (:idsDepartmentOriginal)  " +
+//                "           and asset.id_department_origin in (:idsDepartmentOriginal)  " +
                 "           and do.code = :codeDocument  and asset.parent is null ");
         setCountConditionFindAllAssetProcessToUpdateInventory(sb, request);
         Query query = entityManager.createNativeQuery(sb.toString());
@@ -885,7 +885,7 @@ public class AssetProcessRepositoryImpl implements AssetProcessRepositoryCustom 
     private void setParameterFindAllAssetProcessToUpdateInventory(Query query, FindAllAssetProcessRequest request) {
         query.setParameter("visible", Constants.ASSET_CATEGORY_IS_VISIBLE);
         query.setParameter("isDisplay", Constants.UNITES_IS_DISPLAY);
-        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
+//        query.setParameter("idsDepartmentOriginal", request.getIdsDepartmentOriginal());
         query.setParameter("codeDocument", request.getCodeDocument());
         if (StringUtils.isNotBlank(request.getNameAsset())){
             query.setParameter("nameAsset", request.getNameAsset());

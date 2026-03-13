@@ -41,4 +41,6 @@ public class FindAllAssetResponseToIncrease {
     private Integer countChildIncrease;
     @JsonProperty("count_child_decrease")
     private Integer countChildDecrease;
+    @JsonProperty("name_location")
+    private String nameLocation;
 }

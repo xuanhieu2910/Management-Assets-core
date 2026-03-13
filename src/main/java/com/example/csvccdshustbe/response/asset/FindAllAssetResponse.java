@@ -46,4 +46,6 @@ public class FindAllAssetResponse {
     private Integer statusProcessCurrent;
     @JsonProperty("status_use")
     private Integer statusUse;
+    @JsonProperty("name_location")
+    private String nameLocation;
 }

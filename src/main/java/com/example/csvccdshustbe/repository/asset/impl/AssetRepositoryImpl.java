@@ -3101,7 +3101,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 "               left join location lo on asset.id_location = lo.id_location     " +
                 "               left join asset_depreciation ad on asset.id_asset = ad.id_asset     " +
                 "where 1 = 1     " +
-                "and asset.parent is null     " +
                 "and asset.id_department_origin in (:idsDepartmentOriginal) ");
         setConditionCountFindAllAsset(request, sb);
         Query query = entityManager.createNativeQuery(sb.toString());

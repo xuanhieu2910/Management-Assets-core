@@ -74,8 +74,10 @@ public class AssetInstanceController {
             assetInstanceService.createAssetInstance(request);
             return ApiResponseDto.createdWithMessage("Create asset instance success!", HttpStatus.OK);
         } catch (NotFoundException e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
