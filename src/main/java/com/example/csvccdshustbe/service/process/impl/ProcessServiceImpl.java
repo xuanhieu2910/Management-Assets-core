@@ -504,7 +504,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Transactional
     @Override
-    public void createDocumentInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException {
+        public void createDocumentInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException {
 //        List<Integer> idsAsset = new ArrayList<>();
 //        request.getAssetDetail().forEach(x->idsAsset.add(x.getIdAsset()));
         Set<Integer> idsAssetSet = request.getAssetDetail().stream()
@@ -1253,7 +1253,16 @@ public class ProcessServiceImpl implements ProcessService {
             }
             case Constants.CODE_TYPE_PROCESS_UPDATE_INVENTORY -> {
                 assetService.updateAssetStatusProcessCurrentByIdProcessCurrent(process.getIdProcess(), status);
-                deleteFluctuationSituationAsset(process.getIdProcess());
+                List<AssetProcess> assetProcesses = assetProcessService.findListAssetProcessByIdProcess(process.getIdProcess());
+                List<Integer> idsAsset = new ArrayList<>();
+                for(AssetProcess assetProcess : assetProcesses) {
+                    if(assetProcess.getStatus().equals(Constants.TYPE_FLUCTUATING_SITUATION_DECLARE)){
+                        idsAsset.add(assetProcess.getIdAsset());
+                    }
+                }
+                if(!idsAsset.isEmpty()){
+                    deleteFluctuationSituationAsset(process.getIdProcess(),idsAsset,assetProcesses);
+                }
             }
 
             default -> {
@@ -1262,15 +1271,9 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private void deleteFluctuationSituationAsset(Integer idProcess) {
+    private void deleteFluctuationSituationAsset(Integer idProcess,List<Integer> idsAsset,List<AssetProcess> assetProcesses) {
         //delte process asset, fluc, flucasset
-        List<AssetProcess> assetProcesses = assetProcessService.findListAssetProcessByIdProcess(idProcess);
-        List<Integer> idsAsset = new ArrayList<>();
-        for(AssetProcess assetProcess : assetProcesses) {
-            if(assetProcess.getStatus().equals(Constants.TYPE_FLUCTUATING_SITUATION_DECLARE)){
-                idsAsset.add(assetProcess.getIdAsset());
-            }
-        }
+
         List<Asset> assetList = assetService.findAllAssetByIdsAsset(idsAsset);
         FluctuatingSituation fluctuatingSituation = fluctuatingSituationService.findFluctuatingSituationByIdProcess(idProcess);
         List<FluctuatingSituationAsset> fluctuatingSituationAssets =fluctuatingSituationAssetService.findFluctuatingSituationAssetByIdFlu(fluctuatingSituation.getIdFluctuatingSituation());

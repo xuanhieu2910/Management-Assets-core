@@ -9,6 +9,7 @@ import com.example.csvccdshustbe.service.original.assetOriginal.AssetOriginalSer
 import com.example.csvccdshustbe.service.original.noShape.assetBuy.NoOriginalAssetBuyService;
 import com.example.csvccdshustbe.service.original.noShape.assetEvaluate.NoOriginalAssetEvaluateService;
 import com.example.csvccdshustbe.service.original.noShape.assetGift.NoOriginalAssetGiftService;
+import com.example.csvccdshustbe.service.original.noShape.assetOther.NoOriginalAssetOtherService;
 import com.example.csvccdshustbe.service.original.noShape.assetTranfer.NoOriginalAssetTransferService;
 import com.example.csvccdshustbe.service.original.noShape.assetUseLand.NoOriginalAssetUseLandService;
 import com.example.csvccdshustbe.service.original.noShape.rentLand.NoOriginalAssetRentLandService;
@@ -19,6 +20,7 @@ import com.example.csvccdshustbe.service.original.shape.assetConnectWoActor.Orig
 import com.example.csvccdshustbe.service.original.shape.assetEvaluate.OriginalAssetEvaluateService;
 import com.example.csvccdshustbe.service.original.shape.assetGift.OriginalAssetGiftService;
 import com.example.csvccdshustbe.service.original.shape.assetInvest.OriginalAssetInvestService;
+import com.example.csvccdshustbe.service.original.shape.assetOther.OriginalAssetOtherService;
 import com.example.csvccdshustbe.service.original.shape.assetTransfer.OriginalAssetTransferService;
 import com.example.csvccdshustbe.utility.Constants;
 import com.example.csvccdshustbe.utility.ValueUtil;
@@ -63,6 +65,10 @@ public class OriginalServiceFactory {
     NoOriginalAssetRentLandService noOriginalAssetRentLandService;
     @Autowired
     NoOriginalAssetTransferLandService noOriginalAssetTransferLandService;
+    @Autowired
+    NoOriginalAssetOtherService noOriginalAssetOtherService;
+    @Autowired
+    OriginalAssetOtherService originalAssetOtherService;
     @Autowired
     OriginalService originalService;
 
@@ -112,6 +118,12 @@ public class OriginalServiceFactory {
             }
             case NoShapeOriginalAssetTransferLand -> {
                 idInstance = noOriginalAssetTransferLandService.save((NoShapeOriginalAssetTransferLand) original).getIdNoShapeOriginalAssetTransferLand();
+            }
+            case NoShapeOriginalAssetOther ->  {
+                idInstance = noOriginalAssetOtherService.save((NoShapeOriginalAssetOther) original).getIdNoShapeOriginalAssetOther();
+            }
+            case ShapeOriginalAssetOther -> {
+                idInstance = originalAssetOtherService.save((ShapeOriginalAssetOther) original).getIdShapeOriginalAssetOther();
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type original!");
@@ -166,6 +178,12 @@ public class OriginalServiceFactory {
             }
             case NoShapeOriginalAssetTransferLand -> {
                 idInstance = noOriginalAssetTransferLandService.save((NoShapeOriginalAssetTransferLand) original).getIdNoShapeOriginalAssetTransferLand();
+            }
+            case NoShapeOriginalAssetOther ->  {
+                idInstance = noOriginalAssetOtherService.save((NoShapeOriginalAssetOther) original).getIdNoShapeOriginalAssetOther();
+            }
+            case ShapeOriginalAssetOther -> {
+                idInstance = originalAssetOtherService.save((ShapeOriginalAssetOther) original).getIdShapeOriginalAssetOther();
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type original!");
@@ -247,6 +265,12 @@ public class OriginalServiceFactory {
             case NoShapeOriginalAssetTransferLand -> {
                 return noOriginalAssetTransferLandService.findNoOriginalAssetTransferLandById(idInstance);
             }
+            case NoShapeOriginalAssetOther ->  {
+                return noOriginalAssetOtherService.findNoOriginalConnectActorById(idInstance);
+            }
+            case ShapeOriginalAssetOther -> {
+                return originalAssetOtherService.findOriginalConnectActorById(idInstance);
+            }
             default -> {
                 throw new ValidateFiledException("Don't exits type original!");
             }
@@ -300,7 +324,13 @@ public class OriginalServiceFactory {
                  noOriginalAssetRentLandService.deleteNoShapeOriginalAssetRendLandById(idInstance);
             }
             case NoShapeOriginalAssetTransferLand -> {
-                 noOriginalAssetTransferLandService.deleteNoShapOriginalAssetTransferLandById(idInstance);
+                 noOriginalAssetTransferLandService.deleteNoShapeOriginalAssetTransferLandById(idInstance);
+            }
+            case NoShapeOriginalAssetOther ->  {
+                noOriginalAssetOtherService.deleteNoShapeOriginalAssetOtherById(idInstance);
+            }
+            case ShapeOriginalAssetOther -> {
+                originalAssetOtherService.deleteShapeOriginalAssetOtherById(idInstance);
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type original!");
@@ -355,6 +385,12 @@ public class OriginalServiceFactory {
             case NoShapeOriginalAssetTransferLand -> {
                 return noOriginalAssetTransferLandService.findNoShapeOriginalAssetTransferLandById(idInstance);
             }
+            case NoShapeOriginalAssetOther ->  {
+                return noOriginalAssetOtherService.findNoShapeOriginalAssetOtherById(idInstance);
+            }
+            case ShapeOriginalAssetOther -> {
+                return originalAssetOtherService.findShapeOriginalAssetOtherById(idInstance);
+            }
             default -> {
                 throw new ValidateFiledException("Don't exits type original!");
             }
@@ -405,6 +441,12 @@ public class OriginalServiceFactory {
             }
             case NoShapeOriginalAssetTransferLand -> {
                 return noOriginalAssetTransferLandService.save((NoShapeOriginalAssetTransferLand) dataOriginal);
+            }
+            case NoShapeOriginalAssetOther ->  {
+                return noOriginalAssetOtherService.save((NoShapeOriginalAssetOther) dataOriginal);
+            }
+            case ShapeOriginalAssetOther -> {
+                return originalAssetOtherService.save((ShapeOriginalAssetOther) dataOriginal);
             }
             default -> {
                 throw new ValidateFiledException("Don't exits type original!");

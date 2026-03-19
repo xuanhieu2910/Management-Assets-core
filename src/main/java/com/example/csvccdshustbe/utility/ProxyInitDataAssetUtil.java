@@ -115,6 +115,12 @@ public class ProxyInitDataAssetUtil {
             case NoShapeOriginalAssetTransferLand -> {
                 return new NoShapeOriginalAssetTransferLandFactory();
             }
+            case ShapeOriginalAssetOther -> {
+                return new ShapeOriginalAssetOtherFactory();
+            }
+            case NoShapeOriginalAssetOther -> {
+                return new NoShapeOriginalAssetOtherFactory();
+            }
             default -> {
                 throw new ValidateFiledException("Don't exits original");
             }

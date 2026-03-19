@@ -22,7 +22,7 @@ import org.webjars.NotFoundException;
 @Tag(name = "Asset Categories Controller", description = "The Asset Categories APIs. Contains operations like find all, find details, edit, delete etc.")
 @RestController
 @RequestMapping("/api/v1/asset-categories")
-public class AssetCategoriesController {
+public class  AssetCategoriesController {
 
 
     @Autowired

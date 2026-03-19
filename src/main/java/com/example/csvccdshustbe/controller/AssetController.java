@@ -69,6 +69,7 @@ public class AssetController {
         }catch (ValidateFiledException | JsonProcessingException | NotFoundException e){
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }
@@ -328,8 +329,10 @@ public class AssetController {
             return ApiResponseDto.createdWithState(assetService.generateCodeAsset(Constants.PREFIX_ASSET),
                     "Generate asset code success!", HttpStatus.OK);
         } catch (NotFoundException e) {
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            e.printStackTrace();
             return ApiResponseDto.createdWithMessage(e.getMessage(), HttpStatus.BAD_GATEWAY);
         }
     }

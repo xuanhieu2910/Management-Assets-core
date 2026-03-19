@@ -889,7 +889,7 @@ public class AssetServiceImpl implements AssetService {
         if (ObjectUtils.isEmpty(asset.getIsDecrease())){
             asset.setIsDecrease(Constants.IS_NOT_DECREASED);
         }
-        asset.setIdDepartmentOrigin(ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment")));
+//        asset.setIdDepartmentOrigin(ValueUtil.getIntegerByObject(commonDataAsset.get("idDepartment")));
         asset.setAcreage(ValueUtil.getDoubleByObject(commonDataAsset.get("acreage")));
         asset.setSumOriginalOfFormation(ValueUtil.getStringByObject(commonDataAsset.get("sumOriginalOfFormation")));
         assetRepository.save(asset);
@@ -1060,6 +1060,7 @@ public class AssetServiceImpl implements AssetService {
             response.setTimeIncrease(dto.getTimeIncrease());
             response.setStatusProcessCurrent(dto.getStatusProcessCurrent());
             response.setStatusUse(dto.getStatusUse());
+            response.setNameLocation(dto.getNameLocation());
             responses.add(response);
         }
         return responses;
@@ -1097,6 +1098,7 @@ public class AssetServiceImpl implements AssetService {
 
             response.setCountChildIncrease(dto.getCountChildIncrease());
             response.setCountChildDecrease(dto.getCountChildDecrease());
+            response.setNameLocation(dto.getNameLocation());
             responses.add(response);
         }
         return responses;

@@ -14,5 +14,7 @@ public enum EnumOriginalFactory {
     ShapeOriginalAssetEvaluate,
     ShapeOriginalAssetGift,
     ShapeOriginalAssetInvest,
-    ShapeOriginalAssetTransfer
+    ShapeOriginalAssetTransfer,
+    ShapeOriginalAssetOther,
+    NoShapeOriginalAssetOther
 }
