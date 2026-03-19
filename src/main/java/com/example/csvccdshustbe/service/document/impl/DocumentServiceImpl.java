@@ -40,6 +40,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
@@ -341,7 +342,7 @@ public class DocumentServiceImpl implements DocumentService {
     public void updateInventoryDraftTool(UpdateInventoryToolRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
         if (!document.getStatus().equals(Constants.STATUS_DOCUMENT_CAN_NOT_CHANGE_OR_UPDATE)) {
-        documentRepository.save(updateInformationDocument(request, document));
+        documentRepository.save(updateInformationDocumentTool(request, document));
         if (!CollectionUtils.isEmpty(request.getToolProcess().getToolProcessRequests())) {
             toolProcessService.updateListToolProcessByIdProcess(request.getToolProcess().getToolProcessRequests(),
                     document.getIdProcess());
@@ -353,13 +354,36 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void updateInventoryFinishTool(UpdateInventoryToolRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
-        if (!CollectionUtils.isEmpty(request.getToolProcess().getToolProcessRequests())) {
-            documentRepository.save(updateInformationDocument(request, document));
-            if (!CollectionUtils.isEmpty(request.getToolProcess().getToolProcessRequests())) {
-                toolProcessService.updateListToolProcessByIdProcess(request.getToolProcess().getToolProcessRequests(),
-                        document.getIdProcess());
+        documentRepository.save(updateInformationDocumentTool(request, document));
+        if (request.getToolProcess() != null && !CollectionUtils.isEmpty(request.getToolProcess().getToolProcessRequests())) {
+            toolProcessService.updateListToolProcessByIdProcess(
+                    request.getToolProcess().getToolProcessRequests(),
+                    document.getIdProcess()
+            );
+        }
+        if (request.isUpdateFinished()) {
+            boolean hasFluctuation = !CollectionUtils.isEmpty(
+                    toolProcessService.findToolProcessByIdProcessAndStatusFluctuationSituation(
+                            document.getIdProcess(),
+                            Arrays.asList(
+                                    Constants.TYPE_FLUCTUATING_SITUATION_DECLARE,
+                                    Constants.TYPE_FLUCTUATING_SITUATION_INCREASE,
+                                    Constants.TYPE_FLUCTUATING_SITUATION_DECREASE
+                            )
+                    )
+            );
+            if (hasFluctuation) {
+                try {
+                    FluctuatingSituation existing = fluctuatingSituationService.findFluctuatingSituationByIdProcess(document.getIdProcess());
+                    List<FluctuatingSituationTool> existingTools =
+                            fluctuatingSituationToolService.findFluctuatingSituationToolByIdFlu(existing.getIdFluctuatingSituation());
+                    fluctuatingSituationToolService.deleteListFluctuatingSituationTool(existingTools);
+                    fluctuatingSituationService.deleteFluctuatingSituation(existing);
+                } catch (UsernameNotFoundException ignored) {
+                }
+
+                createFluctuatingSituation(document.getIdProcess(), Constants.TYPE_FLUCTUATING_SITUATION_DETAIL_TOOL);
             }
-            createFluctuatingSituation(document.getIdProcess(), Constants.TYPE_FLUCTUATING_SITUATION_DETAIL_TOOL);
         }
     }
 
@@ -380,12 +404,25 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void updateInventoryFinishAsset(UpdateInventoryAssetRequest request) {
         Document document = findDocumentByCodeDocument(request.getCodeDocument());
-        if (!CollectionUtils.isEmpty(request.getAssetProcess().getAssets())) {
-            documentRepository.save(updateInformationDocument(request, document));
-            if (!CollectionUtils.isEmpty(request.getAssetProcess().getAssets())) {
-                assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
+        documentRepository.save(updateInformationDocument(request, document));
+        if (request.getAssetProcess() != null && !CollectionUtils.isEmpty(request.getAssetProcess().getAssets())) {
+            assetProcessService.updateListAssetProcessByIdProcess(request.getAssetProcess(), document.getIdProcess());
+        }
+        if (request.isUpdateFinished()) {
+            boolean hasFluctuation =
+                    !CollectionUtils.isEmpty(assetProcessService.findAssetsToFluctuatingSituationByIdProcess(document.getIdProcess()));
+            if (hasFluctuation) {
+                try {
+                    FluctuatingSituation existing = fluctuatingSituationService.findFluctuatingSituationByIdProcess(document.getIdProcess());
+                    List<FluctuatingSituationAsset> existingAssets =
+                            fluctuatingSituationAssetService.findFluctuatingSituationAssetByIdFlu(existing.getIdFluctuatingSituation());
+                    fluctuatingSituationAssetService.deleteListFluctuatingSituationAsset(existingAssets);
+                    fluctuatingSituationService.deleteFluctuatingSituation(existing);
+                } catch (UsernameNotFoundException ignored) {
+
+                }
+                createFluctuatingSituation(document.getIdProcess(), Constants.TYPE_FLUCTUATING_SITUATION_DETAIL_ASSET);
             }
-            createFluctuatingSituation(document.getIdProcess(), Constants.TYPE_FLUCTUATING_SITUATION_DETAIL_ASSET);
         }
     }
 
@@ -399,7 +436,7 @@ public class DocumentServiceImpl implements DocumentService {
         return document;
     }
 
-    private Document updateInformationDocument(UpdateInventoryToolRequest request, Document document) {
+    private Document updateInformationDocumentTool(UpdateInventoryToolRequest request, Document document) {
         CsvcUser csvcUser = (CsvcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         document.setTimeModified(String.valueOf(new Date().getTime()));
         document.setIdUserModified(csvcUser.getIdUser());

@@ -504,7 +504,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Transactional
     @Override
-    public void createDocumentInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException {
+        public void createDocumentInventoryAsset(CreateInventoryAssetRequest request) throws ValidateFiledException {
 //        List<Integer> idsAsset = new ArrayList<>();
 //        request.getAssetDetail().forEach(x->idsAsset.add(x.getIdAsset()));
         Set<Integer> idsAssetSet = request.getAssetDetail().stream()

@@ -385,7 +385,13 @@ public class AssetProcessServiceImpl implements AssetProcessService {
                         x.setValue(assetProcessRequest.getValue());
                         x.setIdUserModified(csvcUser.getIdUser());
                         x.setTimeModified(timeCurrent);
-                        x.setStatus(assetProcessRequest.getStatus());
+                        // IMPORTANT:
+                        // For update-inventory flow, FE may not always send `status` for each asset row.
+                        // If we overwrite to null/default here, the asset will be excluded from fluctuating-situation creation
+                        // (query filters status in DECLARE/INCREASE/DECREASE).
+                        if (assetProcessRequest.getStatus() != null) {
+                            x.setStatus(assetProcessRequest.getStatus());
+                        }
                     });
         }
         assetProcessRepository.saveAll(assetProcessList);
