@@ -1,0 +1,53 @@
+package com.example.csvccdshustbe.service.modules.carModule.impl;
+
+import com.example.csvccdshustbe.dto.modules.carModules.CarModulesDetailsDto;
+import com.example.csvccdshustbe.entity.CarModule;
+import com.example.csvccdshustbe.repository.carModule.CarModuleRepository;
+import com.example.csvccdshustbe.service.modules.carModule.CarModuleService;
+import com.example.csvccdshustbe.utility.ValueUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
+import java.util.Map;
+import java.util.Optional;
+
+@Service
+public class CarModuleServiceImpl implements CarModuleService {
+
+    @Autowired
+    CarModuleRepository carModuleRepository;
+
+    @Override
+    public CarModule save(CarModule carModule) {
+        return carModuleRepository.save(carModule);
+    }
+
+    @Override
+    public void validateDataCreate(Map<String, Object> dataModule) {
+
+    }
+
+    @Override
+    public CarModulesDetailsDto findCarModuleDetailsByIdCarModule(Integer idCarModule) throws IllegalAccessException {
+        Optional<CarModulesDetailsDto> carModule = carModuleRepository.findCarModulesDetailsDtoByIdCar(idCarModule);
+        if (carModule.isEmpty()) {
+            throw new NotFoundException("Don't exits car module!");
+        }
+        return carModule.get();
+    }
+
+    @Override
+    public void deleteCarModuleById(Integer idInstance) {
+        carModuleRepository.deleteCarModuleByIdCarModule(idInstance);
+    }
+
+    @Override
+    public CarModule findCarModuleByIdCarModule(Integer idInstance) {
+        Optional<CarModule> module = carModuleRepository.findCarModuleByIdCarModule(idInstance);
+        if (module.isEmpty()){
+            throw new NotFoundException("Don't exits car module by id!");
+        }
+        return module.get();
+    }
+}

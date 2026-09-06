@@ -1,0 +1,47 @@
+package com.example.csvccdshustbe.repository.department;
+
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentByCodeAndVisibleDto;
+import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
+import com.example.csvccdshustbe.request.department.FindAllDepartmentVisibleRequest;
+import com.example.csvccdshustbe.dto.department.FindAllDepartmentsDto;
+import com.example.csvccdshustbe.entity.Department;
+import com.example.csvccdshustbe.request.department.FindAllDepartmentRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+public interface DepartmentRepositoryCustom {
+  Page<FindAllDepartmentByCodeAndVisibleDto>
+  findAllDepartmentByCodeAndVisible(Pageable pageable, FindAllDepartmentVisibleRequest request);
+
+  List<FindAllDepartmentByCodeAndVisibleDto> findAllDepartmentByCodeAndVisible();
+
+  List<FindAllDepartmentByCodeAndVisibleDto> findAllStructDepartmentByIdDepartment(Integer idDepartment);
+
+  Page<FindAllDepartmentsDto> findAllDepartmentByIdDepartment(Pageable pageable, FindAllDepartmentRequest request);
+
+  Page<FindAllDepartmentByCodeAndVisibleDto> findAllDepartmentSource(Pageable pageable, FindAllDepartmentVisibleRequest request);
+
+  Optional<Department> findDepartmentByName(String name);
+
+  Optional<Department> findDepartmentByIdParent(Integer idParent);
+
+  Optional<Department> findDepartmentById(Integer idDepartment);
+
+  Optional<Department> findDepartmentByIdDepartmentAndStatus(Integer idDepartment, Integer status);
+
+  boolean checkExitsDepartmentByNameOrCodeOrShortName(String name, String code, String shortName);
+
+  boolean isExitsAssetByIdDepartment(Integer idDepartment);
+
+  List<Department> findDepartmentByIds(List<Integer> ids);
+
+  Map<String, List<FindAllLocationDto>>
+  findAllDepartmentLocationToDownloadByIdsDepartment(List<Integer> idsDepartment);
+
+  List<FindAllDepartmentsDto> findAllAssetDepartmentToDownload();
+    Optional<Department> findDepartmentByDefault();
+}

@@ -1,0 +1,46 @@
+package com.example.csvccdshustbe.repository.report;
+
+import com.example.csvccdshustbe.dto.report.CurrentUsageReport08aDto;
+import com.example.csvccdshustbe.dto.report.inventory.BlueprintInventoryReportDto;
+import com.example.csvccdshustbe.dto.report.inventory.FindAllAssetForInventoryReportDto;
+import com.example.csvccdshustbe.dto.report.FindAllReportDto;
+import com.example.csvccdshustbe.dto.report.IncreaseDecreaseReport08bDto;
+import com.example.csvccdshustbe.dto.toolProcess.FindAllToolProcessDto;
+import com.example.csvccdshustbe.entity.Report;
+import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
+import com.example.csvccdshustbe.request.report.CreateReportInCreaseAndDecreaseAllRequest;
+import com.example.csvccdshustbe.request.report.FindAllReportRequest;
+import com.example.csvccdshustbe.request.report.FindAllReportVisibleRequest;
+import com.example.csvccdshustbe.request.toolProcess.FindAllToolProcessRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface ReportRepositoryCustom {
+
+    Page<FindAllReportDto> findAllReportDtoVisible(FindAllReportVisibleRequest request, Pageable pageable);
+    Page<FindAllReportDto> findAllReportDto(FindAllReportRequest request, Pageable pageable);
+    Optional<Report> findReportByCodeAndStatus(String codeReport, Integer status);
+    Optional<List<Object[]>> findInfoAssetForRevaluationReport(Integer idAssetProcess, Integer status);
+    Optional<List<Object[]>> findInfoStakeHolderForRevaluationReport(Integer idAssetProcess);
+    List<FindAllAssetForInventoryReportDto> findInfoAssetForInventoryReportByCodeDocument(FindAllAssetProcessRequest request);
+    BlueprintInventoryReportDto findBlueprintInventoryReportDtoByCodeDocument(FindAllAssetProcessRequest request);
+
+    Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetGroundInReport(List<Integer> idsDepartment);
+
+    Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetHouseInReport(List<Integer> idsDepartment);
+
+    List<CurrentUsageReport08aDto>  findAllCurrentUsageAssetShapeInReport(List<Integer> idsDepartment);
+
+    Optional<CurrentUsageReport08aDto>  findAllCurrentUsageAssetOtherInReport(List<Integer> idsDepartment);
+
+    Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseGroundInReport(CreateReportInCreaseAndDecreaseAllRequest request);
+
+    Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseHouseInReport(CreateReportInCreaseAndDecreaseAllRequest request);
+    List<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseAssetShapeInReport(CreateReportInCreaseAndDecreaseAllRequest request);
+    Optional<IncreaseDecreaseReport08bDto>  findAllIncreaseDecreaseOtherAssetInReport(CreateReportInCreaseAndDecreaseAllRequest request);
+    List<FindAllToolProcessDto> findInfoToolForInventoryReportByCodeDocument(FindAllToolProcessRequest request);
+}
+

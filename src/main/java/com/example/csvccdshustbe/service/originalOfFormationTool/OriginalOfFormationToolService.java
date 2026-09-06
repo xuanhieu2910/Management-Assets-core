@@ -1,0 +1,25 @@
+package com.example.csvccdshustbe.service.originalOfFormationTool;
+
+import com.example.csvccdshustbe.dto.originalOfFormationTool.FindAllOriginalOfFormationToolDto;
+import com.example.csvccdshustbe.exception.ValidateFiledException;
+import com.example.csvccdshustbe.request.originalOfFormationTool.CreateOriginalOfFormationToolRequest;
+import com.example.csvccdshustbe.request.originalOfFormationTool.FindAllOriginalOfFormationToolVisibleRequest;
+import com.example.csvccdshustbe.request.originalOfFormationTool.UpdateOriginalOfFormationToolRequest;
+import com.example.csvccdshustbe.request.originalOfFormationTool.UpdateStatusOriginalOfFormationToolRequest;
+import com.example.csvccdshustbe.response.originalOfFormationTool.FindAllOriginalOfFormationToolVisibleResponse;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
+
+public interface OriginalOfFormationToolService {
+
+    Page<FindAllOriginalOfFormationToolVisibleResponse> findAllOriginalOfFormationToolVisible(FindAllOriginalOfFormationToolVisibleRequest request);
+    void createOriginalOfFormationToolService(CreateOriginalOfFormationToolRequest request) throws ValidateFiledException;
+
+    void updateOriginalOfFormationToolService(UpdateOriginalOfFormationToolRequest request) throws ValidateFiledException;
+
+    void deleteOriginalOfFormationToolServiceById(Integer idOriginalOfFormation) throws ValidateFiledException;
+
+    void updateStatusOriginalOfFormationToolService(UpdateStatusOriginalOfFormationToolRequest request) throws ValidateFiledException;
+    List<FindAllOriginalOfFormationToolDto> findAllOriginalOfFormationDtoByVisible(Integer visible);
+}

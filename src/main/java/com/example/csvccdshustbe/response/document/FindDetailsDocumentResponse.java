@@ -1,0 +1,52 @@
+package com.example.csvccdshustbe.response.document;
+
+
+import com.example.csvccdshustbe.response.state.BluePrintStateResponse;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+public class FindDetailsDocumentResponse {
+
+    @JsonProperty("id_document")
+    private Integer idDocument;
+    @JsonProperty("code_document")
+    private String codeDocument;
+    @JsonProperty("full_name")
+    private String fullName;
+    @JsonProperty("user_name")
+    private String userName;
+    @JsonProperty("description")
+    private String description;
+    @JsonProperty("status")
+    private Integer status;
+    @JsonProperty("time_created")
+    private String timeCreated;
+    @JsonProperty("time_modified")
+    private String timeModified;
+    @JsonProperty("time_increase")
+    private String timeIncrease;
+    @JsonProperty("time_document")
+    private String timeDocument;
+    @JsonProperty("description_refuse")
+    private String descriptionRefuse;
+    @JsonProperty("name_reason")
+    private String nameReason;
+    @JsonProperty("id_department")
+    private Integer idDepartment;
+    @JsonProperty("code_department")
+    private String codeDepartment;
+    @JsonProperty("name_department")
+    private String nameDepartment;
+    @JsonProperty("states")
+    private List<BluePrintStateResponse> states;
+    @JsonProperty("status_document")
+    private Integer statusDocument;
+    @JsonProperty("id_process")
+    private Integer idProcess;
+
+}

@@ -1,0 +1,22 @@
+package com.example.csvccdshustbe.response.asset;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class FindAllAssetChildrenToUpdateInventoryResponse {
+    @JsonProperty("id_asset")
+    private Integer idAsset;
+    @JsonProperty("salt")
+    private String salt;
+    @JsonProperty("value")
+    private String value;
+    @JsonProperty("status")
+    private Integer status;
+    @JsonProperty("name_asset")
+    private String nameAsset;
+    @JsonProperty("is_increase")
+    private Integer isIncrease;
+}

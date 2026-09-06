@@ -1,0 +1,45 @@
+package com.example.csvccdshustbe.dto.asset;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+public class FindAllAssetDto {
+
+    private Integer idAsset;
+    private String codeAsset;
+    private String nameAsset;
+    private Integer idAssetCategory;
+    private String codeAssetCategory;
+    private String nameAssetCategory;
+    private Integer idDepartment;
+    private String codeDepartment;
+    private String nameDepartment;
+    private Integer idLocation;
+    private String nameLocation;
+    private Long timeCreated;
+    private Long timeModified;
+    private Integer quantity;
+    private Integer parent;
+    private String salt;
+    private Integer isIncrease;
+    private Integer isDecrease;
+    private String originalOfFormation;
+    private String restValue;
+    private String cumulative;
+    private String timeIncrease;
+    private String value;
+    private Integer statusProcessCurrent;
+    private Integer statusUse;
+    private String yearUse;
+    private Integer idAssetProcess;
+    private Integer typeTarget;
+    private Double acreage;
+    private String unit;
+    private Integer statusAssetProcess;
+    private Integer countChildIncrease;
+    private Integer countChildDecrease;
+}

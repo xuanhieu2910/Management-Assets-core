@@ -1,0 +1,33 @@
+package com.example.csvccdshustbe.repository.location;
+
+import com.example.csvccdshustbe.dto.location.FindAllLocationDto;
+import com.example.csvccdshustbe.entity.Location;
+import com.example.csvccdshustbe.request.Location.FindAllLocationRequest;
+import com.example.csvccdshustbe.request.Location.FindAllLocationVisibleRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface LocationRepositoryCustom {
+
+    Page<FindAllLocationDto> findAllLocationVisible(Pageable pageable, FindAllLocationVisibleRequest request);
+    Page<FindAllLocationDto> findAllLocation(Pageable pageable, FindAllLocationRequest request);
+
+    Optional<Location> findLocationByName(String name);
+
+    Optional<Location> findLocationByIdParent(Integer idParent);
+
+    Optional<Location> findLocationById(Integer idLocation);
+
+    boolean checkExitsLocationByNameOrShortName(String name,String shortName);
+
+    Optional<Location> findLocationByIdLocationAndIdDepartmentAndVisible(Integer idLocation,
+                                                                         Integer idDepartment,
+                                                                         Integer visible);
+
+    boolean isCheckExitsAssetByIdLocation (Integer idLocation);
+
+    List<Location> findAllLocationById(List<Integer> idLocation);
+}

@@ -1,0 +1,57 @@
+package com.example.csvccdshustbe.repository.asset;
+
+import com.example.csvccdshustbe.dto.asset.AssetBluePrintDto;
+import com.example.csvccdshustbe.dto.asset.FindAllAssetDto;
+import com.example.csvccdshustbe.dto.asset.FindAllGroundAssetDto;
+import com.example.csvccdshustbe.dto.asset.GroundAssetDto;
+import com.example.csvccdshustbe.dto.process.FindAllAssetParentToInventoryDto;
+import com.example.csvccdshustbe.dto.report.inventory.FindAllAssetForInventoryReportDto;
+import com.example.csvccdshustbe.entity.Asset;
+import com.example.csvccdshustbe.request.asset.*;
+import com.example.csvccdshustbe.request.assetProcess.FindAllAssetProcessRequest;
+import com.example.csvccdshustbe.response.asset.FindAllGroundAssetResponse;
+import com.example.csvccdshustbe.response.asset.StatisticsAssetFindAllResponse;
+import com.example.csvccdshustbe.response.dashboard.StatisticsAssetAndUserFindAllResponse;
+import com.example.csvccdshustbe.response.dashboard.StatisticsAssetCategoryStatusUse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface AssetRepositoryCustom {
+
+    Page<FindAllAssetDto> findAllAssetDtoByIdsDepartment(FindAllAssetRequest request, Pageable pageable);
+    Page<FindAllAssetDto> findAllAssetLotChildrenDtoByIdsDepartment(FindAllAssetLotChildrenRequest request, Pageable pageable);
+    Optional<AssetBluePrintDto> findDetailAssetBySaltAsset(String saltAsset);
+    Optional<Asset> findAssetBySalt(String salt);
+    void deleteByIdAsset(Integer idAsset);
+    Page<GroundAssetDto> findAllGroundAsset(Pageable pageable, FindAllGroundAssetRequest request);
+    List<FindAllGroundAssetDto> findAllGroundAssetToDownload();
+    Page<FindAllAssetDto> findAllAssetDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable);
+    Page<FindAllAssetDto> findAllAssetChildrenDtoToIncrease(FinaAllAssetToIncreaseRequest request, Pageable pageable);
+    Optional<Asset> findAssetByIdDepartmentOrigin(Integer idDepartmentOrigin);
+    Optional<Asset> findAssetLotByIdDepartmentOrigin(Integer idDepartmentOrigin);
+    List<Asset> findAllAssetChildrenByParentId(Integer idAsset);
+    Page<FindAllAssetParentToInventoryDto> findAllAssetDtoToInventory(FindAllAssetToInventoryRequest inventoryRequest, Pageable pageable);
+    List<Asset> findAllAssetByIdsAsset(List<Integer> idsAsset);
+    Optional<Asset> findAssetByIdAsset(Integer idAsset);
+    Integer countAssetIncreasedNotDecreasedByIdsAssetOrPending(List<Integer> idsAsset);
+    Integer countAssetByIdsAssetAndNotIncreaseOrDecreasedOrPending(List<Integer> idsAsset);
+    void updateAssetStatusProcessCurrentByIdProcessCurrent(Integer idProcessCurrent, Integer statusProcessCurrent);
+    void updateAssetStatusProcessCurrentAndIsIncrease(Integer idProcess, Integer status, Integer isIncrease);
+    void updateAssetStatusProcessCurrentAndIsDecrease(Integer idProcess, Integer status, Integer isDecrease);
+    Page<FindAllAssetDto> findAllAssetDtoToChange(FindAllAssetToChangeRequest request, Pageable pageable);
+    Page<FindAllAssetDto> findAllAssetDtoToRevaluation(FindAllAssetToRevaluationRequest revaluationRequest, Pageable pageable);
+    Page<FindAllAssetDto> findAllAssetDtoToDecrease(FindAllAssetToDecreaseRequest decreaseRequest, Pageable pageable);
+    Page<FindAllAssetDto> findAllAssetChildrenDtoToDecrease(FindAllAssetToDecreaseRequest decreaseRequest, Pageable pageable);
+    Page<FindAllAssetDto> findAllAssetChildrenDtoToInventory(FindAllAssetToInventoryRequest inventoryRequest, Pageable pageable);
+
+    List<Asset> findAllAssetChildrenToChangeByParentId(Integer idAsset);
+    Page<FindAllAssetDto> findAllAssetChildrenDtoToRevaluation(FindAllAssetToRevaluationRequest revaluationRequest, Pageable pageable);
+    StatisticsAssetFindAllResponse getStatisticFindAllAsset();
+
+    StatisticsAssetAndUserFindAllResponse getStatisticFindAllAssetInCategoryAndUser();
+
+    StatisticsAssetCategoryStatusUse getStatisticFindAllAssetCategoryStatusUse(String codeName);
+}
